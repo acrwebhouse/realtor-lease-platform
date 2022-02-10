@@ -1,0 +1,60 @@
+@import 'antd/dist/antd.min.css';
+@import 'antd-button-color/dist/css/style.css';
+.login-form {
+    /*width: 300px;*/
+    /*text-align: center;*/
+}
+/*.site-form-item-icon {*/
+/*    width: 300px*/
+/*}*/
+
+.ant-modal-header {
+    text-align: center;
+}
+.ant-modal.ModalRegister {
+    /*text-align: center;*/
+}
+.ant-btn.ss {
+    /*background-color: #FF00FF;*/
+    text-align: center;
+    /*display: flex;*/
+}
+
+h2 {
+    text-align: center;
+}
+
+.Register-context {
+    /*width: 500px;*/
+    float: left;
+}
+
+.input-account {
+    width : 100%;
+    display: flex;
+    /*align-items: center;*/
+
+}
+
+.input-password {
+    width : 100%;
+}
+
+.login-form-forgot {
+    float: right;
+}
+.ant-col-rtl .login-form-forgot {
+    float: left;
+}
+.ant-btn.login-form-button {
+    width: 100%;
+    /*background-color: #FF00FF;*/
+    /*text-align: center;*/
+}
+
+
+.ant-btn.login-form-button:hover {
+    width: 100%;
+    /*background-color: #FFFF00;*/
+}
+

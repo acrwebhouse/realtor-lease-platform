@@ -37,7 +37,7 @@ const waitTime = (time = 100) => {
     });
 };
 
-export default () => {
+const MDForm = () => {
     const [type, setType] = useState('ProForm');
     const Components = {
         ProForm,
@@ -333,3 +333,5 @@ export default () => {
         </>
     );
 };
+
+export default MDForm;

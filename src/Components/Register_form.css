@@ -1,0 +1,14 @@
+@import 'antd/dist/antd.min.css';
+@import 'antd-button-color/dist/css/style.css';
+
+.ant-checkbox-checked .ant-checkbox-input{
+    width: 30px;
+    height: 30px;
+}
+
+.ant-checkbox-input
+{
+    /* Checkbox text */
+    font-size: 150%;
+    display: inline;
+}
