@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import 'antd/dist/antd.min.css';
 import {
     Form, Input, Radio, Select, Checkbox, Divider, DatePicker, Space,
-    Button, Col, Row, Cascader, 
+    Button, Col, Row, Cascader,
     // Upload
 } from "antd";
 // import { UploadOutlined } from '@ant-design/icons';
@@ -14,16 +14,6 @@ const { Option } = Select;
 const dateFormat = 'YYYY/MM/DD';
 
 const CityAreaOptions = CityAreaData.CityArea
-// console.log(options)
-// const normFile = (e) => {
-//     console.log('Upload event:', e);
-//
-//     if (Array.isArray(e)) {
-//         return e;
-//     }
-//
-//     return e && e.fileList;
-// };
 
 const formItemLayout = {
     labelCol: {
@@ -38,7 +28,6 @@ const formItemLayout = {
         },
         lg: {
             span: 10,
-            // offset: -12,
         }
     },
     wrapperCol: {
@@ -57,23 +46,6 @@ const formItemLayout = {
     },
 };
 
-// const roleOption = ['一般會員', '屋主', '房仲'];
-// const role = [{
-//         person: [
-//             {
-//                 Role: "User",
-//                 CNRole: "一般會員"
-//             },
-//             {
-//                 Role: "Host",
-//                 CNRole: "屋主"
-//             },
-//             {
-//                 Role: "HouseSale",
-//                 CNRole: "房仲"
-//             }
-//         ]
-//     }];
 const defaultRole = [];
 
 const Register = () => {
@@ -83,7 +55,8 @@ const Register = () => {
     const [roleCheck, setRoleCheck] = useState(defaultRole);
     const [ShowHide, setShowHide] = useState(defaultRole.length > 0 )
     const [SaleShowHide, setSaleShowHide] = useState(defaultRole.includes('房仲'))
-
+    const [isEnableCityArea, setIsEnableCityArea] = useState(false)
+    const [initCityAreaData, setInitCityAreaData] = useState([])
 
     const onRoleChange = list => {
         setRoleCheck(list);
@@ -100,9 +73,19 @@ const Register = () => {
         console.log('Received values of form: ', values);
     };
 
-    // const showCityAreaData = (value) => {
-    //     console.log(value);
-    // }
+    const showCityAreaData = (value) => {
+        // console.log(value);
+        // console.log(value.length);
+        // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
+        // console.log(initCityArea)
+        setInitCityAreaData(value)
+        setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
+    }
+
+    const resetCityArea = () => {
+        setIsEnableCityArea(false);
+        setInitCityAreaData([])
+    }
 
     const PhonePrefixSelector = (
         <Form.Item name="PhonePrefix" noStyle>
@@ -129,25 +112,7 @@ const Register = () => {
 
     return (
         <>
-            {/*<Modal title="Register Form"*/}
-            {/*       visible={isModalVisible}*/}
-            {/*       className="ModalRegister"*/}
-            {/*    // width={1000}*/}
-            {/*    // onOk={handleOk}*/}
-            {/*       onCancel={handleRegisterCancel}*/}
-            {/*       footer={[*/}
-            {/*           <Button key="back" className="ss" onClick={handleRegisterCancel}>*/}
-            {/*               Return*/}
-            {/*           </Button>,*/}
-            {/*           <Button key="submit" type="primary" loading={loading} onClick={onFinish}>*/}
-            {/*               Submit*/}
-            {/*           </Button>,*/}
-            {/*       ]}*/}
-            {/*>*/}
                 <h2>請選擇預想申請的使用者(可重複選)</h2>
-                {/*<div >*/}
-                {/*    <Checkbox.Group options={roleOption} value={roleCheck} onChange={onRoleChange} />*/}
-                {/*</div>*/}
                 <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
                     <Row>
                         <Col span={4} offset={3}>
@@ -283,36 +248,13 @@ const Register = () => {
                                     }}
                             />
                         </Form.Item>
-                        <Form.Item
-                            // name="born"
-                            label="Born Date"
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your Born Date!',
-                            //     },
-                            // ]}
-                        >
+                        <Form.Item label="Born Date">
                             <Space direction="horizontal">
                                 <DatePicker onChange={showDate} format={dateFormat}/>
-                                {/*<DatePicker onChange={showDate} />*/}
                             </Space>
                         </Form.Item>
                         <Divider/>
                         {SaleShowHide &&
-                            // <Form.Item
-                            //     name="LicenseNumber"
-                            //     label="License Number"
-                            //     valuePropName="fileList"
-                            //     getValueFromEvent={normFile}
-                            //     extra="上傳營業執照"
-                            // >
-                            //     <Col  style={{ width: '100%' }}>
-                            //         <Upload name="logo" action="/upload.do" listType="text">
-                            //             <Button icon={<UploadOutlined />}>Click to upload</Button>
-                            //         </Upload>
-                            //     </Col>
-                            // </Form.Item>
                         <Form.Item
                             name="LicenseNumber"
                             label="License Number"
@@ -327,21 +269,25 @@ const Register = () => {
                         </Form.Item>
                         }
                         {SaleShowHide &&
-                        <Form.Item name="CityAre"
-                                   label="City and Area"
-                                   rules={[
-                                       {
-
-                                       }
-                                   ]}
-                        >
+                        <Form.Item label="City and Area"
+                                   required tooltip="選擇同一城市裡兩個熟悉鄰近的區域">
                             <Cascader
                                 style={{width: '100%'}}
                                 options={CityAreaOptions}
-                                // onChange={showCityAreaData}
+                                onChange={showCityAreaData}
+                                value={initCityAreaData}
+                                disabled={isEnableCityArea}
                                 multiple
                                 maxTagCount="responsive"
                             />
+                            <span>
+                                <Button type="primary"
+                                        size="small"
+                                        htmlType="button"
+                                        onClick={resetCityArea}>
+                                    重置區域
+                                </Button>
+                            </span>
                         </Form.Item>
                         }
                         <Form.Item>
