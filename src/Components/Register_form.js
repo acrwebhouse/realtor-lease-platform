@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.min.css';
 import {
     Form, Input, Radio, Select, Checkbox, Divider, DatePicker, Space,
-    Button, Col, Row, Cascader,
+    Button, Col, Row, Cascader, message,
     // Upload
 } from "antd";
 // import { UploadOutlined } from '@ant-design/icons';
 import './Register_form.css'
-import CityAreaData from './CityArea.json'
+import CityAreaData from '../Datas/CityArea.json'
+import axios from "./axiosApi";
 
 const { Option } = Select;
 
@@ -47,6 +48,19 @@ const formItemLayout = {
 };
 
 const defaultRole = [];
+const defaultRank = 0;
+const defaultHouseIds = []
+const defaultRegisterData = {}
+
+const convertString = (word) =>{
+    switch(word.toLowerCase().trim()){
+        case "yes": case "true": case "1": return true;
+        case "no": case "false": case "0": case null: return false;
+        default: return Boolean(word);
+    }
+}
+
+const SighUp_Auth = "/auth/signUp"
 
 const Register = () => {
 
@@ -57,34 +71,94 @@ const Register = () => {
     const [SaleShowHide, setSaleShowHide] = useState(defaultRole.includes('房仲'))
     const [isEnableCityArea, setIsEnableCityArea] = useState(false)
     const [initCityAreaData, setInitCityAreaData] = useState([])
+    const [RegisterData, setRegisterData] = useState(defaultRegisterData)
+    const [Roles, setRoles] = useState([])
+    const [CityAreaScope, setCityAreaScope] = useState([])
+    const [bornDate, setBornDate] = useState('')
+    const [isRunPost, setIsRunPost] = useState(false)
 
     const onRoleChange = list => {
         setRoleCheck(list);
         setShowHide(list.length > 0);
-        setSaleShowHide(list.includes('房仲'))
-        // console.log(list)
+        setSaleShowHide(list.includes('4'))
+
+        setRoles(list.map(i => Number(i)))
     };
 
+    useEffect(() => {
+        // console.log(RegisterData)
+        // console.log(CityAreaScope)
+        if (isRunPost) {
+            axios.post(SighUp_Auth, RegisterData)
+                .then( (response) => console.log(response))
+                .then(() => message.success(`註冊成功`, 2))
+                .catch( (error) => message.error(`${error}`, 2))
+
+            setIsRunPost(false)
+        }
+    }, [isRunPost, RegisterData])
+
     const showDate = (date, dateString) => {
-        console.log(date, dateString)
+        // console.log(date, dateString)
+        // console.log(dateString)
+        setBornDate(dateString)
     }
 
     const showRegisterData = (values) => {
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
+        setIsRunPost(true)
+        setRegisterData(
+            {
+            'account' : values['account'],
+            'password': values['password'],
+            'name' : values['name'],
+            'gender' : convertString(values['radio-gender']),
+            'roles' : Roles,
+            'bornDate' :  bornDate,
+                "rolesInfo": {
+                    "admin": {},
+                    "host": {},
+                    "user": {},
+                    "sales":
+                        {
+                            'license' : values['LicenseNumber'],
+                            'scope' : CityAreaScope['scope'],
+                            'rank' : defaultRank
+                        }
+                },
+            'houseIds': defaultHouseIds,
+            'phone': values['PhonePrefix']+values['phone'],
+            'mail': values['email'],
+            'address': values['AddressPrefix']+values['address']
+        }
+        )
     };
 
     const showCityAreaData = (value) => {
-        // console.log(value);
+        console.log(value);
         // console.log(value.length);
         // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
         // console.log(initCityArea)
         setInitCityAreaData(value)
         setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
+        if (value.length >= 2) {
+            setCityAreaScope(
+                {
+                    "scope": [
+                        {
+                            "city": [value[0][0], value[1][0]],
+                            "area": [value[0][1], value[1][1]]
+                        }
+                    ]
+                }
+            )
+        }
     }
 
     const resetCityArea = () => {
         setIsEnableCityArea(false);
-        setInitCityAreaData([])
+        setInitCityAreaData([]);
+        setCityAreaScope([]);
     }
 
     const PhonePrefixSelector = (
@@ -104,8 +178,8 @@ const Register = () => {
                 width: 90,
             }}
             >
-                <Option value="Taipei">台北市</Option>
-                <Option value="XinBei">新北市</Option>
+                <Option value="台北市">台北市</Option>
+                <Option value="新北市">新北市</Option>
             </Select>
         </Form.Item>
     );
@@ -116,13 +190,13 @@ const Register = () => {
                 <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
                     <Row>
                         <Col span={4} offset={3}>
-                            <Checkbox value='一般會員'>一般會員</Checkbox>
+                            <Checkbox value='2'>屋主</Checkbox>
                         </Col>
                         <Col span={4} offset={3}>
-                            <Checkbox value='屋主'>屋主</Checkbox>
+                            <Checkbox value='3'>一般會員</Checkbox>
                         </Col>
                         <Col span={4} offset={3}>
-                            <Checkbox value='房仲'>房仲</Checkbox>
+                            <Checkbox value='4'>房仲</Checkbox>
                         </Col>
                     </Row>
                 </Checkbox.Group>
@@ -142,25 +216,25 @@ const Register = () => {
                             label="Account"
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please input your account!',
                                 },
                             ]}
                         >
-                            <Input placeholder="" style={{ width: '100%' }}/>
+                            <Input placeholder="" style={{ width: '150%' }}/>
                         </Form.Item>
                         <Form.Item name="radio-gender"
                                    label="Gender"
                                    rules={[
                                        {
-                                           required: true,
+                                           required: false,
                                        },
                                    ]}
                         >
                             <Col offset={4} style={{ width: '100%' }}>
                                 <Radio.Group>
-                                    <Radio value="1">男 Male</Radio>
-                                    <Radio value="0">女 Female</Radio>
+                                    <Radio value={true}>男 Male</Radio>
+                                    <Radio value={false}>女 Female</Radio>
                                 </Radio.Group>
                             </Col>
                         </Form.Item>
@@ -173,25 +247,25 @@ const Register = () => {
                                     message: 'The input is not valid E-mail!',
                                 },
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please input your E-mail!',
                                 },
                             ]}
                         >
-                            <Input />
+                            <Input placeholder="" style={{ width: '150%' }}/>
                         </Form.Item>
                         <Form.Item
                             name="password"
                             label="Password"
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please input your password!',
                                 },
                             ]}
                             hasFeedback
                         >
-                            <Input.Password />
+                            <Input.Password placeholder="" style={{ width: '150%' }}/>
                         </Form.Item>
                         <Form.Item
                             name="confirm"
@@ -200,7 +274,7 @@ const Register = () => {
                             hasFeedback
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please confirm your password!',
                                 },
                                 ({ getFieldValue }) => ({
@@ -214,21 +288,33 @@ const Register = () => {
                                 }),
                             ]}
                         >
-                            <Input.Password />
+                            <Input.Password placeholder="" style={{ width: '150%' }}/>
+                        </Form.Item>
+                        <Form.Item
+                            name="name"
+                            label="Name"
+                            rules={[
+                                {
+                                    required: false,
+                                    message: 'Please input your Name!',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="" style={{ width: '150%' }}/>
                         </Form.Item>
                         <Form.Item
                             name="phone"
                             label="Phone Number"
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please input your phone number!',
                                 },
                             ]}
                         >
                             <Input  addonBefore={PhonePrefixSelector}
                                     style={{
-                                        width: '130%',
+                                        width: '150%',
                                     }}
                             />
                         </Form.Item>
@@ -237,14 +323,14 @@ const Register = () => {
                             label="Address"
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please input your Address!',
                                 },
                             ]}
                         >
                             <Input  addonBefore={AddressPrefixSelector}
                                     style={{
-                                        width: '130%',
+                                        width: '150%',
                                     }}
                             />
                         </Form.Item>
@@ -260,19 +346,19 @@ const Register = () => {
                             label="License Number"
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please Key your License Number!',
                                 },
                             ]}
                         >
-                            <Input placeholder="" style={{ width: '100%' }}/>
+                            <Input placeholder="" style={{ width: '150%' }}/>
                         </Form.Item>
                         }
                         {SaleShowHide &&
                         <Form.Item label="City and Area"
                                    required tooltip="選擇同一城市裡兩個熟悉鄰近的區域">
                             <Cascader
-                                style={{width: '100%'}}
+                                style={{width: '150%'}}
                                 options={CityAreaOptions}
                                 onChange={showCityAreaData}
                                 value={initCityAreaData}
@@ -291,7 +377,7 @@ const Register = () => {
                         </Form.Item>
                         }
                         <Form.Item>
-                            <Col offset={8} style={{ width: '100%' }}>
+                            <Col offset={14} style={{ width: '70%' }}>
                                 <Button type="primary"
                                         htmlType="submit"
                                         className='login-form-button'

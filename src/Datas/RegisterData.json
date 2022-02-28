@@ -1,0 +1,24 @@
+{
+  "account": "",
+  "password": "",
+  "name": "",
+  "gender": null,
+  "roles": [],
+  "rolesInfo": {
+    "admin": {},
+    "host": {},
+    "user": {},
+    "sales": {
+      "scope": [
+        {
+          "city": "",
+          "area": ""
+        }
+      ]
+    }
+  },
+  "houseIds": [],
+  "phone": "",
+  "mail": "",
+  "address": ""
+}

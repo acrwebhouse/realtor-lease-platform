@@ -1,42 +1,30 @@
-import { Form, Input, Button, Checkbox, Modal } from 'antd';
+import { Form, Input, message, Button, Checkbox, Modal } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css'
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Register from "./Register_form";
+import axios from "./axiosApi";
 
-
-
-
+const LOGIN_Auth = "/auth/login/"
+const accountPattern = /^[a-zA-Z0-9]+$/;
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginRegister = () => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-
+    const [LoginData, setLoginData] = useState()
+    const [rememberMe, setRememberMe] = useState(false)
+    const [isRunPost, setIsRunPost] = useState(false)
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
         setIsModalVisible(true);
     };
 
-
     const showLoginModal = () => {
         setIsLoginModalVisible(true);
     };
-
-    // const handleRegisterOk = (values) => {
-    //     setLoading(true)
-    //     setTimeout( () => {
-    //         setLoading(false)
-    //         setIsModalVisible(false)
-    //         console.log('Success:', values);
-    //         }, 3000);
-    //     };
-
-    // const onCreate = (values) => {
-    //     console.log('Received values of form: ', values);
-    //     // setVisible(false);
-    // };
 
     const handleRegisterCancel = () => {
         setIsModalVisible(false);
@@ -46,19 +34,55 @@ const LoginRegister = () => {
         setIsLoginModalVisible(false);
     };
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
+    const errorAccountOrMailFormat = () => {
+         message.loading('loading...', 0.5)
+             .then(() => message.error('請輸入正確的帳號或電子郵件格式', 3));
+    }
+
+    const onFinish =  (values) => {
+        // console.log('Success:', values);
+       const {remember, ...tempData} = values
+        // console.log(tempData['accountOrMail'])
+        if (accountPattern.test(tempData['accountOrMail'])
+            || emailPattern.test(tempData['accountOrMail'])) {
+                setLoginData(tempData)
+                setRememberMe(remember)
+                setIsRunPost(true);
+        } else {
+            errorAccountOrMailFormat();
+        }
+
     };
+
+    // useEffect(() => {
+    //     if (isRunPost) {
+    //         console.log(LoginData)
+    //         console.log(rememberMe)
+    //         axios.post(LOGIN_Auth, LoginData)
+    //             .then( (response) => console.log(response))
+    //             .catch( (error) => console.log(error))
+    //     }
+    //
+    //     }, [LoginData, rememberMe, isRunPost])
+
+    useEffect(() => {
+        if (isRunPost) {
+            console.log(LoginData)
+            console.log(rememberMe)
+            axios.post(LOGIN_Auth, LoginData)
+                .then(() => message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2))
+                .catch( (error) => message.error(`${error}`, 2))
+
+            setIsRunPost(false)
+        }
+
+    }, [LoginData, rememberMe, isRunPost])
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
     const [form] = Form.useForm();
-
-    // const onReset = () => {
-    //     form.resetFields();
-    // };
 
     return (
         <>
@@ -71,6 +95,7 @@ const LoginRegister = () => {
                    onCancel={handleLoginCancel}
                    width={500}
                    footer={[
+                       <span key="paragraph">New here? </span>,
                        <Button className='btn-register'
                                key='register'
                                type="primary"
@@ -94,12 +119,12 @@ const LoginRegister = () => {
                 >
                     <Form.Item
                         // label="Account/Email"
-                        name="account"
+                        name="accountOrMail"
                         className="input-account"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your account or Email!',
+                                message: 'Please key correct account or Email!',
                             },
                         ]}
                     >
@@ -128,7 +153,8 @@ const LoginRegister = () => {
                         >
                             <Checkbox>Remember me</Checkbox>
                         </Form.Item>
-                        <a className="login-form-forgot" href="/">
+                        <a className="login-form-forgot"
+                           href="http://www.localhost:3000/PasswordReset">
                             Forgot password
                         </a>
                     </Form.Item>
@@ -137,16 +163,9 @@ const LoginRegister = () => {
                                 htmlType="submit"
                                 className='login-form-button'
                                 shape="round"
-
                         >
                             Log in
                         </Button>
-                        {/*<Button htmlType="button"*/}
-                        {/*        className="reset-form-button"*/}
-                        {/*        onClick={onReset}>*/}
-                        {/*    Reset*/}
-                        {/*</Button>*/}
-                        {/*{'  '} Or {'  '}*/}
 
                         <Modal title="Register Form"
                                visible={isModalVisible}
@@ -154,38 +173,18 @@ const LoginRegister = () => {
                                width={700}
                                okText="Submit"
                                cancelText="Return"
-                               // onOk={() => {
-                               //     form
-                               //         .validateFields()
-                               //         .then((values) => {
-                               //             form.resetFields();
-                               //             onCreate(values);
-                               //         })
-                               //         .catch((info) => {
-                               //             console.log('Validate Failed:', info);
-                               //         });
-                               // }}
                                onCancel={handleRegisterCancel}
                                footer={[
                                    <Button key="back" className="ss" onClick={handleRegisterCancel}>
                                        Return
                                    </Button>,
-                                   // <Button key="submit"
-                                   //         // htmlType="submit"
-                                   //         type="primary"
-                                   //         loading={loading}
-                                   //         onClick={handleRegisterOk}>
-                                   //     Submit
-                                   // </Button>,
                                ]}
                         >
-                            {/*<Register visible={showRegisterModal}/>*/}
                             <Register/>
                         </Modal>
                     </Form.Item>
                 </Form>
             </Modal>
-            {/*{isModalVisible && }*/}
         </>
     )
 };

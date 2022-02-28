@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "account": "a123456789",
+      "password": "123456789",
+      "remember": true
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
