@@ -3,15 +3,15 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css'
 import React, {useState, useEffect} from "react";
 import Register from "./Register_form";
-import axios from "./axiosApi";
-
+// import axios from "./axiosApi";
+import {LoginRegisterAxios} from "./axiosApi"
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginRegister = () => {
 
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
     const [LoginData, setLoginData] = useState()
     const [rememberMe, setRememberMe] = useState(false)
@@ -19,7 +19,7 @@ const LoginRegister = () => {
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
-        setIsModalVisible(true);
+        setIsRegisterModalVisible(true);
     };
 
     const showLoginModal = () => {
@@ -27,7 +27,7 @@ const LoginRegister = () => {
     };
 
     const handleRegisterCancel = () => {
-        setIsModalVisible(false);
+        setIsRegisterModalVisible(false);
     };
 
     const handleLoginCancel = () => {
@@ -67,9 +67,10 @@ const LoginRegister = () => {
 
     useEffect(() => {
         if (isRunPost) {
-            console.log(LoginData)
-            console.log(rememberMe)
-            axios.post(LOGIN_Auth, LoginData)
+            // console.log(LoginData)
+            // console.log(rememberMe)
+            LoginRegisterAxios.post(LOGIN_Auth, LoginData)
+                .then( (response) => console.log(response))
                 .then(() => message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2))
                 .catch( (error) => message.error(`${error}`, 2))
 
@@ -168,7 +169,7 @@ const LoginRegister = () => {
                         </Button>
 
                         <Modal title="Register Form"
-                               visible={isModalVisible}
+                               visible={isRegisterModalVisible}
                                className="ModalRegister"
                                width={700}
                                okText="Submit"
@@ -180,7 +181,7 @@ const LoginRegister = () => {
                                    </Button>,
                                ]}
                         >
-                            <Register/>
+                            <Register setIsRegisterModalVisible={setIsRegisterModalVisible}/>
                         </Modal>
                     </Form.Item>
                 </Form>

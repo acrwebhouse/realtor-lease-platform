@@ -2,13 +2,15 @@ import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.min.css';
 import {
     Form, Input, Radio, Select, Checkbox, Divider, DatePicker, Space,
-    Button, Col, Row, Cascader, message,
+    Button, Col, Row, Cascader, message, Modal,
     // Upload
 } from "antd";
 // import { UploadOutlined } from '@ant-design/icons';
 import './Register_form.css'
 import CityAreaData from '../Datas/CityArea.json'
-import axios from "./axiosApi";
+// import axios from "./axiosApi";
+import {LoginRegisterAxios} from "./axiosApi"
+
 
 const { Option } = Select;
 
@@ -62,8 +64,8 @@ const convertString = (word) =>{
 
 const SighUp_Auth = "/auth/signUp"
 
-const Register = () => {
-
+const Register = (props) => {
+    const { setIsRegisterModalVisible } = props
     const [form] = Form.useForm();
 
     const [roleCheck, setRoleCheck] = useState(defaultRole);
@@ -76,8 +78,12 @@ const Register = () => {
     const [CityAreaScope, setCityAreaScope] = useState([])
     const [bornDate, setBornDate] = useState('')
     const [isRunPost, setIsRunPost] = useState(false)
+    const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false)
+    // const [isBackLogin, setIsBackLogin] = useState(false)
 
+    // console.log(isBackLogin)
     const onRoleChange = list => {
+        console.log(list)
         setRoleCheck(list);
         setShowHide(list.length > 0);
         setSaleShowHide(list.includes('4'))
@@ -89,7 +95,7 @@ const Register = () => {
         // console.log(RegisterData)
         // console.log(CityAreaScope)
         if (isRunPost) {
-            axios.post(SighUp_Auth, RegisterData)
+            LoginRegisterAxios.post(SighUp_Auth, RegisterData)
                 .then( (response) => console.log(response))
                 .then(() => message.success(`註冊成功`, 2))
                 .catch( (error) => message.error(`${error}`, 2))
@@ -106,13 +112,13 @@ const Register = () => {
 
     const showRegisterData = (values) => {
         // console.log('Received values of form: ', values);
-        setIsRunPost(true)
+
         setRegisterData(
             {
             'account' : values['account'],
             'password': values['password'],
             'name' : values['name'],
-            'gender' : convertString(values['radio-gender']),
+            'gender' : convertString(values['radio-gender'] === undefined ? '0' : values['radio-gender']),
             'roles' : Roles,
             'bornDate' :  bornDate,
                 "rolesInfo": {
@@ -132,6 +138,8 @@ const Register = () => {
             'address': values['AddressPrefix']+values['address']
         }
         )
+        setIsSubmitModalVisible(true);
+        setIsRunPost(true)
     };
 
     const showCityAreaData = (value) => {
@@ -183,6 +191,22 @@ const Register = () => {
             </Select>
         </Form.Item>
     );
+
+    const showSubmitModal = () => {
+        setIsSubmitModalVisible(true);
+    }
+
+    const onReset = () => {
+        form.resetFields();
+        setIsEnableCityArea(false);
+        setInitCityAreaData([]);
+        setCityAreaScope([]);
+        setIsSubmitModalVisible(false)
+        setIsRegisterModalVisible(false)
+        setRegisterData([]);
+        setRoleCheck([])
+        setShowHide(false)
+    };
 
     return (
         <>
@@ -339,7 +363,9 @@ const Register = () => {
                                 <DatePicker onChange={showDate} format={dateFormat}/>
                             </Space>
                         </Form.Item>
-                        <Divider/>
+                        {SaleShowHide &&
+                        <Divider>Extra item for Sales</Divider>
+                        }
                         {SaleShowHide &&
                         <Form.Item
                             name="LicenseNumber"
@@ -382,12 +408,26 @@ const Register = () => {
                                         htmlType="submit"
                                         className='login-form-button'
                                         shape="round"
-
+                                        onClick={showSubmitModal}
                                 >
                                     Submit
                                 </Button>
                             </Col>
                         </Form.Item>
+                        <Modal visible={isSubmitModalVisible}
+                               className="SubmitModal"
+                               width={700}
+                               okText="Submit"
+                               cancelText="Return"
+                               onCancel={onReset}
+                               footer={[
+                                   <Button key="back" className="return-login" onClick={onReset}>
+                                       返回
+                                   </Button>,
+                               ]}
+                        >
+                            <h2>感謝您註冊成為本平台會員，請登入您個人的Email做帳戶授權驗證，謝謝</h2>
+                        </Modal>
                     </Form>}
                 </div>
             <Divider/>
