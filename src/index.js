@@ -2,12 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import HouseList from "./Components/HouseList";
 import reportWebVitals from './reportWebVitals';
-
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+// ReactDOM.render(
+//     <App />,
+//   document.getElementById('root')
+// );
 ReactDOM.render(
-    <App />,
-  document.getElementById('root')
-);
+
+  <BrowserRouter>
+
+      <Routes>
+
+          {/* <Route path="/" component={App}/> */}
+          <Route path="/" element={<App />} />
+          <Route path="/HouseList" element={<HouseList/>}/>
+
+
+      </Routes>
+
+  </BrowserRouter>
+
+, document.getElementById('root'));
 
 // ReactDOM.render(
 //     <React.StrictMode>
