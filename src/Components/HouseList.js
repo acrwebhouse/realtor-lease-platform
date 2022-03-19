@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Modal, Input, Select, Divider, Row, Col, Checkbox, Upload, message} from "antd";
+import {Form, Button, Modal, Input, Select, Divider, Row, Col, Checkbox, message} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 // import { UploadOutlined } from '@ant-design/icons';
@@ -68,6 +68,8 @@ const HousesList = () => {
         maxPing : '999999',
         minRoom : '0',
         maxRoom : '999999',
+        salesCity : '',
+        salesArea : '',
     }
 
 
@@ -116,9 +118,43 @@ const HousesList = () => {
     return (
 
         <div>
+            價格：
+            <Checkbox value="0-5000">
+                0-5000
+            </Checkbox>
+            <Checkbox value="5000-10000">
+                5000-10000
+            </Checkbox>
+            <Checkbox value="10000-20000">
+                10000-20000
+            </Checkbox>
+            <Checkbox value="20000-30000">
+                20000-30000
+            </Checkbox>
+            <Checkbox value="30000-40000">
+                30000-40000
+            </Checkbox>
+            <Checkbox value="40000-9999999">
+                40000 以上
+            </Checkbox>
+            <br/><br/>
+            價格：
+            <Select value="選擇價格" style={{
+                            width: 150,
+                        }}>
+                <Option value="0-5000">0-5000</Option>
+                <Option value="5000-10000">5000-10000</Option>
+                <Option value="10000-20000">10000-20000</Option>
+                <Option value="20000-30000">20000-30000</Option>
+                <Option value="30000-40000">30000-40000</Option>
+                <Option value="40000-9999999">40000 以上</Option>
+            </Select>
+
+            <br/><br/>
             <Button type="primary" onClick={getHousesList}>
                 搜尋
             </Button>
+            
             
         </div>
     );
