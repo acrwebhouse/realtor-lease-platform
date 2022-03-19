@@ -21,4 +21,10 @@ const HouseAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
-export {LoginRegisterAxios, HouseAxios}
+const HouseListAxios = axios.create({
+    baseURL: base_URL_House,
+    // timeout: 1000,
+    // headers: { 'Content-Type': 'application/json' }
+})
+
+export {LoginRegisterAxios, HouseAxios, HouseListAxios}
