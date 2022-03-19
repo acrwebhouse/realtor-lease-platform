@@ -17,7 +17,7 @@ ReactDOM.render(
 
           {/* <Route path="/" component={App}/> */}
           <Route path="/" element={<App />} />
-          <Route path="/HouseList" element={<HouseList/>}/>
+          <Route path="/HousesList" element={<HouseList/>}/>
 
 
       </Routes>

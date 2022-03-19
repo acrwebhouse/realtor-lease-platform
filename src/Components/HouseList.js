@@ -40,10 +40,10 @@ const formItemLayout = {
 // const defaultSaleType = 1;
 // console.log(defaultSaleType)
 const defaultExtraRequire = [];
-const houseListUrl = 'house/getHouses'
+const housesListUrl = 'house/getHouses'
 const xToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWUxNDA1NzM0Mzg1MDAxZjE5MDg2NiIsInJvbGVzIjpbMiwzLDRdLCJpYXQiOiIyMDIyLTAzLTEzVDEzOjEyOjI5LjM5N1oifQ.i24MARH_Mc_H8BBl-S2LV0ibAy9KaTSjkCuoI648jvM"
 
-const HouseList = () => {
+const HousesList = () => {
 
     // const [form] = Form.useForm();
 
@@ -52,6 +52,23 @@ const HouseList = () => {
     // const [ShowHideManageFee, setShowHideManageFee] = useState(false );
     // const [ShowHideGarbageFee, setShowHideGarbageFee] = useState(false );
     const [isRunPicPost, setIsRunPicPost] = useState(false)
+
+
+
+    const getHousesArg ={
+        start : '0',
+        count : '10',
+        timeSort : '1',
+        priceSort : '',
+        pingSort : '',
+        isDelete : 'false',
+        minPrice : '0',
+        maxPrice : '9999999',
+        minPing : '0',
+        maxPing : '999999',
+        minRoom : '0',
+        maxRoom : '999999',
+    }
 
 
     useEffect(() => {
@@ -67,10 +84,26 @@ const HouseList = () => {
         }
     }, [isRunPicPost, ])
 
-    const getHouseList = () => {
-        console.log('====getHouseList===')
+    const getHousesList = () => {
+        
+        let reqUrl = `${housesListUrl}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&isDelete=${getHousesArg.isDelete}&&minPrice=${getHousesArg.minPrice}&&maxPrice=${getHousesArg.maxPrice}&&minPing=${getHousesArg.minPing}&&maxPing=${getHousesArg.maxPing}&&minRoom=${getHousesArg.minRoom}&&maxRoom=${getHousesArg.maxRoom}`
+        
+        if(getHousesArg.timeSort !==''){
+            reqUrl = `${reqUrl}&&timeSort=${getHousesArg.timeSort}`
+        }
+
+        if(getHousesArg.pingSort !==''){
+            reqUrl = `${reqUrl}&&pingSort=${getHousesArg.pingSort}`
+        }
+
+        if(getHousesArg.priceSort !==''){
+            reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
+        }
+
+        console.log('====reqUrl===',reqUrl)
+
         HouseListAxios.get(
-            houseListUrl,{
+            reqUrl,{
                 headers:{
                     'x-Token':xToken
                 }
@@ -83,7 +116,7 @@ const HouseList = () => {
     return (
 
         <div>
-            <Button type="primary" onClick={getHouseList}>
+            <Button type="primary" onClick={getHousesList}>
                 搜尋
             </Button>
             
@@ -91,4 +124,4 @@ const HouseList = () => {
     );
 };
 
-export default HouseList;
+export default HousesList;
