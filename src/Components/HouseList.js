@@ -129,31 +129,32 @@ const HousesList = () => {
     return (
 
         <div>
-
+            &nbsp; 縣市：
             <Select placeholder="縣市" options={cityOptions} style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 
             </Select>
-
+            &nbsp; 區域：
             <Select  mode="multiple" allowClear placeholder="區域" onChange={handleChange} style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="pet">文山區</Option>
                 <Option value="smoke">大安區</Option>           
             </Select>
-
+            &nbsp; 類型：
             <Select placeholder="類型" style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="typeOfRental1">整層住家</Option>
                 <Option value="typeOfRental2">獨立套房</Option>
                 <Option value="typeOfRental3">分租套房</Option>
                 <Option value="typeOfRental4">雅房</Option>
             </Select>
-
+            <br/><br/>
+            &nbsp; 租金：
             <Select placeholder="租金" style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="rentLimit5000">0-5000</Option>
                 <Option value="rentLimit10000">5000-10000</Option>
@@ -163,26 +164,27 @@ const HousesList = () => {
                 <Option value="rentNoLimit">40000 以上</Option>
                 <Option value="rentCustom">自訂租金範圍</Option>
             </Select>
-            
+            &nbsp; 格局：
             <Select placeholder="格局" style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="room1">1 房</Option>
                 <Option value="room2">2 房</Option>
                 <Option value="room3">3 房</Option>
                 <Option value="room4Up">4 房以上</Option>
             </Select>
-
+            &nbsp; 型態：
             <Select placeholder="型態" style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="buildingType1">公寓</Option>
                 <Option value="buildingType2">電梯大樓</Option>
                 <Option value="buildingType3">透天</Option>
             </Select>
-
+            <br/><br/>
+            &nbsp; 坪數：
             <Select placeholder="坪數" style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="pingLimit10">10 坪以下</Option>
                 <Option value="pingLimit20">10 ~ 20 坪</Option>
@@ -191,9 +193,9 @@ const HousesList = () => {
                 <Option value="pingLimit50">40 ~ 50 坪</Option>
                 <Option value="pingCustom">自訂坪數範圍</Option>
             </Select>
-
+            &nbsp; 樓層：
             <Select placeholder="樓層" style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="floorLimit1">1 層</Option>
                 <Option value="floorLimit6">2 層 ~ 6 層</Option>
@@ -201,9 +203,9 @@ const HousesList = () => {
                 <Option value="floorNoLimit">12 層以上</Option>
                 <Option value="floorCustom">自訂樓層範圍</Option>
             </Select>
-            <br/><br/>
+            &nbsp; 特色：
             <Select  mode="multiple" allowClear placeholder="特色" onChange={handleChange} style={{
-                            width: 150,
+                            width: 100,
                         }}>
                 <Option value="pet">可養寵物</Option>
                 <Option value="smoke">可吸菸</Option>
