@@ -120,23 +120,47 @@ const HousesList = () => {
         children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
     }
 
-    function handleChange(value) {
-        console.log(`selected ${value}`);
+    function changeCity(city) {
+        console.log(`selected city  ${city}`);
+        let element = document.getElementById('citySelect');
+        console.log(element)
+        console.log(this.state)
+        // element.options.length = 0
+        // element.value = typeOfRentalOptions
+        // areaOptions = priceOptions
+        // document.getElementById('citySelect').value = '基隆市'
     }
 
     const cityOptions = [{ value: '基隆市' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園縣' }, { value: '新竹市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '台中市' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義市' }, { value: '嘉義縣' }, { value: '台南市' }, { value: '高雄市' }, { value: '屏東縣' }, { value: '台東縣' }, { value: '花蓮縣' }, { value: '宜蘭縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
 
+    let areaOptions = [{ value: '基隆市' }, { value: '台北市' }];
+
+    const typeOfRentalOptions = [{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
+
+    const priceOptions = [{ value: '0-5000' }, { value: '5000-10000' }, { value: '10000-20000' }, { value: '20000-30000' }, { value: '30000-40000' }, { value: '40000 以上' }, { value: '自訂租金範圍' }];
+
+    const roomOptions = [{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
+
+    const buildingTypeOptions = [{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
+
+    const pingOptions = [{ value: '10 坪以下' }, { value: '10 ~ 20 坪' }, { value: '20 ~ 30 坪' }, { value: '30 ~ 40 坪' }, { value: '40 ~ 50 坪' }, { value: '自訂坪數範圍' }];
+
+    const floorOptions = [{ value: '1 層' }, { value: '2 層 ~ 6 層' }, { value: '6 層 ~ 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
+
+    const featureOptions = [{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車費' }, { value: '倒垃圾服務' }];
+
     return (
 
         <div>
-            &nbsp; 縣市：
+           {/* <label style="width:10%">縣市</label> */}
+           {/* 縣市:
             <Select placeholder="縣市" options={cityOptions} style={{
-                            width: 100,
+                            width: 80,
                         }}>
                 
             </Select>
             &nbsp; 區域：
-            <Select  mode="multiple" allowClear placeholder="區域" onChange={handleChange} style={{
+            <Select   allowClear placeholder="區域" onChange={handleChange} style={{
                             width: 100,
                         }}>
                 <Option value="pet">文山區</Option>
@@ -216,16 +240,77 @@ const HousesList = () => {
                 
             </Select>
 
-            
+
+            <br/><br/> */}
 
 
-
-            <br/><br/>
             <Button type="primary" onClick={getHousesList}>
                 搜尋
             </Button>
+            <Row>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select id="citySelect" placeholder="縣市" options={cityOptions} onChange={changeCity} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select allowClear placeholder="區域" options={areaOptions} onChange={changeCity} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select placeholder="類型"  options={typeOfRentalOptions} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select placeholder="租金" options={priceOptions} onChange={changeCity} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select allowClear placeholder="格局" options={roomOptions} onChange={changeCity} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select placeholder="型態"  options={buildingTypeOptions} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+            </Row>
             
-            
+            <Row>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select placeholder="坪數" options={pingOptions} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select allowClear placeholder="樓層" options={floorOptions} onChange={changeCity} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select mode="multiple" allowClear placeholder="特色"  options={featureOptions} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+            </Row>
+
+
         </div>
     );
 };
