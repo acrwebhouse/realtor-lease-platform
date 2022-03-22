@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Tag, Button, Modal, Input, Select, Divider, Row, Col, Checkbox, message} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Space, message} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 // import { UploadOutlined } from '@ant-design/icons';
@@ -122,9 +122,6 @@ const HousesList = () => {
 
     function changeCity(city) {
         console.log(`selected city  ${city}`);
-        let element = document.getElementById('citySelect');
-        console.log(element)
-        console.log(this.state)
         // element.options.length = 0
         // element.value = typeOfRentalOptions
         // areaOptions = priceOptions
@@ -132,22 +129,110 @@ const HousesList = () => {
     }
 
     const cityOptions = [{ value: '基隆市' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園縣' }, { value: '新竹市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '台中市' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義市' }, { value: '嘉義縣' }, { value: '台南市' }, { value: '高雄市' }, { value: '屏東縣' }, { value: '台東縣' }, { value: '花蓮縣' }, { value: '宜蘭縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
-
-    let areaOptions = [{ value: '基隆市' }, { value: '台北市' }];
-
+    const areaOptions = [{ value: '基隆市' }, { value: '台北市' }];
     const typeOfRentalOptions = [{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
-
     const priceOptions = [{ value: '0-5000' }, { value: '5000-10000' }, { value: '10000-20000' }, { value: '20000-30000' }, { value: '30000-40000' }, { value: '40000 以上' }, { value: '自訂租金範圍' }];
-
     const roomOptions = [{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
-
     const buildingTypeOptions = [{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
-
     const pingOptions = [{ value: '10 坪以下' }, { value: '10 ~ 20 坪' }, { value: '20 ~ 30 坪' }, { value: '30 ~ 40 坪' }, { value: '40 ~ 50 坪' }, { value: '自訂坪數範圍' }];
-
     const floorOptions = [{ value: '1 層' }, { value: '2 層 ~ 6 層' }, { value: '6 層 ~ 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
-
     const featureOptions = [{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車費' }, { value: '倒垃圾服務' }];
+
+
+
+
+    const topOptions = [
+        { label: 'topLeft', value: 'topLeft' },
+        { label: 'topCenter', value: 'topCenter' },
+        { label: 'topRight', value: 'topRight' },
+        { label: 'none', value: 'none' },
+      ];
+      
+      const bottomOptions = [
+        { label: 'bottomLeft', value: 'bottomLeft' },
+        { label: 'bottomCenter', value: 'bottomCenter' },
+        { label: 'bottomRight', value: 'bottomRight' },
+        { label: 'none', value: 'none' },
+      ];
+      
+      const columns = [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+          render: text => <a>{text}</a>,
+        },
+        {
+          title: 'Age',
+          dataIndex: 'age',
+          key: 'age',
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+          key: 'address',
+        },
+        {
+          title: 'Tags',
+          key: 'tags',
+          dataIndex: 'tags',
+          render: tags => (
+            <span>
+              {tags.map(tag => {
+                let color = tag.length > 5 ? 'geekblue' : 'green';
+                if (tag === 'loser') {
+                  color = 'volcano';
+                }
+                return (
+                //   <Tag color={color} key={tag}>
+                //     {tag.toUpperCase()}
+                //   </Tag>
+                <Image
+      width={200}
+      src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+    />
+                );
+              })}
+            </span>
+          ),
+        },
+        {
+          title: 'Action',
+          key: 'action',
+          render: (text, record) => (
+            <Space size="middle">
+              <a>Invite {record.name}</a>
+              <a>Delete</a>
+            </Space>
+          ),
+        },
+      ];
+      
+      const data = [
+        {
+          key: '1',
+          name: 'John Brown',
+          age: 32,
+          address: 'New York No. 1 Lake Park',
+          tags: ['nice', 'developer'],
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          age: 42,
+          address: 'London No. 1 Lake Park',
+          tags: ['loser'],
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          age: 32,
+          address: 'Sidney No. 1 Lake Park',
+          tags: ['cool', 'teacher'],
+        },
+      ];
+
+      
 
     return (
 
@@ -309,7 +394,13 @@ const HousesList = () => {
                     </Select>
                 </Col>
             </Row>
-
+            
+            <Table
+          columns={columns}
+          pagination={{ position: ['topLeft', 'bottomRight'] }}
+          dataSource={data}
+        />
+          
 
         </div>
     );
