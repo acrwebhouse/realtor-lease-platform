@@ -157,10 +157,17 @@ const HousesList = () => {
       
       const columns = [
         {
-          title: 'Name',
+          title: '照片',
           dataIndex: 'name',
           key: 'name',
-          render: text => <a>{text}</a>,
+          width:'120px',
+          render: (name) => {
+            return <Image
+            width={'100px'}
+            src = {name}
+            />
+            // return name
+        },
         },
         {
           title: 'Age',
@@ -184,26 +191,10 @@ const HousesList = () => {
                   color = 'volcano';
                 }
                 return (
-                //   <Tag color={color} key={tag}>
-                //     {tag.toUpperCase()}
-                //   </Tag>
-                <Image
-      width={200}
-      src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-    />
+                    tags
                 );
               })}
             </span>
-          ),
-        },
-        {
-          title: 'Action',
-          key: 'action',
-          render: (text, record) => (
-            <Space size="middle">
-              <a>Invite {record.name}</a>
-              <a>Delete</a>
-            </Space>
           ),
         },
       ];
@@ -211,7 +202,7 @@ const HousesList = () => {
       const data = [
         {
           key: '1',
-          name: 'John Brown',
+          name: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
           age: 32,
           address: 'New York No. 1 Lake Park',
           tags: ['nice', 'developer'],
@@ -400,7 +391,7 @@ const HousesList = () => {
           pagination={{ position: ['topLeft', 'bottomRight'] }}
           dataSource={data}
         />
-          
+   
 
         </div>
     );
