@@ -178,15 +178,22 @@ const HousesList = () => {
         },
         {
           title: '內容',
-          key: 'tags',
-          dataIndex: 'tags',
+          key: 'content',
+          dataIndex: 'content',
         //   width:'100px',
-          render: tags => (
-            <span>
-              {
-                  <div>{tags}</div>
-              }
-            </span>
+          render: (content) => (
+            <div>
+              
+                  {content[0]}
+                  <br/>
+                  {content[1]}
+                  <br/>
+                  {content[2]}
+                  <br/>
+                  {content[3]}
+                  
+              
+            </div>
           ),
         },
       ];
@@ -197,7 +204,7 @@ const HousesList = () => {
           image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
           price: 32,
           address: 'New York No. 1 Lake Park',
-          content: ['nice', 'developer'],
+          content: ['文山區好房子', '台北市文山區興隆路二段', '獨立套房','萬芳醫院站200公尺'],
         },
         {
           key: '2',
