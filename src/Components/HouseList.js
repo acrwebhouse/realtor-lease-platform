@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Space, message} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 // import { UploadOutlined } from '@ant-design/icons';
@@ -157,43 +157,35 @@ const HousesList = () => {
       
       const columns = [
         {
-          title: '照片',
-          dataIndex: 'name',
-          key: 'name',
-          width:'120px',
-          render: (name) => {
+          title: '影像',
+          dataIndex: 'image',
+          key: 'image',
+          width:'200px',
+          render: (image) => {
             return <Image
-            width={'100px'}
-            src = {name}
+            src = {image}
             />
-            // return name
-        },
-        },
-        {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
+            },
         },
         {
-          title: 'Address',
-          dataIndex: 'address',
-          key: 'address',
+          title: '價格',
+          dataIndex: 'price',
+          key: 'price',
+          width:'100px',
+          render: (price) => {
+            return <div>{price}</div>
+            },
         },
         {
-          title: 'Tags',
+          title: '內容',
           key: 'tags',
           dataIndex: 'tags',
+        //   width:'100px',
           render: tags => (
             <span>
-              {tags.map(tag => {
-                let color = tag.length > 5 ? 'geekblue' : 'green';
-                if (tag === 'loser') {
-                  color = 'volcano';
-                }
-                return (
-                    tags
-                );
-              })}
+              {
+                  <div>{tags}</div>
+              }
             </span>
           ),
         },
@@ -202,24 +194,24 @@ const HousesList = () => {
       const data = [
         {
           key: '1',
-          name: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          age: 32,
+          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          price: 32,
           address: 'New York No. 1 Lake Park',
-          tags: ['nice', 'developer'],
+          content: ['nice', 'developer'],
         },
         {
           key: '2',
-          name: 'Jim Green',
-          age: 42,
+          image: 'Jim Green',
+          price: 42,
           address: 'London No. 1 Lake Park',
-          tags: ['loser'],
+          content: ['loser'],
         },
         {
           key: '3',
-          name: 'Joe Black',
-          age: 32,
+          image: 'Joe Black',
+          price: 32,
           address: 'Sidney No. 1 Lake Park',
-          tags: ['cool', 'teacher'],
+          content: ['cool', 'teacher'],
         },
       ];
 
@@ -390,6 +382,14 @@ const HousesList = () => {
           columns={columns}
           pagination={{ position: ['topLeft', 'bottomRight'] }}
           dataSource={data}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: event => {
+                  console.log('event',event)
+                  console.log('record',record)
+                  console.log('rowIndex',rowIndex)
+              }, // click row
+            };}}
         />
    
 
