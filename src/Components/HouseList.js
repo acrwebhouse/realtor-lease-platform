@@ -4,62 +4,33 @@ import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
 // import { UploadOutlined } from '@ant-design/icons';
+// import { Text, StyleSheet } from "react-native";
+
 
 const { Option } = Select;
 
-const formItemLayout = {
-    labelCol: {
-        xs: {
-            span: 8,
-        },
-        sm: {
-            span: 8,
-        },
-        md: {
-            span: 8,
-        },
-        lg: {
-            span: 8,
-        }
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 24,
-        },
-        md: {
-            span: 24,
-        },
-        lg: {
-            span: 16,
-        }
-    },
-};
-
-// const defaultSaleType = 1;
-// console.log(defaultSaleType)
-const defaultExtraRequire = [];
 const housesListUrl = 'house/getHouses'
 const xToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWUxNDA1NzM0Mzg1MDAxZjE5MDg2NiIsInJvbGVzIjpbMiwzLDRdLCJpYXQiOiIyMDIyLTAzLTEzVDEzOjEyOjI5LjM5N1oifQ.i24MARH_Mc_H8BBl-S2LV0ibAy9KaTSjkCuoI648jvM"
 
 const HousesList = () => {
-
-    // const [form] = Form.useForm();
-
-    // const [isUploadVisible, setIsIUploadVisible] = useState(false);
-    // const [extraRequire, setExtraRequire] = useState(defaultExtraRequire);
-    // const [ShowHideManageFee, setShowHideManageFee] = useState(false );
-    // const [ShowHideGarbageFee, setShowHideGarbageFee] = useState(false );
+    const cityOptions = [{ value: '縣市不限' },{ value: '基隆市' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園縣' }, { value: '新竹市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '台中市' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義市' }, { value: '嘉義縣' }, { value: '台南市' }, { value: '高雄市' }, { value: '屏東縣' }, { value: '台東縣' }, { value: '花蓮縣' }, { value: '宜蘭縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
+    const areaOptions = [{ value: '區域不限' },{ value: '基隆市' }, { value: '台北市' }];
+    const typeOfRentalOptions = [{ value: '類型不限' },{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
+    const priceOptions = [{ value: '租金不限' },{ value: '0 - 5000 元' }, { value: '5000 - 10000 元' }, { value: '10000 - 20000 元' }, { value: '20000 - 30000 元' }, { value: '30000 - 40000 元' }, { value: '40000 以上元' }, { value: '自訂租金範圍' }];
+    const roomOptions = [{ value: '格局不限' },{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
+    const buildingTypeOptions = [{ value: '型態不限' },{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
+    const pingOptions = [{ value: '坪數不限' },{ value: '10 坪以下' }, { value: '10 - 20 坪' }, { value: '20 - 30 坪' }, { value: '30 - 40 坪' }, { value: '40 - 50 坪' }, { value: '自訂坪數範圍' }];
+    const floorOptions = [{ value: '樓層不限' },{ value: '1 層' }, { value: '2 - 6 層' }, { value: '6 - 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
+    const featureOptions = [{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車位' }, { value: '倒垃圾服務' }];
+    const sortOptions = [{ value: '時間近到遠' },{ value: '時間遠到近' }, { value: '租金便宜到貴' }, { value: '租金貴到便宜' }, { value: '坪數小到大' }, { value: '坪數大到小' }];
     const [isRunPicPost, setIsRunPicPost] = useState(false)
 
-
+    const [houses, setHouses] = useState([]);
 
     const getHousesArg ={
         start : '0',
-        count : '10',
-        timeSort : '1',
+        count : '9999999',
+        timeSort : '-1',
         priceSort : '',
         pingSort : '',
         isDelete : 'false',
@@ -155,6 +126,7 @@ const HousesList = () => {
     }
     
     function resolveHousesList(response){
+        console.log('====response===',response)
         data = []
         if(response.data && response.data.data){
             const items = response.data.data
@@ -194,8 +166,10 @@ const HousesList = () => {
                 if(items[i].educate.length >0){
                     item.content.push(`距 ${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
                 }
+                item.content.push(items[i].updateTime)
                 data.push(item)
             }
+            setHouses(data)
         }
     }
 
@@ -204,10 +178,45 @@ const HousesList = () => {
         children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
     }
 
+    function changeSort(sort) {
+        getHousesArg.timeSort = ''
+        getHousesArg.pingSort = ''
+        getHousesArg.priceSort = ''
+        //{ value: '時間近到遠' },{ value: '時間遠到近' }, { value: '租金便宜到貴' }, { value: '租金貴到便宜' }, { value: '坪數小到大' }, { value: '坪數大到小' }
+
+        switch(sort){
+            case sortOptions[0].value:
+                getHousesArg.timeSort = '-1'
+                break;
+            case sortOptions[1].value:
+                getHousesArg.timeSort = '1'
+                break;
+            case sortOptions[2].value:
+                getHousesArg.priceSort = '1';
+                break;
+            case sortOptions[3].value:
+                getHousesArg.priceSort = '-1';
+                break;
+            case sortOptions[4].value:
+                getHousesArg.pingSort = '1';
+                break;
+            case sortOptions[5].value:
+                getHousesArg.pingSort = '-1';
+                break;
+            default:
+                getHousesArg.timeSort = '-1'
+        }
+    }
+
     function changeCity(city) {
         console.log(`selected city  ${city}`);
-        getHousesArg.city = city
-        getHousesArg.area = ''
+        if(cityOptions[0] == city){
+
+        }else{
+            getHousesArg.city = city
+            getHousesArg.area = ''
+        }
+        console.log(getHousesArg)
     }
 
     function changeArea(area) {
@@ -216,16 +225,16 @@ const HousesList = () => {
 
     function changeTypeOfRental(typeOfRental) {
         switch(typeOfRental){
-            case typeOfRentalOptions[0].value:
+            case typeOfRentalOptions[1].value:
                 getHousesArg.typeOfRental = 1;
                 break;
-            case typeOfRentalOptions[1].value:
+            case typeOfRentalOptions[2].value:
                 getHousesArg.typeOfRental = 2;
                 break;
-            case typeOfRentalOptions[2].value:
+            case typeOfRentalOptions[3].value:
                 getHousesArg.typeOfRental = 3;
                 break;
-            case typeOfRentalOptions[3].value:
+            case typeOfRentalOptions[4].value:
                 getHousesArg.typeOfRental = 4;
                 break;
             default:
@@ -235,31 +244,31 @@ const HousesList = () => {
 
     function changePrice(price) {
         switch(price){
-            case priceOptions[0].value:
+            case priceOptions[1].value:
                 getHousesArg.minPrice = 0;
                 getHousesArg.maxPrice = 5000;
                 break;
-            case priceOptions[1].value:
+            case priceOptions[2].value:
                 getHousesArg.minPrice = 5000;
                 getHousesArg.maxPrice = 10000;
                 break;
-            case priceOptions[2].value:
+            case priceOptions[3].value:
                 getHousesArg.minPrice = 10000;
                 getHousesArg.maxPrice = 20000;
                 break;
-            case priceOptions[3].value:
+            case priceOptions[4].value:
                 getHousesArg.minPrice = 20000;
                 getHousesArg.maxPrice = 30000;
                 break;
-            case priceOptions[4].value:
+            case priceOptions[5].value:
                 getHousesArg.minPrice = 30000;
                 getHousesArg.maxPrice = 40000;
                 break;
-            case priceOptions[5].value:
+            case priceOptions[6].value:
                 getHousesArg.minPrice = 40000;
                 getHousesArg.maxPrice = 999999;
                 break;
-            case priceOptions[6].value:
+            case priceOptions[7].value:
                 //custom
                 break;
             default:
@@ -269,22 +278,21 @@ const HousesList = () => {
         console.log(getHousesArg)
     }
 
-
     function changeRoom(room) {
         switch(room){
-            case roomOptions[0].value:
+            case roomOptions[1].value:
                 getHousesArg.minRoom = 1;
                 getHousesArg.maxRoom = 1;
                 break;
-            case roomOptions[1].value:
+            case roomOptions[2].value:
                 getHousesArg.minRoom = 2;
                 getHousesArg.maxRoom = 2;
                 break;
-            case roomOptions[2].value:
+            case roomOptions[3].value:
                 getHousesArg.minRoom = 3;
                 getHousesArg.maxRoom = 3;
                 break;
-            case roomOptions[3].value:
+            case roomOptions[4].value:
                 getHousesArg.minRoom = 4;
                 getHousesArg.maxRoom = 999999;
                 break;
@@ -296,13 +304,13 @@ const HousesList = () => {
 
     function changeBuildingType(buildingType) {
         switch(buildingType){
-            case buildingTypeOptions[0].value:
+            case buildingTypeOptions[1].value:
                 getHousesArg.buildingType = 1
                 break;
-            case buildingTypeOptions[1].value:
+            case buildingTypeOptions[2].value:
                 getHousesArg.buildingType = 2;
                 break;
-            case buildingTypeOptions[2].value:
+            case buildingTypeOptions[3].value:
                 getHousesArg.buildingType = 3;
                 break;
             default:
@@ -312,27 +320,27 @@ const HousesList = () => {
 
     function changePing(ping) {
         switch(ping){
-            case pingOptions[0].value:
+            case pingOptions[1].value:
                 getHousesArg.minPing = 0
                 getHousesArg.maxPing = 10
                 break;
-            case pingOptions[1].value:
+            case pingOptions[2].value:
                 getHousesArg.minPing = 10
                 getHousesArg.maxPing = 20
                 break;
-            case pingOptions[2].value:
+            case pingOptions[3].value:
                 getHousesArg.minPing = 20
                 getHousesArg.maxPing = 30
                 break;
-            case pingOptions[3].value:
+            case pingOptions[4].value:
                 getHousesArg.minPing = 30
                 getHousesArg.maxPing = 40
                 break;
-            case pingOptions[4].value:
+            case pingOptions[5].value:
                 getHousesArg.minPing = 40
                 getHousesArg.maxPing = 50
                 break;
-            case pingOptions[5].value:
+            case pingOptions[6].value:
                 // custom
                 getHousesArg.minPing = 0
                 getHousesArg.maxPing = 0
@@ -345,23 +353,23 @@ const HousesList = () => {
     
     function changeFloor(floor) {
         switch(floor){
-            case floorOptions[0].value:
+            case floorOptions[1].value:
                 getHousesArg.minFloor = 0;
                 getHousesArg.maxFloor = 1;
                 break;
-            case floorOptions[1].value:
+            case floorOptions[2].value:
                 getHousesArg.minFloor = 2;
                 getHousesArg.maxFloor = 6;
                 break;
-            case floorOptions[2].value:
+            case floorOptions[3].value:
                 getHousesArg.minFloor = 6;
                 getHousesArg.maxFloor = 12;
                 break;
-            case floorOptions[3].value:
+            case floorOptions[4].value:
                 getHousesArg.minFloor = 12;
                 getHousesArg.maxFloor = 9999999;
                 break;
-            case floorOptions[4].value:
+            case floorOptions[5].value:
                 // custom
                 getHousesArg.minFloor = 0;
                 getHousesArg.maxFloor = 999999;
@@ -410,32 +418,7 @@ const HousesList = () => {
         }
     }
 
-    const cityOptions = [{ value: '基隆市' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園縣' }, { value: '新竹市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '台中市' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義市' }, { value: '嘉義縣' }, { value: '台南市' }, { value: '高雄市' }, { value: '屏東縣' }, { value: '台東縣' }, { value: '花蓮縣' }, { value: '宜蘭縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
-    const areaOptions = [{ value: '基隆市' }, { value: '台北市' }];
-    const typeOfRentalOptions = [{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
-    const priceOptions = [{ value: '0 - 5000 元' }, { value: '5000 - 10000 元' }, { value: '10000 - 20000 元' }, { value: '20000 - 30000 元' }, { value: '30000 - 40000 元' }, { value: '40000 以上元' }, { value: '自訂租金範圍' }];
-    const roomOptions = [{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
-    const buildingTypeOptions = [{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
-    const pingOptions = [{ value: '10 坪以下' }, { value: '10 - 20 坪' }, { value: '20 - 30 坪' }, { value: '30 - 40 坪' }, { value: '40 - 50 坪' }, { value: '自訂坪數範圍' }];
-    const floorOptions = [{ value: '1 層' }, { value: '2 - 6 層' }, { value: '6 - 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
-    const featureOptions = [{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車位' }, { value: '倒垃圾服務' }];
-
-
-
-
-    const topOptions = [
-        { label: 'topLeft', value: 'topLeft' },
-        { label: 'topCenter', value: 'topCenter' },
-        { label: 'topRight', value: 'topRight' },
-        { label: 'none', value: 'none' },
-      ];
-      
-      const bottomOptions = [
-        { label: 'bottomLeft', value: 'bottomLeft' },
-        { label: 'bottomCenter', value: 'bottomCenter' },
-        { label: 'bottomRight', value: 'bottomRight' },
-        { label: 'none', value: 'none' },
-      ];
+    
       
       const columns = [
         {
@@ -455,7 +438,7 @@ const HousesList = () => {
           key: 'price',
           width:'100px',
           render: (price) => {
-            return <div>{price}</div>
+            return <div >{price}</div>
             },
         },
         {
@@ -473,6 +456,12 @@ const HousesList = () => {
                   {content[2]}
                   <br/>
                   {content[3]}
+                  <br/>
+                  {content[4]}
+                  <br/>
+                  {content[5]}
+                  <br/>
+                  {content[6]}
                   
               
             </div>
@@ -483,25 +472,11 @@ const HousesList = () => {
       let data = [
         {
           key: '1',
-          image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          price: 32,
+          image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
+          price: 10000,
           address: 'New York No. 1 Lake Park',
           content: ['文山區好房子', '台北市文山區興隆路二段', '獨立套房','萬芳醫院站200公尺'],
-        },
-        {
-          key: '2',
-          image: 'Jim Green',
-          price: 42,
-          address: 'London No. 1 Lake Park',
-          content: ['loser'],
-        },
-        {
-          key: '3',
-          image: 'Joe Black',
-          price: 32,
-          address: 'Sidney No. 1 Lake Park',
-          content: ['cool', 'teacher'],
-        },
+        }
       ];
 
       
@@ -509,9 +484,30 @@ const HousesList = () => {
     return (
 
         <div>
-            <Button type="primary" onClick={getHousesList}>
-                搜尋
-            </Button>
+            
+
+            <Row>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Input placeholder="文字搜尋 : 請輸入捷運站名,公車站名"  style={{
+                            width: '100%',
+                        }}>
+                    </Input>
+                </Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                    <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                </Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                    <Button type="primary" onClick={getHousesList} style={{
+                            width: '100%',
+                        }}>
+                        搜尋
+                    </Button>
+                </Col>
+            </Row>
+
             <Row>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Select id="citySelect" placeholder="縣市" options={cityOptions} onChange={changeCity} style={{
@@ -578,7 +574,8 @@ const HousesList = () => {
             <Table
           columns={columns}
           pagination={{ position: ['topLeft', 'bottomRight'] }}
-          dataSource={data}
+        //   dataSource={data}
+        dataSource={houses}
           onRow={(record, rowIndex) => {
             return {
               onClick: event => {
@@ -588,8 +585,6 @@ const HousesList = () => {
               }, // click row
             };}}
         />
-   
-
         </div>
     );
 };
