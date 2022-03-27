@@ -484,14 +484,13 @@ const HousesList = () => {
     return (
 
         <div>
-            
-
             <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                    <Input placeholder="文字搜尋 : 請輸入捷運站名,公車站名"  style={{
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                    <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
                         }}>
-                    </Input>
+                        搜尋
+                    </Button>
                 </Col>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
@@ -499,12 +498,11 @@ const HousesList = () => {
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
-                    <Button type="primary" onClick={getHousesList} style={{
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Input placeholder="文字搜尋 : 請輸入捷運站名,公車站名"  style={{
                             width: '100%',
                         }}>
-                        搜尋
-                    </Button>
+                    </Input>
                 </Col>
             </Row>
 
