@@ -26,6 +26,9 @@ const HousesList = () => {
     const [isRunPicPost, setIsRunPicPost] = useState(false)
 
     const [houses, setHouses] = useState([]);
+    const [isCustomPrice, setIsCustomPrice] = useState(false);
+    const [isCustomPing, setIsCustomPing] = useState(false);
+    const [isCustomFloor, setIsCustomFloor] = useState(false);
 
     const getHousesArg ={
         start : '0',
@@ -69,6 +72,40 @@ const HousesList = () => {
     }, [isRunPicPost, ])
 
     const getHousesList = () => {
+        if(isCustomPrice){
+            const minCustomPrice = document.getElementById('minCustomPrice');
+            const maxCustomPrice= document.getElementById('maxCustomPrice');
+            getHousesArg.minPrice = minCustomPrice.value
+            getHousesArg.maxPrice = maxCustomPrice.value
+            if(isNaN(getHousesArg.minPrice) || isNaN(getHousesArg.maxPrice)){
+                getHousesArg.minPrice = 0;
+                getHousesArg.maxPrice = 0;
+            }
+        }
+
+        if(isCustomPing){
+            const minCustomPing = document.getElementById('minCustomPing');
+            const maxCustomPing= document.getElementById('maxCustomPing');
+            getHousesArg.minPing = minCustomPing.value
+            getHousesArg.maxPing = maxCustomPing.value
+            if(isNaN(getHousesArg.minPing) || isNaN(getHousesArg.maxPing)){
+                getHousesArg.minPing = 0;
+                getHousesArg.maxPing = 0;
+            }
+        }
+
+        if(isCustomFloor){
+            const minCustomFloor = document.getElementById('minCustomFloor');
+            const maxCustomFloor= document.getElementById('maxCustomFloor');
+            getHousesArg.minFloor = minCustomFloor.value
+            getHousesArg.maxFloor = maxCustomFloor.value
+            if(isNaN(getHousesArg.minFloor) || isNaN(getHousesArg.maxFloor)){
+                getHousesArg.minFloor = 0;
+                getHousesArg.maxFloor = 0;
+            }
+        }
+        
+
         let reqUrl = `${housesListUrl}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&isDelete=${getHousesArg.isDelete}&&minPrice=${getHousesArg.minPrice}&&maxPrice=${getHousesArg.maxPrice}&&minPing=${getHousesArg.minPing}&&maxPing=${getHousesArg.maxPing}&&minRoom=${getHousesArg.minRoom}&&maxRoom=${getHousesArg.maxRoom}&&minFloor=${getHousesArg.minFloor}&&maxFloor=${getHousesArg.maxFloor}`
         if(getHousesArg.city !==''){
             reqUrl = `${reqUrl}&&city=${getHousesArg.city}`
@@ -136,7 +173,7 @@ const HousesList = () => {
                     image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
                     price: items[i].price,
                     address: `地址 : ${items[i].address}`,
-                    content: [items[i].name, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`],
+                    content: [items[i].name, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`, `樓層 : ${items[i].floor}`],
                     }
                 if(items[i].saleInfo){
                     switch(items[i].saleInfo.typeOfRental){
@@ -242,6 +279,9 @@ const HousesList = () => {
     }
 
     function changePrice(price) {
+        const customPrice = document.getElementById('customPrice');
+        customPrice.style.display = 'none'
+        setIsCustomPrice(false)
         switch(price){
             case priceOptions[1].value:
                 getHousesArg.minPrice = 0;
@@ -268,7 +308,10 @@ const HousesList = () => {
                 getHousesArg.maxPrice = 999999;
                 break;
             case priceOptions[7].value:
-                //custom
+                customPrice.style.display = 'flex'
+                setIsCustomPrice(true)
+                getHousesArg.minPrice = 0
+                getHousesArg.maxPrice = 0
                 break;
             default:
                 getHousesArg.minPrice = 0
@@ -318,6 +361,9 @@ const HousesList = () => {
     }
 
     function changePing(ping) {
+        const customPing = document.getElementById('customPing');
+        customPing.style.display = 'none'
+        setIsCustomPing(false)
         switch(ping){
             case pingOptions[1].value:
                 getHousesArg.minPing = 0
@@ -341,6 +387,8 @@ const HousesList = () => {
                 break;
             case pingOptions[6].value:
                 // custom
+                customPing.style.display = 'flex'
+                setIsCustomPing(true)
                 getHousesArg.minPing = 0
                 getHousesArg.maxPing = 0
                 break;
@@ -351,6 +399,9 @@ const HousesList = () => {
     }
     
     function changeFloor(floor) {
+        const customFloor = document.getElementById('customFloor');
+        customFloor.style.display = 'none'
+        setIsCustomFloor(false)
         switch(floor){
             case floorOptions[1].value:
                 getHousesArg.minFloor = 0;
@@ -370,8 +421,10 @@ const HousesList = () => {
                 break;
             case floorOptions[5].value:
                 // custom
+                customFloor.style.display = 'flex'
+                setIsCustomFloor(true)
                 getHousesArg.minFloor = 0;
-                getHousesArg.maxFloor = 999999;
+                getHousesArg.maxFloor = 0;
                 break;
             default:
                 getHousesArg.minFloor = 0;
@@ -424,22 +477,22 @@ const HousesList = () => {
           title: '影像',
           dataIndex: 'image',
           key: 'image',
-          width:'200px',
+          width:'150px',
           render: (image) => {
             return <Image
             src = {image}
             />
             },
         },
-        {
-          title: '價格',
-          dataIndex: 'price',
-          key: 'price',
-          width:'100px',
-          render: (price) => {
-            return <div >{price}</div>
-            },
-        },
+        // {
+        //   title: '價格',
+        //   dataIndex: 'price',
+        //   key: 'price',
+        //   width:'100px',
+        //   render: (price) => {
+        //     return <div >{price}</div>
+        //     },
+        // },
         {
           title: '內容',
           key: 'content',
@@ -467,6 +520,15 @@ const HousesList = () => {
             </div>
           ),
         },
+        {
+          title: '價格',
+          dataIndex: 'price',
+          key: 'price',
+          width:'100px',
+          render: (price) => {
+            return <div >{price}</div>
+            },
+        },
       ];
       
       let data = [
@@ -485,14 +547,14 @@ const HousesList = () => {
 
         <div>
             <Row>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
                         }}>
                         搜尋
                     </Button>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
                             width: '100%',
                         }}>
@@ -529,7 +591,7 @@ const HousesList = () => {
 
             <Row>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                    <Select placeholder="租金" options={priceOptions} onChange={changePrice} style={{
+                    <Select mode="multiple" allowClear placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
                             width: '100%',
                         }}>
                     </Select>
@@ -550,25 +612,82 @@ const HousesList = () => {
             
             <Row>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Select placeholder="租金" options={priceOptions} onChange={changePrice} style={{
+                            width: '100%',
+                        }}>
+                    </Select>
+                    
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Select placeholder="坪數" options={pingOptions} onChange={changePing} style={{
                             width: '100%',
                         }}>
                     </Select>
+                    
                 </Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Select allowClear placeholder="樓層" options={floorOptions} onChange={changeFloor} style={{
                             width: '100%',
                         }}>
                     </Select>
-                </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                    <Select mode="multiple" allowClear placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
-                            width: '100%',
-                        }}>
-                    </Select>
+                    
                 </Col>
             </Row>
             
+            <Row>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <span id="customPrice" style={{
+                            width: '100%',
+                            display: 'none'
+                            }}>
+                        自訂租金：
+                        <Input id="minCustomPrice" placeholder="最低租金(請輸入數字)"  style={{
+                                width: '37%',
+                            }}>
+                        </Input>
+                        &nbsp;&nbsp;-&nbsp;&nbsp;
+                        <Input id="maxCustomPrice" placeholder="最高租金(請輸入數字)"  style={{
+                                width: '37%',
+                            }}>
+                        </Input>
+                    </span>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <span id="customPing" style={{
+                            width: '100%',
+                            display: 'none'
+                            }}>
+                        自訂坪數：
+                        <Input id="minCustomPing" placeholder="最低坪數(請輸入數字)"  style={{
+                                width: '37%',
+                            }}>
+                        </Input>
+                        &nbsp;&nbsp;-&nbsp;&nbsp;
+                        <Input id="maxCustomPing" placeholder="最高坪數(請輸入數字)"  style={{
+                                width: '37%',
+                            }}>
+                        </Input>
+                    </span>
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <span id="customFloor" style={{
+                            width: '100%',
+                            display: 'none'
+                            }}>
+                        自訂樓層：
+                        <Input id="minCustomFloor" placeholder="最低樓層(請輸入數字)"  style={{
+                                width: '37%',
+                            }}>
+                        </Input>
+                        &nbsp;&nbsp;-&nbsp;&nbsp;
+                        <Input id="maxCustomFloor" placeholder="最高樓層(請輸入數字)"  style={{
+                                width: '37%',
+                            }}>
+                        </Input>
+                    </span>
+                </Col>
+            </Row>
+
             <Table
           columns={columns}
           pagination={{ position: ['topLeft', 'bottomRight'] }}
