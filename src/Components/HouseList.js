@@ -499,7 +499,9 @@ const HousesList = () => {
           dataIndex: 'content',
         //   width:'100px',
           render: (content) => (
-            <div>
+            <div style={{
+                'text-align': 'center',
+            }}>
               
                   {content[0]}
                   <br/>
@@ -516,6 +518,8 @@ const HousesList = () => {
                   {content[6]}
                   <br/>
                   {content[7]}
+                  <br/>
+                  {content[8]}
               
             </div>
           ),
@@ -524,9 +528,11 @@ const HousesList = () => {
           title: '價格',
           dataIndex: 'price',
           key: 'price',
-          width:'100px',
+        //   width:'100px',
           render: (price) => {
-            return <div >{price}</div>
+            return <div style={{
+                'text-align': 'center',
+            }}>{price}</div>
             },
         },
       ];
