@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message, Alert} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
@@ -135,22 +135,22 @@ const HousesList = () => {
                     key: i,
                     image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
                     price: items[i].price,
-                    address: items[i].address,
-                    content: [items[i].name, items[i].address],
+                    address: `地址 : ${items[i].address}`,
+                    content: [items[i].name, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`],
                     }
                 if(items[i].saleInfo){
                     switch(items[i].saleInfo.typeOfRental){
                         case 1 :
-                            item.content.push('整層住家')
+                            item.content.push('類型 : 整層住家')
                             break;
                         case 2 :
-                            item.content.push('獨立套房')
+                            item.content.push('類型 : 獨立套房')
                             break;
                         case 3 :
-                            item.content.push('分租套房')
+                            item.content.push('類型 : 分租套房')
                             break;
                         case 4 :
-                            item.content.push('雅房')
+                            item.content.push('類型 : 雅房')
                             break;
                         default:
 
@@ -158,15 +158,15 @@ const HousesList = () => {
                 }
                 
                 if(items[i].traffic.length >0){
-                    item.content.push(`距 ${items[i].traffic[0].name} ${items[i].traffic[0].distance} 公尺`)
+                    item.content.push(`交通 : 距${items[i].traffic[0].name} ${items[i].traffic[0].distance} 公尺`)
                 }
                 if(items[i].life.length >0){
-                    item.content.push(`距 ${items[i].life[0].name} ${items[i].life[0].distance} 公尺`)
+                    item.content.push(`生活 : 距${items[i].life[0].name} ${items[i].life[0].distance} 公尺`)
                 }
                 if(items[i].educate.length >0){
-                    item.content.push(`距 ${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
+                    item.content.push(`教育 : 距${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
                 }
-                item.content.push(items[i].updateTime)
+                item.content.push(`更新時間 : ${items[i].updateTime}`)
                 data.push(item)
             }
             setHouses(data)
@@ -182,7 +182,6 @@ const HousesList = () => {
         getHousesArg.timeSort = ''
         getHousesArg.pingSort = ''
         getHousesArg.priceSort = ''
-        //{ value: '時間近到遠' },{ value: '時間遠到近' }, { value: '租金便宜到貴' }, { value: '租金貴到便宜' }, { value: '坪數小到大' }, { value: '坪數大到小' }
 
         switch(sort){
             case sortOptions[0].value:
@@ -462,7 +461,8 @@ const HousesList = () => {
                   {content[5]}
                   <br/>
                   {content[6]}
-                  
+                  <br/>
+                  {content[7]}
               
             </div>
           ),
@@ -580,6 +580,7 @@ const HousesList = () => {
                   console.log('event',event)
                   console.log('record',record)
                   console.log('rowIndex',rowIndex)
+                  alert("進入詳細資料")
               }, // click row
             };}}
         />
