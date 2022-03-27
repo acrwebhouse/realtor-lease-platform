@@ -502,7 +502,10 @@ const HousesList = () => {
             <div style={{
                 'text-align': 'center',
             }}>
-              
+               <div style={{
+                'display': 'inline-block',
+                'text-align': 'left',
+                }}>
                   {content[0]}
                   <br/>
                   {content[1]}
@@ -520,7 +523,7 @@ const HousesList = () => {
                   {content[7]}
                   <br/>
                   {content[8]}
-              
+                </div>
             </div>
           ),
         },
