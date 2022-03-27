@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
+import { defaultIconPrefixCls } from 'antd/lib/config-provider';
 // import { UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -144,10 +145,59 @@ const HousesList = () => {
                     'x-Token':xToken
                 }
             }
-        ).then( (response) => console.log(response))
-        .catch( (error) => message.error(`${error}`, 2))
+        )
+        // .then( (response) => console.log(response))
+        .then( (response) => {
+            resolveHousesList(response)
+            console.log(data)
+        })
+        .catch( (error) => alert(error))
     }
     
+    function resolveHousesList(response){
+        data = []
+        if(response.data && response.data.data){
+            const items = response.data.data
+            for(let i = 0 ;i<items.length; i++){
+                const item = {
+                    key: i,
+                    image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
+                    price: items[i].price,
+                    address: items[i].address,
+                    content: [items[i].name, items[i].address],
+                    }
+                if(items[i].saleInfo){
+                    switch(items[i].saleInfo.typeOfRental){
+                        case 1 :
+                            item.content.push('整層住家')
+                            break;
+                        case 2 :
+                            item.content.push('獨立套房')
+                            break;
+                        case 3 :
+                            item.content.push('分租套房')
+                            break;
+                        case 4 :
+                            item.content.push('雅房')
+                            break;
+                        default:
+
+                    }
+                }
+                
+                if(items[i].traffic.length >0){
+                    item.content.push(`距 ${items[i].traffic[0].name} ${items[i].traffic[0].distance} 公尺`)
+                }
+                if(items[i].life.length >0){
+                    item.content.push(`距 ${items[i].life[0].name} ${items[i].life[0].distance} 公尺`)
+                }
+                if(items[i].educate.length >0){
+                    item.content.push(`距 ${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
+                }
+                data.push(item)
+            }
+        }
+    }
 
     const children = [];
     for (let i = 10; i < 36; i++) {
@@ -430,7 +480,7 @@ const HousesList = () => {
         },
       ];
       
-      const data = [
+      let data = [
         {
           key: '1',
           image: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
