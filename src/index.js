@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import HouseList from "./Components/HouseList";
+import HousesList from "./Components/HousesList";
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 // ReactDOM.render(
@@ -17,7 +17,7 @@ ReactDOM.render(
 
           {/* <Route path="/" component={App}/> */}
           <Route path="/" element={<App />} />
-          <Route path="/HousesList" element={<HouseList/>}/>
+          <Route path="/HousesList" element={<HousesList/>}/>
 
 
       </Routes>
