@@ -209,7 +209,7 @@ const HousesList = () => {
                     image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
                     price: items[i].price,
                     address: `地址 : ${items[i].address}`,
-                    content: [items[i].name, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`, `樓層 : ${items[i].floor}`],
+                    content: [items[i].name,`租金 : ${items[i].price}`, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`, `樓層 : ${items[i].floor}`],
                     }
                 if(items[i].saleInfo){
                     switch(items[i].saleInfo.typeOfRental){
@@ -593,54 +593,96 @@ const HousesList = () => {
             },
         },
         {
-          title: '內容',
-          key: 'content',
-          dataIndex: 'content',
-          render: (content) => (
-            <div style={{
-                'text-align': 'center',
-            }}>
-               <div style={{
-                'display': 'inline-block',
-                'text-align': 'left',
-                }}>
-                <div style={{
-                'color': '#0000ff',
-                'font-size':'20px'
-                }}>{content[0]}</div>
+            title: '內容',
+            key: 'content',
+            dataIndex: 'content',
+            render: (content) => (
+              <div style={{
+                  'text-align': 'center',
+              }}>
+                 <div style={{
+                  'display': 'inline-block',
+                  'text-align': 'left',
+                  }}>
+                  <div style={{
+                  'color': '#0000ff',
+                  'font-size':'20px'
+                  }}>{content[0]}</div>
+                  
+                    <div style={{
+                    'color':'#FF0000',
+                     'font-size':'20px'
+                    }}>{content[1]}元 / 月</div>
+
+                    {content[2]}
+                    <br/>
+                    {content[3]}
+                    <br/>
+                    {content[4]}
+                    <br/>
+                    {content[5]}
+                    <br/>
+                    {content[6]}
+                    <br/>
+                    {content[7]}
+                    <br/>
+                    {content[8]}
+                    <br/>
+                    {content[9]}
+                  </div>
+              </div>
+            ),
+          },
+
+        // {
+        //   title: '內容',
+        //   key: 'content',
+        //   dataIndex: 'content',
+        //   render: (content) => (
+        //     <div style={{
+        //         'text-align': 'center',
+        //     }}>
+        //        <div style={{
+        //         'display': 'inline-block',
+        //         'text-align': 'left',
+        //         }}>
+        //         <div style={{
+        //         'color': '#0000ff',
+        //         'font-size':'20px'
+        //         }}>{content[0]}</div>
                 
-                  <br/>
-                  {content[1]}
-                  <br/>
-                  {content[2]}
-                  <br/>
-                  {content[3]}
-                  <br/>
-                  {content[4]}
-                  <br/>
-                  {content[5]}
-                  <br/>
-                  {content[6]}
-                  <br/>
-                  {content[7]}
-                  <br/>
-                  {content[8]}
-                </div>
-            </div>
-          ),
-        },
-        {
-          title: '價格',
-          dataIndex: 'price',
-          key: 'price',
-          render: (price) => {
-            return <div style={{
-                'text-align': 'center',
-                'color':'#FF0000',
-                'font-size':'20px'
-            }}>{price}元 / 月</div>
-            },
-        },
+        //           <br/>
+        //           {content[1]}
+        //           <br/>
+        //           {content[2]}
+        //           <br/>
+        //           {content[3]}
+        //           <br/>
+        //           {content[4]}
+        //           <br/>
+        //           {content[5]}
+        //           <br/>
+        //           {content[6]}
+        //           <br/>
+        //           {content[7]}
+        //           <br/>
+        //           {content[8]}
+        //         </div>
+        //     </div>
+        //   ),
+        // },
+        // {
+        //   title: '價格',
+        //   dataIndex: 'price',
+        //   key: 'price',
+        //   render: (price) => {
+        //     return <div style={{
+        //         'text-align': 'center',
+        //         'color':'#FF0000',
+        //         // 'font-size':'20px'
+        //     }}>{price}元 / 月</div>
+        //     },
+        // },
       ];
       
       let data = [
