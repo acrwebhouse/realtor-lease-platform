@@ -36,14 +36,14 @@ const HousesList = () => {
     const penghuAreaOptions = [{ value: '區域不限' },{ value: '馬公市'},{ value: '湖西鄉'},{ value: '白沙鄉'},{ value: '西嶼鄉'},{ value: '望安鄉'},{ value: '七美鄉'}]
     const kinmenAreaOptions = [{ value: '區域不限' },{ value: '金城鎮'},{ value: '金湖鎮'},{ value: '金沙鎮'},{ value: '金寧鄉'},{ value: '烈嶼鄉'},{ value: '烏坵鄉'}]
     const lianjiangAreaOptions = [{ value: '區域不限' },{ value: '南竿鄉'},{ value: '北竿鄉'},{ value: '莒光鄉'},{ value: '東引鄉'}]
-    const typeOfRentalOptions = [{ value: '區域不限' },{ value: '類型不限' },{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
-    const priceOptions = [{ value: '區域不限' },{ value: '租金不限' },{ value: '0 - 5000 元' }, { value: '5000 - 10000 元' }, { value: '10000 - 20000 元' }, { value: '20000 - 30000 元' }, { value: '30000 - 40000 元' }, { value: '40000 以上元' }, { value: '自訂租金範圍' }];
-    const roomOptions = [{ value: '區域不限' },{ value: '格局不限' },{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
-    const buildingTypeOptions = [{ value: '區域不限' },{ value: '型態不限' },{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
-    const pingOptions = [{ value: '區域不限' },{ value: '坪數不限' },{ value: '10 坪以下' }, { value: '10 - 20 坪' }, { value: '20 - 30 坪' }, { value: '30 - 40 坪' }, { value: '40 - 50 坪' }, { value: '自訂坪數範圍' }];
-    const floorOptions = [{ value: '區域不限' },{ value: '樓層不限' },{ value: '1 層' }, { value: '2 - 6 層' }, { value: '6 - 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
-    const featureOptions = [{ value: '區域不限' },{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車位' }, { value: '倒垃圾服務' }];
-    const sortOptions = [{ value: '區域不限' },{ value: '時間近到遠' },{ value: '時間遠到近' }, { value: '租金便宜到貴' }, { value: '租金貴到便宜' }, { value: '坪數小到大' }, { value: '坪數大到小' }];
+    const typeOfRentalOptions = [{ value: '類型不限' },{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
+    const priceOptions = [{ value: '租金不限' },{ value: '0 - 5000 元' }, { value: '5000 - 10000 元' }, { value: '10000 - 20000 元' }, { value: '20000 - 30000 元' }, { value: '30000 - 40000 元' }, { value: '40000 以上元' }, { value: '自訂租金範圍' }];
+    const roomOptions = [{ value: '格局不限' },{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
+    const buildingTypeOptions = [{ value: '型態不限' },{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
+    const pingOptions = [{ value: '坪數不限' },{ value: '10 坪以下' }, { value: '10 - 20 坪' }, { value: '20 - 30 坪' }, { value: '30 - 40 坪' }, { value: '40 - 50 坪' }, { value: '自訂坪數範圍' }];
+    const floorOptions = [{ value: '樓層不限' },{ value: '1 層' }, { value: '2 - 6 層' }, { value: '6 - 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
+    const featureOptions = [{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車位' }, { value: '倒垃圾服務' }];
+    const sortOptions = [{ value: '時間近到遠' },{ value: '時間遠到近' }, { value: '租金便宜到貴' }, { value: '租金貴到便宜' }, { value: '坪數小到大' }, { value: '坪數大到小' }];
     const [houses, setHouses] = useState([]);
     const [isCustomPrice, setIsCustomPrice] = useState(false);
     const [isCustomPing, setIsCustomPing] = useState(false);
@@ -51,7 +51,34 @@ const HousesList = () => {
     const [areaOptions, setAreaOptions] = useState([]);
     
 
-    const getHousesArg ={
+    // const getHousesArg ={
+    //     start : '0',
+    //     count : '9999999',
+    //     timeSort : '-1',
+    //     priceSort : '',
+    //     pingSort : '',
+    //     isDelete : 'false',
+    //     minPrice : '0',
+    //     maxPrice : '9999999',
+    //     minPing : '0',
+    //     maxPing : '999999',
+    //     minRoom : '0',
+    //     maxRoom : '999999',
+    //     minFloor : '0',
+    //     maxFloor : '999999',
+    //     city : '',
+    //     area : '',
+    //     parking : '',
+    //     pet : '',
+    //     manager : '',
+    //     garbage : '',
+    //     smoke : '',
+    //     cook : '',
+    //     typeOfRental : '',
+    //     buildingType : '',
+    // }
+
+    const [getHousesArg] = useState({
         start : '0',
         count : '9999999',
         timeSort : '-1',
@@ -76,9 +103,10 @@ const HousesList = () => {
         cook : '',
         typeOfRental : '',
         buildingType : '',
-    }
+    });
 
     const getHousesList = () => {
+        console.log('==111===',getHousesArg)
         if(isCustomPrice){
             const minCustomPrice = document.getElementById('minCustomPrice');
             const maxCustomPrice= document.getElementById('maxCustomPrice');
@@ -163,8 +191,9 @@ const HousesList = () => {
         )
         // .then( (response) => console.log(response))
         .then( (response) => {
+            console.log('==222===',getHousesArg)
             resolveHousesList(response)
-            console.log(data)
+            console.log('==333===',getHousesArg)
         })
         .catch( (error) => alert(error))
     }
@@ -223,6 +252,7 @@ const HousesList = () => {
     }
 
     function changeSort(sort) {
+        console.log('===changeSort===getHousesArg=',getHousesArg)
         getHousesArg.timeSort = ''
         getHousesArg.pingSort = ''
         getHousesArg.priceSort = ''
@@ -395,7 +425,7 @@ const HousesList = () => {
                 getHousesArg.minPrice = 0
                 getHousesArg.maxPrice = 999999
         }
-        console.log(getHousesArg)
+        
     }
 
     function changeRoom(room) {
@@ -562,20 +592,10 @@ const HousesList = () => {
             />
             },
         },
-        // {
-        //   title: '價格',
-        //   dataIndex: 'price',
-        //   key: 'price',
-        //   width:'100px',
-        //   render: (price) => {
-        //     return <div >{price}</div>
-        //     },
-        // },
         {
           title: '內容',
           key: 'content',
           dataIndex: 'content',
-        //   width:'100px',
           render: (content) => (
             <div style={{
                 'text-align': 'center',
@@ -584,7 +604,11 @@ const HousesList = () => {
                 'display': 'inline-block',
                 'text-align': 'left',
                 }}>
-                  {content[0]}
+                <div style={{
+                'color': '#0000ff',
+                'font-size':'20px'
+                }}>{content[0]}</div>
+                
                   <br/>
                   {content[1]}
                   <br/>
@@ -609,11 +633,12 @@ const HousesList = () => {
           title: '價格',
           dataIndex: 'price',
           key: 'price',
-        //   width:'100px',
           render: (price) => {
             return <div style={{
                 'text-align': 'center',
-            }}>{price}</div>
+                'color':'#FF0000',
+                'font-size':'20px'
+            }}>{price}元 / 月</div>
             },
         },
       ];
@@ -794,6 +819,7 @@ const HousesList = () => {
             </Col>
             <Col  xs={24} sm={4} md={4} lg={4} xl={4}></Col>
         </Row>
+        {/* {getHousesList()} */}
         </div>
     );
 };
