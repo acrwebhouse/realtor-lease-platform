@@ -106,7 +106,6 @@ const HousesList = () => {
     });
 
     const getHousesList = () => {
-        console.log('==111===',getHousesArg)
         if(isCustomPrice){
             const minCustomPrice = document.getElementById('minCustomPrice');
             const maxCustomPrice= document.getElementById('maxCustomPrice');
@@ -191,15 +190,13 @@ const HousesList = () => {
         )
         // .then( (response) => console.log(response))
         .then( (response) => {
-            console.log('==222===',getHousesArg)
             resolveHousesList(response)
-            console.log('==333===',getHousesArg)
         })
         .catch( (error) => alert(error))
     }
     
     function resolveHousesList(response){
-        console.log('====response===',response)
+        console.log(response)
         data = []
         if(response.data && response.data.data){
             const items = response.data.data
@@ -252,7 +249,6 @@ const HousesList = () => {
     }
 
     function changeSort(sort) {
-        console.log('===changeSort===getHousesArg=',getHousesArg)
         getHousesArg.timeSort = ''
         getHousesArg.pingSort = ''
         getHousesArg.priceSort = ''
@@ -356,7 +352,6 @@ const HousesList = () => {
                 default:
             }
         }
-        console.log(getHousesArg)
     }
 
     function changeArea(area) {
@@ -585,7 +580,7 @@ const HousesList = () => {
           title: '影像',
           dataIndex: 'image',
           key: 'image',
-          width:'150px',
+          width:'200px',
           render: (image) => {
             return <Image
             src = {image}
@@ -841,9 +836,10 @@ const HousesList = () => {
                     </span>
                 </Col>
             </Row>
+            <br></br>
         <Row>
-            <Col  xs={24} sm={4} md={4} lg={4} xl={4}></Col>
-            <Col  xs={24} sm={16} md={16} lg={16} xl={16}>
+            <Col  xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+            <Col  xs={24} sm={12} md={12} lg={12} xl={12}>
             <Table
                 columns={columns}
                 pagination={{ position: ['topLeft', 'bottomRight'] }}
@@ -859,7 +855,7 @@ const HousesList = () => {
                 };}}
             />
             </Col>
-            <Col  xs={24} sm={4} md={4} lg={4} xl={4}></Col>
+            <Col  xs={24} sm={6} md={6} lg={6} xl={6}></Col>
         </Row>
         {/* {getHousesList()} */}
         </div>
