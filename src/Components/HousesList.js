@@ -800,7 +800,10 @@ const HousesList = () => {
                 <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
             
-            <Row>
+            <Row style={{
+                    'line-height':'30px',
+                    'height': '30px'
+                    }}>
                 <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <span id="customPrice" style={{
@@ -855,7 +858,7 @@ const HousesList = () => {
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
-            <br></br>
+            <br></br><br></br><br></br>
         <Row>
             <Col  xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             <Col  xs={24} sm={12} md={12} lg={12} xl={12}>
