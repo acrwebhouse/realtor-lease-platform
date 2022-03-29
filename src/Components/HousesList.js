@@ -49,7 +49,14 @@ const HousesList = () => {
     const [isCustomPing, setIsCustomPing] = useState(false);
     const [isCustomFloor, setIsCustomFloor] = useState(false);
     const [areaOptions, setAreaOptions] = useState([]);
-    
+    const [init, setInit] = useState(true);
+
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+            getHousesList()
+        }
+    }, )
 
     // const getHousesArg ={
     //     start : '0',
