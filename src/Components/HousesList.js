@@ -703,145 +703,155 @@ const HousesList = () => {
 
         <div>
             <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
                         }}>
                         搜尋
                     </Button>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Input placeholder="文字搜尋 : 請輸入捷運站名,公車站名"  style={{
                             width: '100%',
                         }}>
                     </Input>
                 </Col>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
 
             <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select id="citySelect" placeholder="縣市" options={cityOptions} onChange={changeCity} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select placeholder="類型"  options={typeOfRentalOptions} onChange={changeTypeOfRental} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
 
             <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select mode="multiple" allowClear placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select allowClear placeholder="格局" options={roomOptions} onChange={changeRoom} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select placeholder="型態"  options={buildingTypeOptions} onChange={changeBuildingType} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
             
             <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select placeholder="租金" options={priceOptions} onChange={changePrice} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select placeholder="坪數" options={pingOptions} onChange={changePing} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <Select allowClear placeholder="樓層" options={floorOptions} onChange={changeFloor} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
             
             <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <span id="customPrice" style={{
                             width: '100%',
                             display: 'none'
                             }}>
-                        自訂租金：
-                        <Input id="minCustomPrice" placeholder="最低租金(請輸入數字)"  style={{
+                        租金：
+                        <Input id="minCustomPrice" placeholder="最低"  style={{
                                 width: '37%',
                             }}>
                         </Input>
                         &nbsp;&nbsp;-&nbsp;&nbsp;
-                        <Input id="maxCustomPrice" placeholder="最高租金(請輸入數字)"  style={{
+                        <Input id="maxCustomPrice" placeholder="最高"  style={{
                                 width: '37%',
                             }}>
                         </Input>
                     </span>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <span id="customPing" style={{
                             width: '100%',
                             display: 'none'
                             }}>
-                        自訂坪數：
-                        <Input id="minCustomPing" placeholder="最低坪數(請輸入數字)"  style={{
+                        坪數：
+                        <Input id="minCustomPing" placeholder="最低"  style={{
                                 width: '37%',
                             }}>
                         </Input>
                         &nbsp;&nbsp;-&nbsp;&nbsp;
-                        <Input id="maxCustomPing" placeholder="最高坪數(請輸入數字)"  style={{
+                        <Input id="maxCustomPing" placeholder="最高"  style={{
                                 width: '37%',
                             }}>
                         </Input>
                     </span>
                 </Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
                     <span id="customFloor" style={{
                             width: '100%',
                             display: 'none'
                             }}>
-                        自訂樓層：
-                        <Input id="minCustomFloor" placeholder="最低樓層(請輸入數字)"  style={{
+                        樓層：
+                        <Input id="minCustomFloor" placeholder="最低"  style={{
                                 width: '37%',
                             }}>
                         </Input>
                         &nbsp;&nbsp;-&nbsp;&nbsp;
-                        <Input id="maxCustomFloor" placeholder="最高樓層(請輸入數字)"  style={{
+                        <Input id="maxCustomFloor" placeholder="最高"  style={{
                                 width: '37%',
                             }}>
                         </Input>
                     </span>
                 </Col>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
             </Row>
             <br></br>
         <Row>
