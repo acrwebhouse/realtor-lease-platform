@@ -286,7 +286,7 @@ const HousesList = () => {
 
     function changeCity(city) {
         setAreaOptions([])
-        if(cityOptions[0] !== city){
+        if(cityOptions[0].value !== city){
             getHousesArg.city = city
             getHousesArg.area = ''
             switch(city){
@@ -358,6 +358,8 @@ const HousesList = () => {
                     break;
                 default:
             }
+        }else{
+            getHousesArg.city = ''
         }
     }
 
@@ -874,7 +876,6 @@ const HousesList = () => {
             </Col>
             <Col  xs={24} sm={6} md={6} lg={6} xl={6}></Col>
         </Row>
-        {/* {getHousesList()} */}
         </div>
     );
 };
