@@ -163,6 +163,7 @@ const HouseUpload = () => {
                 'name' : values['name'],
                 'city' : (values['AddressPrefix']+values['address']).slice(0, 3),
                 'area' : (values['AddressPrefix']+values['address']).slice(3, 6),
+                'owner' : '123',
                 'address': values['AddressPrefix']+values['address'],
                 'houseNumber' : {
                                 'lane' : parseInt(values['lane']),
