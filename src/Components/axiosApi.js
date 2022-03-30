@@ -18,7 +18,11 @@ const LoginRegisterAxios = axios.create({
 const HouseAxios = axios.create({
     baseURL: base_URL_House,
     // timeout: 1000,
-    headers: { 'Content-Type': 'application/json' }
+    headers: {
+        "content-type": "multipart/form-data",
+        "accept": "application/json",
+        "x-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWUxNDA1NzM0Mzg1MDAxZjE5MDg2NiIsInJvbGVzIjpbMiwzLDRdLCJpYXQiOiIyMDIyLTAzLTEzVDEzOjEyOjI5LjM5N1oifQ.i24MARH_Mc_H8BBl-S2LV0ibAy9KaTSjkCuoI648jvM"
+    }
 })
 
 export {LoginRegisterAxios, HouseAxios}
