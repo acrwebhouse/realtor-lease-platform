@@ -167,9 +167,9 @@ const HouseUpload = () => {
                 'address': values['AddressPrefix']+values['address'],
                 'houseNumber' : {
                                 'lane' : parseInt(values['lane']),
-                                'alley' : parseInt(values['alley']),
+                                'alley' : values['alley'] === undefined ? 0 : parseInt(values['alley']),
                                 'number1' : parseInt(values['NO1']),
-                                'number2' : parseInt(values['NO2'])
+                                'number2' : values['NO2'] === undefined ? 0 : parseInt(values['NO2'])
                 },
                 'floor' : parseInt(values['floor']),
                 'room' : values['room-number'] === undefined ? 0 : parseInt(values['room-number']),
