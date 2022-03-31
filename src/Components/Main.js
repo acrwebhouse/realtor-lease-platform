@@ -18,8 +18,22 @@ const { SubMenu } = Menu;
 
 const Main = () => {
     const [collapsed, setCollapsed] = useState(false);
+    const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('flex');
+    const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('nonw');
+    
+
     function toggleCollapsed() {
-        setCollapsed(MenuUnfoldOutlined)
+        if( collapsed === false)
+        {
+            setShowMenuUnfoldOutlined('flex')
+            setShowMenuFoldOutlined('none')
+            setCollapsed(true)
+        }else{
+            setShowMenuUnfoldOutlined('none')
+            setShowMenuFoldOutlined('flex')
+            setCollapsed(false)
+        }
+        
       };
 
     useEffect(() => {
@@ -30,9 +44,10 @@ const Main = () => {
 
     return (
 
-        <div style={{ width: 256 }}>
+        <div style={{ width: 256,height: 600 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 16 }}>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
+          <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
+          <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>
         <Menu
           defaultSelectedKeys={['1']}
@@ -40,6 +55,7 @@ const Main = () => {
           mode="inline"
           theme="dark"
           inlineCollapsed={collapsed}
+        // inlineCollapsed={false}
         >
           <Menu.Item key="1" icon={<PieChartOutlined />}>
             Option 1
@@ -50,7 +66,7 @@ const Main = () => {
           <Menu.Item key="3" icon={<ContainerOutlined />}>
             Option 3
           </Menu.Item>
-          <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
+          {/* <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
             <Menu.Item key="5">Option 5</Menu.Item>
             <Menu.Item key="6">Option 6</Menu.Item>
             <Menu.Item key="7">Option 7</Menu.Item>
@@ -63,7 +79,7 @@ const Main = () => {
               <Menu.Item key="11">Option 11</Menu.Item>
               <Menu.Item key="12">Option 12</Menu.Item>
             </SubMenu>
-          </SubMenu>
+          </SubMenu> */}
         </Menu>
       </div>
     );
