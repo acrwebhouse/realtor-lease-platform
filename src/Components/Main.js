@@ -14,6 +14,8 @@ import {
   MailOutlined,
 } from '@ant-design/icons';
 
+import HousesList from "./HousesList";
+
 const { SubMenu } = Menu;
 
 const Main = () => {
@@ -43,8 +45,9 @@ const Main = () => {
     
 
     return (
-
-        <div style={{ width: 256,height: 256 }}>
+        <div>
+            
+            <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 16 }}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
@@ -84,7 +87,11 @@ const Main = () => {
             </SubMenu>
           </SubMenu> */}
         </Menu>
+        
       </div>
+      <HousesList style={{'position':'absolute','zIndex':1 }}/>
+        </div>
+        
     );
 };
 
