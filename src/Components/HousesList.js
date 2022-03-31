@@ -641,56 +641,6 @@ const HousesList = () => {
               </div>
             ),
           },
-
-        // {
-        //   title: '內容',
-        //   key: 'content',
-        //   dataIndex: 'content',
-        //   render: (content) => (
-        //     <div style={{
-        //         'textAlign': 'center',
-        //     }}>
-        //        <div style={{
-        //         'display': 'inline-block',
-        //         'textAlign': 'left',
-        //         }}>
-        //         <div style={{
-        //         'color': '#0000ff',
-        //         'fontSize':'20px'
-        //         }}>{content[0]}</div>
-                
-        //           <br/>
-        //           {content[1]}
-        //           <br/>
-        //           {content[2]}
-        //           <br/>
-        //           {content[3]}
-        //           <br/>
-        //           {content[4]}
-        //           <br/>
-        //           {content[5]}
-        //           <br/>
-        //           {content[6]}
-        //           <br/>
-        //           {content[7]}
-        //           <br/>
-        //           {content[8]}
-        //         </div>
-        //     </div>
-        //   ),
-        // },
-        // {
-        //   title: '價格',
-        //   dataIndex: 'price',
-        //   key: 'price',
-        //   render: (price) => {
-        //     return <div style={{
-        //         'textAlign': 'center',
-        //         'color':'#FF0000',
-        //         // 'fontSize':'20px'
-        //     }}>{price}元 / 月</div>
-        //     },
-        // },
       ];
       
       let data = [
@@ -709,107 +659,107 @@ const HousesList = () => {
 
         <div>
             <Row>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
                         }}>
                         搜尋
                     </Button>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Input placeholder="文字搜尋 : 請輸入捷運站名,公車站名"  style={{
                             width: '100%',
                         }}>
                     </Input>
                 </Col>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
 
             <Row>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear id="citySelect" placeholder="縣市" options={cityOptions} onChange={changeCity} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select id="area" allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="類型"  options={typeOfRentalOptions} onChange={changeTypeOfRental} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
 
             <Row>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear mode="multiple"  placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear  placeholder="格局" options={roomOptions} onChange={changeRoom} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="型態"  options={buildingTypeOptions} onChange={changeBuildingType} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
             
             <Row>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="租金" options={priceOptions} onChange={changePrice} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="坪數" options={pingOptions} onChange={changePing} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="樓層" options={floorOptions} onChange={changeFloor} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
             
             <Row style={{
                     'lineHeight':'30px',
                     'height': '30px'
                     }}>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <span id="customPrice" style={{
                             width: '100%',
                             display: 'none'
@@ -826,7 +776,7 @@ const HousesList = () => {
                         </Input>
                     </span>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <span id="customPing" style={{
                             width: '100%',
                             display: 'none'
@@ -843,7 +793,7 @@ const HousesList = () => {
                         </Input>
                     </span>
                 </Col>
-                <Col xs={24} sm={4} md={4} lg={4} xl={4}>
+                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <span id="customFloor" style={{
                             width: '100%',
                             display: 'none'
@@ -860,12 +810,12 @@ const HousesList = () => {
                         </Input>
                     </span>
                 </Col>
-                <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
             <br></br><br></br><br></br>
         <Row>
-            <Col  xs={24} sm={6} md={6} lg={6} xl={6}></Col>
-            <Col  xs={24} sm={12} md={12} lg={12} xl={12}>
+            <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
             <Table
                 columns={columns}
                 pagination={{ position: ['topLeft', 'bottomRight'] }}
@@ -881,7 +831,7 @@ const HousesList = () => {
                 };}}
             />
             </Col>
-            <Col  xs={24} sm={6} md={6} lg={6} xl={6}></Col>
+            <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
         </Row>
         </div>
     );
