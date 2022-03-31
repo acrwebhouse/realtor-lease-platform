@@ -606,20 +606,20 @@ const HousesList = () => {
             dataIndex: 'content',
             render: (content) => (
               <div style={{
-                  'text-align': 'center',
+                  'textAlign': 'center',
               }}>
                  <div style={{
                   'display': 'inline-block',
-                  'text-align': 'left',
+                  'textAlign': 'left',
                   }}>
                   <div style={{
                   'color': '#0000ff',
-                  'font-size':'20px'
+                  'fontSize':'20px'
                   }}>{content[0]}</div>
                   
                     <div style={{
                     'color':'#FF0000',
-                     'font-size':'20px'
+                     'fontSize':'20px'
                     }}>{content[1]}元 / 月</div>
 
                     {content[2]}
@@ -648,15 +648,15 @@ const HousesList = () => {
         //   dataIndex: 'content',
         //   render: (content) => (
         //     <div style={{
-        //         'text-align': 'center',
+        //         'textAlign': 'center',
         //     }}>
         //        <div style={{
         //         'display': 'inline-block',
-        //         'text-align': 'left',
+        //         'textAlign': 'left',
         //         }}>
         //         <div style={{
         //         'color': '#0000ff',
-        //         'font-size':'20px'
+        //         'fontSize':'20px'
         //         }}>{content[0]}</div>
                 
         //           <br/>
@@ -685,9 +685,9 @@ const HousesList = () => {
         //   key: 'price',
         //   render: (price) => {
         //     return <div style={{
-        //         'text-align': 'center',
+        //         'textAlign': 'center',
         //         'color':'#FF0000',
-        //         // 'font-size':'20px'
+        //         // 'fontSize':'20px'
         //     }}>{price}元 / 月</div>
         //     },
         // },
@@ -805,7 +805,7 @@ const HousesList = () => {
             </Row>
             
             <Row style={{
-                    'line-height':'30px',
+                    'lineHeight':'30px',
                     'height': '30px'
                     }}>
                 <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
