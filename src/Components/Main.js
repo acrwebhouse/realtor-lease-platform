@@ -6,6 +6,7 @@ import { defaultIconPrefixCls } from 'antd/lib/config-provider';
 
 import {
   CloudUploadOutlined,
+  HomeFilled ,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   HomeOutlined ,
@@ -23,7 +24,7 @@ const { SubMenu } = Menu;
 const Main = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('flex');
-    const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('nonw');
+    const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('none');
     const childRef = createRef();
 
     function toggleCollapsed() {
@@ -34,14 +35,18 @@ const Main = () => {
         // console.log(childRef.current)
         // childRef.current.addCount()
         // childRef.current.test()
+        const mainMenu = document.getElementById('mainMenu');
+        
         if( collapsed === false)
         {
             setShowMenuUnfoldOutlined('flex')
             setShowMenuFoldOutlined('none')
+            mainMenu.style.width = '0%'
             setCollapsed(true)
         }else{
             setShowMenuUnfoldOutlined('none')
             setShowMenuFoldOutlined('flex')
+            mainMenu.style.width = '100%'
             setCollapsed(false)
         }
         
@@ -51,60 +56,47 @@ const Main = () => {
        
     }, )
 
-    
+    function rentHousesList(){
+        console.log('rentHousesList')
+    }
 
     return (
         <div>
             
-            <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
+        <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 16 }}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>
         <Menu
+          id="mainMenu"
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
           theme="dark"
           inlineCollapsed={collapsed}
-        // inlineCollapsed={false}
         >
-          <Menu.Item key="1" icon={<HomeOutlined />}>
+          <Menu.Item key="1" icon={<HomeOutlined /> } onClick={rentHousesList}>
             租屋列表
           </Menu.Item>
-          <Menu.Item key="2" icon={<CloudUploadOutlined />}>
+          <Menu.Item key="2" icon={<HomeFilled /> } onClick={rentHousesList}>
+            我的租屋
+          </Menu.Item>
+          <Menu.Item key="3" icon={<CloudUploadOutlined />}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item key="3" icon={<TeamOutlined />}>
+          <Menu.Item key="4" icon={<TeamOutlined />}>
             人員列表
           </Menu.Item>
-          <Menu.Item key="4" icon={<UserOutlined />}>
+          <Menu.Item key="5" icon={<UserOutlined />}>
             會員中心
           </Menu.Item>
-          <Menu.Item key="5" icon={<LoginOutlined />}>
+          <Menu.Item key="6" icon={<LoginOutlined />}>
             註冊 / 登入
           </Menu.Item>
-          <Menu.Item key="6" icon={<LogoutOutlined />}>
+          <Menu.Item key="7" icon={<LogoutOutlined />}>
             登出
           </Menu.Item>
-          
-          {/* <Menu.Item  >
-           
-          </Menu.Item> */}
-          {/* <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
-            <Menu.Item key="5">Option 5</Menu.Item>
-            <Menu.Item key="6">Option 6</Menu.Item>
-            <Menu.Item key="7">Option 7</Menu.Item>
-            <Menu.Item key="8">Option 8</Menu.Item>
-          </SubMenu>
-          <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
-            <Menu.Item key="9">Option 9</Menu.Item>
-            <Menu.Item key="10">Option 10</Menu.Item>
-            <SubMenu key="sub3" title="Submenu">
-              <Menu.Item key="11">Option 11</Menu.Item>
-              <Menu.Item key="12">Option 12</Menu.Item>
-            </SubMenu>
-          </SubMenu> */}
         </Menu>
         
       </div>
