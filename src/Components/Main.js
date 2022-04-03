@@ -1,20 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,createRef} from 'react';
 import {Table, Tag, Radio, Button, Image, Menu, Select, Divider, Row, Col, Span, message, Alert, Space} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
 
 import {
-  AppstoreOutlined,
+  CloudUploadOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  PieChartOutlined,
-  DesktopOutlined,
-  ContainerOutlined,
-  MailOutlined,
+  HomeOutlined ,
+  UserOutlined ,
+  TeamOutlined ,
+  LoginOutlined ,
+  LogoutOutlined ,
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
+import HousesList2 from "./HousesList2";
 
 const { SubMenu } = Menu;
 
@@ -22,9 +24,16 @@ const Main = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('flex');
     const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('nonw');
-    
+    const childRef = createRef();
 
     function toggleCollapsed() {
+        // console.log(HousesList.cityOptions)
+        // HousesList.test()
+        console.log(HousesList)
+        // console.log(childRef)
+        // console.log(childRef.current)
+        // childRef.current.addCount()
+        // childRef.current.test()
         if( collapsed === false)
         {
             setShowMenuUnfoldOutlined('flex')
@@ -60,15 +69,25 @@ const Main = () => {
           inlineCollapsed={collapsed}
         // inlineCollapsed={false}
         >
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
-            Option 1
+          <Menu.Item key="1" icon={<HomeOutlined />}>
+            租屋列表
           </Menu.Item>
-          <Menu.Item key="2" icon={<DesktopOutlined />}>
-            Option 2
+          <Menu.Item key="2" icon={<CloudUploadOutlined />}>
+            上傳租屋
           </Menu.Item>
-          <Menu.Item key="3" icon={<ContainerOutlined />}>
-            Option 3
+          <Menu.Item key="3" icon={<TeamOutlined />}>
+            人員列表
           </Menu.Item>
+          <Menu.Item key="4" icon={<UserOutlined />}>
+            會員中心
+          </Menu.Item>
+          <Menu.Item key="5" icon={<LoginOutlined />}>
+            註冊 / 登入
+          </Menu.Item>
+          <Menu.Item key="6" icon={<LogoutOutlined />}>
+            登出
+          </Menu.Item>
+          
           {/* <Menu.Item  >
            
           </Menu.Item> */}
@@ -89,7 +108,8 @@ const Main = () => {
         </Menu>
         
       </div>
-      <HousesList style={{'position':'absolute','zIndex':1 }}/>
+      <HousesList ref={childRef} style={{'position':'absolute','zIndex':1 }}/>
+      {/* <HousesList2 ref={childRef} /> */}
         </div>
         
     );
