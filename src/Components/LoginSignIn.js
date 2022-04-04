@@ -9,7 +9,7 @@ const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const LoginRegister = () => {
+const LoginRegister = (props) => {
 
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -19,6 +19,8 @@ const LoginRegister = () => {
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
+        console.log(props)
+        // props.loginSignInIsOpen(false)
         setIsRegisterModalVisible(true);
     };
 
@@ -31,6 +33,7 @@ const LoginRegister = () => {
     };
 
     const handleLoginCancel = () => {
+        props.loginSignInIsOpen(false)
         setIsLoginModalVisible(false);
     };
 
@@ -87,12 +90,9 @@ const LoginRegister = () => {
 
     return (
         <>
-            <Button type="primary" onClick={showLoginModal}>
-            Login/Register
-            </Button>
             <Modal title="Login System"
                    className="ModalLogin"
-                   visible={isLoginModalVisible}
+                   visible={props.isShow}
                    onCancel={handleLoginCancel}
                    width={500}
                    footer={[

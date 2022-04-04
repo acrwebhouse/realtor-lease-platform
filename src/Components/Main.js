@@ -27,6 +27,8 @@ const Main = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('flex');
     const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('none');
+    const [isShowLoginSignIn, setIsShowLoginSignIn] = useState(false);
+
     const childRef = createRef();
 
     function toggleCollapsed() {
@@ -62,6 +64,7 @@ const Main = () => {
         console.log('housesList')
         const webPage = document.getElementById('webPage');
         webPage.src = '/housesList'
+        loginSignInIsOpen(false)
     }
 
     function myHousesList(){
@@ -84,10 +87,27 @@ const Main = () => {
 
     function loginSignIn(){
         console.log('loginSignIn')
+        setIsShowLoginSignIn(true)
     }
 
     function logout(){
         console.log('logout')
+    }
+
+    function loginSignInIsOpen(status){
+        console.log('====loginSignInIsOpen=====')
+        const loginSignIn = document.getElementById('loginSignIn');
+        console.log('====loginSignIn=loginSignIn====',loginSignIn)
+        if(status === true){
+            console.log('====loginSignInIsOpen=111====')
+            loginSignIn.style.display = 'flex'
+            setIsShowLoginSignIn(true)
+        }else{
+            console.log('====loginSignInIsOpen==222∂===')
+            loginSignIn.style.display = 'none'
+            setIsShowLoginSignIn(false)
+            
+        }
     }
 
     return (
@@ -138,8 +158,8 @@ const Main = () => {
         id='webPage'
         //onLoad={this.sendToken}
     />
-        <div style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%'}}>
-            <LoginSignIn isLoginModalVisible='false' ></LoginSignIn>
+        <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
+            <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} ></LoginSignIn>
         </div>
         </div>
         
