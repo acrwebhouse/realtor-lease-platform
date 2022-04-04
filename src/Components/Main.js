@@ -93,10 +93,12 @@ const Main = () => {
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
+        const logoutMenu = document.getElementById('logoutMenu');
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
+        logoutMenu.style.display = 'none'
         const webPage = document.getElementById('webPage');
         webPage.src = '/housesList'
     }
@@ -117,20 +119,27 @@ const Main = () => {
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
+        const logoutMenu = document.getElementById('logoutMenu');
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 memberListMenu.style.display = 'flex'
                 memberInfoMenu.style.display = 'flex'
+                logoutMenu.style.display = 'flex'
+            }
+            if(roles[i]===3){
+                logoutMenu.style.display = 'flex'
             }
             if(roles[i]===2){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
+                logoutMenu.style.display = 'flex'
             }
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
+                logoutMenu.style.display = 'flex'
             }
         }
     }
@@ -169,7 +178,7 @@ const Main = () => {
           <Menu.Item id="loginSignInMenu" icon={<LoginOutlined /> } onClick={loginSignIn}>
             註冊 / 登入
           </Menu.Item>
-          <Menu.Item id="logoutMenu" icon={<LogoutOutlined />} onClick={logout}>
+          <Menu.Item id="logoutMenu" style={{'display':'none'}} icon={<LogoutOutlined />} onClick={logout}>
             登出
           </Menu.Item>
         </Menu>
