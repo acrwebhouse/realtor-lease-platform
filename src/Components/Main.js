@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
 
+
 import {
   CloudUploadOutlined,
   HomeFilled ,
@@ -18,6 +19,7 @@ import {
 
 import HousesList from "./HousesList";
 import HousesList2 from "./HousesList2";
+import LoginSignIn from "./LoginSignIn";
 
 const { SubMenu } = Menu;
 
@@ -136,6 +138,9 @@ const Main = () => {
         id='webPage'
         //onLoad={this.sendToken}
     />
+        <div style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%'}}>
+            <LoginSignIn isLoginModalVisible='false' ></LoginSignIn>
+        </div>
         </div>
         
     );
