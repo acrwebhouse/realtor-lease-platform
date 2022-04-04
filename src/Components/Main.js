@@ -119,10 +119,10 @@ const Main = () => {
           <Menu.Item key="5" icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
-          <Menu.Item key="6" icon={<LoginOutlined /> }>
+          <Menu.Item key="6" icon={<LoginOutlined /> } onClick={loginSignIn}>
             註冊 / 登入
           </Menu.Item>
-          <Menu.Item key="7" icon={<LogoutOutlined />}>
+          <Menu.Item key="7" icon={<LogoutOutlined />} onClick={logout}>
             登出
           </Menu.Item>
         </Menu>
