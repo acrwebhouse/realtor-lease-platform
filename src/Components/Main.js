@@ -18,10 +18,8 @@ import {
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
-import HousesList2 from "./HousesList2";
 import LoginSignIn from "./LoginSignIn";
 
-const { SubMenu } = Menu;
 
 const Main = () => {
     const [collapsed, setCollapsed] = useState(false);
@@ -64,7 +62,6 @@ const Main = () => {
         console.log('housesList')
         const webPage = document.getElementById('webPage');
         webPage.src = '/housesList'
-        loginSignInIsOpen(false)
     }
 
     function myHousesList(){
@@ -115,11 +112,34 @@ const Main = () => {
         }
     }
 
+    function changeRolesMenu(roles){
+        const myHousesListMenu = document.getElementById('myHousesListMenu');
+        const uploadHousesMenu = document.getElementById('uploadHousesMenu');
+        const memberListMenu = document.getElementById('memberListMenu');
+        const memberInfoMenu = document.getElementById('memberInfoMenu');
+        for(let i =0;i<roles.length;i++){
+            if(roles[i]===1){
+                myHousesListMenu.style.display = 'flex'
+                uploadHousesMenu.style.display = 'flex'
+                memberListMenu.style.display = 'flex'
+                memberInfoMenu.style.display = 'flex'
+            }
+            if(roles[i]===2){
+                myHousesListMenu.style.display = 'flex'
+                uploadHousesMenu.style.display = 'flex'
+            }
+            if(roles[i]===4){
+                myHousesListMenu.style.display = 'flex'
+                uploadHousesMenu.style.display = 'flex'
+            }
+        }
+    }
+
+
     return (
         <div>
-            
         <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
-        <Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 16 }}>
+        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,marginBottom: 16 }}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>
@@ -134,16 +154,16 @@ const Main = () => {
           <Menu.Item id="housesListMenu" icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>
-          <Menu.Item id="myHousesListMenu" icon={<HomeFilled /> } onClick={myHousesList}>
+          <Menu.Item id="myHousesListMenu" style={{'display':'none'}} icon={<HomeFilled /> } onClick={myHousesList}>
             我的租屋
           </Menu.Item>
-          <Menu.Item id="uploadHousesMenu" icon={<CloudUploadOutlined />}>
+          <Menu.Item id="uploadHousesMenu" style={{'display':'none'}} icon={<CloudUploadOutlined />}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item id="memberListMenu" icon={<TeamOutlined />} onClick={memberList}>
+          <Menu.Item id="memberListMenu" style={{'display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
             人員列表
           </Menu.Item>
-          <Menu.Item id="memberInfoMenu" icon={<UserOutlined />} onClick={memberInfo}>
+          <Menu.Item id="memberInfoMenu" style={{'display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
           <Menu.Item id="loginSignInMenu" icon={<LoginOutlined /> } onClick={loginSignIn}>
@@ -155,8 +175,6 @@ const Main = () => {
         </Menu>
         
       </div>
-      {/* <HousesList ref={childRef} style={{'position':'absolute','zIndex':1 }}/> */}
-      {/* <HousesList2 ref={childRef} /> */}
       <iframe
         style={{'position':'absolute','zIndex':1 ,'border':0,'width':'100%','height':'100%'}}
         src='/HousesList'
@@ -164,7 +182,7 @@ const Main = () => {
         //onLoad={this.sendToken}
     />
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
-            <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} ></LoginSignIn>
+            <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeRolesMenu={changeRolesMenu} ></LoginSignIn>
         </div>
         </div>
         

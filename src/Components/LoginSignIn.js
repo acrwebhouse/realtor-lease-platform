@@ -70,11 +70,16 @@ const LoginRegister = (props) => {
 
     useEffect(() => {
         if (isRunPost) {
-            // console.log(LoginData)
-            // console.log(rememberMe)
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
-                .then( (response) => console.log(response))
-                .then(() => message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2))
+                .then((response) => {
+                    if(response.data.data === null ||response.data.data === undefined){
+                        message.error(`帳號或密碼錯誤`, 2)
+                    }else{
+                        props.changeRolesMenu(response.data.data.roles)
+                        message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2)
+                    }
+                    
+                })
                 .catch( (error) => message.error(`${error}`, 2))
 
             setIsRunPost(false)
