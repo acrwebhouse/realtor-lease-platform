@@ -56,8 +56,36 @@ const Main = () => {
        
     }, )
 
-    function rentHousesList(){
-        console.log('rentHousesList')
+    function housesList(){
+        console.log('housesList')
+        const webPage = document.getElementById('webPage');
+        webPage.src = '/housesList'
+    }
+
+    function myHousesList(){
+        console.log('myHousesList')
+        const webPage = document.getElementById('webPage');
+        webPage.src = '/MyHousesList'
+    }
+
+    function memberList(){
+        console.log('memberList')
+        const webPage = document.getElementById('webPage');
+        webPage.src = '/MemberList'
+    }
+
+    function memberInfo(){
+        console.log('memberInfo')
+        const webPage = document.getElementById('webPage');
+        webPage.src = '/MemberInfo'
+    }
+
+    function loginSignIn(){
+        console.log('loginSignIn')
+    }
+
+    function logout(){
+        console.log('logout')
     }
 
     return (
@@ -76,22 +104,22 @@ const Main = () => {
           theme="dark"
           inlineCollapsed={collapsed}
         >
-          <Menu.Item key="1" icon={<HomeOutlined /> } onClick={rentHousesList}>
+          <Menu.Item key="1" icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>
-          <Menu.Item key="2" icon={<HomeFilled /> } onClick={rentHousesList}>
+          <Menu.Item key="2" icon={<HomeFilled /> } onClick={myHousesList}>
             我的租屋
           </Menu.Item>
           <Menu.Item key="3" icon={<CloudUploadOutlined />}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item key="4" icon={<TeamOutlined />}>
+          <Menu.Item key="4" icon={<TeamOutlined />} onClick={memberList}>
             人員列表
           </Menu.Item>
-          <Menu.Item key="5" icon={<UserOutlined />}>
+          <Menu.Item key="5" icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
-          <Menu.Item key="6" icon={<LoginOutlined />}>
+          <Menu.Item key="6" icon={<LoginOutlined /> }>
             註冊 / 登入
           </Menu.Item>
           <Menu.Item key="7" icon={<LogoutOutlined />}>
@@ -100,8 +128,14 @@ const Main = () => {
         </Menu>
         
       </div>
-      <HousesList ref={childRef} style={{'position':'absolute','zIndex':1 }}/>
+      {/* <HousesList ref={childRef} style={{'position':'absolute','zIndex':1 }}/> */}
       {/* <HousesList2 ref={childRef} /> */}
+      <iframe
+        style={{'position':'absolute','zIndex':1 ,'border':0,'width':'100%','height':'100%'}}
+        src='/HousesList'
+        id='webPage'
+        //onLoad={this.sendToken}
+    />
         </div>
         
     );
