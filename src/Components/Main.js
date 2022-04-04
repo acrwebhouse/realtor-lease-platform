@@ -92,21 +92,26 @@ const Main = () => {
 
     function logout(){
         console.log('logout')
+        const myHousesListMenu = document.getElementById('myHousesListMenu');
+        const uploadHousesMenu = document.getElementById('uploadHousesMenu');
+        const memberListMenu = document.getElementById('memberListMenu');
+        const memberInfoMenu = document.getElementById('memberInfoMenu');
+        myHousesListMenu.style.display = 'none'
+        uploadHousesMenu.style.display = 'none'
+        memberListMenu.style.display = 'none'
+        memberInfoMenu.style.display = 'none'
+        const webPage = document.getElementById('webPage');
+        webPage.src = '/housesList'
     }
 
     function loginSignInIsOpen(status){
-        console.log('====loginSignInIsOpen=====')
         const loginSignIn = document.getElementById('loginSignIn');
-        console.log('====loginSignIn=loginSignIn====',loginSignIn)
         if(status === true){
-            console.log('====loginSignInIsOpen=111====')
             loginSignIn.style.display = 'flex'
             setIsShowLoginSignIn(true)
         }else{
-            console.log('====loginSignInIsOpen==222∂===')
             loginSignIn.style.display = 'none'
             setIsShowLoginSignIn(false)
-            
         }
     }
 
@@ -126,25 +131,25 @@ const Main = () => {
           theme="dark"
           inlineCollapsed={collapsed}
         >
-          <Menu.Item key="1" icon={<HomeOutlined /> } onClick={housesList}>
+          <Menu.Item id="housesListMenu" icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>
-          <Menu.Item key="2" icon={<HomeFilled /> } onClick={myHousesList}>
+          <Menu.Item id="myHousesListMenu" icon={<HomeFilled /> } onClick={myHousesList}>
             我的租屋
           </Menu.Item>
-          <Menu.Item key="3" icon={<CloudUploadOutlined />}>
+          <Menu.Item id="uploadHousesMenu" icon={<CloudUploadOutlined />}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item key="4" icon={<TeamOutlined />} onClick={memberList}>
+          <Menu.Item id="memberListMenu" icon={<TeamOutlined />} onClick={memberList}>
             人員列表
           </Menu.Item>
-          <Menu.Item key="5" icon={<UserOutlined />} onClick={memberInfo}>
+          <Menu.Item id="memberInfoMenu" icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
-          <Menu.Item key="6" icon={<LoginOutlined /> } onClick={loginSignIn}>
+          <Menu.Item id="loginSignInMenu" icon={<LoginOutlined /> } onClick={loginSignIn}>
             註冊 / 登入
           </Menu.Item>
-          <Menu.Item key="7" icon={<LogoutOutlined />} onClick={logout}>
+          <Menu.Item id="logoutMenu" icon={<LogoutOutlined />} onClick={logout}>
             登出
           </Menu.Item>
         </Menu>
