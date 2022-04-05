@@ -136,18 +136,21 @@ const Main = () => {
             if(roles[i]===3){
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
+                memberInfoMenu.style.display = 'flex'
             }
             if(roles[i]===2){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
+                memberInfoMenu.style.display = 'flex'
             }
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
+                memberInfoMenu.style.display = 'flex'
             }
         }
         if(roles.length > 0){
