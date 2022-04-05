@@ -187,7 +187,7 @@ const HousesList = () => {
         if(getHousesArg.priceSort !==''){
             reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
         }
-        console.log('====reqUrl===',reqUrl)
+        // console.log('====reqUrl===',reqUrl)
         HouseListAxios.get(
             reqUrl,{
                 headers:{
@@ -195,7 +195,6 @@ const HousesList = () => {
                 }
             }
         )
-        // .then( (response) => console.log(response))
         .then( (response) => {
             resolveHousesList(response)
         })
@@ -203,7 +202,7 @@ const HousesList = () => {
     }
     
     function resolveHousesList(response){
-        console.log(response)
+        // console.log(response)
         data = []
         if(response.data && response.data.data){
             const items = response.data.data

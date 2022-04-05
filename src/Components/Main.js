@@ -3,7 +3,7 @@ import {Table, Tag, Radio, Button, Image, Menu, Select, Divider, Row, Col, Span,
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseListAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
-
+import cookie from 'react-cookies'
 
 import {
   CloudUploadOutlined,
@@ -19,6 +19,8 @@ import {
 
 import HousesList from "./HousesList";
 import LoginSignIn from "./LoginSignIn";
+
+let token = ''
 
 
 const Main = () => {
@@ -123,7 +125,8 @@ const Main = () => {
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
-        
+        token = cookie.load('x-token')
+        console.log('==token===',token)
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'

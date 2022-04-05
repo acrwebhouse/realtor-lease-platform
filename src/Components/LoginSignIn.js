@@ -5,6 +5,8 @@ import React, {useState, useEffect} from "react";
 import Register from "./Register_form";
 // import axios from "./axiosApi";
 import {LoginRegisterAxios} from "./axiosApi"
+import cookie from 'react-cookies'
+
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -76,6 +78,7 @@ const LoginRegister = (props) => {
                         message.error(`帳號或密碼錯誤`, 2)
                     }else{
                         props.changeRolesMenu(response.data.data.roles)
+                        cookie.save('x-token',response.data.data.token,{path:'/'})
                         message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2)
                     }
                     
