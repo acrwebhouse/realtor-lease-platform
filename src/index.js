@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import HousesList from "./Components/HousesList";
+import UploadHouse from "./Components/UploadHouse";
 import MyHousesList from "./Components/MyHousesList";
 import MemberList from "./Components/MemberList";
 import MemberInfo from "./Components/MemberInfo";
@@ -23,6 +24,7 @@ ReactDOM.render(
           {/* <Route path="/" element={<App />} /> */}
           <Route path="/" element={<Main />} />
           <Route path="/HousesList" element={<HousesList/>}/>
+          <Route path="/UploadHouse" element={<UploadHouse/>}/>
           <Route path="/MyHousesList" element={<MyHousesList/>}/>
           <Route path="/MemberList" element={<MemberList/>}/>
           <Route path="/MemberInfo" element={<MemberInfo/>}/>

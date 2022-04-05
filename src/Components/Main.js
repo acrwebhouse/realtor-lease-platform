@@ -71,7 +71,12 @@ const Main = () => {
         const webPage = document.getElementById('webPage');
         webPage.src = '/MyHousesList'
     }
-
+    function uploadHouse(){
+        console.log('uploadHouse')
+        const webPage = document.getElementById('webPage');
+        webPage.src = '/UploadHouse'
+    }
+    
     function memberList(){
         console.log('memberList')
         const webPage = document.getElementById('webPage');
@@ -185,7 +190,7 @@ const Main = () => {
           <Menu.Item id="myHousesListMenu" style={{'display':'none'}} icon={<HomeFilled /> } onClick={myHousesList}>
             我的租屋
           </Menu.Item>
-          <Menu.Item id="uploadHousesMenu" style={{'display':'none'}} icon={<CloudUploadOutlined />}>
+          <Menu.Item id="uploadHousesMenu" style={{'display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
           </Menu.Item>
           <Menu.Item id="memberListMenu" style={{'display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
