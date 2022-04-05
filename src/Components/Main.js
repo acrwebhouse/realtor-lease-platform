@@ -94,6 +94,8 @@ const Main = () => {
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
+        const loginSignInMenu = document.getElementById('loginSignInMenu');
+        loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
@@ -120,6 +122,8 @@ const Main = () => {
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
+        const loginSignInMenu = document.getElementById('loginSignInMenu');
+        
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -127,21 +131,30 @@ const Main = () => {
                 memberListMenu.style.display = 'flex'
                 memberInfoMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
+                loginSignInMenu.style.display = 'none'
             }
             if(roles[i]===3){
                 logoutMenu.style.display = 'flex'
+                loginSignInMenu.style.display = 'none'
             }
             if(roles[i]===2){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
+                loginSignInMenu.style.display = 'none'
             }
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
+                loginSignInMenu.style.display = 'none'
             }
         }
+        if(roles.length > 0){
+            loginSignInIsOpen(false)
+            const webPage = document.getElementById('webPage');
+            webPage.src = '/housesList'
+        } 
     }
 
 
