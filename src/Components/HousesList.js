@@ -148,6 +148,15 @@ const HousesList = () => {
         
 
         let reqUrl = `${housesListUrl}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&isDelete=${getHousesArg.isDelete}&&minPrice=${getHousesArg.minPrice}&&maxPrice=${getHousesArg.maxPrice}&&minPing=${getHousesArg.minPing}&&maxPing=${getHousesArg.maxPing}&&minRoom=${getHousesArg.minRoom}&&maxRoom=${getHousesArg.maxRoom}&&minFloor=${getHousesArg.minFloor}&&maxFloor=${getHousesArg.maxFloor}`
+        const textQuery= document.getElementById('textQuery');
+        
+        if(textQuery){
+            const value = textQuery.value
+            if(value !== '' && value !== undefined && value !== null){
+                reqUrl = `${reqUrl}&&textQuery=${value}`
+            }
+        }
+
         if(getHousesArg.city !==''){
             reqUrl = `${reqUrl}&&city=${getHousesArg.city}`
         }
@@ -673,7 +682,7 @@ const HousesList = () => {
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Input placeholder="文字搜尋 : 請輸入捷運站名,公車站名"  style={{
+                    <Input id="textQuery" placeholder="文字搜尋 : 捷運,夜市,路段,學校..."  style={{
                             width: '100%',
                         }}>
                     </Input>
