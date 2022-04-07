@@ -29,16 +29,7 @@ const Main = () => {
     const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('none');
     const [isShowLoginSignIn, setIsShowLoginSignIn] = useState(false);
 
-    const childRef = createRef();
-
     function toggleCollapsed() {
-        // console.log(HousesList.cityOptions)
-        // HousesList.test()
-        console.log(HousesList)
-        // console.log(childRef)
-        // console.log(childRef.current)
-        // childRef.current.addCount()
-        // childRef.current.test()
         const mainMenu = document.getElementById('mainMenu');
         
         if( collapsed === false)

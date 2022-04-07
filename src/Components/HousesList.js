@@ -12,7 +12,7 @@ const { Option } = Select;
 const housesListUrl = 'house/getHouses'
 const xToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWUxNDA1NzM0Mzg1MDAxZjE5MDg2NiIsInJvbGVzIjpbMiwzLDRdLCJpYXQiOiIyMDIyLTAzLTEzVDEzOjEyOjI5LjM5N1oifQ.i24MARH_Mc_H8BBl-S2LV0ibAy9KaTSjkCuoI648jvM"
 
-const HousesList = () => {
+const HousesList = (props) => {
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
     const taipeiAreaOptions = [{ value: '區域不限' },{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
     const newTaipeiAreaOptions = [{ value: '區域不限' },{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
@@ -51,6 +51,7 @@ const HousesList = () => {
     const [areaOptions, setAreaOptions] = useState([]);
     const [init, setInit] = useState(true);
     const [selectArea, setSelectArea] = useState(null);
+    const [isShowEdit, setIsShowEdit] = useState('none');
 
     useEffect(() => {
         if (init) {
@@ -58,33 +59,6 @@ const HousesList = () => {
             getHousesList()
         }
     }, )
-
-    // const getHousesArg ={
-    //     start : '0',
-    //     count : '9999999',
-    //     timeSort : '-1',
-    //     priceSort : '',
-    //     pingSort : '',
-    //     isDelete : 'false',
-    //     minPrice : '0',
-    //     maxPrice : '9999999',
-    //     minPing : '0',
-    //     maxPing : '999999',
-    //     minRoom : '0',
-    //     maxRoom : '999999',
-    //     minFloor : '0',
-    //     maxFloor : '999999',
-    //     city : '',
-    //     area : '',
-    //     parking : '',
-    //     pet : '',
-    //     manager : '',
-    //     garbage : '',
-    //     smoke : '',
-    //     cook : '',
-    //     typeOfRental : '',
-    //     buildingType : '',
-    // }
 
     const [getHousesArg] = useState({
         start : '0',
@@ -253,6 +227,12 @@ const HousesList = () => {
                     item.content.push(`教育 : 距${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
                 }
                 item.content.push(`更新時間 : ${items[i].updateTime}`)
+
+                if(props.owner!==''&&props.owner!==undefined&&props.owner!==null){
+                    item.content.push(items[i]._id)
+                    setIsShowEdit('flex')
+                }
+
                 data.push(item)
             }
             setHouses(data)
@@ -644,12 +624,33 @@ const HousesList = () => {
                     {content[8]}
                     <br/>
                     {content[9]}
+                    <br/>
+                    <div style={{display: isShowEdit}}>
+                    <Button type="primary" onClick={() => editHouse(content[10])} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                        編輯
+                    </Button>
+                    &nbsp;
+                    <Button type="primary" onClick={() => removeHouse(content[10])} danger style={{width: '70px'}}>
+                        刪除
+                    </Button>
+                    </div>
+                    
                   </div>
               </div>
             ),
           },
       ];
       
+      function removeHouse(houseId){
+        console.log(houseId)
+        alert("刪除 houseId: "+houseId)
+    }
+
+      function editHouse(houseId){
+        console.log(houseId)
+        alert("修改 houseId: "+houseId)
+      }
+
       let data = [
         {
           key: '1',
@@ -829,12 +830,12 @@ const HousesList = () => {
                 dataSource={houses}
                 onRow={(record, rowIndex) => {
                     return {
-                        onClick: event => {
-                        console.log('event',event)
-                        console.log('record',record)
-                        console.log('rowIndex',rowIndex)
-                        alert("進入詳細資料")
-                    }, // click row
+                    //     onClick: event => {
+                    //     console.log('event',event)
+                    //     console.log('record',record)
+                    //     console.log('rowIndex',rowIndex)
+                    //     alert("進入詳細資料")
+                    // }, // click row
                 };}}
             />
             </Col>
