@@ -626,6 +626,10 @@ const HousesList = (props) => {
                     {content[9]}
                     <br/>
                     <div style={{display: isShowEdit}}>
+                    <Button type="primary" onClick={() => queryHouse(content[10])} style={{width: '70px' }}>
+                        查看
+                    </Button>
+                    &nbsp;
                     <Button type="primary" onClick={() => editHouse(content[10])} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
@@ -641,7 +645,13 @@ const HousesList = (props) => {
           },
       ];
       
-      function removeHouse(houseId){
+
+    function queryHouse(houseId){
+        console.log(houseId)
+        alert("查看 houseId: "+houseId)
+    }
+
+    function removeHouse(houseId){
         console.log(houseId)
         alert("刪除 houseId: "+houseId)
     }
@@ -830,12 +840,18 @@ const HousesList = (props) => {
                 dataSource={houses}
                 onRow={(record, rowIndex) => {
                     return {
-                    //     onClick: event => {
-                    //     console.log('event',event)
-                    //     console.log('record',record)
-                    //     console.log('rowIndex',rowIndex)
-                    //     alert("進入詳細資料")
-                    // }, // click row
+                        onClick: event => {
+                        if(isShowEdit === 'none'){
+                            console.log('event',event)
+                            console.log('record',record)
+                            console.log('rowIndex',rowIndex)
+                            alert("進入詳細資料")
+                        }
+                        // console.log('event',event)
+                        // console.log('record',record)
+                        // console.log('rowIndex',rowIndex)
+                        // alert("進入詳細資料")
+                    }, // click row
                 };}}
             />
             </Col>
