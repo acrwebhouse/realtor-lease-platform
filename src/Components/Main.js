@@ -170,7 +170,7 @@ const Main = () => {
     return (
         <div>
         <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
-        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,marginBottom: 16 , 'background-color':'#0080FF'}}>
+        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,marginBottom: 16 , backgroundColor:'#0080FF'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>
@@ -182,25 +182,25 @@ const Main = () => {
           theme="dark"
           inlineCollapsed={collapsed}
         >
-          <Menu.Item id="housesListMenu" icon={<HomeOutlined /> } onClick={housesList}>
+          <Menu.Item key='1' id="housesListMenu" icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>
-          <Menu.Item id="myHousesListMenu" style={{'display':'none'}} icon={<HomeFilled /> } onClick={myHousesList}>
+          <Menu.Item key='2' id="myHousesListMenu" style={{'display':'none'}} icon={<HomeFilled /> } onClick={myHousesList}>
             我的租屋
           </Menu.Item>
-          <Menu.Item id="uploadHousesMenu" style={{'display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
+          <Menu.Item key='3' id="uploadHousesMenu" style={{'display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item id="memberListMenu" style={{'display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
+          <Menu.Item key='4' id="memberListMenu" style={{'display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
             人員列表
           </Menu.Item>
-          <Menu.Item id="memberInfoMenu" style={{'display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
+          <Menu.Item key='5' id="memberInfoMenu" style={{'display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
-          <Menu.Item id="loginSignInMenu" icon={<LoginOutlined /> } onClick={loginSignIn}>
+          <Menu.Item key='6' id="loginSignInMenu" icon={<LoginOutlined /> } onClick={loginSignIn}>
             註冊 / 登入
           </Menu.Item>
-          <Menu.Item id="logoutMenu" style={{'display':'none'}} icon={<LogoutOutlined />} onClick={logout}>
+          <Menu.Item key='7' id="logoutMenu" style={{'display':'none'}} icon={<LogoutOutlined />} onClick={logout}>
             登出
           </Menu.Item>
         </Menu>
