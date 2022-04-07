@@ -50,6 +50,7 @@ const HousesList = () => {
     const [isCustomFloor, setIsCustomFloor] = useState(false);
     const [areaOptions, setAreaOptions] = useState([]);
     const [init, setInit] = useState(true);
+    const [selectArea, setSelectArea] = useState(null);
 
     useEffect(() => {
         if (init) {
@@ -293,10 +294,7 @@ const HousesList = () => {
     }
 
     function changeCity(city) {
-        //bug!
-        console.log(document.getElementById('area'))
-        console.log(document.getElementById('area').value)
-
+        setSelectArea(null)
         setAreaOptions([])
         if(cityOptions[0].value !== city){
             getHousesArg.city = city
@@ -376,6 +374,7 @@ const HousesList = () => {
     }
 
     function changeArea(area) {
+        setSelectArea(area)
         if(area === '區域不限'){
             getHousesArg.area = ''
         }else{
@@ -699,7 +698,7 @@ const HousesList = () => {
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select id="area" allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                    <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
                     </Select>

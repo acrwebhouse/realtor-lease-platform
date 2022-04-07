@@ -163,8 +163,6 @@ const Main = () => {
         }
         if(roles.length > 0){
             loginSignInIsOpen(false)
-            const webPage = document.getElementById('webPage');
-            webPage.src = '/housesList'
         } 
     }
 
@@ -172,7 +170,7 @@ const Main = () => {
     return (
         <div>
         <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
-        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,marginBottom: 16 }}>
+        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,marginBottom: 16 , 'background-color':'#0080FF'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>
