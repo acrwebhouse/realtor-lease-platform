@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message, Alert, Space} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Row, Col, message, Alert, Space} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
-import {HouseListAxios} from './axiosApi'
+import {HouseAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
-// import { UploadOutlined } from '@ant-design/icons';
-// import { Text, StyleSheet } from "react-native";
+import cookie from 'react-cookies'
 
 
 const { Option } = Select;
 
 const housesListUrl = 'house/getHouses'
-const xToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWUxNDA1NzM0Mzg1MDAxZjE5MDg2NiIsInJvbGVzIjpbMiwzLDRdLCJpYXQiOiIyMDIyLTAzLTEzVDEzOjEyOjI5LjM5N1oifQ.i24MARH_Mc_H8BBl-S2LV0ibAy9KaTSjkCuoI648jvM"
+const removeHouseUrl = 'house/removeHouse'
+
 
 const HousesList = (props) => {
+    const xToken = cookie.load('x-token')
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
     const taipeiAreaOptions = [{ value: '區域不限' },{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
     const newTaipeiAreaOptions = [{ value: '區域不限' },{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
@@ -86,6 +87,8 @@ const HousesList = (props) => {
         typeOfRental : '',
         buildingType : '',
     });
+
+    
 
     const getHousesList = () => {
         if(isCustomPrice){
@@ -171,8 +174,7 @@ const HousesList = (props) => {
         if(getHousesArg.priceSort !==''){
             reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
         }
-        // console.log('====reqUrl===',reqUrl)
-        HouseListAxios.get(
+        HouseAxios.get(
             reqUrl,{
                 headers:{
                     'x-Token':xToken
@@ -652,8 +654,26 @@ const HousesList = (props) => {
     }
 
     function removeHouse(houseId){
-        console.log(houseId)
-        alert("刪除 houseId: "+houseId)
+        const reqUrl = `${removeHouseUrl}`
+        HouseAxios.delete(
+            reqUrl,{
+                headers:{
+                    'x-Token':xToken
+                },
+                data: {
+                    ids: [houseId]
+                }
+            }
+        )
+        .then( (response) => {
+            if(response.data.status === true){
+                getHousesList()
+                message.success('刪除成功', 3);
+            }else{
+                alert(response.data.data)
+            }
+        })
+        .catch( (error) => alert(error))
     }
 
       function editHouse(houseId){
