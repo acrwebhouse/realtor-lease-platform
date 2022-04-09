@@ -373,11 +373,11 @@ function removeUser(userId){
                     <Button type="primary" onClick={() => queryUser(content[7])} style={{width: '70px' }}>
                         查看
                     </Button>
-                    
+                    &nbsp;
                     <Button type="primary" onClick={() => editUser(content[7])} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
-                    
+                    &nbsp;
                     <Button type="primary" onClick={() => removeUser(content[7])} danger style={{width: '70px'}}>
                         刪除
                     </Button>
