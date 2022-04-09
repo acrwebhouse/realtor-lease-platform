@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const base_URL_User = "http://35.201.152.0:3000/"
+const base_URL_Auth = "http://35.201.152.0:3000/"
+const base_URL_User = "http://35.201.152.0:4000/"
 const base_URL_House = "http://35.201.152.0:5000/"
 // export default axios.create({
 //     baseURL: base_URL_User || base_URL_House,
@@ -10,7 +11,7 @@ const base_URL_House = "http://35.201.152.0:5000/"
 
 
 const LoginRegisterAxios = axios.create({
-    baseURL: base_URL_User,
+    baseURL: base_URL_Auth,
     // timeout: 1000,
     headers: { 'Content-Type': 'application/json' }
 })
@@ -21,10 +22,10 @@ const HouseAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
-const HouseListAxios = axios.create({
-    baseURL: base_URL_House,
+const UserAxios = axios.create({
+    baseURL: base_URL_User,
     // timeout: 1000,
-    // headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' }
 })
 
-export {LoginRegisterAxios, HouseAxios, HouseListAxios}
+export {LoginRegisterAxios, HouseAxios, UserAxios}

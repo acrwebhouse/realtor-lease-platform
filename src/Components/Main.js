@@ -199,7 +199,7 @@ const Main = () => {
             上傳租屋
           </Menu.Item>
           <Menu.Item key='4' id="memberListMenu" style={{'display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
-            人員列表
+            會員列表
           </Menu.Item>
           <Menu.Item key='5' id="memberInfoMenu" style={{'display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
