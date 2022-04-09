@@ -135,43 +135,43 @@ const HousesList = (props) => {
             }
         }
 
-        if(getHousesArg.city !==''){
+        if(getHousesArg.city !=='' && getHousesArg.city !==undefined){
             reqUrl = `${reqUrl}&&city=${getHousesArg.city}`
         }
-        if(getHousesArg.area !==''){
+        if(getHousesArg.area !=='' && getHousesArg.area !==undefined){
             reqUrl = `${reqUrl}&&area=${getHousesArg.area}`
         }
-        if(getHousesArg.parking !==''){
+        if(getHousesArg.parking !=='' && getHousesArg.parking !==undefined){
             reqUrl = `${reqUrl}&&parking=${getHousesArg.parking}`
         }
-        if(getHousesArg.pet !==''){
+        if(getHousesArg.pet !=='' && getHousesArg.pet !==undefined){
             reqUrl = `${reqUrl}&&pet=${getHousesArg.pet}`
         }
-        if(getHousesArg.manager !==''){
+        if(getHousesArg.manager !=='' && getHousesArg.manager !==undefined){
             reqUrl = `${reqUrl}&&manager=${getHousesArg.manager}`
         }
-        if(getHousesArg.garbage !==''){
+        if(getHousesArg.garbage !=='' && getHousesArg.garbage !==undefined){
             reqUrl = `${reqUrl}&&garbage=${getHousesArg.garbage}`
         }
-        if(getHousesArg.smoke !==''){
+        if(getHousesArg.smoke !=='' && getHousesArg.smoke !==undefined){
             reqUrl = `${reqUrl}&&smoke=${getHousesArg.smoke}`
         }
-        if(getHousesArg.cook !==''){
+        if(getHousesArg.cook !=='' && getHousesArg.cook !==undefined){
             reqUrl = `${reqUrl}&&cook=${getHousesArg.cook}`
         }
-        if(getHousesArg.typeOfRental !==''){
+        if(getHousesArg.typeOfRental !=='' && getHousesArg.typeOfRental !==undefined){
             reqUrl = `${reqUrl}&&typeOfRental=${getHousesArg.typeOfRental}`
         }
-        if(getHousesArg.buildingType !==''){
+        if(getHousesArg.buildingType !=='' && getHousesArg.buildingType !==undefined){
             reqUrl = `${reqUrl}&&buildingType=${getHousesArg.buildingType}`
         }
-        if(getHousesArg.timeSort !==''){
+        if(getHousesArg.timeSort !=='' && getHousesArg.timeSort !==undefined){
             reqUrl = `${reqUrl}&&timeSort=${getHousesArg.timeSort}`
         }
-        if(getHousesArg.pingSort !==''){
+        if(getHousesArg.pingSort !=='' && getHousesArg.pingSort !==undefined){
             reqUrl = `${reqUrl}&&pingSort=${getHousesArg.pingSort}`
         }
-        if(getHousesArg.priceSort !==''){
+        if(getHousesArg.priceSort !=='' && getHousesArg.priceSort !==undefined){
             reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
         }
         HouseAxios.get(

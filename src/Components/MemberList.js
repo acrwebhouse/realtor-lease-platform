@@ -36,6 +36,22 @@ const MemberList = () => {
     const [areaOptions, setAreaOptions] = useState([]);
     const [init, setInit] = useState(true);
     const [selectArea, setSelectArea] = useState(null);
+    const [memberList, setMemberList] = useState([]);
+
+    let data = [
+        {
+          key: '1',
+          name: 'Chris',
+        //   account: 'test123',
+        //   gender: '男',
+          phone: '0912636123',
+        //   mail: "acr.webffhousve@gmail.com",
+          roles: 'admin,host,user,sales',
+        //   rolesInfo : '銷售城市：台北市,',
+        //   updateTime : '2022-01-29T07:59:23.792Z'
+          content:['帳號：test123','性別：男']
+        }
+      ];
 
     const [getUserListArg] = useState({
         start : '0',
@@ -56,8 +72,6 @@ const MemberList = () => {
     }, )
 
     const getUserList = () => {
-        console.log(getUserListArg)
-        
         let reqUrl = `${userListUrl}?start=${getUserListArg.start}&&count=${getUserListArg.count}`
         const textQuery= document.getElementById('textQuery');
         
@@ -68,16 +82,20 @@ const MemberList = () => {
             }
         }
 
-        if(getUserListArg.roles !==''){
+        if(getUserListArg.roles !=='' && getUserListArg.roles !==undefined){
             reqUrl = `${reqUrl}&&roles=[${getUserListArg.roles}]`
         }
 
-        if(getUserListArg.salesCity !==''){
+        if(getUserListArg.salesCity !==''&& getUserListArg.salesCity !==undefined){
             reqUrl = `${reqUrl}&&salesCity=${getUserListArg.salesCity}`
         }
         
-        if(getUserListArg.salesArea !==''){
+        if(getUserListArg.salesArea !==''&& getUserListArg.salesArea !==undefined){
             reqUrl = `${reqUrl}&&salesArea=${getUserListArg.salesArea}`
+        }
+
+        if(getUserListArg.timeSort !==''&& getUserListArg.timeSort !==undefined){
+            reqUrl = `${reqUrl}&&timeSort=${getUserListArg.timeSort}`
         }
         UserAxios.get(
             reqUrl,{
@@ -87,9 +105,68 @@ const MemberList = () => {
             }
         )
         .then( (response) => {
-            console.log(response)
+            // console.log(response)
+            resolveMemberList(response)
         })
         .catch( (error) => alert(error))
+    }
+
+    function resolveMemberList(response){
+        data = []
+        if(response.data && response.data.data){
+            const items = response.data.data
+            for(let i = 0 ;i<items.length; i++){
+                const item = {
+                    key: i,
+                    name: items[i].name,
+                    content: [`帳號 : ${items[i].account}`,`電話 : ${items[i].phone}`],
+                    }
+                if(items[i].gender === true){
+                    item.content.push('性別 : 男')
+                }else{
+                    item.content.push('性別 : 女')
+                }
+                let roles = '角色 : '
+                let salesCity = '銷售城市 : '
+                let salesArea = '銷售區域 : '
+                for(let j = 0 ;j<items[i].roles.length; j++){
+                    switch(items[i].roles[j]){
+                        case 1 :
+                            roles = roles + ' admin'
+                            break;
+                        case 2 :
+                            roles = roles + ' host'
+                            break;
+                        case 3 :
+                            roles = roles + ' user'
+                             break;
+                        case 4 :
+                            roles = roles + ' sales'
+                            const sales = items[i].rolesInfo.sales
+                            if(sales){
+                                const scope = sales.scope
+                                if(scope !== null && scope !==undefined){
+                                    for(let k = 0 ;k<scope.length;k++){
+                                        salesCity = salesCity + ' '+scope[k].city
+                                        salesArea = salesArea + ' '+scope[k].area
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+        
+                    }
+                }
+                item.content.push(roles)
+                item.content.push(salesCity)
+                item.content.push(salesArea)
+                item.content.push(`更新時間 : ${items[i].updateTime}`)
+                item.content.push(items[i]._id)
+
+                data.push(item)
+            }
+            setMemberList(data)
+        }
     }
 
     function changeSort(sort) {
@@ -219,6 +296,209 @@ const MemberList = () => {
         }   
     }
 
+
+/*
+
+let data = [
+        {
+          key: '1',
+          name: 'Chris',
+          account: 'test123',
+          gender: '男',
+          phone: '0912636123',
+          mail: "acr.webffhousve@gmail.com",
+          roles: [1, 2, 3, 4],
+          rolesInfo : 'rolesInfo',
+          updateTime : '2022-01-29T07:59:23.792Z'
+        }
+      ];
+
+*/
+
+function queryUser(userId){
+    console.log(userId)
+    alert("查看 userId: "+userId)
+}
+
+function removeUser(userId){
+}
+
+  function editUser(userId){
+    console.log(userId)
+    alert("修改 userId: "+userId)
+  }
+
+    const columns = [
+        {
+          title: '名稱',
+          dataIndex: 'name',
+          key: 'name',
+          width:'100px',
+          render: (name) => {
+            return <div style={{
+                'textAlign': 'center',
+            }}>
+              {name}
+            </div>
+            },
+        },
+          {
+            title: '內容',
+            dataIndex: 'content',
+            key: 'content',
+            //  width:'100px',
+            render: (content) => {
+              return <div style={{
+                  'textAlign': 'center',
+              }}>
+                  <div style={{
+                  'display': 'inline-block',
+                  'textAlign': 'left',
+                  }}>
+                      {content[0]}
+                      <br/>
+                      {content[1]}
+                      <br/>
+                      {content[2]}
+                      <br/>
+                      {content[3]}
+                      <br/>
+                      {content[4]}
+                      <br/>
+                      {content[5]}
+                      <br/>
+                      {content[6]}
+                      <br/>
+                <div >
+                    <Button type="primary" onClick={() => queryUser(content[7])} style={{width: '70px' }}>
+                        查看
+                    </Button>
+                    
+                    <Button type="primary" onClick={() => editUser(content[7])} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                        編輯
+                    </Button>
+                    
+                    <Button type="primary" onClick={() => removeUser(content[7])} danger style={{width: '70px'}}>
+                        刪除
+                    </Button>
+                    </div>
+              </div>
+              </div>
+              },
+          },
+        // {
+        //     title: '帳號',
+        //     dataIndex: 'account',
+        //     key: 'account',
+        //     render: (account) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {account}
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '性別',
+        //     dataIndex: 'gender',
+        //     key: 'gender',
+        //     render: (gender) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {gender}
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '電話',
+        //     dataIndex: 'phone',
+        //     key: 'phone',
+        //     width:'100px',
+        //     render: (phone) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {phone}
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '信箱',
+        //     dataIndex: 'mail',
+        //     key: 'mail',
+        //     render: (mail) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {mail}
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '角色',
+        //     dataIndex: 'roles',
+        //     key: 'roles',
+        //     //  width:'100px',
+        //     render: (roles) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {roles}
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '操作',
+        //     dataIndex: 'userId',
+        //     key: 'userId',
+        //     //  width:'100px',
+        //     render: (userId) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         <div >
+        //             <Button type="primary" onClick={() => queryUser(userId)} style={{width: '70px' }}>
+        //                 查看
+        //             </Button>
+                    
+        //             <Button type="primary" onClick={() => editUser(userId)} style={{width: '70px',backgroundColor : '#00cc00' }}>
+        //                 編輯
+        //             </Button>
+                    
+        //             <Button type="primary" onClick={() => removeUser(userId)} danger style={{width: '70px'}}>
+        //                 刪除
+        //             </Button>
+        //             </div>
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '角色資料',
+        //     dataIndex: 'rolesInfo',
+        //     key: 'rolesInfo',
+        //     render: (rolesInfo) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {rolesInfo}
+        //       </div>
+        //       },
+        //   },
+        //   {
+        //     title: '更新時間',
+        //     dataIndex: 'updateTime',
+        //     key: 'updateTime',
+        //     render: (updateTime) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {updateTime}
+        //       </div>
+        //       },
+        //   },
+      ];
+
     return (
 
         <div>
@@ -269,6 +549,23 @@ const MemberList = () => {
                 <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
 
+            <br></br><br></br><br></br>
+        <Row>
+            <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+            <Table
+                columns={columns}
+                pagination={{ position: ['topLeft', 'bottomRight'] }}
+                dataSource={memberList}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClick: event => {
+                    }, // click row
+                };}}
+            />
+            </Col>
+            <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+        </Row>
         </div>
     );
 };
