@@ -113,8 +113,10 @@ const Main = () => {
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
-        const webPage = document.getElementById('webPage');
-        webPage.src = '/housesList'
+        if( isShowHousesList === false ){
+            turnOffPage()
+            setIsShowHousesList(true)
+        }
     }
 
     function loginSignInIsOpen(status){
