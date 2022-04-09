@@ -1,8 +1,5 @@
 import React, {useEffect, useState,createRef} from 'react';
-import {Table, Tag, Radio, Button, Image, Menu, Select, Divider, Row, Col, Span, message, Alert, Space} from "antd";
-import { PlusOutlined } from '@ant-design/icons';
-import {HouseListAxios} from './axiosApi'
-import { defaultIconPrefixCls } from 'antd/lib/config-provider';
+import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
 
 import {
@@ -18,6 +15,10 @@ import {
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
+import MyHousesList from "./MyHousesList";
+import UploadHouse from "./UploadHouse";
+import MemberList from "./MemberList";
+import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
 
 let token = ''
@@ -28,6 +29,19 @@ const Main = () => {
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('flex');
     const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('none');
     const [isShowLoginSignIn, setIsShowLoginSignIn] = useState(false);
+    const [isShowHousesList, setIsShowHousesList] = useState(true);
+    const [isShowMyHousesList, setIsShowMyHousesList] = useState(false);
+    const [isShowUploadHouse, setIsShowUploadHouse] = useState(false);
+    const [isShowMemberList, setIsShowMemberList] = useState(false);
+    const [isShowMemberInfo, setIsShowMemberInfo] = useState(false);
+
+    function turnOffPage(){
+        setIsShowHousesList(false)
+        setIsShowMyHousesList(false)
+        setIsShowUploadHouse(false)
+        setIsShowMemberList(false)
+        setIsShowMemberInfo(false)
+    }
 
     function toggleCollapsed() {
         const mainMenu = document.getElementById('mainMenu');
@@ -53,31 +67,31 @@ const Main = () => {
 
     function housesList(){
         console.log('housesList')
-        const webPage = document.getElementById('webPage');
-        webPage.src = '/housesList'
+        turnOffPage()
+        setIsShowHousesList(true)
     }
 
     function myHousesList(){
         console.log('myHousesList')
-        const webPage = document.getElementById('webPage');
-        webPage.src = '/MyHousesList'
+        turnOffPage()
+        setIsShowMyHousesList(true)
     }
     function uploadHouse(){
         console.log('uploadHouse')
-        const webPage = document.getElementById('webPage');
-        webPage.src = '/UploadHouse'
+        turnOffPage()
+        setIsShowUploadHouse(true)
     }
     
     function memberList(){
         console.log('memberList')
-        const webPage = document.getElementById('webPage');
-        webPage.src = '/MemberList'
+        turnOffPage()
+        setIsShowMemberList(true)
     }
 
     function memberInfo(){
         console.log('memberInfo')
-        const webPage = document.getElementById('webPage');
-        webPage.src = '/MemberInfo'
+        turnOffPage()
+        setIsShowMemberInfo(true)
     }
 
     function loginSignIn(){
@@ -197,12 +211,27 @@ const Main = () => {
         </Menu>
         
       </div>
-      <iframe
-        style={{'position':'absolute','zIndex':1 ,'border':0,'width':'100%','height':'100%'}}
-        src='/HousesList'
-        id='webPage'
-        //onLoad={this.sendToken}
-    />
+    
+    {
+        isShowHousesList?(<HousesList></HousesList>):null           
+    }
+
+    {
+        isShowMyHousesList?(<MyHousesList></MyHousesList>):null           
+    }
+
+    {
+        isShowUploadHouse?(<UploadHouse></UploadHouse>):null           
+    }
+
+    {
+        isShowMemberList?(<MemberList></MemberList>):null           
+    }
+
+    {
+        isShowMemberInfo?(<MemberInfo></MemberInfo>):null           
+    }
+
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
             <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeRolesMenu={changeRolesMenu} ></LoginSignIn>
         </div>
