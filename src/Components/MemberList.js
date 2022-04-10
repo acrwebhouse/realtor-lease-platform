@@ -296,25 +296,6 @@ const MemberList = () => {
         }   
     }
 
-
-/*
-
-let data = [
-        {
-          key: '1',
-          name: 'Chris',
-          account: 'test123',
-          gender: '男',
-          phone: '0912636123',
-          mail: "acr.webffhousve@gmail.com",
-          roles: [1, 2, 3, 4],
-          rolesInfo : 'rolesInfo',
-          updateTime : '2022-01-29T07:59:23.792Z'
-        }
-      ];
-
-*/
-
 function queryUser(userId){
     console.log(userId)
     alert("查看 userId: "+userId)
@@ -386,117 +367,6 @@ function removeUser(userId){
               </div>
               },
           },
-        // {
-        //     title: '帳號',
-        //     dataIndex: 'account',
-        //     key: 'account',
-        //     render: (account) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {account}
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '性別',
-        //     dataIndex: 'gender',
-        //     key: 'gender',
-        //     render: (gender) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {gender}
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '電話',
-        //     dataIndex: 'phone',
-        //     key: 'phone',
-        //     width:'100px',
-        //     render: (phone) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {phone}
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '信箱',
-        //     dataIndex: 'mail',
-        //     key: 'mail',
-        //     render: (mail) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {mail}
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '角色',
-        //     dataIndex: 'roles',
-        //     key: 'roles',
-        //     //  width:'100px',
-        //     render: (roles) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {roles}
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '操作',
-        //     dataIndex: 'userId',
-        //     key: 'userId',
-        //     //  width:'100px',
-        //     render: (userId) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         <div >
-        //             <Button type="primary" onClick={() => queryUser(userId)} style={{width: '70px' }}>
-        //                 查看
-        //             </Button>
-                    
-        //             <Button type="primary" onClick={() => editUser(userId)} style={{width: '70px',backgroundColor : '#00cc00' }}>
-        //                 編輯
-        //             </Button>
-                    
-        //             <Button type="primary" onClick={() => removeUser(userId)} danger style={{width: '70px'}}>
-        //                 刪除
-        //             </Button>
-        //             </div>
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '角色資料',
-        //     dataIndex: 'rolesInfo',
-        //     key: 'rolesInfo',
-        //     render: (rolesInfo) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {rolesInfo}
-        //       </div>
-        //       },
-        //   },
-        //   {
-        //     title: '更新時間',
-        //     dataIndex: 'updateTime',
-        //     key: 'updateTime',
-        //     render: (updateTime) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {updateTime}
-        //       </div>
-        //       },
-        //   },
       ];
 
     return (
@@ -529,13 +399,13 @@ function removeUser(userId){
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear id="citySelect" placeholder="縣市" options={cityOptions} onChange={changeCity} style={{
+                    <Select allowClear id="citySelect" placeholder="銷售縣市" options={cityOptions} onChange={changeCity} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                    <Select id="area" value={selectArea}  allowClear placeholder="銷售區域" options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
                     </Select>
