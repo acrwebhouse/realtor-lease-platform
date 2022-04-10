@@ -4,6 +4,7 @@ import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 
 const userListUrl = 'user/getUserList'
+const removeUserUrl = 'user/removeUser'
 
 const MemberList = () => {
     const xToken = cookie.load('x-token')
@@ -302,6 +303,28 @@ function queryUser(userId){
 }
 
 function removeUser(userId){
+    const reqUrl = `${removeUserUrl}`
+
+    UserAxios.delete(
+        reqUrl,{
+            headers:{
+                'x-Token':xToken
+            },
+            data: {
+                ids: [userId]
+            }
+        }
+    )
+    .then( (response) => {
+        if(response.data.status === true){
+            getUserList()
+            message.success('刪除成功', 3);
+        }else{
+            message.error(response.data.data, 3)
+        }
+    })
+    .catch( (error) => message.error(error, 3))
+
 }
 
   function editUser(userId){
