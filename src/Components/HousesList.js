@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Row, Col, message, Alert, Space} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Row, Col, message} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseAxios} from './axiosApi'
 import { defaultIconPrefixCls } from 'antd/lib/config-provider';
@@ -184,7 +184,7 @@ const HousesList = (props) => {
         .then( (response) => {
             resolveHousesList(response)
         })
-        .catch( (error) => alert(error))
+        .catch( (error) => message.error(error, 3))
     }
     
     function resolveHousesList(response){
@@ -670,10 +670,10 @@ const HousesList = (props) => {
                 getHousesList()
                 message.success('刪除成功', 3);
             }else{
-                alert(response.data.data)
+                message.error(response.data.data, 3)
             }
         })
-        .catch( (error) => alert(error))
+        .catch( (error) => message.error(error, 3))
     }
 
       function editHouse(houseId){

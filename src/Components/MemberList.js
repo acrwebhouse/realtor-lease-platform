@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message, Alert, Space} from "antd";
+import {Table,  Button, Input, Select, Row, Col, message} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 
@@ -108,7 +108,7 @@ const MemberList = () => {
             // console.log(response)
             resolveMemberList(response)
         })
-        .catch( (error) => alert(error))
+        .catch( (error) => message.error(error, 3))
     }
 
     function resolveMemberList(response){
