@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import HousesList from "./Components/HousesList";
 import HouseDetail from "./Components/HouseDetail";
-import UploadHouse from "./Components/UploadHouse";
+import HouseUpload from "./Components/HouseUpload";
 import MyHousesList from "./Components/MyHousesList";
 import MemberList from "./Components/MemberList";
 import MemberInfo from "./Components/MemberInfo";
@@ -25,7 +25,7 @@ ReactDOM.render(
           {/* <Route path="/" element={<App />} /> */}
           <Route path="/" element={<Main />} />
           <Route path="/HousesList" element={<HousesList/>}/>
-          <Route path="/UploadHouse" element={<UploadHouse/>}/>
+          <Route path="/HouseUpload" element={<HouseUpload/>}/>
           <Route path="/MyHousesList" element={<MyHousesList/>}/>
           <Route path="/MemberList" element={<MemberList/>}/>
           <Route path="/MemberInfo" element={<MemberInfo/>}/>
@@ -48,3 +48,7 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
+
+

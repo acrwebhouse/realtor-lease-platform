@@ -17,6 +17,8 @@ import {
 import HousesList from "./HousesList";
 import MyHousesList from "./MyHousesList";
 import UploadHouse from "./UploadHouse";
+import HouseUpload from "./HouseUpload";
+
 import MemberList from "./MemberList";
 import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
@@ -138,7 +140,6 @@ const Main = () => {
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         token = cookie.load('x-token')
-        console.log('==token===',token)
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -223,7 +224,7 @@ const Main = () => {
     }
 
     {
-        isShowUploadHouse?(<UploadHouse></UploadHouse>):null           
+        isShowUploadHouse?(<HouseUpload></HouseUpload>):null           
     }
 
     {

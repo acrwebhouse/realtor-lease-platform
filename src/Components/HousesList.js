@@ -7,10 +7,10 @@ import cookie from 'react-cookies'
 
 
 const { Option } = Select;
-
+const houseService = 'http://35.201.152.0:5000'
 const housesListUrl = 'house/getHouses'
 const removeHouseUrl = 'house/removeHouse'
-
+const houseDefaultImage = 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*'
 
 const HousesList = (props) => {
     const xToken = cookie.load('x-token')
@@ -203,11 +203,17 @@ const HousesList = (props) => {
 
                 const item = {
                     key: i,
-                    image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
                     price: items[i].price,
                     address: `地址 : ${items[i].address}`,
                     content: [items[i].name,`租金 : ${items[i].price}`, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`, `樓層 : ${items[i].floor}`],
                     }
+
+                if(items[i].photo && items[i].photo.length > 0){
+                    item.image = `${houseService}/resource/${items[i]._id}/photo/${items[i].photo[0]}`
+                }else{
+                    item.image = houseDefaultImage
+                }
+
                 if(items[i].saleInfo){
                     switch(items[i].saleInfo.typeOfRental){
                         case 1 :
