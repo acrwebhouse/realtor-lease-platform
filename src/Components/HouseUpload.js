@@ -5,6 +5,7 @@ import {HouseAxios, PicAnnexAxios} from './axiosApi'
 import { DeleteOutlined } from '@ant-design/icons';
 // import cookie from "react-cookies";
 import cookie from 'react-cookies'
+import jwt_decode from "jwt-decode";
 
 const { Option } = Select;
 
@@ -78,7 +79,11 @@ const convertString = (word) =>{
 
 const HouseUpload = () => {
     const xToken = cookie.load('x-token')
+    const decodedToken = jwt_decode(xToken);
     console.log('HouseUpload cooike x-token: '+xToken)
+    console.log('HouseUpload cooike decodedToken: '+JSON.stringify(decodedToken))
+    console.log('HouseUpload cooike id: '+decodedToken.id)
+
 
     const [form] = Form.useForm();
     const [form_photo] = Form.useForm();

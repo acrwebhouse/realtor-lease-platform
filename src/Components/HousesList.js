@@ -251,9 +251,7 @@ const HousesList = (props) => {
 
                 data.push(item)
             }
-            console.log('===222==')
             setHouses(data)
-            console.log('===333==')
         }
     }
 
