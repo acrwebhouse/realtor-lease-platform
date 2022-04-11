@@ -192,13 +192,15 @@ const HousesList = (props) => {
     }
     
     function resolveHousesList(response){
-        // console.log(response)
+        console.log(response)
         data = []
         if(response.data && response.data.data){
+
             const items = response.data.data
             setHousesListDetail([])
             setHousesListDetail(items)
             for(let i = 0 ;i<items.length; i++){
+
                 const item = {
                     key: i,
                     image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
@@ -224,14 +226,14 @@ const HousesList = (props) => {
 
                     }
                 }
-                
-                if(items[i].traffic.length >0){
+                if(items[i].traffic && items[i].traffic.length >0 ){
                     item.content.push(`交通 : 距${items[i].traffic[0].name} ${items[i].traffic[0].distance} 公尺`)
                 }
-                if(items[i].life.length >0){
+
+                if(items[i].life && items[i].life.length >0){
                     item.content.push(`生活 : 距${items[i].life[0].name} ${items[i].life[0].distance} 公尺`)
                 }
-                if(items[i].educate.length >0){
+                if(items[i].educate && items[i].educate.length >0){
                     item.content.push(`教育 : 距${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
                 }
                 item.content.push(`更新時間 : ${items[i].updateTime}`)
@@ -243,7 +245,9 @@ const HousesList = (props) => {
 
                 data.push(item)
             }
+            console.log('===222==')
             setHouses(data)
+            console.log('===333==')
         }
     }
 
