@@ -53,6 +53,7 @@ const HousesList = (props) => {
     const [init, setInit] = useState(true);
     const [selectArea, setSelectArea] = useState(null);
     const [isShowEdit, setIsShowEdit] = useState('none');
+    const [housesListDetail, setHousesListDetail] = useState([]);
 
     useEffect(() => {
         if (init) {
@@ -88,7 +89,10 @@ const HousesList = (props) => {
         buildingType : '',
     });
 
-    
+    const openInNewTab = (url) => {
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+        if (newWindow) newWindow.opener = null
+      }
 
     const getHousesList = () => {
         if(isCustomPrice){
@@ -192,6 +196,8 @@ const HousesList = (props) => {
         data = []
         if(response.data && response.data.data){
             const items = response.data.data
+            setHousesListDetail([])
+            setHousesListDetail(items)
             for(let i = 0 ;i<items.length; i++){
                 const item = {
                     key: i,
@@ -650,7 +656,7 @@ const HousesList = (props) => {
 
     function queryHouse(houseId){
         console.log(houseId)
-        alert("查看 houseId: "+houseId)
+        openInNewTab(`/HouseDetail/${houseId}`)
     }
 
     function removeHouse(houseId){
@@ -865,12 +871,9 @@ const HousesList = (props) => {
                             console.log('event',event)
                             console.log('record',record)
                             console.log('rowIndex',rowIndex)
-                            alert("進入詳細資料")
+                            console.log(housesListDetail[record.key])
+                            openInNewTab(`/HouseDetail/${housesListDetail[record.key]._id}`)
                         }
-                        // console.log('event',event)
-                        // console.log('record',record)
-                        // console.log('rowIndex',rowIndex)
-                        // alert("進入詳細資料")
                     }, // click row
                 };}}
             />
