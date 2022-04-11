@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import cookie from "react-cookies";
 
 const base_URL_User = "http://35.201.152.0:3000/"
 const base_URL_House = "http://35.201.152.0:5000/"
@@ -8,6 +9,9 @@ const base_URL_House = "http://35.201.152.0:5000/"
 //     headers: { 'Content-Type': 'application/json' }
 // });
 
+// const XToken = cookie.load('x-token')
+// console.log(XToken)
+
 
 const LoginRegisterAxios = axios.create({
     baseURL: base_URL_User,
@@ -15,7 +19,7 @@ const LoginRegisterAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
-const HouseAxios = axios.create({
+const PicAnnexAxios = axios.create({
     baseURL: base_URL_House,
     // timeout: 1000,
     headers: {
@@ -25,4 +29,14 @@ const HouseAxios = axios.create({
     }
 })
 
-export {LoginRegisterAxios, HouseAxios}
+const HouseAxios = axios.create({
+    baseURL: base_URL_House,
+    // timeout: 1000,
+    headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        "x-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMWUxNDA1NzM0Mzg1MDAxZjE5MDg2NiIsInJvbGVzIjpbMiwzLDRdLCJpYXQiOiIyMDIyLTAzLTEzVDEzOjEyOjI5LjM5N1oifQ.i24MARH_Mc_H8BBl-S2LV0ibAy9KaTSjkCuoI648jvM"
+    }
+})
+
+export {LoginRegisterAxios, HouseAxios, PicAnnexAxios}

@@ -4,6 +4,7 @@ import './Login.css'
 import React, {useState, useEffect} from "react";
 import Register from "./Register_form";
 // import axios from "./axiosApi";
+import cookie from "react-cookies"
 import {LoginRegisterAxios} from "./axiosApi"
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
@@ -16,6 +17,9 @@ const LoginRegister = () => {
     const [LoginData, setLoginData] = useState()
     const [rememberMe, setRememberMe] = useState(false)
     const [isRunPost, setIsRunPost] = useState(false)
+    const [accountID, setAccountID] = useState('')
+    const [accountXToken, setAccountXToken] = useState('')
+    const [isTokenInCookie, setIsTokenInCookie] = useState(false)
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
@@ -54,30 +58,44 @@ const LoginRegister = () => {
 
     };
 
-    // useEffect(() => {
-    //     if (isRunPost) {
-    //         console.log(LoginData)
-    //         console.log(rememberMe)
-    //         axios.post(LOGIN_Auth, LoginData)
-    //             .then( (response) => console.log(response))
-    //             .catch( (error) => console.log(error))
-    //     }
-    //
-    //     }, [LoginData, rememberMe, isRunPost])
+    // const { decodedToken, isExpired } = useJwt(accountXToken);
+
+    // console.log(decodedToken, isExpired)
+
+
+    // cookie.load()
 
     useEffect(() => {
         if (isRunPost) {
-            // console.log(LoginData)
+            console.log(LoginData)
             // console.log(rememberMe)
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
-                .then( (response) => console.log(response))
+                .then( (response) => {
+                    console.log(response)
+                    setAccountID(response['data']['data']['_id'])
+                    setAccountXToken(response['data']['data']['token'])
+                })
                 .then(() => message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2))
                 .catch( (error) => message.error(`${error}`, 2))
 
             setIsRunPost(false)
+            setIsTokenInCookie(true)
+
         }
 
+
     }, [LoginData, rememberMe, isRunPost])
+
+    useEffect(() => {
+        if (isTokenInCookie && accountXToken.length > 0 ) {
+            cookie.save('x-token', accountXToken, {path:"/"})
+            setIsTokenInCookie(false)
+        }
+    }, [isTokenInCookie, accountXToken])
+
+    // console.log(accountID)
+
+    // console.log(cookie.load('x-token'))
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
