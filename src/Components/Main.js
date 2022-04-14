@@ -53,11 +53,13 @@ const Main = () => {
             setShowMenuUnfoldOutlined('flex')
             setShowMenuFoldOutlined('none')
             mainMenu.style.width = '0%'
+            mainMenu.style.height = '10px'
             setCollapsed(true)
         }else{
             setShowMenuUnfoldOutlined('none')
             setShowMenuFoldOutlined('flex')
             mainMenu.style.width = '100%'
+            mainMenu.style.height = 'auto'
             setCollapsed(false)
         }
         
