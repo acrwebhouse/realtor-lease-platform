@@ -604,7 +604,7 @@ const HousesList = (props) => {
           title: '影像',
           dataIndex: 'image',
           key: 'image',
-          width:'200px',
+          width:'250px',
           render: (image) => {
             return <Image
             src = {image}
@@ -654,10 +654,10 @@ const HousesList = (props) => {
                         查看
                     </Button>
                     &nbsp;
-                    <Button type="primary" onClick={() => editHouse(content[10])} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                    {/* <Button type="primary" onClick={() => editHouse(content[10])} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
-                    &nbsp;
+                    &nbsp; */}
                     <Button type="primary" onClick={() => removeHouse(content[10])} danger style={{width: '70px'}}>
                         刪除
                     </Button>
