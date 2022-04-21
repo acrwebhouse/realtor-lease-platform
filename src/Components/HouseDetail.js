@@ -7,7 +7,7 @@ import {
 
   const houseListUrl = 'house/getHouse'
 
-const HouseDetail = () => {
+const HouseDetail = (prop) => {
     const { id } = useParams();
     const [init, setInit] = useState(true);
     const [house, setHouse] = useState(true);
@@ -372,7 +372,8 @@ const HouseDetail = () => {
     
         <div>
 
-            <div Style='float:right'>
+            {
+                prop.isOwner?(<div Style='float:right'>
                     <Button type="primary" onClick={() => editHouse()} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
@@ -380,7 +381,8 @@ const HouseDetail = () => {
                     <Button type="primary" onClick={() => removeHouse()} danger style={{width: '70px'}}>
                         刪除
                     </Button>
-            </div>
+                </div>):null    
+            }
             <Divider>基本資料</Divider>
             <Row>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col>
@@ -487,6 +489,9 @@ const HouseDetail = () => {
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
             </Row>
             
+            {
+            prop.isOwner?(
+            <div>
             <Divider>附件</Divider>
             <Row>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
@@ -507,6 +512,8 @@ const HouseDetail = () => {
                 </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
             </Row> 
+            </div>):null    
+            }
 
             <Divider>交通資訊</Divider>
             <Row>
