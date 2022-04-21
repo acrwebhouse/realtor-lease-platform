@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Input, Select, Row, Col, message} from "antd";
+import {Table, Button, Image, Input, Select, Row, Col, message, Alert, Space} from "antd";
 import {HouseAxios} from './axiosApi'
 import cookie from 'react-cookies'
-
+import jwt_decode from "jwt-decode";
 
 const { Option } = Select;
 const houseService = 'http://35.201.152.0:5000'
@@ -52,6 +52,8 @@ const HousesList = (props) => {
     const [selectArea, setSelectArea] = useState(null);
     const [isShowEdit, setIsShowEdit] = useState('none');
     const [housesListDetail, setHousesListDetail] = useState([]);
+    const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
+    const [removeHouseId, setRemoveHouseId] = useState('');
 
     useEffect(() => {
         if (init) {
@@ -227,6 +229,7 @@ const HousesList = (props) => {
                             item.content.push('類型 : 雅房')
                             break;
                         default:
+                            item.content.push('類型 : 未知')
 
                     }
                 }
@@ -654,10 +657,6 @@ const HousesList = (props) => {
                         查看
                     </Button>
                     &nbsp;
-                    {/* <Button type="primary" onClick={() => editHouse(content[10])} style={{width: '70px',backgroundColor : '#00cc00' }}>
-                        編輯
-                    </Button>
-                    &nbsp; */}
                     <Button type="primary" onClick={() => removeHouse(content[10])} danger style={{width: '70px'}}>
                         刪除
                     </Button>
@@ -672,11 +671,25 @@ const HousesList = (props) => {
 
     function queryHouse(houseId){
         console.log(houseId)
-        openInNewTab(`/HouseDetail/${houseId}`)
+        const xToken = cookie.load('x-token')
+        const decodedToken = jwt_decode(xToken);
+        openInNewTab(`/HouseDetailOwner/${houseId}/${decodedToken.id}`)
+    }
+
+    function cancelRemoveHouse(){
+        setIsShowDeleteAlert(false)
     }
 
     function removeHouse(houseId){
+        console.log('=====111 ',houseId)
+        setIsShowDeleteAlert(true)
+        setRemoveHouseId(houseId)
+    }
+
+    function removeHouseAction(){
+        const houseId = removeHouseId
         const reqUrl = `${removeHouseUrl}`
+        console.log('====houseId=====',houseId)
         HouseAxios.delete(
             reqUrl,{
                 headers:{
@@ -696,12 +709,8 @@ const HousesList = (props) => {
             }
         })
         .catch( (error) => message.error(error, 3))
+        cancelRemoveHouse()
     }
-
-      function editHouse(houseId){
-        console.log(houseId)
-        alert("修改 houseId: "+houseId)
-      }
 
       let data = [
         {
@@ -716,8 +725,31 @@ const HousesList = (props) => {
       
 
     return (
-
         <div>
+            {
+            isShowDeleteAlert?(
+            <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
+            <Alert
+                afterClose={cancelRemoveHouse}
+                type="error"
+                action={
+                <Space>
+                    <Button size="small" type="ghost" onClick={removeHouseAction}>
+                        確定刪除
+                    </Button>
+                    <Button size="small" type="ghost" onClick={cancelRemoveHouse}>
+                        取消刪除
+                    </Button>
+                </Space>
+                
+                }
+            closable
+            />
+            </div>
+            ):null
+            }
+        <div>
+            
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
@@ -896,6 +928,7 @@ const HousesList = (props) => {
             </Col>
             <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
         </Row>
+        </div>
         </div>
     );
 };
