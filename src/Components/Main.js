@@ -1,4 +1,4 @@
-import React, {useEffect, useState,createRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
 
@@ -16,7 +16,6 @@ import {
 
 import HousesList from "./HousesList";
 import MyHousesList from "./MyHousesList";
-import UploadHouse from "./UploadHouse";
 import HouseUpload from "./HouseUpload";
 
 import MemberList from "./MemberList";
