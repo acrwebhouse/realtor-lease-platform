@@ -681,7 +681,6 @@ const HousesList = (props) => {
     }
 
     function removeHouse(houseId){
-        console.log('=====111 ',houseId)
         setIsShowDeleteAlert(true)
         setRemoveHouseId(houseId)
     }
@@ -689,7 +688,6 @@ const HousesList = (props) => {
     function removeHouseAction(){
         const houseId = removeHouseId
         const reqUrl = `${removeHouseUrl}`
-        console.log('====houseId=====',houseId)
         HouseAxios.delete(
             reqUrl,{
                 headers:{

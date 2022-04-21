@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, message} from "antd";
+import {Table, Button, Image, Divider, Row, Col, message, Alert, Space} from "antd";
 import {
     useParams
   } from "react-router-dom";
-  import {HouseAxios} from './axiosApi'
+import {HouseAxios} from './axiosApi'
+import cookie from 'react-cookies'
+import jwt_decode from "jwt-decode";
 
-  const houseListUrl = 'house/getHouse'
+const houseListUrl = 'house/getHouse'
+const removeHouseUrl = 'house/removeHouse'
 
 const HouseDetail = (prop) => {
     let { id } = useParams();
@@ -24,7 +27,7 @@ const HouseDetail = (prop) => {
     const [phone, setPhone] = useState('');
     const [mail, setMail] = useState('');
     const [owner, setOwner] = useState('');
-    
+    const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
 
 
 
@@ -355,8 +358,41 @@ const HouseDetail = (prop) => {
         console.log('edit')
     }
 
+
+    function cancelRemoveHouse(){
+        setIsShowDeleteAlert(false)
+    }
+
     function removeHouse(){
-        console.log('removeHouse')
+        setIsShowDeleteAlert(true)
+    }
+
+    function removeHouseAction(){
+        const houseId = id
+        const reqUrl = `${removeHouseUrl}`
+        const xToken = cookie.load('x-token')
+        HouseAxios.delete(
+            reqUrl,{
+                headers:{
+                    'x-Token':xToken
+                },
+                data: {
+                    ids: [houseId]
+                }
+            }
+        )
+        .then( (response) => {
+            if(response.data.status === true){
+                message.success('刪除成功', 3);
+                setTimeout(()=>{
+                    window.location.href = window.location.origin;
+                },3000);
+            }else{
+                message.error(response.data.data, 3)
+            }
+        })
+        .catch( (error) => message.error(error, 3))
+        cancelRemoveHouse()
     }
 
     useEffect(() => {
@@ -370,7 +406,29 @@ const HouseDetail = (prop) => {
         }
     }, )
     return (
-    
+        <div>
+            {
+            isShowDeleteAlert?(
+            <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
+            <Alert
+                afterClose={cancelRemoveHouse}
+                type="error"
+                action={
+                <Space>
+                    <Button size="small" type="ghost" onClick={removeHouseAction}>
+                        確定刪除
+                    </Button>
+                    <Button size="small" type="ghost" onClick={cancelRemoveHouse}>
+                        取消刪除
+                    </Button>
+                </Space>
+                
+                }
+            closable
+            />
+            </div>
+            ):null
+            }
         <div>
 
             {
@@ -578,6 +636,7 @@ const HouseDetail = (prop) => {
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
             </Row> 
 
+        </div>
         </div>
     );
 };
