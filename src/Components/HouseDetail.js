@@ -8,7 +8,7 @@ import {
   const houseListUrl = 'house/getHouse'
 
 const HouseDetail = (prop) => {
-    const { id } = useParams();
+    let { id } = useParams();
     const [init, setInit] = useState(true);
     const [house, setHouse] = useState(true);
     const [housePhoto, setHousePhoto] = useState(['','','','','','','','','','']);
@@ -340,7 +340,6 @@ const HouseDetail = (prop) => {
             }
             items.push(item)
         }
-        console.log(annex)
         setAnnex(items)
     }
 
@@ -349,7 +348,6 @@ const HouseDetail = (prop) => {
         for(let i = 0 ;i<photo.length;i++){
             photo[i] = `${houseService}/resource/${house._id}/photo/${photo[i]}`
         }
-        console.log(photo)
         setHousePhoto(photo)
     }
 
@@ -363,6 +361,9 @@ const HouseDetail = (prop) => {
 
     useEffect(() => {
         if (init) {
+            if(prop.setId !== null && prop.setId !== undefined){
+                id = prop.setId
+            }
             setInit(false)
             getHouse()
             
