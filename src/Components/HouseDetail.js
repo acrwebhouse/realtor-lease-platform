@@ -355,7 +355,8 @@ const HouseDetail = (prop) => {
     }
 
     function editHouse(){
-        console.log('edit')
+        const url = window.location.origin + '/HouseDetailOwnerEdit/'+id+'/'+house.owner
+        window.location.href = url;
     }
 
 

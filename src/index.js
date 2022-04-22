@@ -9,6 +9,7 @@ import MyHousesList from "./Components/MyHousesList";
 import MemberList from "./Components/MemberList";
 import MemberInfo from "./Components/MemberInfo";
 import HouseDetailOwner from "./Components/HouseDetailOwner";
+import HouseDetailOwnerEdit from "./Components/HouseDetailOwnerEdit";
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Main from "./Components/Main";
@@ -32,6 +33,7 @@ ReactDOM.render(
           <Route path="/MemberInfo" element={<MemberInfo/>}/>
           <Route path="/HouseDetail/:id" element={<HouseDetail/>}/>
           <Route path="/HouseDetailOwner/:id/:owner" element={<HouseDetailOwner/>}/>
+          <Route path="/HouseDetailOwnerEdit/:id/:owner" element={<HouseDetailOwnerEdit/>}/>
 
       </Routes>
 
