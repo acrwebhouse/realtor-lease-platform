@@ -8,7 +8,9 @@ const MemberInfo = () => {
     const [init, setInit] = useState(true);
     const [user, setUser] = useState({});
     const [isEdit, seIsEdit] = useState(false);
-    const [roles, seRoles] = useState([]);
+    const [roles, setRoles] = useState([]);
+    const [salesLicense, setSalesLicense] = useState('');
+    const [salesScope, setSalesScope] = useState('');
     const xToken = cookie.load('x-token')
 
     useEffect(() => {
@@ -29,23 +31,42 @@ const getPersonalInfo = () => {
     )
     .then( (response) => {
         console.log(response)
-        setUser(response)
+        setUser(response.data.data)
         setData(response.data.data)
     })
     .catch( (error) => message.error(error, 3))
 }
 
 function setData(data){
-    setRoles(data.roles)
+    setRolesAction(data.roles)
+    if(data.rolesInfo.sales){
+        if(data.rolesInfo.sales){
+            if(data.rolesInfo.sales.license){
+                setSalesLicense(data.rolesInfo.sales.license)
+            }
+            if(data.rolesInfo.sales.scope){
+                let scope = ''
+                for(let i = 0 ;i<data.rolesInfo.sales.scope.length;i++){
+                    if(i === 0){
+                        scope = scope + data.rolesInfo.sales.scope[i].city + ' ' +data.rolesInfo.sales.scope[i].area
+                    }else{
+                        scope = scope + ',' + data.rolesInfo.sales.scope[i].city + ' ' +data.rolesInfo.sales.scope[i].area
+                    }
+                    
+                }
+                setSalesScope(scope)
+            }
+        }
+    }
 }
 
-function setRoles(data){
+function setRolesAction(data){
     const result = []
     for(let i = 1;i<data.length;i++){
         result.push(''+data[i])
     }
     console.log(result)
-    seRoles(result)
+    setRoles(result)
 }
 
 function changeRoles(e){
@@ -55,14 +76,8 @@ function changeRoles(e){
     return (
 
         <div>
+            <br/><br/>
             <Divider>基本資料</Divider>
-            <Row>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
-                            textAlign: 'center',
-                }}>會員中心</Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
-            </Row>
             <Row>
                 <Col xs={24} sm={6} md={6} lg={6} xl={6}></Col>
                 <Col xs={24} sm={12} md={12} lg={12} xl={12}style={{
@@ -90,10 +105,54 @@ function changeRoles(e){
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
                             textAlign: 'center',
-                }}>{JSON.stringify(user)}</Col>
+                }}>
+                <br/>
+                <div style={{
+                  'display': 'inline-block',
+                  'textAlign': 'left',
+                  }}>
+                    帳號:&nbsp;{user.account}<br/><br/>
+                    姓名:&nbsp;{user.name}<br/><br/>
+                    性別:
+                    &nbsp; &nbsp;
+                    <Radio.Group  value={user.gender}>
+                        {
+                            isEdit?( <Radio value={true}>男</Radio>): <Radio disabled value={true}>男</Radio>
+                        }
+                        {
+                            isEdit?( <Radio value={false}>女</Radio>): <Radio disabled value={false}>女</Radio>
+                        }
+                        
+                    </Radio.Group>
+                    <br/><br/>
+                    地址:&nbsp;{user.address}<br/><br/>
+                    信箱:&nbsp;{user.mail}<br/><br/>
+                    電話:&nbsp;{user.phone}<br/><br/>
+                    </div>
+                
+                </Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
             </Row>
+            
             <Divider>房仲資料</Divider>
+            <Row>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
+                            textAlign: 'center',
+                }}>
+                <br/>
+                <div style={{
+                  'display': 'inline-block',
+                  'textAlign': 'left',
+                  }}>
+                    License:&nbsp;{salesLicense}<br/><br/>
+                    負責區域:&nbsp;{salesScope}<br/><br/>
+                    </div>
+                
+                </Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
+            </Row>
+            
         </div>
     );
 };
