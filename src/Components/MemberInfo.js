@@ -11,6 +11,7 @@ const MemberInfo = () => {
     const [roles, setRoles] = useState([]);
     const [salesLicense, setSalesLicense] = useState('');
     const [salesScope, setSalesScope] = useState('');
+    const [gender, setGender] = useState([]);
     const xToken = cookie.load('x-token')
 
     useEffect(() => {
@@ -39,6 +40,7 @@ const getPersonalInfo = () => {
 
 function setData(data){
     setRolesAction(data.roles)
+    setGender(data.gender)
     if(data.rolesInfo.sales){
         if(data.rolesInfo.sales){
             if(data.rolesInfo.sales.license){
@@ -70,12 +72,40 @@ function setRolesAction(data){
 }
 
 function changeRoles(e){
-    console.log(e)
+    setRoles(e)
+}
+
+function changeGender(e){
+    setGender(e.target.value)
+
+}
+function edit(){
+    seIsEdit(true)
+}
+
+function cancelEdit(){
+    seIsEdit(false)
 }
 
     return (
 
         <div>
+            <div Style='float:right'>
+            {isEdit?(
+                    <div>
+                    <Button type="primary" onClick={() => edit()} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                        提交
+                    </Button>
+                    &nbsp; 
+                    <Button type="primary" onClick={() => cancelEdit()} danger style={{width: '70px'}}>
+                        取消
+                    </Button>
+                    </div>
+                    ): <Button type="primary" onClick={() => edit()} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                        編輯
+                    </Button>
+}
+                </div>
             <br/><br/>
             <Divider>基本資料</Divider>
             <Row>
@@ -115,7 +145,7 @@ function changeRoles(e){
                     姓名:&nbsp;{user.name}<br/><br/>
                     性別:
                     &nbsp; &nbsp;
-                    <Radio.Group  value={user.gender}>
+                    <Radio.Group  value={gender} onChange={changeGender}>
                         {
                             isEdit?( <Radio value={true}>男</Radio>): <Radio disabled value={true}>男</Radio>
                         }
