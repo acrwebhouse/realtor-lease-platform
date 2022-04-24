@@ -64,10 +64,12 @@ function setData(data){
 
 function setRolesAction(data){
     const result = []
-    for(let i = 1;i<data.length;i++){
-        result.push(''+data[i])
+    for(let i = 0;i<data.length;i++){
+        if(data[i] === 2 ||data[i] === 3 ||data[i] === 4 ){
+            result.push(''+data[i])
+        }
+        
     }
-    console.log(result)
     setRoles(result)
 }
 
@@ -142,7 +144,8 @@ function cancelEdit(){
                   'textAlign': 'left',
                   }}>
                     帳號:&nbsp;{user.account}<br/><br/>
-                    姓名:&nbsp;{user.name}<br/><br/>
+                    {isEdit?( <div >姓名:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.name}></Input></div>): <div>姓名:&nbsp;{user.name}</div> }
+                    <br/>
                     性別:
                     &nbsp; &nbsp;
                     <Radio.Group  value={gender} onChange={changeGender}>
@@ -155,9 +158,12 @@ function cancelEdit(){
                         
                     </Radio.Group>
                     <br/><br/>
-                    地址:&nbsp;{user.address}<br/><br/>
-                    信箱:&nbsp;{user.mail}<br/><br/>
-                    電話:&nbsp;{user.phone}<br/><br/>
+                    {isEdit?( <div >地址:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.address}></Input></div>): <div>地址:&nbsp;{user.address}</div> }
+                    <br/>
+                    {isEdit?( <div >信箱:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.mail}></Input></div>): <div>信箱:&nbsp;{user.mail}</div> }
+                    <br/>
+                    {isEdit?( <div >電話:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.phone}></Input></div>): <div>電話:&nbsp;{user.phone}</div> }
+                    <br/>
                     </div>
                 
                 </Col>
@@ -175,8 +181,9 @@ function cancelEdit(){
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    License:&nbsp;{salesLicense}<br/><br/>
-                    負責區域:&nbsp;{salesScope}<br/><br/>
+                    {isEdit?( <div >License:&nbsp;<Input style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>License:&nbsp;{salesLicense}</div> }
+                    <br/>
+                    {isEdit?( <div >負責區域:&nbsp;<Input style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>負責區域:&nbsp;{salesScope}</div> }
                     </div>
                 
                 </Col>
