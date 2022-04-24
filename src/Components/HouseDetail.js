@@ -20,10 +20,10 @@ const HouseDetail = (prop) => {
     const [typeOfRental, setTypeOfRental] = useState('');
     const [pattern, setPattern] = useState('');
     const [feature, setFeature] = useState('');
-    const [traffic, setTraffic] = useState([]);
-    const [life, setLife] = useState([]);
-    const [educate, setEducate] = useState([]);
-    const [annex, setAnnex] = useState([]);
+    const [traffic, setTraffic] = useState(null);
+    const [life, setLife] = useState(null);
+    const [educate, setEducate] = useState(null);
+    const [annex, setAnnex] = useState(null);
     const [phone, setPhone] = useState('');
     const [mail, setMail] = useState('');
     const [owner, setOwner] = useState('');
@@ -105,7 +105,6 @@ const HouseDetail = (prop) => {
         .then( (response) => {
             setHouse(response)
             resolveHouse(response)
-            // changeBuildType()
         })
         .catch( (error) => message.error(error, 3))
     }
@@ -332,18 +331,20 @@ const HouseDetail = (prop) => {
 
     function changeHouseAnnex(house){
         let annex = house.annex
-        const items = []
-        for(let i = 0 ;i<annex.length;i++){
-            annex[i] = `${houseService}/resource/${house._id}/annex/${annex[i]}`
-            
-            const item = {
-                index : i+1,
-                content :[basename(annex[i]),annex[i]]
-
+        if(annex){
+            const items = []
+            for(let i = 0 ;i<annex.length;i++){
+                annex[i] = `${houseService}/resource/${house._id}/annex/${annex[i]}`
+                
+                const item = {
+                    index : i+1,
+                    content :[basename(annex[i]),annex[i]]
+    
+                }
+                items.push(item)
             }
-            items.push(item)
+            setAnnex(items)
         }
-        setAnnex(items)
     }
 
     function changeHousePhoto(house){
