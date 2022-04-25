@@ -55,7 +55,7 @@ const AnnexTemp = []
 //     }
 // }
 
-const HouseUpload = () => {
+const HouseUpload = (prop) => {
     const xToken = cookie.load('x-token')
     const decodedToken = jwt_decode(xToken);
     console.log('HouseUpload cookie x-token: '+xToken)
@@ -465,7 +465,10 @@ const HouseUpload = () => {
     console.log(PictureList)
     return (
 
-        <div>
+        <div>          
+                {
+                prop.defaultValue?(JSON.stringify(prop)):null    
+                }
                 <Form
                     
                     form={form_photo}
