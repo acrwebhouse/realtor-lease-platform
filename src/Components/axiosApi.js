@@ -6,9 +6,9 @@ import cookie from 'react-cookies'
 
 const xToken = cookie.load('x-token')
 
-const base_URL_Auth = "http://35.201.152.0:3000/"
-const base_URL_User = "http://35.201.152.0:4000/"
-const base_URL_House = "http://35.201.152.0:5000/"
+const base_URL_Auth = "http://34.81.209.11:3000/"
+const base_URL_User = "http://34.81.209.11:4000/"
+const base_URL_House = "http://34.81.209.11:5000/"
 // export default axios.create({
 //     baseURL: base_URL_User || base_URL_House,
 //     // timeout: 1000,

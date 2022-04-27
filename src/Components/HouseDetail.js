@@ -15,7 +15,7 @@ const HouseDetail = (prop) => {
     const [init, setInit] = useState(true);
     const [house, setHouse] = useState(true);
     const [housePhoto, setHousePhoto] = useState(['','','','','','','','','','']);
-    const houseService = 'http://35.201.152.0:5000'
+    const houseService = 'http://34.81.209.11:5000'
     const [buildingType, setBuildingType] = useState('');
     const [typeOfRental, setTypeOfRental] = useState('');
     const [pattern, setPattern] = useState('');
