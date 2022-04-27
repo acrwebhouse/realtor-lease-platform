@@ -165,7 +165,10 @@ const HouseUpload = (prop) => {
         // console.log(RegisterData)
         // console.log(CityAreaScope)
         if (isRunPost) {
-            HouseAxios.post(House_Auth, HouseData)
+            HouseAxios.post(House_Auth, HouseData,{
+                headers: {
+                    'x-Token':xToken,
+                }})
                 // .then( (response) => console.log(response.data.status))
                 .then((response) => {
                     console.log(response.data)
@@ -402,6 +405,7 @@ const HouseUpload = (prop) => {
         console.log(formData.values())
         PicAnnexAxios.post(House_Pic_Auth, formData, {
             headers: {
+                'x-Token':xToken,
                 "Content-Type": "multipart/form-data",
             }})
             .then( (response) => {
@@ -431,6 +435,7 @@ const HouseUpload = (prop) => {
         console.log(AnnexList)
         PicAnnexAxios.post(House_Annex_Auth, formData, {
             headers: {
+                'x-Token':xToken,
                 "Content-Type": "multipart/form-data",
             }})
             .then( (response) => {
