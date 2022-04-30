@@ -54,6 +54,7 @@ const HousesList = (props) => {
     const [housesListDetail, setHousesListDetail] = useState([]);
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [removeHouseId, setRemoveHouseId] = useState('');
+    const [size, setSize] = useState("large");
 
     useEffect(() => {
         if (init) {
@@ -753,12 +754,13 @@ const HousesList = (props) => {
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
+                            height: '40px',
                         }}>
                         搜尋
                     </Button>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
+                    <Select allowClear placeholder="排序:默認時間近到遠" size={size} options={sortOptions} onChange={changeSort} style={{
                             width: '100%',
                         }}>
                     </Select>
@@ -766,6 +768,7 @@ const HousesList = (props) => {
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Input id="textQuery" placeholder="文字搜尋 : 捷運,夜市,路段,學校..."  style={{
                             width: '100%',
+                            height: '40px',
                         }}>
                     </Input>
                 </Col>
@@ -775,19 +778,19 @@ const HousesList = (props) => {
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear id="citySelect" placeholder="縣市" options={cityOptions} onChange={changeCity} style={{
+                    <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                    <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="類型"  options={typeOfRentalOptions} onChange={changeTypeOfRental} style={{
+                    <Select allowClear placeholder="類型" size={size}  options={typeOfRentalOptions} onChange={changeTypeOfRental} style={{
                             width: '100%',
                         }}>
                     </Select>
@@ -798,19 +801,19 @@ const HousesList = (props) => {
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear mode="multiple"  placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
+                    <Select allowClear mode="multiple" size={size}  placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear  placeholder="格局" options={roomOptions} onChange={changeRoom} style={{
+                    <Select allowClear  placeholder="格局" size={size} options={roomOptions} onChange={changeRoom} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="型態"  options={buildingTypeOptions} onChange={changeBuildingType} style={{
+                    <Select allowClear placeholder="型態" size={size}  options={buildingTypeOptions} onChange={changeBuildingType} style={{
                             width: '100%',
                         }}>
                     </Select>
@@ -821,21 +824,21 @@ const HousesList = (props) => {
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="租金" options={priceOptions} onChange={changePrice} style={{
+                    <Select allowClear placeholder="租金" size={size} options={priceOptions} onChange={changePrice} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="坪數" options={pingOptions} onChange={changePing} style={{
+                    <Select allowClear placeholder="坪數" size={size} options={pingOptions} onChange={changePing} style={{
                             width: '100%',
                         }}>
                     </Select>
                     
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="樓層" options={floorOptions} onChange={changeFloor} style={{
+                    <Select allowClear placeholder="樓層" size={size} options={floorOptions} onChange={changeFloor} style={{
                             width: '100%',
                         }}>
                     </Select>
