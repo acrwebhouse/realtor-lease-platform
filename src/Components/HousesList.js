@@ -54,7 +54,7 @@ const HousesList = (props) => {
     const [housesListDetail, setHousesListDetail] = useState([]);
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [removeHouseId, setRemoveHouseId] = useState('');
-    const [size, setSize] = useState("large");
+    const [size] = useState("large");
 
     useEffect(() => {
         if (init) {

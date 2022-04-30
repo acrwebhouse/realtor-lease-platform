@@ -38,6 +38,7 @@ const MemberList = () => {
     const [init, setInit] = useState(true);
     const [selectArea, setSelectArea] = useState(null);
     const [memberList, setMemberList] = useState([]);
+    const [size] = useState("large");
 
     let data = [
         {
@@ -400,12 +401,13 @@ function removeUser(userId){
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Button type="primary" onClick={getUserList} style={{
                             width: '100%',
+                            height: '40px',
                         }}>
                         搜尋
                     </Button>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="排序:默認時間近到遠" options={sortOptions} onChange={changeSort} style={{
+                    <Select allowClear placeholder="排序:默認時間近到遠" size={size} options={sortOptions} onChange={changeSort} style={{
                             width: '100%',
                         }}>
                     </Select>
@@ -413,6 +415,7 @@ function removeUser(userId){
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Input id="textQuery" placeholder="搜尋人名"  style={{
                             width: '100%',
+                            height: '40px',
                         }}>
                     </Input>
                 </Col>
@@ -422,19 +425,19 @@ function removeUser(userId){
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear id="citySelect" placeholder="銷售縣市" options={cityOptions} onChange={changeCity} style={{
+                    <Select allowClear id="citySelect" placeholder="銷售縣市" size={size} options={cityOptions} onChange={changeCity} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select id="area" value={selectArea}  allowClear placeholder="銷售區域" options={areaOptions} onChange={changeArea} style={{
+                    <Select id="area" value={selectArea}  allowClear placeholder="銷售區域" size={size} options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
                     </Select>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="角色" options={roleOptions} onChange={changeRole} style={{
+                    <Select allowClear placeholder="角色" size={size} options={roleOptions} onChange={changeRole} style={{
                             width: '100%',
                         }}>
                     </Select>
