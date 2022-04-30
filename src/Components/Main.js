@@ -26,9 +26,9 @@ let token = ''
 
 
 const Main = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('flex');
-    const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('none');
+    const [collapsed, setCollapsed] = useState(true);
+    const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('none');
+    const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('flex');
     const [isShowLoginSignIn, setIsShowLoginSignIn] = useState(false);
     const [isShowHousesList, setIsShowHousesList] = useState(true);
     const [isShowMyHousesList, setIsShowMyHousesList] = useState(false);
@@ -179,7 +179,7 @@ const Main = () => {
     return (
         <div>
         <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
-        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,marginBottom: 16 , backgroundColor:'#0080FF',height:'40px'}}>
+        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , backgroundColor:'#000000',height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>
@@ -190,6 +190,7 @@ const Main = () => {
           mode="inline"
           theme="dark"
           inlineCollapsed={collapsed}
+          style={{width : '0%',height : '10px' }}
         >
           <Menu.Item key='1' id="housesListMenu" style={{'height':'50px'}} icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
