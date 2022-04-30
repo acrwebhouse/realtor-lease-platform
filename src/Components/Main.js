@@ -191,25 +191,25 @@ const Main = () => {
           theme="dark"
           inlineCollapsed={collapsed}
         >
-          <Menu.Item key='1' id="housesListMenu" icon={<HomeOutlined /> } onClick={housesList}>
+          <Menu.Item key='1' id="housesListMenu" style={{'height':'50px'}} icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>
-          <Menu.Item key='2' id="myHousesListMenu" style={{'display':'none'}} icon={<HomeFilled /> } onClick={myHousesList}>
+          <Menu.Item key='2' id="myHousesListMenu" style={{'height':'50px','display':'none'}} icon={<HomeFilled /> } onClick={myHousesList}>
             我的租屋
           </Menu.Item>
-          <Menu.Item key='3' id="uploadHousesMenu" style={{'display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
+          <Menu.Item key='3' id="uploadHousesMenu" style={{'height':'50px','display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item key='4' id="memberListMenu" style={{'display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
+          <Menu.Item key='4' id="memberListMenu" style={{'height':'50px','display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
             會員列表
           </Menu.Item>
-          <Menu.Item key='5' id="memberInfoMenu" style={{'display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
+          <Menu.Item key='5' id="memberInfoMenu" style={{'height':'50px','display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
-          <Menu.Item key='6' id="loginSignInMenu" icon={<LoginOutlined /> } onClick={loginSignIn}>
+          <Menu.Item key='6' id="loginSignInMenu" style={{'height':'50px'}} icon={<LoginOutlined /> } onClick={loginSignIn}>
             註冊 / 登入
           </Menu.Item>
-          <Menu.Item key='7' id="logoutMenu" style={{'display':'none'}} icon={<LogoutOutlined />} onClick={logout}>
+          <Menu.Item key='7' id="logoutMenu" style={{'height':'50px','display':'none'}} icon={<LogoutOutlined />} onClick={logout}>
             登出
           </Menu.Item>
         </Menu>
