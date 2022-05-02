@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
+import jwt_decode from "jwt-decode";
 
 import {
   CloudUploadOutlined,
@@ -22,9 +23,6 @@ import MemberList from "./MemberList";
 import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
 
-let token = ''
-
-
 const Main = () => {
     const [collapsed, setCollapsed] = useState(true);
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('none');
@@ -35,6 +33,7 @@ const Main = () => {
     const [isShowUploadHouse, setIsShowUploadHouse] = useState(false);
     const [isShowMemberList, setIsShowMemberList] = useState(false);
     const [isShowMemberInfo, setIsShowMemberInfo] = useState(false);
+    const [init, setInit] = useState(true);
 
     function turnOffPage(){
         setIsShowHousesList(false)
@@ -65,7 +64,18 @@ const Main = () => {
       };
 
     useEffect(() => {
-       
+        if (init) {
+            setInit(false)
+            console.log('init')
+            const xToken = cookie.load('x-token')
+            if(xToken!== null && xToken!== undefined){
+                const decodedToken = jwt_decode(xToken);
+                console.log(decodedToken)
+                const roles = decodedToken.roles
+                changeRolesMenu(roles)
+            }
+            
+        }
     }, )
 
     function housesList(){
@@ -120,6 +130,7 @@ const Main = () => {
             turnOffPage()
             setIsShowHousesList(true)
         }
+        cookie.remove('x-token')
     }
 
     function loginSignInIsOpen(status){
@@ -140,7 +151,6 @@ const Main = () => {
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
-        token = cookie.load('x-token')
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
