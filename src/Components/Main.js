@@ -33,6 +33,7 @@ const Main = () => {
     const [isShowUploadHouse, setIsShowUploadHouse] = useState(false);
     const [isShowMemberList, setIsShowMemberList] = useState(false);
     const [isShowMemberInfo, setIsShowMemberInfo] = useState(false);
+    const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
     function turnOffPage(){
@@ -81,29 +82,34 @@ const Main = () => {
     function housesList(){
         console.log('housesList')
         turnOffPage()
+        setSelectMenu(['1'])
         setIsShowHousesList(true)
     }
 
     function myHousesList(){
         console.log('myHousesList')
         turnOffPage()
+        setSelectMenu(['2'])
         setIsShowMyHousesList(true)
     }
     function uploadHouse(){
         console.log('uploadHouse')
         turnOffPage()
+        setSelectMenu(['3'])
         setIsShowUploadHouse(true)
     }
     
     function memberList(){
         console.log('memberList')
         turnOffPage()
+        setSelectMenu(['4'])
         setIsShowMemberList(true)
     }
 
     function memberInfo(){
         console.log('memberInfo')
         turnOffPage()
+        setSelectMenu(['5'])
         setIsShowMemberInfo(true)
     }
 
@@ -128,6 +134,7 @@ const Main = () => {
         logoutMenu.style.display = 'none'
         if( isShowHousesList === false ){
             turnOffPage()
+            setSelectMenu(['1'])
             setIsShowHousesList(true)
         }
         cookie.remove('x-token')
@@ -182,6 +189,7 @@ const Main = () => {
         }
         if(roles.length > 0){
             loginSignInIsOpen(false)
+            setSelectMenu(['1'])
         } 
     }
 
@@ -195,7 +203,7 @@ const Main = () => {
         </Button>
         <Menu
           id="mainMenu"
-          defaultSelectedKeys={['1']}
+          selectedKeys = {selectMenu}
           defaultOpenKeys={['sub1']}
           mode="inline"
           theme="dark"
