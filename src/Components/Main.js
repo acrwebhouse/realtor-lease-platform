@@ -189,7 +189,7 @@ const Main = () => {
     return (
         <div>
         <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
-        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , backgroundColor:'#000000',height:'40px'}}>
+        <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
         </Button>

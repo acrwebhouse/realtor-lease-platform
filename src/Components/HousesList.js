@@ -755,6 +755,7 @@ const HousesList = (props) => {
                     <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
                             height: '40px',
+                            backgroundColor:'#008000'
                         }}>
                         搜尋
                     </Button>

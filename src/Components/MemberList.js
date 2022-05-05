@@ -402,6 +402,7 @@ function removeUser(userId){
                     <Button type="primary" onClick={getUserList} style={{
                             width: '100%',
                             height: '40px',
+                            backgroundColor:'#008000',
                         }}>
                         搜尋
                     </Button>
