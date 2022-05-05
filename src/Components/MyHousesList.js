@@ -7,9 +7,9 @@ import jwt_decode from "jwt-decode";
 const MyHousesList = () => {
     const xToken = cookie.load('x-token')
     const decodedToken = jwt_decode(xToken);
-    return (
+    return ( 
         <div>
-            <HousesList owner={decodedToken.id}></HousesList>
+            <HousesList owner={decodedToken.id} roles={decodedToken.roles}></HousesList>
         </div>
     );
 };

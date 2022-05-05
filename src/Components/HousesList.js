@@ -179,6 +179,19 @@ const HousesList = (props) => {
         if(getHousesArg.priceSort !=='' && getHousesArg.priceSort !==undefined){
             reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
         }
+
+        if(props.owner!==''&&props.owner!==undefined&&props.owner!==null){
+            let sendOwner = true
+            for(let i = 0 ;i<props.roles.length;i++){
+                if(props.roles[i]== 1){
+                    sendOwner = false
+                    i = props.roles.length
+                }
+            }
+            if(sendOwner){
+                reqUrl = `${reqUrl}&&owner=${props.owner}`
+            }
+        }
         HouseAxios.get(
             reqUrl,{
                 headers:{
