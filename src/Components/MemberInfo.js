@@ -2,7 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
+import jwt_decode from "jwt-decode";
+
 const userListUrl = 'user/getPersonalInfo'
+const editUserUrl = 'user/editUser'
 
 const MemberInfo = () => {
     const [init, setInit] = useState(true);
@@ -117,7 +120,29 @@ function cancelEdit(){
 }
 
 function sendEdit(){
-    console.log('===sendEdit====',editUser)
+    const decodedToken = jwt_decode(xToken);
+    editUser.id = decodedToken.id
+    let reqUrl = `${editUserUrl}`
+    UserAxios.put(
+        reqUrl,editUser,{
+            headers:{
+                'x-Token':xToken
+            }
+        }
+    )
+    .then( (response) => {
+        if(response.data.status === true){
+            console.log(response.data)
+            setUser(editUser)
+            setData(editUser)
+            seIsEdit(false)
+        }else{
+            message.error(response.data.data, 3)
+        }
+    })
+    .catch( (error) => message.error(error, 3))
+
+
 }
 
 function editName(e){
@@ -244,7 +269,7 @@ function editLicense(e){
                   }}>
                     {isEdit?( <div >License:&nbsp;&nbsp;<Input onChange={editLicense} style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>License:&nbsp;{salesLicense}</div> }
                     <br/>
-                    {isEdit?( <div >負責區域:&nbsp;<Input style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>負責區域:&nbsp;{salesScope}</div> }
+                    {isEdit?( <div >負責區域:&nbsp;<Input style={{ width: '80%' }} defaultValue={''}></Input></div>): <div>負責區域:&nbsp;{salesScope}</div> }
                     </div>
                 
                 </Col>
