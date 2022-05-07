@@ -13,6 +13,7 @@ const MemberInfo = () => {
     const [salesScope, setSalesScope] = useState('');
     const [gender, setGender] = useState([]);
     const [isShowExtraData, setIsShowExtraData] = useState(false);
+    const [editUser, setEditUser] = useState({});
     const xToken = cookie.load('x-token')
 
     useEffect(() => {
@@ -77,19 +78,72 @@ function setRolesAction(data){
 
 function changeRoles(e){
     setRoles(e)
+    const value = []
+    value.push(1)
+    for(let i = 0 ;i<e.length; i++){
+        value.push(e[i]*1)
+    }
+    const editUserValue = editUser
+    editUserValue.roles = value
+    setEditUser(editUserValue)
+
 }
 
 function changeGender(e){
-    setGender(e.target.value)
+    const value = e.target.value
+    const editUserValue = editUser
+    editUserValue.gender = value
+    setGender(value)
+    setEditUser(editUserValue)
 
 }
 function edit(){
+    const baseDiv = document.getElementById('baseDiv')
+    const extraDiv = document.getElementById('extraDiv')
+    baseDiv.style.width = '320px'
+    extraDiv.style.width = '320px'
     seIsEdit(true)
+    setEditUser(JSON.parse(JSON.stringify(user)))
 }
 
 function cancelEdit(){
+    const baseDiv = document.getElementById('baseDiv')
+    const extraDiv = document.getElementById('extraDiv')
+    baseDiv.style.width = null
+    extraDiv.style.width = null
     seIsEdit(false)
     setData(user)
+    setEditUser({})
+}
+
+function sendEdit(){
+    console.log('===sendEdit====',editUser)
+}
+
+function editName(e){
+    const editUserValue = editUser
+    editUserValue.name = e.target.value
+    setEditUser(editUserValue)
+}
+
+function editAddress(e){
+    const editUserValue = editUser
+    editUserValue.address = e.target.value
+    setEditUser(editUserValue)
+}
+
+function editPhone(e){
+    const editUserValue = editUser
+    editUserValue.phone = e.target.value
+    setEditUser(editUserValue)
+}
+
+function editLicense(e){
+    const editUserValue = editUser
+    if(editUserValue.rolesInfo.sales){
+        editUserValue.rolesInfo.sales.license = e.target.value
+        setEditUser(editUserValue)
+    }
 }
 
     return (
@@ -98,7 +152,7 @@ function cancelEdit(){
             <div Style='float:right'>
             {isEdit?(
                     <div>
-                    <Button type="primary" onClick={() => edit()} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                    <Button type="primary" onClick={() => sendEdit()} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         提交
                     </Button>
                     &nbsp; 
@@ -143,13 +197,12 @@ function cancelEdit(){
                             
                 }}>
                 <br/>
-                <div style={{
+                <div id='baseDiv' style={{
                   'display': 'inline-block',
                   'textAlign': 'left',
-                //   'width': '100%',
                   }}>
                     帳號:&nbsp;{user.account}<br/><br/>
-                    {isEdit?( <div >姓名:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.name}></Input></div>): <div>姓名:&nbsp;{user.name}</div> }
+                    {isEdit?( <div >姓名:&nbsp;<Input onChange={editName} style={{ width: '80%' }} defaultValue={user.name}></Input></div>): <div>姓名:&nbsp;{user.name}</div> }
                     <br/>
                     性別:
                     &nbsp; &nbsp;
@@ -163,11 +216,11 @@ function cancelEdit(){
                         
                     </Radio.Group>
                     <br/><br/>
-                    {isEdit?( <div >地址:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.address}></Input></div>): <div>地址:&nbsp;{user.address}</div> }
+                    {isEdit?( <div >地址:&nbsp;<Input onChange={editAddress} style={{ width: '80%' }} defaultValue={user.address}></Input></div>): <div>地址:&nbsp;{user.address}</div> }
                     <br/>
                     <div>信箱:&nbsp;{user.mail}</div> 
                     <br/>
-                    {isEdit?( <div >電話:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.phone}></Input></div>): <div>電話:&nbsp;{user.phone}</div> }
+                    {isEdit?( <div >電話:&nbsp;<Input onChange={editPhone} style={{ width: '80%' }} defaultValue={user.phone}></Input></div>): <div>電話:&nbsp;{user.phone}</div> }
                     <br/>
                     </div>
                 
@@ -185,11 +238,11 @@ function cancelEdit(){
                             textAlign: 'center',
                 }}>
                 <br/>
-                <div style={{
+                <div id='extraDiv' style={{
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    {isEdit?( <div >License:&nbsp;<Input style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>License:&nbsp;{salesLicense}</div> }
+                    {isEdit?( <div >License:&nbsp;&nbsp;<Input onChange={editLicense} style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>License:&nbsp;{salesLicense}</div> }
                     <br/>
                     {isEdit?( <div >負責區域:&nbsp;<Input style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>負責區域:&nbsp;{salesScope}</div> }
                     </div>
