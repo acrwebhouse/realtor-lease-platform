@@ -12,6 +12,7 @@ const MemberInfo = () => {
     const [salesLicense, setSalesLicense] = useState('');
     const [salesScope, setSalesScope] = useState('');
     const [gender, setGender] = useState([]);
+    const [isShowExtraData, setIsShowExtraData] = useState(false);
     const xToken = cookie.load('x-token')
 
     useEffect(() => {
@@ -43,6 +44,7 @@ function setData(data){
     setGender(data.gender)
     if(data.rolesInfo.sales){
         if(data.rolesInfo.sales){
+            setIsShowExtraData(true)
             if(data.rolesInfo.sales.license){
                 setSalesLicense(data.rolesInfo.sales.license)
             }
@@ -87,6 +89,7 @@ function edit(){
 
 function cancelEdit(){
     seIsEdit(false)
+    setData(user)
 }
 
     return (
@@ -137,11 +140,13 @@ function cancelEdit(){
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
                             textAlign: 'center',
+                            
                 }}>
                 <br/>
                 <div style={{
                   'display': 'inline-block',
                   'textAlign': 'left',
+                //   'width': '100%',
                   }}>
                     帳號:&nbsp;{user.account}<br/><br/>
                     {isEdit?( <div >姓名:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.name}></Input></div>): <div>姓名:&nbsp;{user.name}</div> }
@@ -160,7 +165,7 @@ function cancelEdit(){
                     <br/><br/>
                     {isEdit?( <div >地址:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.address}></Input></div>): <div>地址:&nbsp;{user.address}</div> }
                     <br/>
-                    {isEdit?( <div >信箱:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.mail}></Input></div>): <div>信箱:&nbsp;{user.mail}</div> }
+                    <div>信箱:&nbsp;{user.mail}</div> 
                     <br/>
                     {isEdit?( <div >電話:&nbsp;<Input style={{ width: '80%' }} defaultValue={user.phone}></Input></div>): <div>電話:&nbsp;{user.phone}</div> }
                     <br/>
@@ -170,6 +175,9 @@ function cancelEdit(){
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
             </Row>
             
+
+            {
+            isShowExtraData?(<div>
             <Divider>房仲資料</Divider>
             <Row>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
@@ -189,7 +197,8 @@ function cancelEdit(){
                 </Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
             </Row>
-            
+            </div>):null 
+            }
         </div>
     );
 };
