@@ -82,10 +82,17 @@ function setRolesAction(data){
 function changeRoles(e){
     setRoles(e)
     const value = []
-    value.push(1)
+    let showExtra = false
+    // value.push(1)
     for(let i = 0 ;i<e.length; i++){
         value.push(e[i]*1)
+        if(e[i] == '2' ||e[i] == '4'){
+            showExtra = true
+        }
     }
+
+    setIsShowExtraData(showExtra)
+
     const editUserValue = editUser
     editUserValue.roles = value
     setEditUser(editUserValue)
