@@ -83,7 +83,15 @@ function changeRoles(e){
     setRoles(e)
     const value = []
     let showExtra = false
-    // value.push(1)
+    const decodedToken = jwt_decode(xToken);
+    console.log(decodedToken)
+    const roles = decodedToken.roles
+    for(let i = 0 ;i<roles.length; i++){
+        if(roles[i] === 1){
+            value.push(1)
+        }
+    }
+
     for(let i = 0 ;i<e.length; i++){
         value.push(e[i]*1)
         if(e[i] == '2' ||e[i] == '4'){
