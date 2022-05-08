@@ -151,6 +151,10 @@ function sendEdit(){
             setUser(editUser)
             setData(editUser)
             seIsEdit(false)
+            const token = response.data.data.token
+            const roles = response.data.data.roles
+            cookie.save('x-token',token,{path:'/'})
+            message.success('編輯成功', 3);
         }else{
             message.error(response.data.data, 3)
         }

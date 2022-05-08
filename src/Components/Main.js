@@ -190,7 +190,15 @@ const Main = () => {
         if(roles.length > 0){
             loginSignInIsOpen(false)
             setSelectMenu(['1'])
-        } 
+        } else{
+            myHousesListMenu.style.display = 'none'
+            uploadHousesMenu.style.display = 'none'
+            memberListMenu.style.display = 'none'
+            memberInfoMenu.style.display = 'flex'
+            logoutMenu.style.display = 'flex'
+            loginSignInMenu.style.display = 'none'
+            loginSignInIsOpen(false)
+        }
     }
 
 
