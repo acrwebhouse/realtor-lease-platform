@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
 
-const MemberInfo = () => {
+const MemberInfo = (props) => {
     const [init, setInit] = useState(true);
     const [user, setUser] = useState({});
     const [isEdit, seIsEdit] = useState(false);
@@ -44,11 +44,18 @@ const getPersonalInfo = () => {
 }
 
 function setData(data){
+    setIsShowExtraData(false)
     setRolesAction(data.roles)
     setGender(data.gender)
+    for(let i = 0 ;i<data.roles.length;i++){
+        if(data.roles[i] === 4){
+            setIsShowExtraData(true)
+            i = data.roles.length
+        }
+    }
+
     if(data.rolesInfo.sales){
         if(data.rolesInfo.sales){
-            setIsShowExtraData(true)
             if(data.rolesInfo.sales.license){
                 setSalesLicense(data.rolesInfo.sales.license)
             }
@@ -94,7 +101,7 @@ function changeRoles(e){
 
     for(let i = 0 ;i<e.length; i++){
         value.push(e[i]*1)
-        if(e[i] == '2' ||e[i] == '4'){
+        if(e[i] == '4'){
             showExtra = true
         }
     }
@@ -117,18 +124,22 @@ function changeGender(e){
 }
 function edit(){
     const baseDiv = document.getElementById('baseDiv')
-    const extraDiv = document.getElementById('extraDiv')
     baseDiv.style.width = '320px'
-    extraDiv.style.width = '320px'
+    if(isShowExtraData){
+        const extraDiv = document.getElementById('extraDiv')
+        extraDiv.style.width = '320px'
+    }
     seIsEdit(true)
     setEditUser(JSON.parse(JSON.stringify(user)))
 }
 
 function cancelEdit(){
     const baseDiv = document.getElementById('baseDiv')
-    const extraDiv = document.getElementById('extraDiv')
     baseDiv.style.width = null
-    extraDiv.style.width = null
+    if(isShowExtraData){
+        const extraDiv = document.getElementById('extraDiv')
+        extraDiv.style.width = null
+    }
     seIsEdit(false)
     setData(user)
     setEditUser({})
@@ -153,6 +164,7 @@ function sendEdit(){
             seIsEdit(false)
             const token = response.data.data.token
             const roles = response.data.data.roles
+            props.changeRolesMenu(roles)
             cookie.save('x-token',token,{path:'/'})
             message.success('編輯成功', 3);
         }else{

@@ -151,7 +151,7 @@ const Main = () => {
         }
     }
 
-    function changeRolesMenu(roles){
+    function changeRolesMenu(roles,toHouseList){
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const memberListMenu = document.getElementById('memberListMenu');
@@ -189,7 +189,9 @@ const Main = () => {
         }
         if(roles.length > 0){
             loginSignInIsOpen(false)
-            setSelectMenu(['1'])
+            if(toHouseList === true){
+                setSelectMenu(['1'])
+            }
         } else{
             myHousesListMenu.style.display = 'none'
             uploadHousesMenu.style.display = 'none'
@@ -260,7 +262,7 @@ const Main = () => {
     }
 
     {
-        isShowMemberInfo?(<MemberInfo></MemberInfo>):null           
+        isShowMemberInfo?(<MemberInfo changeRolesMenu={changeRolesMenu}></MemberInfo>):null           
     }
 
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
