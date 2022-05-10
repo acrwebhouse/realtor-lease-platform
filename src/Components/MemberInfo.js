@@ -47,10 +47,13 @@ function setData(data){
     setIsShowExtraData(false)
     setRolesAction(data.roles)
     setGender(data.gender)
+    const extraDivAll = document.getElementById('extraDivAll')
+    extraDivAll.style.display = 'none'
     for(let i = 0 ;i<data.roles.length;i++){
         if(data.roles[i] === 4){
             setIsShowExtraData(true)
             i = data.roles.length
+            extraDivAll.style.display = ''
         }
     }
 
@@ -107,6 +110,14 @@ function changeRoles(e){
     }
 
     setIsShowExtraData(showExtra)
+
+    if(showExtra){
+        const extraDivAll = document.getElementById('extraDivAll')
+        extraDivAll.style.display = ''
+    }else{
+        const extraDivAll = document.getElementById('extraDivAll')
+        extraDivAll.style.display = 'none'
+    }
 
     const editUserValue = editUser
     editUserValue.roles = value
@@ -258,7 +269,23 @@ function editLicense(e){
                   'textAlign': 'left',
                   }}>
                     帳號:&nbsp;{user.account}<br/><br/>
-                    {isEdit?( <div >姓名:&nbsp;<Input onChange={editName} style={{ width: '80%' }} defaultValue={user.name}></Input></div>): <div>姓名:&nbsp;{user.name}</div> }
+                    {isEdit?( 
+                        <div >
+                        <Row>
+                            <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                                <div style={{                
+                                    'display': 'inline-block',
+                                    'textAlign': 'left',
+                                }}>
+                                    姓名:
+                                </div>                                
+                            </Col>
+                            <Col xs={20} sm={20} md={20} lg={20} xl={20}>
+                                <Input onChange={editName} style={{ width: '100%' }} defaultValue={user.name}></Input>
+                            </Col>
+                        </Row>
+                        </div>): 
+                        <div>姓名:&nbsp;{user.name}</div> }
                     <br/>
                     性別:
                     &nbsp; &nbsp;
@@ -272,42 +299,106 @@ function editLicense(e){
                         
                     </Radio.Group>
                     <br/><br/>
-                    {isEdit?( <div >地址:&nbsp;<Input onChange={editAddress} style={{ width: '80%' }} defaultValue={user.address}></Input></div>): <div>地址:&nbsp;{user.address}</div> }
+                    {isEdit?( 
+                    <div >
+                    <Row>
+                        <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                            <div style={{                
+                                'display': 'inline-block',
+                                'textAlign': 'left',
+                            }}>
+                                地址:
+                            </div>                                
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={20}>
+                            <Input onChange={editAddress} style={{ width: '100%' }} defaultValue={user.address}></Input>
+                        </Col>
+                    </Row>
+                    </div>): 
+                    <div>地址:&nbsp;{user.address}</div> }
                     <br/>
                     <div>信箱:&nbsp;{user.mail}</div> 
                     <br/>
-                    {isEdit?( <div >電話:&nbsp;<Input onChange={editPhone} style={{ width: '80%' }} defaultValue={user.phone}></Input></div>): <div>電話:&nbsp;{user.phone}</div> }
+                    {isEdit?(
+                         <div >
+                         <Row>
+                             <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                                 <div style={{                
+                                     'display': 'inline-block',
+                                     'textAlign': 'left',
+                                 }}>
+                                     電話:
+                                 </div>                                
+                             </Col>
+                             <Col xs={20} sm={20} md={20} lg={20} xl={20}>
+                                <Input onChange={editPhone} style={{ width: '100%' }} defaultValue={user.phone}></Input>
+                             </Col>
+                         </Row>
+                         </div>): 
+                         <div>電話:&nbsp;{user.phone}</div> }
                     <br/>
                     </div>
                 
                 </Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
             </Row>
-            
-
-            {
-            isShowExtraData?(<div>
+            <div id='extraDivAll' style={{
+                display :'none',
+                textAlign: 'center',
+                width: '100%'
+            }}>
             <Divider>房仲資料</Divider>
             <Row>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
-                            textAlign: 'center',
                 }}>
                 <br/>
                 <div id='extraDiv' style={{
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    {isEdit?( <div >License:&nbsp;&nbsp;<Input onChange={editLicense} style={{ width: '80%' }} defaultValue={salesLicense}></Input></div>): <div>License:&nbsp;{salesLicense}</div> }
+                    {isEdit?( 
+                        <div >
+                        <Row>
+                            <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                <div style={{                
+                                    'display': 'inline-block',
+                                    'textAlign': 'left',
+                                }}>
+                                    License:
+                                </div>                                
+                            </Col>
+                            <Col xs={18} sm={18} md={18} lg={18} xl={18}>
+                                <Input onChange={editLicense} style={{ width: '100%' }} defaultValue={salesLicense}></Input>
+                            </Col>
+                        </Row>
+                        </div>): 
+                        <div style={{ width: '100%' }}>License:&nbsp;{salesLicense}</div> }
                     <br/>
-                    {isEdit?( <div >負責區域:&nbsp;<Input style={{ width: '80%' }} defaultValue={''}></Input></div>): <div>負責區域:&nbsp;{salesScope}</div> }
+                    {isEdit?( 
+                    <div >
+                    <Row>
+                    <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                <div style={{                
+                                    'display': 'inline-block',
+                                    'textAlign': 'left',
+                                }}>
+                                    負責區域:
+                                </div>                                
+                            </Col>
+                            <Col xs={18} sm={18} md={18} lg={18} xl={18}>
+                                <Input style={{ width: '100%' }} defaultValue={''}></Input>
+                            </Col>
+                    </Row>          
+                    </div>  
+                    ): <div style={{ width: '100%' }}>負責區域:&nbsp;{salesScope}</div> }
                     </div>
                 
                 </Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
             </Row>
-            </div>):null 
-            }
+            </div>
+            
         </div>
     );
 };
