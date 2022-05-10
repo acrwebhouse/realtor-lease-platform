@@ -114,9 +114,13 @@ function changeRoles(e){
     if(showExtra){
         const extraDivAll = document.getElementById('extraDivAll')
         extraDivAll.style.display = ''
+        const extraDiv = document.getElementById('extraDiv')
+        extraDiv.style.width = '320px'
     }else{
         const extraDivAll = document.getElementById('extraDivAll')
         extraDivAll.style.display = 'none'
+        const extraDiv = document.getElementById('extraDiv')
+        extraDiv.style.width = ''
     }
 
     const editUserValue = editUser
@@ -178,6 +182,12 @@ function sendEdit(){
             props.changeRolesMenu(roles)
             cookie.save('x-token',token,{path:'/'})
             message.success('編輯成功', 3);
+            const baseDiv = document.getElementById('baseDiv')
+            baseDiv.style.width = null
+            if(isShowExtraData){
+                const extraDiv = document.getElementById('extraDiv')
+                extraDiv.style.width = null
+            }
         }else{
             message.error(response.data.data, 3)
         }
