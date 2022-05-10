@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Modal, Input, InputNumber, Select, Divider, Row, Col, Checkbox, Upload, message} from "antd";
+import {Form, Button, Modal, Input, InputNumber, Select, Divider, Row, Col, Checkbox, Upload, message, List} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseAxios, PicAnnexAxios} from './axiosApi'
 import { DeleteOutlined } from '@ant-design/icons';
@@ -34,7 +34,11 @@ const LianJiangAreaOptions = [{ value: '南竿鄉'},{ value: '北竿鄉'},{ valu
 
 
 const defaultExtraRequire = [];
+let PicData = [];
+let AnnexData = [];
 const TrafficArr = [];
+const buildingType = ['公寓', '電梯大樓', '透天']
+const RentalType = ['整層住家', '獨立套房', '分租套房', '雅房']
 const Traffic_Type = ['捷運站', '公車站/客運站', '火車站', '高鐵站', '機場'];
 const LifeArr = [];
 const Life_Type = ['夜市', '科學圓區', '計畫區', '重劃區', '傳統商圈'];
@@ -43,6 +47,7 @@ const Edu_Type = ['幼稚園', '小學', '國中', '高中/高職', '大學/科�
 const House_Pic_Auth = 'house/uploadHousePhoto/'
 const House_Annex_Auth = 'house/uploadHouseAnnex/'
 const House_Auth = 'house/addHouse/'
+const Edit_House_Auth = 'house/editHouse'
 const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
 const annexType = ['application/pdf']
 const PicTemp = []
@@ -80,6 +85,8 @@ const HouseUpload = (prop) => {
     const [delTraffic, setDelTraffic] = useState(false);
     const [delLife, setDelLife] = useState(false);
     const [delEdu, setDelEdu] = useState(false);
+    const [delPic, setDelPic] = useState(false);
+    const [delAnnex, setDelAnnex] = useState(false)
     const [PictureList, setPictureList] = useState([]);
     const [AnnexEnable, setAnnexEnable] = useState(false);
     const [FormDataEnable, setFormDataEnable] = useState(false);
@@ -135,6 +142,9 @@ const HouseUpload = (prop) => {
         setEduVisible(false);
     };
 
+
+
+    console.log(PicData)
     useEffect(() => {
         if (delTraffic) {
             setDelTraffic(false)
@@ -145,7 +155,73 @@ const HouseUpload = (prop) => {
         if (delEdu) {
             setDelEdu(false)
         }
-    }, [delTraffic, delLife, delEdu])
+        if (delPic) {
+            setDelPic(false)
+        }
+        if (delAnnex) {
+            setDelAnnex(false)
+        }
+    }, [delTraffic, delLife, delEdu, delPic, delAnnex])
+
+    console.log(TrafficArr)
+    useEffect(()=>{
+        const temp = [];
+
+        if(prop.defaultValue && prop.defaultValue.traffic) {
+            prop.defaultValue.traffic.map(x => TrafficArr.push(x))
+            // console.log(TrafficArr)
+        }
+        if(prop.defaultValue && prop.defaultValue.life) {
+            prop.defaultValue.life.map(x => LifeArr.push(x))
+        }
+        if(prop.defaultValue && prop.defaultValue.educate) {
+            prop.defaultValue.educate.map(x => EducationArr.push(x))
+        }
+
+        if(prop.defaultValue && prop.defaultValue.photo) {
+            prop.defaultValue.photo.map(x => PicData.push(x))
+        }
+
+        if(prop.defaultValue && prop.defaultValue.annex) {
+            prop.defaultValue.annex.map(x => AnnexData.push(x))
+        }
+
+        if(prop.defaultValue) {
+            setAnnexEnable(true)
+            setFormDataEnable(true)
+            // setPicUploading(true)
+            // setPictureList(prop.defaultValue.photo)
+            if(prop.defaultValue.saleInfo.pet){
+                temp.push('pet')
+                // console.log(temp)
+            }
+            if(prop.defaultValue.saleInfo.manager){
+                temp.push('manager')
+                setShowHideManageFee(true)
+                // console.log(temp)
+            }
+            if(prop.defaultValue.saleInfo.garbage){
+                temp.push('garbage')
+                setShowHideGarbageFee(true)
+                // console.log(temp)
+            }
+            if(prop.defaultValue.saleInfo.smoke){
+                temp.push('smoke')
+                // console.log(temp)
+            }
+            if(prop.defaultValue.saleInfo.cook){
+                temp.push('cook')
+                // console.log(temp)
+            }
+            if(prop.defaultValue.parking){
+                temp.push('parking')
+                // console.log(temp)
+            }
+        }
+        console.log(temp)
+        setExtraRequire(temp)
+    },[prop.defaultValue])
+
 
     // console.log(typeof(cookie.load('x-token')))
     // useEffect(() => {
@@ -164,42 +240,104 @@ const HouseUpload = (prop) => {
     useEffect(() => {
         // console.log(RegisterData)
         // console.log(CityAreaScope)
+
         if (isRunPost) {
-            HouseAxios.post(House_Auth, HouseData,{
-                headers: {
-                    'x-Token':xToken,
-                }})
+            prop.defaultValue ?
+                    HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner}))
+                        // .then( (response) => console.log(response.data.status))
+                        .then((response) => {
+                            console.log(response)
+                            if (response.data.status === true) {
+                                message.success({
+                                    content: '房屋資料更新成功',
+                                    style: {
+                                        fontSize: '40px',
+                                        marginTop: '20vh',
+                                    },
+                                    duration: 3,
+                                }).then(() => {
+                                })
+                                window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
+
+                            } else {
+                                message.error(response.data.data, 3).then(() => {
+                                })
+                            }
+
+                            // if(!response.data.status && response.data.data.includes('house address is exist')) {
+                            //     message.error({
+                            //         content: '此地址已存在，請重新填寫正確地址',
+                            //         style: {
+                            //             fontSize: '40px',
+                            //             marginTop: '20vh',
+                            //         },
+                            //         duration: 4,
+                            //     }).then()
+                            //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
+                            // }else{
+                            //     message.success({
+                            //         content: '房屋資料上傳成功',
+                            //         style: {
+                            //             fontSize: '40px',
+                            //             marginTop: '20vh',
+                            //         },
+                            //         duration: 2,
+                            //     }).then(() => {})
+                            //     // message.success(`房屋資料上傳成功`, 2, ).then()
+                            // }
+
+                        })
+                        .catch((error) => message.error(`${error}`, 2))
+
+                :
+            HouseAxios.post(House_Auth, HouseData)
                 // .then( (response) => console.log(response.data.status))
                 .then((response) => {
                     console.log(response.data)
-                    if(!response.data.status && response.data.data.includes('house address is exist')) {
-                        message.error({
-                            content: '此地址已存在，請重新填寫正確地址',
-                            style: {
-                                fontSize: '40px',
-                                marginTop: '20vh',
-                            },
-                            duration: 4,
-                        }).then()
-                        // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                    }else{
-                        message.success({
-                            content: '房屋資料上傳成功',
-                            style: {
-                                fontSize: '40px',
-                                marginTop: '20vh',
-                            },
-                            duration: 2,
-                        }).then(() => {})
-                        // message.success(`房屋資料上傳成功`, 2, ).then()
-                    }
+                    message.success({
+                        content: '房屋資料上傳成功',
+                        style: {
+                            fontSize: '40px',
+                            marginTop: '20vh',
+                        },
+                        duration: 2,
+                    }).then(() => {})
+                    // if(!response.data.status && response.data.data.includes('house address is exist')) {
+                    //     message.error({
+                    //         content: '此地址已存在，請重新填寫正確地址',
+                    //         style: {
+                    //             fontSize: '40px',
+                    //             marginTop: '20vh',
+                    //         },
+                    //         duration: 4,
+                    //     }).then()
+                    //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
+                    // }else{
+                    //     message.success({
+                    //         content: '房屋資料上傳成功',
+                    //         style: {
+                    //             fontSize: '40px',
+                    //             marginTop: '20vh',
+                    //         },
+                    //         duration: 2,
+                    //     }).then(() => {})
+                    //     // message.success(`房屋資料上傳成功`, 2, ).then()
+                    // }
 
                 })
+
                 .catch( (error) => message.error(`${error}`, 2))
 
             setIsRunPost(false)
+            PicTemp.splice(0, PicTemp.length)
+            AnnexTemp.splice(0, AnnexTemp.length)
+            TrafficArr.splice(0,  TrafficArr.length)
+            LifeArr.splice(0,  LifeArr.length)
+            EducationArr.splice(0, EducationArr.length)
+            PicData.splice(0, PicData.length)
+            AnnexData.splice(0, AnnexData.length)
         }
-    }, [isRunPost, HouseData])
+    }, [isRunPost, HouseData, prop.defaultValue])
 
     const UploadHouseData = (values) => {
         console.log('Received values of form: ', values);
@@ -211,20 +349,20 @@ const HouseUpload = (prop) => {
                 'owner' : decodedToken.id,
                 'address': values['City']+values['Area']+values['address'],
                 'houseNumber' : {
-                                'lane' : values['lane'] === undefined || values['lane'].length === 0 ? '' : parseInt(values['lane']),
-                                'alley' : values['alley'] === undefined || values['alley'].length === 0 ? '' : parseInt(values['alley']),
-                                'number1' : parseInt(values['NO1']),
-                                'number2' : values['NO2'] === undefined || values['NO2'].length === 0 ? '' : parseInt(values['NO2']),
+                    'lane' : values['lane']  ? parseInt(values['lane']) : '',
+                    'alley' : values['alley']  ? parseInt(values['alley']) : '',
+                    'number1' : parseInt(values['NO1']),
+                    'number2' : values['NO2']  ? parseInt(values['NO2']) : '',
                 },
                 'floor' : parseInt(values['floor']),
-                'room' :  (values['room-number'] === undefined || values['room-number'].length === 0) ? '' : parseInt(values['room-number'])  ,
+                'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
                 'price' : parseInt(values['lease-price']),
                 'config' : {
                     'room' : parseInt(values['room']),
                     'livingRoom' : parseInt(values['livingRoom']),
                     'balcony' : parseInt(values['balcony']),
                     'bathroom' : parseInt(values['bathroom']),
-                    "buildingType" : parseInt(values['TypeOfBuild'])
+                    "buildingType" : buildingType.indexOf(values['TypeOfBuild']) + 1
                 },
                 'ping' : parseInt(values['ping']),
                 'parking' : extraRequire.includes('parking'),
@@ -240,28 +378,35 @@ const HouseUpload = (prop) => {
                     "garbagePrice": extraRequire.includes('garbage') ? parseInt(values['garbageFee']) : 0,
                     "smoke": extraRequire.includes('smoke'),
                     "cook": extraRequire.includes('cook'),
-                    "typeOfRental": parseInt(values['TypeOfRental'])
+                    "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1
                 },
-                'photo' : photoData,
-                'annex' : annexData
+                'photo' : prop.defaultValue ? PicData : photoData, // PicData have defaultData, photoData new Upload
+                'annex' : prop.defaultValue ? AnnexData : annexData // AnnexData have defaultData, annexData new Upload
             }
         )
         setIsRunPost(true)
-        setAnnexEnable(false)
-        setFormDataEnable(false)
-        setPictureList([])
-        form_photo.resetFields()
-        setAnnexList([])
-        form_annex.resetFields()
-        form.resetFields()
-        setExtraRequire([])
-        setShowHideManageFee(false)
-        setShowHideGarbageFee(false)
-        PicTemp.splice(0, PicTemp.length)
-        AnnexTemp.splice(0, AnnexTemp.length)
+
+        console.log(TrafficArr);
+        // console.log(photoData)
+        if (!prop.defaultValue) {
+
+            setAnnexEnable(false)
+            setFormDataEnable(false)
+            setPictureList([])
+            form_photo.resetFields()
+            setAnnexList([])
+            form_annex.resetFields()
+            form.resetFields()
+            setExtraRequire([])
+            setShowHideManageFee(false)
+            setShowHideGarbageFee(false)
+        }
+
+        // window.location.replace(window.location.origin+'/HouseDetailOwner/'+prop.defaultValue._id+'/'+ prop.defaultValue.owner)
     };
     console.log(HouseData);
-
+    // console.log(prop.defaultValue.room)
+    // console.log(...UpdateData, {'owner': prop.defaultValue.owner})
     // const AddressPrefixSelector = (
     //     <Form.Item name="AddressPrefix" noStyle>
     //         <Select style={{
@@ -282,80 +427,80 @@ const HouseUpload = (prop) => {
         setSelectArea(null)
         setAreaOptions([])
         switch(City){
-                case CityOptions[0].value:
-                    setAreaOptions(TaipeiAreaOptions)
-                    break;
-                case CityOptions[1].value:
-                    setAreaOptions(NewTaipeiAreaOptions)
-                    break;
-                case CityOptions[2].value:
-                    setAreaOptions(TaoYuanAreaOptions)
-                    break;
-                case CityOptions[3].value:
-                    setAreaOptions(TaiChungAreaOptions)
-                    break;
-                case CityOptions[4].value:
-                    setAreaOptions(TaiNanAreaOptions)
-                    break;
-                case CityOptions[5].value:
-                    setAreaOptions(KaoHsiungAreaOptions)
-                    break;
-                case CityOptions[6].value:
-                    setAreaOptions(KeeLungAreaOptions)
-                    break;
-                case CityOptions[7].value:
-                    setAreaOptions(HsinChuCityAreaOptions)
-                    break;
-                case CityOptions[8].value:
-                    setAreaOptions(ChiaYiCityAreaOptions)
-                    break;
-                case CityOptions[9].value:
-                    setAreaOptions(HsinChuAreaOptions)
-                    break;
-                case CityOptions[10].value:
-                    setAreaOptions(MiaoLiAreaOptions)
-                    break;
-                case CityOptions[11].value:
-                    setAreaOptions(ChangHuaAreaOptions)
-                    break;
-                case CityOptions[12].value:
-                    setAreaOptions(NanTouAreaOptions)
-                    break;
-                case CityOptions[13].value:
-                    setAreaOptions(YunLinAreaOptions)
-                    break;
-                case CityOptions[14].value:
-                    setAreaOptions(chiayiAreaOptions)
-                    break;
-                case CityOptions[15].value:
-                    setAreaOptions(PingTungAreaOptions)
-                    break;
-                case CityOptions[16].value:
-                    setAreaOptions(YiLanAreaOptions)
-                    break;
-                case CityOptions[17].value:
-                    setAreaOptions(HuaLienAreaOptions)
-                    break;
-                case CityOptions[18].value:
-                    setAreaOptions(TaiTungAreaOptions)
-                    break;
-                case CityOptions[19].value:
-                    setAreaOptions(PengHuAreaOptions)
-                    break;
-                case CityOptions[20].value:
-                    setAreaOptions(KinMenAreaOptions)
-                    break;
-                case CityOptions[21].value:
-                    setAreaOptions(LianJiangAreaOptions)
-                    break;
-                default:
-            }
+            case CityOptions[0].value:
+                setAreaOptions(TaipeiAreaOptions)
+                break;
+            case CityOptions[1].value:
+                setAreaOptions(NewTaipeiAreaOptions)
+                break;
+            case CityOptions[2].value:
+                setAreaOptions(TaoYuanAreaOptions)
+                break;
+            case CityOptions[3].value:
+                setAreaOptions(TaiChungAreaOptions)
+                break;
+            case CityOptions[4].value:
+                setAreaOptions(TaiNanAreaOptions)
+                break;
+            case CityOptions[5].value:
+                setAreaOptions(KaoHsiungAreaOptions)
+                break;
+            case CityOptions[6].value:
+                setAreaOptions(KeeLungAreaOptions)
+                break;
+            case CityOptions[7].value:
+                setAreaOptions(HsinChuCityAreaOptions)
+                break;
+            case CityOptions[8].value:
+                setAreaOptions(ChiaYiCityAreaOptions)
+                break;
+            case CityOptions[9].value:
+                setAreaOptions(HsinChuAreaOptions)
+                break;
+            case CityOptions[10].value:
+                setAreaOptions(MiaoLiAreaOptions)
+                break;
+            case CityOptions[11].value:
+                setAreaOptions(ChangHuaAreaOptions)
+                break;
+            case CityOptions[12].value:
+                setAreaOptions(NanTouAreaOptions)
+                break;
+            case CityOptions[13].value:
+                setAreaOptions(YunLinAreaOptions)
+                break;
+            case CityOptions[14].value:
+                setAreaOptions(chiayiAreaOptions)
+                break;
+            case CityOptions[15].value:
+                setAreaOptions(PingTungAreaOptions)
+                break;
+            case CityOptions[16].value:
+                setAreaOptions(YiLanAreaOptions)
+                break;
+            case CityOptions[17].value:
+                setAreaOptions(HuaLienAreaOptions)
+                break;
+            case CityOptions[18].value:
+                setAreaOptions(TaiTungAreaOptions)
+                break;
+            case CityOptions[19].value:
+                setAreaOptions(PengHuAreaOptions)
+                break;
+            case CityOptions[20].value:
+                setAreaOptions(KinMenAreaOptions)
+                break;
+            case CityOptions[21].value:
+                setAreaOptions(LianJiangAreaOptions)
+                break;
+            default:
         }
+    }
 
     const changeArea = (area) => {
         setSelectArea(area)
     }
-    
+
     // const AddressPrefixSelector = (
     //     <Form.Item name="AddressPrefix" noStyle>
     //         <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
@@ -405,13 +550,15 @@ const HouseUpload = (prop) => {
         console.log(formData.values())
         PicAnnexAxios.post(House_Pic_Auth, formData, {
             headers: {
-                'x-Token':xToken,
                 "Content-Type": "multipart/form-data",
             }})
             .then( (response) => {
                 console.log(response)
                 setPhotoData(response['data']['data'])
                 setAnnexEnable(true)
+                // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
+                // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
+                PicData = [...PicData, ...response['data']['data']]
             })
             .then(() => {
                 // setPictureList([])
@@ -435,13 +582,14 @@ const HouseUpload = (prop) => {
         console.log(AnnexList)
         PicAnnexAxios.post(House_Annex_Auth, formData, {
             headers: {
-                'x-Token':xToken,
                 "Content-Type": "multipart/form-data",
             }})
             .then( (response) => {
                 console.log(response)
                 setAnnexData(response['data']['data'])
                 setFormDataEnable(true);
+                // AnnexData = [...AnnexData, ...response['data']['data'].map(temp => temp.split('/')[1])]
+                AnnexData = [...AnnexData, ...response['data']['data']]
             })
             .then(() => {
                 // setAnnexList([])
@@ -468,102 +616,122 @@ const HouseUpload = (prop) => {
         </div>
     );
     console.log(PictureList)
+
+    console.log(prop.defaultValue)
+    // console.log(typeof(prop.defaultValue.floor))
     return (
 
-        <div>          
-                {
-                prop.defaultValue?(JSON.stringify(prop)):null    
-                }
-                <Form
-                    
-                    form={form_photo}
-                    className="PicUpload"
-                    onFinish={handlePicUpload}
+        <div>
+            <Form
+
+                form={form_photo}
+                className="PicUpload"
+                onFinish={handlePicUpload}
+            >
+                <Row>
+                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                    </Col>
+                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                        <Divider> 照片上傳 (jpeg, jpg, bmp, png, svg 檔)</Divider>
+                    </Col>
+                </Row>
+                <Form.Item
+                    name="photoUpload"
                 >
                     <Row>
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                            <Divider> 照片上傳 (jpeg, jpg, bmp, png, svg 檔)</Divider>
+                            {(prop.defaultValue && prop.defaultValue.photo) || PicData.length > 0?
+                                <List
+                                    bordered
+                                    dataSource={PicData}
+                                    renderItem={(Pic, index) => (
+                                        <List.Item actions={[
+                                            <Button icon={<DeleteOutlined />} onClick={() => {
+                                                if(!delPic ) {
+                                                    PicData.splice(index, 1)
+                                                    setDelPic(true)
+                                                }
+                                                }
+                                            }>
+                                                delete
+                                            </Button>]}>
+                                            {Pic}
+                                        </List.Item>
+                                    )}
+                                />
+                                : []}
+                            <Upload multiple={true}
+                                    listType="picture-card"
+                                    fileList={PictureList['fileList']}
+                                    maxCount={10}
+                                    onRemove={PicRemove}
+                                    beforeUpload={file => {
+                                        console.log(file)
+                                        const isImage = photoType.includes(file.type);
+                                        PicTemp.push(file)
+                                        console.log(PicTemp)
+                                        if (!isImage) {
+                                            message.error(`${file.name} 不是圖片檔`).then(() => {
+                                                // Do something after login is successful.
+                                            });
+                                        }else {
+                                            // setPictureList(
+                                            //     [...PictureList, file]
+                                            // );
+                                            setPictureList(PicTemp);
+                                            return false;
+                                        }
+
+                                        return isImage || Upload.LIST_IGNORE;
+                                    }}
+                                // onChange={CheckPicNum}
+                            >
+                                {PictureList.length >= 10 ? null : uploadPicButton}
+
+                            </Upload>
                         </Col>
                     </Row>
-                    <Form.Item
-                        name="photoUpload"
-                    >
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                </Form.Item>
+                <Form.Item>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                            </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                <Upload multiple={true}
-                                        listType="picture-card"
-                                        fileList={PictureList['fileList']}
-                                        maxCount={10}
-                                        onRemove={PicRemove}
-                                        beforeUpload={file => {
-                                            console.log(file)
-                                            const isImage = photoType.includes(file.type);
-                                            PicTemp.push(file)
-                                            console.log(PicTemp)
-                                            if (!isImage) {
-                                                message.error(`${file.name} is not a image file`).then(() => {
-                                                    // Do something after login is successful.
-                                                });
-                                            }else {
-                                                // setPictureList(
-                                                //     [...PictureList, file]
-                                                // );
-                                                setPictureList(PicTemp);
-                                                return false;
-                                            }
-
-                                            return isImage || Upload.LIST_IGNORE;
-                                        }}
-                                    // onChange={CheckPicNum}
-                                >
-                                    {PictureList.length >= 10 ? null : uploadPicButton}
-
-                                </Upload>
-                            </Col>
-                        </Row>
-                    </Form.Item>
-                    <Form.Item>
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                            </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                <Button type="primary"
-                                        htmlType="submit"
-                                        className='PicUpload-button'
-                                        shape="round"
-                                        loading={PicUploading}
-                                        disabled={PictureList.length === 0}
-                                        // onClick={() => message.success('照片上傳成功')}
-                                >
-                                    {PicUploading ? 'Uploading' : '提交照片'}
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Form.Item>
-                </Form>
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Button type="primary"
+                                    htmlType="submit"
+                                    className='PicUpload-button'
+                                    shape="round"
+                                    loading={PicUploading}
+                                    disabled={PictureList.length === 0}
+                                // onClick={() => message.success('照片上傳成功')}
+                            >
+                                {PicUploading ? 'Uploading' : '提交照片'}
+                            </Button>
+                        </Col>
+                    </Row>
+                </Form.Item>
+            </Form>
             {
                 AnnexEnable &&
-            <Form
+                <Form
 
                     form={form_annex}
                     className="AnnexUpload"
                     onFinish={handleAnnexUpload}
                 >
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Divider> 附件上傳 (至少上傳房屋謄本， PDF 檔）</Divider>
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Divider> 附件上傳 (房屋謄本， PDF 檔，可後補）</Divider>
+                        </Col>
+                    </Row>
                     <Form.Item
                         name="annexUpload"
                     >
@@ -572,6 +740,26 @@ const HouseUpload = (prop) => {
 
                             </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                                {(prop.defaultValue && prop.defaultValue.annex) || AnnexData.length > 0 ?
+                                    <List
+                                        bordered
+                                        dataSource={AnnexData}
+                                        renderItem={(annex, index) => (
+                                            <List.Item actions={[
+                                                <Button icon={<DeleteOutlined />} onClick={() => {
+                                                    if(!delAnnex ) {
+                                                        AnnexData.splice(index, 1)
+                                                        setDelAnnex(true)
+                                                    }
+                                                }
+                                                }>
+                                                    delete
+                                                </Button>]}>
+                                                {annex}
+                                            </List.Item>
+                                        )}
+                                    />
+                                    : []}
                                 <Upload multiple
                                         listType="picture-card"
                                         fileList={AnnexList['fileList']}
@@ -618,7 +806,7 @@ const HouseUpload = (prop) => {
                                         shape="round"
                                         loading={AnnexUploading}
                                         disabled={AnnexList.length === 0}
-                                        // onClick={() => message.success('附件上傳成功')}
+                                    // onClick={() => message.success('附件上傳成功')}
                                 >
                                     {AnnexUploading ? 'Uploading' : '提交附件'}
                                 </Button>
@@ -638,34 +826,59 @@ const HouseUpload = (prop) => {
             {
                 // FormDataEnable &&
                 AnnexEnable &&
-            <Form
+                <Form
 
-                        form={form}
-                        className="HouseUpload_form"
-                        name="HouseUpload"
-                        onFinish={UploadHouseData}
-                        scrollToFirstError
+                    form={form}
+                    className="HouseUpload_form"
+                    name="HouseUpload"
+                    onFinish={UploadHouseData}
+                    scrollToFirstError
+                    initialValues={{
+                            "name" : prop.defaultValue?prop.defaultValue.name: [],
+                            "TypeOfBuild": prop.defaultValue?buildingType[prop.defaultValue.config.buildingType-1] : [],
+                            "TypeOfRental" : prop.defaultValue? RentalType[prop.defaultValue.saleInfo.typeOfRental-1] : [],
+                            "City" : prop.defaultValue?prop.defaultValue.city:[],
+                            "Area" : prop.defaultValue?prop.defaultValue.area:[],
+                            "address" : prop.defaultValue?prop.defaultValue.address.split('').filter((e) => (prop.defaultValue.city+prop.defaultValue.area).split('').indexOf(e) === -1).join(''):[],
+                            "lane" : prop.defaultValue?prop.defaultValue.houseNumber.lane:[],
+                            "alley" : prop.defaultValue?prop.defaultValue.houseNumber.alley:[],
+                            "NO1" : prop.defaultValue?prop.defaultValue.houseNumber.number1:[],
+                            "NO2" : prop.defaultValue?prop.defaultValue.houseNumber.number2:[],
+                            "floor" : prop.defaultValue?prop.defaultValue.floor : [],
+                            "room-number" : prop.defaultValue?prop.defaultValue.room : [],
+                            "room" : prop.defaultValue?prop.defaultValue.config.room : [],
+                            "livingRoom" : prop.defaultValue?prop.defaultValue.config.livingRoom : [],
+                            "bathroom" : prop.defaultValue?prop.defaultValue.config.bathroom : [],
+                            "balcony" : prop.defaultValue?prop.defaultValue.config.balcony : [],
+                            "ping" : prop.defaultValue?prop.defaultValue.ping:[],
+                            "lease-price" : prop.defaultValue?prop.defaultValue.price:[],
+                            "manageFee" : prop.defaultValue?prop.defaultValue.saleInfo.manager ? prop.defaultValue.saleInfo.managerPrice : [] : [],
+                            "garbageFee" : prop.defaultValue?prop.defaultValue.saleInfo.garbage ? prop.defaultValue.saleInfo.garbagePrice : [] : [],
+                        }}
+
                 >
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                            </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={6}>
-                                <Form.Item
-                                    name="name"
-                                    label="名稱"
-                                    rules={[
-                                        {
-                                            required: false,
-                                            message: 'Please input your Name!',
-                                        },
-                                    ]}
-                                    // style={{ width: '100%' }}
-                                >
-                                    <Input placeholder="" style={{ width: '100%' }}/>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                name="name"
+                                label="名稱"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '名稱欄位不能為空白',
+                                    },
+                                ]}
+                                // style={{ width: '100%' }}
+                            >
+                                <Input placeholder=""
+                                       style={{ width: '100%' }}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
                     <Row>
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
@@ -674,29 +887,44 @@ const HouseUpload = (prop) => {
                         <Col xs={24} sm={18} md={18} lg={15} xl={12}>
                             <Form.Item label="類型">
                                 <Row justify="start">
-                                    <Col  xs={12} sm={9} md={9} lg={8} xl={6}>
+                                    <Col  xs={12} sm={12} md={12} lg={12} xl={12}>
 
                                         <Form.Item style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(30% - 4px)', margin: '0 4px' }}
                                                    name="TypeOfBuild"
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
                                         >
                                             <Select>
-                                                <Option value="1">公寓</Option>
-                                                <Option value="2">電梯大樓</Option>
-                                                <Option value="3">透天</Option>
+                                                <Option value="公寓">公寓</Option>
+                                                <Option value="電梯大樓">電梯大樓</Option>
+                                                <Option value="透天">透天</Option>
+                                                {/*<Option value="1">公寓</Option>*/}
+                                                {/*<Option value="2">電梯大樓</Option>*/}
+                                                {/*<Option value="3">透天</Option>*/}
                                             </Select>
                                         </Form.Item>
                                     </Col>
-                                    <Col xs={12} sm={9} md={9} lg={8} xl={6}>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(30% - 4px)', margin: '0 4px' }}
                                                    name="TypeOfRental"
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
                                         >
                                             <Select>
-                                                <Option value="1">整層住家</Option>
-                                                <Option value="2">獨立套房</Option>
-                                                <Option value="3">分租套房</Option>
-                                                <Option value="4">雅房</Option>
+                                                <Option value="整層住家">整層住家</Option>
+                                                <Option value="獨立套房">獨立套房</Option>
+                                                <Option value="分租套房">分租套房</Option>
+                                                <Option value="雅房">雅房</Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -706,332 +934,364 @@ const HouseUpload = (prop) => {
                     </Row>
 
 
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            label="地址"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your Address!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                <Col xs={5} sm={4} md={4} lg={3} xl={2}>
-                                    <Form.Item name="City"
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                               style={{ width: '100%' }}
-                                    >
-                                        <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
-                                            width: '100%',
-                                        }}>
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={5} sm={4} md={4} lg={3} xl={2}>
-                                    <Form.Item name="Area"
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                               style={{ width: '100%' }}
-                                    >
-                                        <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
-                                            width: '100%',
-                                        }}>
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                                <Col xs={14} sm={10} md={10} lg={9} xl={8}>
-                                    <Form.Item name="address"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
-                                        <Input  style={{
-                                            width: '100%',
-                                        }}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item label="地址">
+                                <Row>
+                                    <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="City"
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                        >
+                                            <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
+                                                width: '100%',
+                                            }}>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="Area"
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                        >
+                                            <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                                                width: '100%',
+                                            }}>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item name="address"
+                                                   style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <Input  style={{
+                                                width: '100%',
+                                            }}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            label="門牌"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your Address!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                label="門牌"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: 'Please input your Address!',
+                                    },
+                                ]}
+                            >
+                                <Row>
+                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                                {/*</Col>*/}
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="lane"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
+                                    {/*</Col>*/}
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="lane"
+                                                   style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
 
-                                        <Input
-                                            placeholder=""
-                                            style={{width: '100%'}}
-                                            suffix='巷'
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="alley"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
-                                        <Input
-                                            placeholder="非必填"
-                                            style={{width: '100%'}}
-                                            suffix='弄'
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="NO1"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
-                                        <Input
-                                            placeholder=""
-                                            style={{width: '100%'}}
-                                            suffix='號之'
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="NO2"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
-                                        <Input
-                                            placeholder="非必填"
-                                            style={{width: '100%'}}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                                            <Input
+                                                placeholder="非必填"
+                                                style={{width: '100%'}}
+                                                suffix='巷'
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="alley"
+                                                   style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <Input
+                                                placeholder="非必填"
+                                                style={{width: '100%'}}
+                                                suffix='弄'
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="NO1"
+                                                   style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <Input
+                                                placeholder=""
+                                                style={{width: '100%'}}
+                                                suffix='號之'
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="NO2"
+                                                   style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <Input
+                                                placeholder="非必填"
+                                                style={{width: '100%'}}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            name="floor"
-                            label="樓層"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your floor!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
 
-                                {/*</Col>*/}
-                                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                    <InputNumber placeholder=""
-                                                 style={{width: '100%'}}
-                                                 min={0}
-                                        // formatter={value => `${value} 公尺`}
-                                                 addonAfter="樓"
-                                    />
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                                <Row>
+                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            name="room-number"
-                            label="房間號碼"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your Name!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                {/*</Col>*/}
-                                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                    <InputNumber placeholder=""
-                                                 style={{width: '100%'}}
-                                                 min={0}
-                                        // formatter={value => `${value} 公尺`}
-                                                 addonAfter=""
-                                    />
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            // name="config"
-                            label="格局"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your Address!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                {/*</Col>*/}
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="room"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
+                                    {/*</Col>*/}
+                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <Form.Item
+                                            name="floor"
+                                            label="樓層"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: '此欄位不能為空白',
+                                                },
+                                            ]}
+                                        >
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
                                             // formatter={value => `${value} 公尺`}
-                                                     addonAfter="房"
+                                                     addonAfter="樓"
                                         />
-                                    </Form.Item>
-                                </Col>
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="livingRoom"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
+                                            </Form.Item>
+                                    </Col>
+                                </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item label="房間號碼">
+                                <Row>
+                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                    {/*</Col>*/}
+                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <Form.Item
+                                            name="room-number"
+                                            rules={[
+                                                {
+                                                    required: false,
+                                                    message: 'Please input your Name!',
+                                                },
+                                            ]}
+                                        >
+                                            <InputNumber placeholder=""
+                                                         style={{width: '100%'}}
+                                                         min={0}
+                                                // formatter={value => `${value} 公尺`}
+                                                         addonAfter=""
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                // name="config"
+                                label="格局"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: 'Please input your Address!',
+                                    },
+                                ]}
+                            >
+                                <Row>
+                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                    {/*</Col>*/}
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="room"
+                                                   style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <InputNumber placeholder=""
+                                                         style={{width: '100%'}}
+                                                         min={0}
+                                                // formatter={value => `${value} 公尺`}
+                                                         addonAfter="房"
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="livingRoom"
+                                                   style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <InputNumber placeholder=""
+                                                         style={{width: '100%'}}
+                                                         min={0}
+                                                // formatter={value => `${value} 公尺`}
+                                                         addonAfter="廳"
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="bathroom"
+                                                   style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <InputNumber placeholder=""
+                                                         style={{width: '100%'}}
+                                                         min={0}
+                                                // formatter={value => `${value} 公尺`}
+                                                         addonAfter="衛"
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col  xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="balcony"
+                                                   style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <InputNumber placeholder=""
+                                                         style={{width: '100%'}}
+                                                         min={0}
+                                                // formatter={value => `${value} 公尺`}
+                                                         addonAfter="陽台"
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+
+                                <Row>
+                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                    {/*</Col>*/}
+                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <Form.Item
+                                            name="lease-price"
+                                            label="租金"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: '此欄位不能為空白',
+                                                },
+                                            ]}
+                                        >
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
                                             // formatter={value => `${value} 公尺`}
-                                                     addonAfter="廳"
+                                                     addonAfter="元/月"
                                         />
-                                    </Form.Item>
-                                </Col>
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="bathroom"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+
+                                <Row>
+                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                    {/*</Col>*/}
+                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <Form.Item
+                                            name="ping"
+                                            label="坪數"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: '此欄位不能為空白',
+                                                },
+                                            ]}
+                                        >
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
                                             // formatter={value => `${value} 公尺`}
-                                                     addonAfter="衛"
+                                                     addonAfter="坪"
                                         />
-                                    </Form.Item>
-                                </Col>
-                                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
-                                    <Form.Item name="balcony"
-                                               style={{ width: '100%' }}
-                                        // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                    >
-                                        <InputNumber placeholder=""
-                                                     style={{width: '100%'}}
-                                                     min={0}
-                                            // formatter={value => `${value} 公尺`}
-                                                     addonAfter="陽台"
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        </Form.Item>
-
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            name="lease-price"
-                            label="租金"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your Name!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                {/*</Col>*/}
-                                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                    <InputNumber placeholder=""
-                                                 style={{width: '100%'}}
-                                                 min={0}
-                                        // formatter={value => `${value} 公尺`}
-                                                 addonAfter="元/月"
-                                    />
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            name="ping"
-                            label="坪數"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your Name!',
-                                },
-                            ]}
-                        >
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                {/*</Col>*/}
-                                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                    <InputNumber placeholder=""
-                                                 style={{width: '100%'}}
-                                                 min={0}
-                                        // formatter={value => `${value} 公尺`}
-                                                 addonAfter="坪"
-                                    />
-                                </Col>
-                            </Row>
-
-                        </Form.Item>
-                    </Col>
-                </Row>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                        </Col>
+                    </Row>
 
 
 
@@ -1053,487 +1313,546 @@ const HouseUpload = (prop) => {
                     {/*        <Option value="0">無</Option>*/}
                     {/*    </Select>*/}
                     {/*</Form.Item>*/}
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Divider>額外資訊填寫</Divider>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Divider>額外資訊填寫</Divider>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Provider>
-                            <Form.Item label="鄰近交通" ><Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                {/*</Col>*/}
-                                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                    {TrafficArr.length ? (
-                                        <ol>
-                                            {TrafficArr.map((traffic, index) => (
-                                                <li key={index} className="trafficList" style={{fontSize: '1.2rem'}}>
-                                                    {/*名稱：{traffic.TrafficName}, 距離：{traffic.TrafficDistance} 公尺 , 類型：{Traffic_Type[traffic.TrafficType-1]}*/}
-                                                    名稱：{traffic.name}, 距離：{traffic.distance} 公尺 , 類型：{Traffic_Type[traffic.type-1]}
-                                                    <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-                                                    <Button icon={<DeleteOutlined />} onClick={() => {
-                                                        if(!delTraffic ) {
-                                                            TrafficArr.splice(index,1)
-                                                            setDelTraffic(true)
-                                                        }
-                                                    }}>delete</Button>
-                                                </li>
-                                            ))}
-                                        </ol>
-                                    ) : (
-                                        <p style={{fontSize: '1.2rem'}}>NONE</p>
-                                    )}
-                                    <Button type="dashed"
-                                            htmlType="button"
-                                            style={{
-                                                margin: '0 8px',
-                                                width: "50%"
-                                            }}
-                                            disabled={TrafficArr.length >= 20}
-                                            onClick={showTrafficModal}
-                                            block icon={<PlusOutlined />}
-                                    >
-                                       Add Traffic info
-                                    </Button>
-                                </Col>
-                            </Row>
-
-                                <Modal title="Traffic info"
-                                       visible={trafficVisible}
-                                       onOk={() => {
-                                           form_traffic.validateFields()
-                                               .then((values) => {
-                                                   form_traffic.resetFields();
-                                                   onTrafficCreate(values);
-                                               })
-                                               .catch((info) => {
-                                                   console.log('Validate Failed:', info);
-                                               });
-                                       }
-                                       }
-                                       onCancel={hideTrafficModal}>
-                                    <Form form={form_traffic} layout="vertical" name="TrafficForm">
-                                        <Form.Item
-                                            // name="TrafficName"
-                                            name="name"
-                                            label="名稱："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="" style={{width: '50%'}}/>
-                                        </Form.Item>
-                                        <Form.Item
-                                            // name="TrafficDistance"
-                                            name="distance"
-                                            label="距離："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <InputNumber placeholder=""
-                                                         style={{width: '50%'}}
-                                                         min={0}
-                                                // formatter={value => `${value} 公尺`}
-                                                         addonAfter="公尺"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            // name="TrafficType"
-                                            name="type"
-                                            label="類型："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Select style={{
-                                                width: '30%',
-                                            }}
-                                            >
-                                                <Option value="1">捷運站</Option>
-                                                <Option value="2">公車站/客運站</Option>
-                                                <Option value="3">火車站</Option>
-                                                <Option value="4">高鐵站</Option>
-                                                <Option value="5">機場</Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Form>
-                                </Modal>
-                            </Form.Item>
-                        </Form.Provider>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Provider>
-                            <Form.Item label="鄰近生活圈">
-                                <Row>
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Provider>
+                                <Form.Item label="鄰近交通" >
+                                    <Row>
                                     {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
                                     {/*</Col>*/}
-                                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                        {LifeArr.length ? (
-                                            <ol>
-                                                {LifeArr.map((life, index) => (
-                                                    <li key={index} className="lifeList" style={{fontSize: '1.2rem'}}>
-                                                        {/*名稱：{life.LifeName}, 距離：{life.LifeDistance} 公尺 , 類型：{Life_Type[life.LifeType-1]}*/}
-                                                        名稱：{life.name}, 距離：{life.distance} 公尺 , 類型：{Life_Type[life.type-1]}
-                                                        <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-                                                        <Button icon={<DeleteOutlined />} onClick={() => {
-                                                            if(!delLife ) {
-                                                                LifeArr.splice(index,1)
-                                                                setDelLife(true)
-                                                            }
-                                                        }}>delete</Button>
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        ) : (
-                                            <p style={{fontSize: '1.2rem'}}>NONE</p>
-                                        )}
+                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        {TrafficArr.length ? (
+                                            <>
+                                                <List
+                                                      style={{fontSize: '1.2rem'}}
+                                                      dataSource={TrafficArr}
+                                                      renderItem={(traffic, index) => (
+                                                          <List.Item actions={[
+                                                              <Button icon={<DeleteOutlined />} onClick={() => {
+                                                                  if(!delTraffic ) {
+                                                                      TrafficArr.splice(index,1)
+                                                                      setDelTraffic(true)
+                                                                  }
+                                                              }}>
+                                                                  delete
+                                                              </Button>]}>
+                                                              {index+1}.名稱：{traffic.name} ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
+                                                          </List.Item>
+                                                      )}
+                                                />
+                                            </>
+
+                                            // <ol>
+                                            //     {TrafficArr.map((traffic, index) => (
+                                            //         <li key={index} className="trafficList" style={{fontSize: '1.2rem', width:'70%'}}>
+                                            //             {/*名稱：{traffic.TrafficName}, 距離：{traffic.TrafficDistance} 公尺 , 類型：{Traffic_Type[traffic.TrafficType-1]}*/}
+                                            //             名稱：{traffic.name} ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
+                                            //             {/*<span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>*/}
+                                            //
+                                            //             <Button icon={<DeleteOutlined />} onClick={() => {
+                                            //                 if(!delTraffic ) {
+                                            //                     TrafficArr.splice(index,1)
+                                            //                     setDelTraffic(true)
+                                            //                 }
+                                            //             }}>
+                                            //                 delete
+                                            //             </Button>
+                                            //         </li>
+                                            //     ))}
+                                            // </ol>
+                                        ) :  null}
+                                         {/*<p style={{fontSize: '1.2rem'}}>NONE</p>*/}
                                         <Button type="dashed"
                                                 htmlType="button"
                                                 style={{
                                                     margin: '0 8px',
                                                     width: "50%"
                                                 }}
-                                                disabled={LifeArr.length >= 20}
-                                                onClick={showLifeModal}
+                                                disabled={TrafficArr.length >= 20}
+                                                onClick={showTrafficModal}
                                                 block icon={<PlusOutlined />}
                                         >
-                                            Add Life info
+                                            新增交通資訊
                                         </Button>
                                     </Col>
                                 </Row>
 
-                                <Modal title="Life info"
-                                       visible={lifeVisible}
-                                       onOk={() => {
-                                           form_life.validateFields()
-                                               .then((values) => {
-                                                   form_life.resetFields();
-                                                   onLifeCreate(values);
-                                               })
-                                               .catch((info) => {
-                                                   console.log('Validate Failed:', info);
-                                               });
-                                       }
-                                       }
-                                       onCancel={hideLifeModal}>
-                                    <Form form={form_life} layout="vertical" name="LifeForm">
-                                        <Form.Item
-                                            // name="LifeName"
-                                            name="name"
-                                            label="名稱："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="" style={{width: '50%'}}/>
-                                        </Form.Item>
-                                        <Form.Item
-                                            // name="LifeDistance"
-                                            name="distance"
-                                            label="距離："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <InputNumber placeholder=""
-                                                         style={{width: '50%'}}
-                                                         min={0}
-                                                // formatter={value => `${value} 公尺`}
-                                                         addonAfter="公尺"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            // name="LifeType"
-                                            name="type"
-                                            label="類型："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Select style={{
-                                                width: '30%',
-                                            }}
+                                    <Modal title="交通資訊"
+                                           visible={trafficVisible}
+                                           onOk={() => {
+                                               form_traffic.validateFields()
+                                                   .then((values) => {
+                                                       form_traffic.resetFields();
+                                                       onTrafficCreate(values);
+                                                   })
+                                                   .catch((info) => {
+                                                       console.log('Validate Failed:', info);
+                                                   });
+                                           }
+                                           }
+                                           onCancel={hideTrafficModal}>
+                                        <Form form={form_traffic} layout="vertical" name="TrafficForm">
+                                            <Form.Item
+                                                // name="TrafficName"
+                                                name="name"
+                                                label="名稱："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
                                             >
-                                                <Option value="1">夜市</Option>
-                                                <Option value="2">科學圓區</Option>
-                                                <Option value="3">計畫區</Option>
-                                                <Option value="4">重劃區</Option>
-                                                <Option value="5">傳統商圈</Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Form>
-                                </Modal>
-                            </Form.Item>
-                        </Form.Provider>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Provider>
-                            <Form.Item label="鄰近學校">
-                                <Row>
-                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                    {/*</Col>*/}
-                                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                        {EducationArr.length ? (
-                                            <ol>
-                                                {EducationArr.map((education, index) => (
-                                                    <li key={index} className="EduList" style={{fontSize: '1.2rem'}} >
-                                                        {/*名稱：{education.EduName}, 距離：{education.EduDistance} 公尺 , 類型：{Edu_Type[education.EduType-1]}*/}
-                                                        名稱：{education.name}, 距離：{education.distance} 公尺 , 類型：{Edu_Type[education.type-1]}
-                                                        <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-                                                        <Button icon={<DeleteOutlined />} onClick={() => {
-                                                            if(!delEdu ) {
-                                                                EducationArr.splice(index,1)
-                                                                setDelEdu(true)
-                                                            }
-                                                        }}>delete</Button>
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        ) : (
-                                            <p style={{fontSize: '1.2rem'}}>NONE</p>
-                                        )}
-                                        <Button type="dashed"
-                                                htmlType="button"
-                                                style={{
-                                                    margin: '0 8px',
-                                                    width: "50%"
+                                                <Input placeholder="" style={{width: '100%'}}/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                // name="TrafficDistance"
+                                                name="distance"
+                                                label="距離："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <InputNumber placeholder=""
+                                                             style={{width: '100%'}}
+                                                             min={0}
+                                                    // formatter={value => `${value} 公尺`}
+                                                             addonAfter="公尺"
+                                                />
+                                            </Form.Item>
+                                            <Form.Item
+                                                // name="TrafficType"
+                                                name="type"
+                                                label="類型："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <Select style={{
+                                                    width: '100%',
                                                 }}
-                                                disabled={EducationArr.length >= 20}
-                                                onClick={showEduModal}
-                                                block icon={<PlusOutlined />}
-                                        >
-                                            Add Education info
-                                        </Button>
-                                    </Col>
-                                </Row>
+                                                >
+                                                    <Option value="1">捷運站</Option>
+                                                    <Option value="2">公車站/客運站</Option>
+                                                    <Option value="3">火車站</Option>
+                                                    <Option value="4">高鐵站</Option>
+                                                    <Option value="5">機場</Option>
+                                                </Select>
+                                            </Form.Item>
+                                        </Form>
+                                    </Modal>
+                                </Form.Item>
+                            </Form.Provider>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                                <Modal title="Education info"
-                                       visible={eduVisible}
-                                       onOk={() => {
-                                           form_edu.validateFields()
-                                               .then((values) => {
-                                                   form_edu.resetFields();
-                                                   onEduCreate(values);
-                                               })
-                                               .catch((info) => {
-                                                   console.log('Validate Failed:', info);
-                                               });
-                                       }
-                                       }
-                                       onCancel={hideEduModal}>
-                                    <Form form={form_edu} layout="vertical" name="EduForm">
-                                        <Form.Item
-                                            // name="EduName"
-                                            name="name"
-                                            label="名稱："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="" style={{width: '50%'}}/>
-                                        </Form.Item>
-                                        <Form.Item
-                                            // name="EduDistance"
-                                            name="distance"
-                                            label="距離："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <InputNumber placeholder=""
-                                                         style={{width: '50%'}}
-                                                         min={0}
-                                                // formatter={value => `${value} 公尺`}
-                                                         addonAfter="公尺"
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            // name="EduType"
-                                            name="type"
-                                            label="類型："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Select style={{
-                                                width: '30%',
-                                            }}
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Provider>
+                                <Form.Item label="鄰近生活">
+                                    <Row>
+                                        {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                        {/*</Col>*/}
+                                        <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                            {LifeArr.length ? (
+                                                    <>
+                                                        <List
+                                                            style={{fontSize: '1.2rem'}}
+                                                            dataSource={LifeArr}
+                                                            renderItem={(life, index) => (
+                                                                <List.Item actions={[
+                                                                    <Button icon={<DeleteOutlined />} onClick={() => {
+                                                                        if(!delLife ) {
+                                                                            LifeArr.splice(index,1)
+                                                                            setDelLife(true)
+                                                                        }
+                                                                    }}>
+                                                                        delete
+                                                                    </Button>]}>
+                                                                    {index+1}.名稱：{life.name} ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
+                                                                </List.Item>
+                                                            )}
+                                                        />
+                                                    </>
+                                                // <ol>
+                                                //     {LifeArr.map((life, index) => (
+                                                //         <li key={index} className="lifeList" style={{fontSize: '1.2rem'}}>
+                                                //             {/*名稱：{life.LifeName}, 距離：{life.LifeDistance} 公尺 , 類型：{Life_Type[life.LifeType-1]}*/}
+                                                //             名稱：{life.name} ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
+                                                //             <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                //             <Button icon={<DeleteOutlined />} onClick={() => {
+                                                //                 if(!delLife ) {
+                                                //                     LifeArr.splice(index,1)
+                                                //                     setDelLife(true)
+                                                //                 }
+                                                //             }}>delete</Button>
+                                                //         </li>
+                                                //     ))}
+                                                // </ol>
+                                            ) : null}
+                                            {/*<p style={{fontSize: '1.2rem'}}>NONE</p>*/}
+                                            <Button type="dashed"
+                                                    htmlType="button"
+                                                    style={{
+                                                        margin: '0 8px',
+                                                        width: "50%"
+                                                    }}
+                                                    disabled={LifeArr.length >= 20}
+                                                    onClick={showLifeModal}
+                                                    block icon={<PlusOutlined />}
                                             >
-                                                <Option value="1">幼稚園</Option>
-                                                <Option value="2">小學</Option>
-                                                <Option value="3">國中</Option>
-                                                <Option value="4">高中/高職</Option>
-                                                <Option value="5">大學/科大</Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Form>
-                                </Modal>
-                            </Form.Item>
-                        </Form.Provider>
-                    </Col>
-                </Row>
+                                                新增生活資訊
+                                            </Button>
+                                        </Col>
+                                    </Row>
 
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+                                    <Modal title="生活資訊"
+                                           visible={lifeVisible}
+                                           onOk={() => {
+                                               form_life.validateFields()
+                                                   .then((values) => {
+                                                       form_life.resetFields();
+                                                       onLifeCreate(values);
+                                                   })
+                                                   .catch((info) => {
+                                                       console.log('Validate Failed:', info);
+                                                   });
+                                           }
+                                           }
+                                           onCancel={hideLifeModal}>
+                                        <Form form={form_life} layout="vertical" name="LifeForm">
+                                            <Form.Item
+                                                // name="LifeName"
+                                                name="name"
+                                                label="名稱："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <Input placeholder="" style={{width: '100%'}}/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                // name="LifeDistance"
+                                                name="distance"
+                                                label="距離："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <InputNumber placeholder=""
+                                                             style={{width: '100%'}}
+                                                             min={0}
+                                                    // formatter={value => `${value} 公尺`}
+                                                             addonAfter="公尺"
+                                                />
+                                            </Form.Item>
+                                            <Form.Item
+                                                // name="LifeType"
+                                                name="type"
+                                                label="類型："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <Select style={{
+                                                    width: '100%',
+                                                }}
+                                                >
+                                                    <Option value="1">夜市</Option>
+                                                    <Option value="2">科學圓區</Option>
+                                                    <Option value="3">計畫區</Option>
+                                                    <Option value="4">重劃區</Option>
+                                                    <Option value="5">傳統商圈</Option>
+                                                </Select>
+                                            </Form.Item>
+                                        </Form>
+                                    </Modal>
+                                </Form.Item>
+                            </Form.Provider>
+                        </Col>
+                    </Row>
 
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item
-                            // name="extraRequire"
-                            label="需求與許可"
-                            rules={[
-                                {
-                                    required: false,
-                                    message: 'Please input your requirement!',
-                                },
-                            ]}
-                        >
-                            <Checkbox.Group style={{ fontSize: '100%' ,width: '100%' }}
-                                            value={extraRequire}
-                                            onChange={onExtraRequireChange}
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Provider>
+                                <Form.Item label="鄰近學校">
+                                    <Row>
+                                        {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                        {/*</Col>*/}
+                                        <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                            {EducationArr.length ? (
+                                                <>
+                                                    <List
+                                                        style={{fontSize: '1.2rem'}}
+                                                        dataSource={EducationArr}
+                                                        renderItem={(education, index) => (
+                                                            <List.Item actions={[
+                                                                <Button icon={<DeleteOutlined />} onClick={() => {
+                                                                    if(!delEdu ) {
+                                                                        EducationArr.splice(index,1)
+                                                                        setDelEdu(true)
+                                                                    }
+                                                                }}>
+                                                                    delete
+                                                                </Button>]}>
+                                                                名稱：{education.name} ， 距離：{education.distance} 公尺 ， 類型：{Edu_Type[education.type-1]}
+                                                            </List.Item>
+                                                        )}
+                                                    />
+                                                </>
+                                                // <ol>
+                                                //     {EducationArr.map((education, index) => (
+                                                //         <li key={index} className="EduList" style={{fontSize: '1.2rem'}} >
+                                                //             {/*名稱：{education.EduName}, 距離：{education.EduDistance} 公尺 , 類型：{Edu_Type[education.EduType-1]}*/}
+                                                //             名稱：{education.name} ， 距離：{education.distance} 公尺 ， 類型：{Edu_Type[education.type-1]}
+                                                //             <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+                                                //             <Button icon={<DeleteOutlined />} onClick={() => {
+                                                //                 if(!delEdu ) {
+                                                //                     EducationArr.splice(index,1)
+                                                //                     setDelEdu(true)
+                                                //                 }
+                                                //             }}>delete</Button>
+                                                //         </li>
+                                                //     ))}
+                                                // </ol>
+                                            ) : null}
+                                            {/*<p style={{fontSize: '1.2rem'}}>NONE</p>*/}
+                                            <Button type="dashed"
+                                                    htmlType="button"
+                                                    style={{
+                                                        margin: '0 8px',
+                                                        width: "50%"
+                                                    }}
+                                                    disabled={EducationArr.length >= 20}
+                                                    onClick={showEduModal}
+                                                    block icon={<PlusOutlined />}
+                                            >
+                                                新增學校資訊
+                                            </Button>
+                                        </Col>
+                                    </Row>
+
+                                    <Modal title="學校資訊"
+                                           visible={eduVisible}
+                                           onOk={() => {
+                                               form_edu.validateFields()
+                                                   .then((values) => {
+                                                       form_edu.resetFields();
+                                                       onEduCreate(values);
+                                                   })
+                                                   .catch((info) => {
+                                                       console.log('Validate Failed:', info);
+                                                   });
+                                           }
+                                           }
+                                           onCancel={hideEduModal}>
+                                        <Form form={form_edu} layout="vertical" name="EduForm">
+                                            <Form.Item
+                                                // name="EduName"
+                                                name="name"
+                                                label="名稱："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <Input placeholder="" style={{width: '100%'}}/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                // name="EduDistance"
+                                                name="distance"
+                                                label="距離："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <InputNumber placeholder=""
+                                                             style={{width: '100%'}}
+                                                             min={0}
+                                                    // formatter={value => `${value} 公尺`}
+                                                             addonAfter="公尺"
+                                                />
+                                            </Form.Item>
+                                            <Form.Item
+                                                // name="EduType"
+                                                name="type"
+                                                label="類型："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                    },
+                                                ]}
+                                            >
+                                                <Select style={{
+                                                    width: '100%',
+                                                }}
+                                                >
+                                                    <Option value="1">幼稚園</Option>
+                                                    <Option value="2">小學</Option>
+                                                    <Option value="3">國中</Option>
+                                                    <Option value="4">高中/高職</Option>
+                                                    <Option value="5">大學/科大</Option>
+                                                </Select>
+                                            </Form.Item>
+                                        </Form>
+                                    </Modal>
+                                </Form.Item>
+                            </Form.Provider>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                // name="extraRequire"
+                                label="需求與許可"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: 'Please input your requirement!',
+                                    },
+                                ]}
                             >
-                                <Row>
-                                    <Col span={2} xs={4} sm={3} md={3} lg={2} xl={2}>
-                                        <Checkbox value='pet'>養寵物</Checkbox>
-                                    </Col>
-                                    <Col span={2} xs={4} sm={3} md={3} lg={2} xl={2}>
-                                        <Checkbox value='manager'>管理費</Checkbox>
-                                    </Col>
-                                    <Col span={2} xs={4} sm={3} md={3} lg={2} xl={2}>
-                                        <Checkbox value='garbage'>垃圾費</Checkbox>
-                                    </Col>
-                                    <Col span={2} xs={4} sm={3} md={3} lg={2} xl={2}>
-                                        <Checkbox value='smoke'>可抽菸</Checkbox>
-                                    </Col>
-                                    <Col span={2} xs={4} sm={3} md={3} lg={2} xl={2}>
-                                        <Checkbox value='cook'>可開伙</Checkbox>
-                                    </Col>
-                                    <Col span={2} xs={4} sm={3} md={3} lg={2} xl={2}>
-                                        <Checkbox value='parking'>停車位</Checkbox>
-                                    </Col>
-                                </Row>
-                            </Checkbox.Group>
+                                <Checkbox.Group style={{ fontSize: '100%' ,width: '100%' }}
+                                                value={extraRequire}
+                                                onChange={onExtraRequireChange}
+                                >
+                                    <Row>
+                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='pet'>養寵物</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='manager'>管理費</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='garbage'>垃圾費</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='smoke'>可抽菸</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='cook'>可開伙</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='parking'>停車位</Checkbox>
+                                        </Col>
+                                    </Row>
+                                </Checkbox.Group>
 
+                                <Form.Item>
+                                    <Row justify="start">
+                                        {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                        {/*</Col>*/}
+                                        <Col  xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            {ShowHideManageFee &&
+                                                <Form.Item
+                                                    name="manageFee"
+                                                    label="管理費"
+                                                    style={{ width: '100%' }}
+                                                    // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: '此欄位不能為空白',
+                                                        },
+                                                    ]}
+                                                >
+                                                    <InputNumber placeholder=""
+                                                                 style={{width: '100%'}}
+                                                                 min={0}
+                                                        // formatter={value => `${value} 公尺`}
+                                                                 addonAfter="元/月"
+                                                    />
+                                                </Form.Item>
+                                            }
+                                        </Col>
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            {ShowHideGarbageFee &&
+                                                <Form.Item
+                                                    name="garbageFee"
+                                                    label="垃圾費"
+                                                    style={{ width: '100%' }}
+                                                    // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: '此欄位不能為空白',
+                                                        },
+                                                    ]}
+                                                >
+                                                    <InputNumber placeholder=""
+                                                                 style={{width: '100%'}}
+                                                                 min={0}
+                                                        // formatter={value => `${value} 公尺`}
+                                                                 addonAfter="元/月"
+                                                    />
+                                                </Form.Item>
+                                            }
+                                        </Col>
+                                    </Row>
+                                </Form.Item>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={11} sm={11} md={11} lg={11} xl={11}>
+
+                        </Col>
+                        <Col  xs={13} sm={13} md={13} lg={13} xl={13}>
                             <Form.Item>
-                                <Row justify="start">
+                                <Row>
                                     {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
                                     {/*</Col>*/}
-                                    <Col  xs={12} sm={9} md={9} lg={8} xl={6}>
-                                        {ShowHideManageFee &&
-                                            <Form.Item
-                                                name="manageFee"
-                                                label="管理費"
-                                                style={{ width: '100%' }}
-                                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: 'Please input your manageFee!',
-                                                    },
-                                                ]}
-                                            >
-                                                <InputNumber placeholder=""
-                                                             style={{width: '100%'}}
-                                                             min={0}
-                                                    // formatter={value => `${value} 公尺`}
-                                                             addonAfter="元/月"
-                                                />
-                                            </Form.Item>
-                                        }
-                                    </Col>
-                                    <Col xs={12} sm={9} md={9} lg={8} xl={6}>
-                                        {ShowHideGarbageFee &&
-                                            <Form.Item
-                                                name="garbageFee"
-                                                label="垃圾費"
-                                                style={{ width: '100%' }}
-                                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: 'Please input your garbageFee!',
-                                                    },
-                                                ]}
-                                            >
-                                                <InputNumber placeholder=""
-                                                             style={{width: '100%'}}
-                                                             min={0}
-                                                    // formatter={value => `${value} 公尺`}
-                                                             addonAfter="元/月"
-                                                />
-                                            </Form.Item>
-                                        }
+                                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                                        <Button type="primary"
+                                                htmlType="submit"
+                                                className='HouseData-button'
+                                                shape="round"
+                                        >
+                                            資料提交
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Form.Item>
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}>
-
-                    </Col>
-                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <Form.Item>
-                            <Row>
-                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                {/*</Col>*/}
-                                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                    <Button type="primary"
-                                            htmlType="submit"
-                                            className='HouseData-button'
-                                            shape="round"
-                                    >
-                                        資料提交
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
 
                 </Form>}
         </div>

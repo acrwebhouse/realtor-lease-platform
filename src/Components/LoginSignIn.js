@@ -14,10 +14,11 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LoginRegister = (props) => {
 
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
-    const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+    // const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
     const [LoginData, setLoginData] = useState()
     const [rememberMe, setRememberMe] = useState(false)
     const [isRunPost, setIsRunPost] = useState(false)
+    const [isReset, setIsReset] = useState(false)
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
@@ -26,17 +27,18 @@ const LoginRegister = (props) => {
         setIsRegisterModalVisible(true);
     };
 
-    const showLoginModal = () => {
-        setIsLoginModalVisible(true);
-    };
+    // const showLoginModal = () => {
+    //     setIsLoginModalVisible(true);
+    // };
 
     const handleRegisterCancel = () => {
         setIsRegisterModalVisible(false);
+        setIsReset(true);
     };
 
     const handleLoginCancel = () => {
         props.loginSignInIsOpen(false)
-        setIsLoginModalVisible(false);
+        // setIsLoginModalVisible(false);
     };
 
     const errorAccountOrMailFormat = () => {
@@ -88,7 +90,7 @@ const LoginRegister = (props) => {
             setIsRunPost(false)
         }
 
-    }, [LoginData, rememberMe, isRunPost])
+    }, [LoginData, rememberMe, isRunPost, props])
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -98,19 +100,23 @@ const LoginRegister = (props) => {
 
     return (
         <>
-            <Modal title="Login System"
+            <Modal title="會員登入系統"
                    className="ModalLogin"
                    visible={props.isShow}
                    onCancel={handleLoginCancel}
                    width={500}
                    footer={[
-                       <span key="paragraph">New here? </span>,
+                       <span key="paragraph">
+                           {/*New here? */}
+                           不是會員？<span> &nbsp; </span>
+                       </span>,
                        <Button className='btn-register'
                                key='register'
                                type="primary"
                                onClick={showRegisterModal}
                        >
-                           Sign Up
+                           {/*Sign Up*/}
+                           註冊
                        </Button>
                    ]}
                    // centered="false"
@@ -133,7 +139,7 @@ const LoginRegister = (props) => {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please key correct account or Email!',
+                                message: '請填帳號或電子郵件',
                             },
                         ]}
                     >
@@ -147,7 +153,7 @@ const LoginRegister = (props) => {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your password!',
+                                message: '密碼不能空白',
                             },
                         ]}
                     >
@@ -160,11 +166,15 @@ const LoginRegister = (props) => {
                             valuePropName="checked"
                             noStyle
                         >
-                            <Checkbox>Remember me</Checkbox>
+                            <Checkbox>
+                                {/*Remember me*/}
+                                記憶帳號密碼
+                            </Checkbox>
                         </Form.Item>
                         <a className="login-form-forgot"
                            href="http://www.localhost:3000/PasswordReset">
-                            Forgot password
+                            {/*Forgot password*/}
+                            忘記密碼
                         </a>
                     </Form.Item>
                     <Form.Item>
@@ -173,10 +183,11 @@ const LoginRegister = (props) => {
                                 className='login-form-button'
                                 shape="round"
                         >
-                            Log in
+                            {/*Log in*/}
+                            登入
                         </Button>
 
-                        <Modal title="Register Form"
+                        <Modal title="會員註冊系統"
                                visible={isRegisterModalVisible}
                                className="ModalRegister"
                                width={700}
@@ -185,11 +196,13 @@ const LoginRegister = (props) => {
                                onCancel={handleRegisterCancel}
                                footer={[
                                    <Button key="back" className="ss" onClick={handleRegisterCancel}>
-                                       Return
+                                       返回
                                    </Button>,
                                ]}
                         >
-                            <Register setIsRegisterModalVisible={setIsRegisterModalVisible}/>
+                            <Register setIsRegisterModalVisible={setIsRegisterModalVisible}
+                                      initReset={isReset}
+                                      setIsReset={setIsReset}/>
                         </Modal>
                     </Form.Item>
                 </Form>
