@@ -265,7 +265,7 @@ const HousesList = (props) => {
                     item.content.push(`教育 : 無設施`);
                 }
 
-                item.content.push(`更新時間 : ${items[i].updateTime}`)
+                item.content.push(`更新時間 : ${new Date(items[i].updateTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}`)
 
                 if(props.owner!==''&&props.owner!==undefined&&props.owner!==null){
                     item.content.push(items[i]._id)
