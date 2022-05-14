@@ -10,6 +10,7 @@ import MemberList from "./Components/MemberList";
 import MemberInfo from "./Components/MemberInfo";
 import HouseDetailOwner from "./Components/HouseDetailOwner";
 import HouseDetailOwnerEdit from "./Components/HouseDetailOwnerEdit";
+import HouseImage from "./Components/HouseImage";
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Main from "./Components/Main";
@@ -34,6 +35,11 @@ ReactDOM.render(
           <Route path="/HouseDetail/:id" element={<HouseDetail/>}/>
           <Route path="/HouseDetailOwner/:id/:owner" element={<HouseDetailOwner/>}/>
           <Route path="/HouseDetailOwnerEdit/:id/:owner" element={<HouseDetailOwnerEdit/>}/>
+          <Route path="/test" element={<HouseImage size='200' image='https://en.pimg.jp/075/623/884/1/75623884.jpg' />}/>
+
+          {/* <Route path="/test" element={<HouseImage size='200' image='https://www.mymypic.net/data/attachment/forum/201811/12/1611513h85bq8vg1uq51uv.jpg' />}/> */}
+
+          
 
       </Routes>
 
