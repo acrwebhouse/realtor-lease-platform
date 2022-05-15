@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message, Alert, Checkbox} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
+import moment from 'moment';
 
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
 
 const MemberInfo = (props) => {
+    const dateFormat = 'YYYY/MM/DD';
     const [init, setInit] = useState(true);
     const [user, setUser] = useState({});
     const [isEdit, seIsEdit] = useState(false);
@@ -17,7 +19,9 @@ const MemberInfo = (props) => {
     const [gender, setGender] = useState([]);
     const [isShowExtraData, setIsShowExtraData] = useState(false);
     const [editUser, setEditUser] = useState({});
+    const [editDate, setEditDate] = useState(moment('2022-01-01', dateFormat));
     const xToken = cookie.load('x-token')
+    const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3}[0-9]{6}[\u4e00-\u9fa5]/
 
     useEffect(() => {
         if (init) {
@@ -79,6 +83,10 @@ function setData(data){
             }
         }
     }
+    if(data.bornDate !==null && data.bornDate !==undefined && data.bornDate !==''){
+        setEditDate(moment(data.bornDate, dateFormat));
+    }
+    
 }
 
 function setRolesAction(data){
@@ -166,6 +174,17 @@ function cancelEdit(){
 function sendEdit(){
     const decodedToken = jwt_decode(xToken);
     editUser.id = decodedToken.id
+    let isOkLicense = true
+    if(editUser.rolesInfo.sales && editUser.rolesInfo.sales.license){
+        if (LicensePattern.test(editUser.rolesInfo.sales.license)) {
+            isOkLicense = true
+        }else{
+            isOkLicense = false
+        }
+    }
+    
+
+    if(isOkLicense === true){
     let reqUrl = `${editUserUrl}`
     UserAxios.put(
         reqUrl,editUser,{
@@ -196,7 +215,9 @@ function sendEdit(){
         }
     })
     .catch( (error) => message.error(error, 3))
-
+    }else{
+        message.error('請輸入正確的營業員證號格式', 3);
+    }
 
 }
 
@@ -224,6 +245,13 @@ function editLicense(e){
         editUserValue.rolesInfo.sales.license = e.target.value
         setEditUser(editUserValue)
     }
+}
+
+function changeDate(e, dateString){
+    setEditDate(moment(dateString, dateFormat));
+    const editUserValue = editUser
+    editUserValue.bornDate = dateString
+    setEditUser(editUserValue)
 }
 
     return (
@@ -324,7 +352,7 @@ function editLicense(e){
                             </div>                                
                         </Col>
                         <Col xs={20} sm={20} md={20} lg={20} xl={20}>
-                            <Input onChange={editAddress} style={{ width: '100%' }} defaultValue={user.address}></Input>
+                        <DatePicker onChange={changeDate} defaultValue={editDate} format={dateFormat}/>
                         </Col>
                     </Row>
                     </div>): 
@@ -369,7 +397,13 @@ function editLicense(e){
                          </div>): 
                          <div>電話:&nbsp;{user.phone}</div> }
                     <br/>
-                    註冊時間:&nbsp;{new Date(user.createTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}<br/><br/>
+                    {/* <DatePicker onChange={showDate} format={dateFormat}/> */}
+
+                    {
+                        // isEdit?( <div>註冊時間:&nbsp;<DatePicker onChange={changeDate} defaultValue={editDate} format={dateFormat}/></div>): <div>註冊時間:&nbsp;{new Date(user.createTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}</div>
+                    }
+                    註冊時間:&nbsp;{new Date(user.createTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}
+                    <br/><br/>
                     </div>
                 
                 </Col>
