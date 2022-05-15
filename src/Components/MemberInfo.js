@@ -175,6 +175,7 @@ function sendEdit(){
     const decodedToken = jwt_decode(xToken);
     editUser.id = decodedToken.id
     let isOkLicense = true
+    let isOkPassword = false
     if(editUser.rolesInfo.sales && editUser.rolesInfo.sales.license){
         if (LicensePattern.test(editUser.rolesInfo.sales.license)) {
             isOkLicense = true
@@ -182,9 +183,13 @@ function sendEdit(){
             isOkLicense = false
         }
     }
+
+    if(editUser.password !==''&&editUser.password !==null&&editUser.password !==undefined){
+        isOkPassword = true
+    }
     
 
-    if(isOkLicense === true){
+    if(isOkLicense === true && isOkPassword === true){
     let reqUrl = `${editUserUrl}`
     UserAxios.put(
         reqUrl,editUser,{
@@ -215,15 +220,25 @@ function sendEdit(){
         }
     })
     .catch( (error) => message.error(error, 3))
-    }else{
+    }
+    if(isOkLicense === false){
         message.error('請輸入正確的營業員證號格式', 3);
     }
 
+    if(isOkPassword === false){
+        message.error('密碼不能為空', 3);
+    }
 }
 
 function editName(e){
     const editUserValue = editUser
     editUserValue.name = e.target.value
+    setEditUser(editUserValue)
+}
+
+function editPassword(e){
+    const editUserValue = editUser
+    editUserValue.password = e.target.value
     setEditUser(editUserValue)
 }
 
@@ -327,6 +342,24 @@ function changeDate(e, dateString){
                         </Row>
                         </div>): 
                         <div>姓名:&nbsp;{user.name}</div> }
+                    <br/>
+                    {isEdit?( 
+                        <div >
+                        <Row>
+                            <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                                <div style={{                
+                                    'display': 'inline-block',
+                                    'textAlign': 'left',
+                                }}>
+                                    密碼:
+                                </div>                                
+                            </Col>
+                            <Col xs={20} sm={20} md={20} lg={20} xl={20}>
+                                <Input onChange={editPassword} style={{ width: '100%' }} defaultValue={user.password}></Input>
+                            </Col>
+                        </Row>
+                        </div>): 
+                        <div>密碼:&nbsp;******</div> }
                     <br/>
                     性別:
                     &nbsp; &nbsp;
