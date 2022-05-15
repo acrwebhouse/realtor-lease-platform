@@ -7,6 +7,7 @@ import {HouseAxios} from './axiosApi'
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 
+
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
 
@@ -450,8 +451,10 @@ const HouseDetail = (prop) => {
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
                             textAlign: 'center',
                             width: '100%',
+                            height:'500px',
+                            overflow:'hidden',
                         }}>                            
-                        <Image  src={housePhoto[0]} fallback={fallback} />                            
+                        <Image  src={housePhoto[0]} fallback={fallback} />                          
                 </Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
                             textAlign: 'center',
@@ -496,58 +499,137 @@ const HouseDetail = (prop) => {
             <Divider>照片</Divider>
 
             <Row>
-            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
+            <Col xs={24} sm={2} md={2} lg={2} xl={2}></Col>
+                <Col xs={24} sm={20} md={20} lg={20} xl={20}style={{
                             textAlign: 'center',
+                            
                         }}>
                             
-                            {/* {JSON.stringify(house)} */}
                 <Image.PreviewGroup>
 
                     {
-                        housePhoto.length>0?(<Image width={200} src={housePhoto[0]} fallback={fallback} />):null                  
+                        housePhoto.length>0?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[0]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>1?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[1]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>2?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[2]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>3?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[3]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>4?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[4]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>5?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[5]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>6?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[6]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
+
+{
+                        housePhoto.length>7?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[7]} fallback={fallback} />
+                         </div>
+                        ):null                  
                     }
 
                     {
-                        housePhoto.length>1?(<Image width={200} src={housePhoto[1]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>2?(<Image width={200} src={housePhoto[2]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>3?(<Image width={200} src={housePhoto[3]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>4?(<Image width={200} src={housePhoto[4]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>5?(<Image width={200} src={housePhoto[5]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>6?(<Image width={200} src={housePhoto[6]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>7?(<Image width={200} src={housePhoto[7]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>8?(<Image width={200} src={housePhoto[8]} fallback={fallback} />):null                  
-                    }
-
-                    {
-                        housePhoto.length>9?(<Image width={200} src={housePhoto[9]} fallback={fallback} />):null                  
+                        housePhoto.length>8?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[8]} fallback={fallback} />
+                         </div>
+                        ):null                  
                     }
                     
+                    {
+                        housePhoto.length>9?(
+                        <div style={{
+                            height:'300px',
+                            overflow:'hidden',
+                            display: 'inline-block',
+                        }}>
+                        <Image width={300}  src={housePhoto[9]} fallback={fallback} />
+                         </div>
+                        ):null                  
+                    }
                 </Image.PreviewGroup>
                             
                 </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
+            <Col xs={24} sm={2} md={2} lg={2} xl={2}></Col>   
             </Row>
             
             {
