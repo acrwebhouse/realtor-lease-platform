@@ -37,6 +37,9 @@ const getPersonalInfo = () => {
     )
     .then( (response) => {
         console.log(response)
+        if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
+            response.data.data.bornDate = ''
+        }
         setUser(response.data.data)
         setData(response.data.data)
     })
@@ -252,15 +255,15 @@ function editLicense(e){
 
                     <Checkbox.Group value={roles} onChange={changeRoles}>
                     {
-                        isEdit?( <Checkbox value='2'>屋主</Checkbox>): <Checkbox disabled value='2'>屋主</Checkbox>
+                        <Checkbox disabled value='2'>屋主</Checkbox>
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
-                        isEdit?( <Checkbox  value='3'>一般會員</Checkbox>): <Checkbox disabled value='3'>一般會員</Checkbox>
+                        <Checkbox disabled value='3'>一般會員</Checkbox>
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
-                        isEdit?( <Checkbox value='4'>房仲</Checkbox>): <Checkbox disabled value='4'>房仲</Checkbox>
+                        <Checkbox disabled value='4'>房仲</Checkbox>
                     }
                     </Checkbox.Group>
                     
@@ -317,6 +320,25 @@ function editLicense(e){
                                 'display': 'inline-block',
                                 'textAlign': 'left',
                             }}>
+                                生日:
+                            </div>                                
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={20}>
+                            <Input onChange={editAddress} style={{ width: '100%' }} defaultValue={user.address}></Input>
+                        </Col>
+                    </Row>
+                    </div>): 
+                    <div>生日:&nbsp;{user.bornDate}</div> }
+
+                    <br/>
+                    {isEdit?( 
+                    <div >
+                    <Row>
+                        <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                            <div style={{                
+                                'display': 'inline-block',
+                                'textAlign': 'left',
+                            }}>
                                 地址:
                             </div>                                
                         </Col>
@@ -347,6 +369,7 @@ function editLicense(e){
                          </div>): 
                          <div>電話:&nbsp;{user.phone}</div> }
                     <br/>
+                    註冊時間:&nbsp;{new Date(user.createTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}<br/><br/>
                     </div>
                 
                 </Col>
