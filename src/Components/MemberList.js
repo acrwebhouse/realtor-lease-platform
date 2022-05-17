@@ -384,6 +384,8 @@ function removeUser(userId){
                       <br/>
                       {content[6]}
                       <br/>
+                      {content[7]}
+                      <br/>
                 <div >
                     <Button type="primary" onClick={() => queryUser(content[7])} style={{width: '70px' }}>
                         查看
