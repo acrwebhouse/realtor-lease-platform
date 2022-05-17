@@ -16,7 +16,7 @@ const { Option } = Select;
 
 const dateFormat = 'YYYY/MM/DD';
 
-const CityAreaOptions = CityAreaData.CityArea
+let CityAreaOptions = CityAreaData.CityArea
 
 const CityOptions = [{ value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
 const TaipeiAreaOptions = [{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
@@ -174,6 +174,10 @@ const Register = (props) => {
         // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
         // console.log(initCityArea)
         // const temp = []
+        for(let x = 0; x< CityAreaOptions.length; x++) {
+            CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : true}
+        }
+
         if(value[0].length < 2 ) {
             setInitCityAreaData([]);
             setCityAreaScope([]);
@@ -202,6 +206,9 @@ const Register = (props) => {
     }
     console.log(CityAreaScope)
     const resetCityArea = () => {
+        for(let x = 0; x< CityAreaOptions.length; x++) {
+            CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : false}
+        }
         setIsEnableCityArea(false);
         setInitCityAreaData([]);
         setCityAreaScope([]);
@@ -370,7 +377,7 @@ const Register = (props) => {
                                     ]}
                                     style={{ width: '100%' }}
                                     >
-                                        <Input placeholder="" style={{ width: '100%' }}/>
+                                        <Input size="large" placeholder="" style={{ width: '100%' }}/>
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -390,7 +397,7 @@ const Register = (props) => {
                                            style={{ width: '100%' }}
                                 >
                                     <Col style={{ width: '100%' }}>
-                                        <Radio.Group>
+                                        <Radio.Group size="large">
                                             <Row>
                                                 <Col span={4} offset={4}>
                                                     <Radio value={true}>男</Radio>
@@ -425,7 +432,7 @@ const Register = (props) => {
                                     ]}
                                     style={{ width: '100%' }}
                                 >
-                                    <Input placeholder="" style={{ width: '100%' }}/>
+                                    <Input size="large" placeholder="" style={{ width: '100%' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -447,7 +454,7 @@ const Register = (props) => {
                                     hasFeedback
                                     style={{ width: '100%' }}
                                 >
-                                    <Input.Password placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -479,7 +486,7 @@ const Register = (props) => {
                                     ]}
                                     style={{ width: '100%' }}
                                 >
-                                    <Input.Password placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -500,7 +507,7 @@ const Register = (props) => {
                                     ]}
                                     style={{ width: '100%' }}
                                 >
-                                    <Input placeholder="" style={{ width: '100%' }}/>
+                                    <Input size="large" placeholder="" style={{ width: '100%' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -525,6 +532,7 @@ const Register = (props) => {
                                             style={{
                                                 width: '100%',
                                             }}
+                                            size="large"
                                     />
                                 </Form.Item>
                             </Col>
@@ -549,7 +557,7 @@ const Register = (props) => {
                                                 // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                                        style={{ width: '100%' }}
                                             >
-                                                <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
+                                                <Select size="large" allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
                                                     width: '100%',
                                                 }}>
                                                 </Select>
@@ -560,7 +568,7 @@ const Register = (props) => {
                                                 // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                                        style={{ width: '100%' }}
                                             >
-                                                <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                                                <Select size="large" id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
                                                     width: '100%',
                                                 }}>
                                                 </Select>
@@ -571,9 +579,10 @@ const Register = (props) => {
                                                        style={{ width: '100%' }}
                                                 // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                             >
-                                                <Input  style={{
-                                                    width: '100%',
-                                                }}
+                                                <Input size="large"
+                                                    style={{
+                                                        width: '100%',
+                                                    }}
                                                 />
                                             </Form.Item>
                                         </Col>
@@ -640,7 +649,7 @@ const Register = (props) => {
                                         ]}
                                         style={{ width: '100%' }}
                                     >
-                                        <Input placeholder="" style={{ width: '100%' }}/>
+                                        <Input size="large" placeholder="" style={{ width: '100%' }}/>
                                     </Form.Item>
                                 </Col>
                             </Row>}
@@ -658,10 +667,10 @@ const Register = (props) => {
                                                        message: '區域欄位不能空白',
                                                    },
                                                ]}
-                                               tooltip="選擇同一城市裡兩個熟悉鄰近的區域"
+                                               tooltip="選擇同一城市裡兩個熟悉的區域，最好是鄰近的。 ex：松山區 中山區"
                                                style={{width: '100%'}}
                                     >
-                                                <Cascader
+                                                <Cascader size="large"
                                                     style={{width: '100%'}}
                                                     options={CityAreaOptions}
                                                     onChange={showCityAreaData}

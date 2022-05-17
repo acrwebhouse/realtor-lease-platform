@@ -35,11 +35,13 @@ const LianJiangAreaOptions = [{ value: '南竿鄉'},{ value: '北竿鄉'},{ valu
 
 const defaultExtraRequire = [];
 let PicData = [];
+let showPic = [];
 let AnnexData = [];
+let showAnnex = []
 const TrafficArr = [];
 const buildingType = ['公寓', '電梯大樓', '透天']
 const RentalType = ['整層住家', '獨立套房', '分租套房', '雅房']
-const Traffic_Type = ['捷運站', '公車站/客運站', '火車站', '高鐵站', '機場'];
+const Traffic_Type = ['捷運站', '公車/客運', '火車站', '高鐵站', '機場'];
 const LifeArr = [];
 const Life_Type = ['夜市', '科學圓區', '計畫區', '重劃區', '傳統商圈'];
 const EducationArr = [];
@@ -67,7 +69,8 @@ const HouseUpload = (prop) => {
     console.log('HouseUpload cookie decodedToken: '+JSON.stringify(decodedToken))
     console.log('HouseUpload cookie id: '+decodedToken.id)
 
-
+    const PicPreURL = prop.defaultValue? 'http://34.81.209.11:5000/resource/'+prop.defaultValue._id+'/photo/' : []
+    console.log(PicPreURL)
     const [form] = Form.useForm();
     const [form_photo] = Form.useForm();
     const [form_annex] = Form.useForm();
@@ -180,10 +183,12 @@ const HouseUpload = (prop) => {
 
         if(prop.defaultValue && prop.defaultValue.photo) {
             prop.defaultValue.photo.map(x => PicData.push(x))
+            prop.defaultValue.photo.map(x => showPic.push(x))
         }
 
         if(prop.defaultValue && prop.defaultValue.annex) {
             prop.defaultValue.annex.map(x => AnnexData.push(x))
+            prop.defaultValue.annex.map(x => showAnnex.push(x))
         }
 
         if(prop.defaultValue) {
@@ -301,7 +306,7 @@ const HouseUpload = (prop) => {
                             marginTop: '20vh',
                         },
                         duration: 2,
-                    }).then(() => {})
+                    }).then()
                     // if(!response.data.status && response.data.data.includes('house address is exist')) {
                     //     message.error({
                     //         content: '此地址已存在，請重新填寫正確地址',
@@ -644,22 +649,25 @@ const HouseUpload = (prop) => {
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                            {(prop.defaultValue && prop.defaultValue.photo) || PicData.length > 0?
+                            {(prop.defaultValue && prop.defaultValue.photo) ?
                                 <List
                                     bordered
-                                    dataSource={PicData}
+                                    dataSource={showPic}
                                     renderItem={(Pic, index) => (
                                         <List.Item actions={[
                                             <Button icon={<DeleteOutlined />} onClick={() => {
-                                                if(!delPic ) {
-                                                    PicData.splice(index, 1)
-                                                    setDelPic(true)
-                                                }
+                                                    if(!delPic ) {
+                                                        PicData.splice(index, 1)
+                                                        showPic.splice(index, 1)
+                                                        setDelPic(true)
+                                                    }
                                                 }
                                             }>
                                                 delete
                                             </Button>]}>
-                                            {Pic}
+                                            {/*{Pic}*/}
+                                            {/*{'\u3000'.repeat(35)}*/}
+                                            <a href={PicPreURL+Pic} ><img src={PicPreURL+Pic} width={90} height={60} alt={Pic}/></a>
                                         </List.Item>
                                     )}
                                 />
@@ -740,18 +748,19 @@ const HouseUpload = (prop) => {
 
                             </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                {(prop.defaultValue && prop.defaultValue.annex) || AnnexData.length > 0 ?
+                                {(prop.defaultValue && prop.defaultValue.annex)  ?
                                     <List
                                         bordered
-                                        dataSource={AnnexData}
+                                        dataSource={showAnnex}
                                         renderItem={(annex, index) => (
                                             <List.Item actions={[
                                                 <Button icon={<DeleteOutlined />} onClick={() => {
-                                                    if(!delAnnex ) {
-                                                        AnnexData.splice(index, 1)
-                                                        setDelAnnex(true)
+                                                        if(!delAnnex ) {
+                                                            AnnexData.splice(index, 1)
+                                                            showAnnex.splice(index, 1)
+                                                            setDelAnnex(true)
+                                                        }
                                                     }
-                                                }
                                                 }>
                                                     delete
                                                 </Button>]}>
@@ -839,7 +848,7 @@ const HouseUpload = (prop) => {
                             "TypeOfRental" : prop.defaultValue? RentalType[prop.defaultValue.saleInfo.typeOfRental-1] : [],
                             "City" : prop.defaultValue?prop.defaultValue.city:[],
                             "Area" : prop.defaultValue?prop.defaultValue.area:[],
-                            "address" : prop.defaultValue?prop.defaultValue.address.split('').filter((e) => (prop.defaultValue.city+prop.defaultValue.area).split('').indexOf(e) === -1).join(''):[],
+                            "address" : prop.defaultValue?prop.defaultValue.address.substring(prop.defaultValue.city.length+prop.defaultValue.area.length):[],
                             "lane" : prop.defaultValue?prop.defaultValue.houseNumber.lane:[],
                             "alley" : prop.defaultValue?prop.defaultValue.houseNumber.alley:[],
                             "NO1" : prop.defaultValue?prop.defaultValue.houseNumber.number1:[],
@@ -874,6 +883,7 @@ const HouseUpload = (prop) => {
                                 // style={{ width: '100%' }}
                             >
                                 <Input placeholder=""
+                                       size="large"
                                        style={{ width: '100%' }}
                                 />
                             </Form.Item>
@@ -899,7 +909,7 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select>
+                                            <Select size="large">
                                                 <Option value="公寓">公寓</Option>
                                                 <Option value="電梯大樓">電梯大樓</Option>
                                                 <Option value="透天">透天</Option>
@@ -920,7 +930,7 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select>
+                                            <Select size="large">
                                                 <Option value="整層住家">整層住家</Option>
                                                 <Option value="獨立套房">獨立套房</Option>
                                                 <Option value="分租套房">分租套房</Option>
@@ -952,7 +962,7 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
+                                            <Select size="large" allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
                                                 width: '100%',
                                             }}>
                                             </Select>
@@ -969,7 +979,7 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                                            <Select size="large" id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
                                                 width: '100%',
                                             }}>
                                             </Select>
@@ -986,9 +996,10 @@ const HouseUpload = (prop) => {
                                                    ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
-                                            <Input  style={{
-                                                width: '100%',
-                                            }}
+                                            <Input size="large"
+                                                style={{
+                                                    width: '100%',
+                                                }}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1021,7 +1032,7 @@ const HouseUpload = (prop) => {
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
 
-                                            <Input
+                                            <Input size="large"
                                                 placeholder="非必填"
                                                 style={{width: '100%'}}
                                                 suffix='巷'
@@ -1033,7 +1044,7 @@ const HouseUpload = (prop) => {
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
-                                            <Input
+                                            <Input size="large"
                                                 placeholder="非必填"
                                                 style={{width: '100%'}}
                                                 suffix='弄'
@@ -1051,7 +1062,7 @@ const HouseUpload = (prop) => {
                                                    ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
-                                            <Input
+                                            <Input size="large"
                                                 placeholder=""
                                                 style={{width: '100%'}}
                                                 suffix='號之'
@@ -1063,7 +1074,7 @@ const HouseUpload = (prop) => {
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
-                                            <Input
+                                            <Input size="large"
                                                 placeholder="非必填"
                                                 style={{width: '100%'}}
                                             />
@@ -1096,7 +1107,8 @@ const HouseUpload = (prop) => {
                                         >
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
-                                                     min={0}
+                                                     min={-2}
+                                                     size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="樓"
                                         />
@@ -1128,6 +1140,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter=""
                                             />
@@ -1171,6 +1184,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="房"
                                             />
@@ -1184,6 +1198,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="廳"
                                             />
@@ -1203,6 +1218,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="衛"
                                             />
@@ -1216,6 +1232,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="陽台"
                                             />
@@ -1251,6 +1268,7 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
+                                                     size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="元/月"
                                         />
@@ -1284,6 +1302,7 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
+                                                     size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="坪"
                                         />
@@ -1336,7 +1355,7 @@ const HouseUpload = (prop) => {
                                         {TrafficArr.length ? (
                                             <>
                                                 <List
-                                                      style={{fontSize: '1.2rem'}}
+                                                      // style={{fontSize: '1.2rem'}}
                                                       dataSource={TrafficArr}
                                                       renderItem={(traffic, index) => (
                                                           <List.Item actions={[
@@ -1348,7 +1367,11 @@ const HouseUpload = (prop) => {
                                                               }}>
                                                                   delete
                                                               </Button>]}>
-                                                              {index+1}.名稱：{traffic.name} ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
+                                                              {index+1}.名稱：{traffic.name.length>4 ?
+                                                              <abbr title={traffic.name}>{traffic.name.substring(0, 3) + '...' + traffic.name.substring(traffic.name.length - 2)}</abbr>
+                                                              :
+                                                              traffic.name}
+                                                              ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
                                                           </List.Item>
                                                       )}
                                                 />
@@ -1414,12 +1437,13 @@ const HouseUpload = (prop) => {
                                                     },
                                                 ]}
                                             >
-                                                <Input placeholder="" style={{width: '100%'}}/>
+                                                <Input size="large" placeholder="" style={{width: '100%'}}/>
                                             </Form.Item>
                                             <Form.Item
                                                 // name="TrafficDistance"
                                                 name="distance"
                                                 label="距離："
+                                                tooltip='限制距離在1000公尺內'
                                                 rules={[
                                                     {
                                                         required: true,
@@ -1429,6 +1453,8 @@ const HouseUpload = (prop) => {
                                                 <InputNumber placeholder=""
                                                              style={{width: '100%'}}
                                                              min={0}
+                                                             max={1000}
+                                                             size="large"
                                                     // formatter={value => `${value} 公尺`}
                                                              addonAfter="公尺"
                                                 />
@@ -1443,12 +1469,13 @@ const HouseUpload = (prop) => {
                                                     },
                                                 ]}
                                             >
-                                                <Select style={{
-                                                    width: '100%',
-                                                }}
+                                                <Select size="large"
+                                                    style={{
+                                                        width: '100%',
+                                                    }}
                                                 >
                                                     <Option value="1">捷運站</Option>
-                                                    <Option value="2">公車站/客運站</Option>
+                                                    <Option value="2">公車/客運</Option>
                                                     <Option value="3">火車站</Option>
                                                     <Option value="4">高鐵站</Option>
                                                     <Option value="5">機場</Option>
@@ -1475,7 +1502,7 @@ const HouseUpload = (prop) => {
                                             {LifeArr.length ? (
                                                     <>
                                                         <List
-                                                            style={{fontSize: '1.2rem'}}
+                                                            // style={{fontSize: '1.2rem'}}
                                                             dataSource={LifeArr}
                                                             renderItem={(life, index) => (
                                                                 <List.Item actions={[
@@ -1487,7 +1514,11 @@ const HouseUpload = (prop) => {
                                                                     }}>
                                                                         delete
                                                                     </Button>]}>
-                                                                    {index+1}.名稱：{life.name} ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
+                                                                    {index+1}.名稱：{life.name.length>4 ?
+                                                                    <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
+                                                                    :
+                                                                    life.name}
+                                                                    ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
                                                                 </List.Item>
                                                             )}
                                                         />
@@ -1549,12 +1580,13 @@ const HouseUpload = (prop) => {
                                                     },
                                                 ]}
                                             >
-                                                <Input placeholder="" style={{width: '100%'}}/>
+                                                <Input size="large" placeholder="" style={{width: '100%'}}/>
                                             </Form.Item>
                                             <Form.Item
                                                 // name="LifeDistance"
                                                 name="distance"
                                                 label="距離："
+                                                tooltip='限制距離在1000公尺內'
                                                 rules={[
                                                     {
                                                         required: true,
@@ -1564,6 +1596,8 @@ const HouseUpload = (prop) => {
                                                 <InputNumber placeholder=""
                                                              style={{width: '100%'}}
                                                              min={0}
+                                                             max={1000}
+                                                             size="large"
                                                     // formatter={value => `${value} 公尺`}
                                                              addonAfter="公尺"
                                                 />
@@ -1578,9 +1612,10 @@ const HouseUpload = (prop) => {
                                                     },
                                                 ]}
                                             >
-                                                <Select style={{
-                                                    width: '100%',
-                                                }}
+                                                <Select size="large"
+                                                        style={{
+                                                        width: '100%',
+                                                    }}
                                                 >
                                                     <Option value="1">夜市</Option>
                                                     <Option value="2">科學圓區</Option>
@@ -1611,7 +1646,7 @@ const HouseUpload = (prop) => {
                                             {EducationArr.length ? (
                                                 <>
                                                     <List
-                                                        style={{fontSize: '1.2rem'}}
+                                                        // style={{fontSize: '1.2rem'}}
                                                         dataSource={EducationArr}
                                                         renderItem={(education, index) => (
                                                             <List.Item actions={[
@@ -1623,7 +1658,11 @@ const HouseUpload = (prop) => {
                                                                 }}>
                                                                     delete
                                                                 </Button>]}>
-                                                                名稱：{education.name} ， 距離：{education.distance} 公尺 ， 類型：{Edu_Type[education.type-1]}
+                                                                {index+1}.名稱：{education.name.length>4 ?
+                                                                <abbr title={education.name}>{education.name.substring(0, 3) + '...' + education.name.substring(education.name.length - 2)}</abbr>
+                                                                :
+                                                                education.name}
+                                                                ， 距離：{education.distance} 公尺 ， 類型：{Edu_Type[education.type-1]}
                                                             </List.Item>
                                                         )}
                                                     />
@@ -1685,12 +1724,13 @@ const HouseUpload = (prop) => {
                                                     },
                                                 ]}
                                             >
-                                                <Input placeholder="" style={{width: '100%'}}/>
+                                                <Input size="large" placeholder="" style={{width: '100%'}}/>
                                             </Form.Item>
                                             <Form.Item
                                                 // name="EduDistance"
                                                 name="distance"
                                                 label="距離："
+                                                tooltip='限制距離在1000公尺內'
                                                 rules={[
                                                     {
                                                         required: true,
@@ -1700,6 +1740,8 @@ const HouseUpload = (prop) => {
                                                 <InputNumber placeholder=""
                                                              style={{width: '100%'}}
                                                              min={0}
+                                                             max={1000}
+                                                             size="large"
                                                     // formatter={value => `${value} 公尺`}
                                                              addonAfter="公尺"
                                                 />
@@ -1714,9 +1756,10 @@ const HouseUpload = (prop) => {
                                                     },
                                                 ]}
                                             >
-                                                <Select style={{
-                                                    width: '100%',
-                                                }}
+                                                <Select size="large"
+                                                    style={{
+                                                        width: '100%',
+                                                    }}
                                                 >
                                                     <Option value="1">幼稚園</Option>
                                                     <Option value="2">小學</Option>
@@ -1795,6 +1838,7 @@ const HouseUpload = (prop) => {
                                                     <InputNumber placeholder=""
                                                                  style={{width: '100%'}}
                                                                  min={0}
+                                                                 size="large"
                                                         // formatter={value => `${value} 公尺`}
                                                                  addonAfter="元/月"
                                                     />
@@ -1818,6 +1862,7 @@ const HouseUpload = (prop) => {
                                                     <InputNumber placeholder=""
                                                                  style={{width: '100%'}}
                                                                  min={0}
+                                                                 size="large"
                                                         // formatter={value => `${value} 公尺`}
                                                                  addonAfter="元/月"
                                                     />

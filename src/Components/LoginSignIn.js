@@ -1,7 +1,7 @@
 import { Form, Input, message, Button, Checkbox, Modal } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css'
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import Register from "./Register_form";
 // import axios from "./axiosApi";
 import {LoginRegisterAxios} from "./axiosApi"
@@ -12,6 +12,8 @@ const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const LoginRegister = (props) => {
+
+    // const onBlur = useRef(null)
 
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     // const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -60,6 +62,9 @@ const LoginRegister = (props) => {
         }
 
     };
+    // useEffect(() => {
+    //     onBlur.current.blur();
+    // })
 
     // useEffect(() => {
     //     if (isRunPost) {
@@ -144,7 +149,10 @@ const LoginRegister = (props) => {
                         ]}
                     >
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
-                               placeholder="Account/Email" />
+                               placeholder="Account/Email"
+                               size="large"
+                               // ref={onBlur}
+                        />
                     </Form.Item>
                     <Form.Item
                         // label="Password"
@@ -158,7 +166,9 @@ const LoginRegister = (props) => {
                         ]}
                     >
                         <Input.Password prefix={<LockOutlined className="site-form-item-icon" />}
-                                        placeholder="password"/>
+                                        placeholder="password"
+                                        size="large"
+                        />
                     </Form.Item>
                     <Form.Item>
                         <Form.Item
@@ -171,11 +181,11 @@ const LoginRegister = (props) => {
                                 記憶帳號密碼
                             </Checkbox>
                         </Form.Item>
-                        <a className="login-form-forgot"
-                           href="http://www.localhost:3000/PasswordReset">
-                            {/*Forgot password*/}
-                            忘記密碼
-                        </a>
+                        {/*<a className="login-form-forgot"*/}
+                        {/*   href="http://www.localhost:3000/PasswordReset">*/}
+                        {/*    /!*Forgot password*!/*/}
+                        {/*    忘記密碼*/}
+                        {/*</a>*/}
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary"
