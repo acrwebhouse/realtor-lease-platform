@@ -128,43 +128,53 @@ const MemberList = () => {
                 }else{
                     item.content.push('性別 : 女')
                 }
+                let bornDate = '生日 : '
+                if(items[i].bornDate){
+                    bornDate = bornDate+items[i].bornDate
+                }
+                item.content.push(bornDate)
                 let roles = '角色 : '
                 let salesCity = '銷售城市 : '
                 let salesArea = '銷售區域 : '
-                for(let j = 0 ;j<items[i].roles.length; j++){
-                    switch(items[i].roles[j]){
-                        case 1 :
-                            roles = roles + ' admin'
-                            break;
-                        case 2 :
-                            roles = roles + ' host'
-                            break;
-                        case 3 :
-                            roles = roles + ' user'
-                             break;
-                        case 4 :
-                            roles = roles + ' sales'
-                            const sales = items[i].rolesInfo.sales
-                            if(sales){
-                                const scope = sales.scope
-                                if(scope !== null && scope !==undefined){
-                                    for(let k = 0 ;k<scope.length;k++){
-                                        salesCity = salesCity + ' '+scope[k].city
-                                        salesArea = salesArea + ' '+scope[k].area
+                
+                if(items[i].roles){
+                    for(let j = 0 ;j<items[i].roles.length; j++){
+                        switch(items[i].roles[j]){
+                            case 1 :
+                                roles = roles + ' admin'
+                                break;
+                            case 2 :
+                                roles = roles + ' host'
+                                break;
+                            case 3 :
+                                roles = roles + ' user'
+                                 break;
+                            case 4 :
+                                roles = roles + ' sales'
+                                const sales = items[i].rolesInfo.sales
+                                if(sales){
+                                    const scope = sales.scope
+                                    if(scope !== null && scope !==undefined){
+                                        for(let k = 0 ;k<scope.length;k++){
+                                            salesCity = salesCity + ' '+scope[k].city
+                                            salesArea = salesArea + ' '+scope[k].area
+                                        }
                                     }
                                 }
-                            }
-                            break;
-                        default:
-        
+                                break;
+                            default:
+            
+                        }
                     }
+                }else{
+                    roles = roles+'異常'
                 }
+                
                 item.content.push(roles)
                 item.content.push(salesCity)
                 item.content.push(salesArea)
-                item.content.push(`更新時間 : ${items[i].updateTime}`)
+                item.content.push(`更新時間 : ${new Date(items[i].updateTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}`)
                 item.content.push(items[i]._id)
-
                 data.push(item)
             }
             setMemberList(data)
