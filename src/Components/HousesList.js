@@ -18,7 +18,7 @@ const HousesList = (props) => {
     const taoyuanAreaOptions = [{ value: '區域不限' },{ value: '桃園區'},{ value: '中壢區'},{ value: '平鎮區'},{ value: '八德區'},{ value: '楊梅區'},{ value: '蘆竹區'},{ value: '大溪區'},{ value: '龍潭區'},{ value: '龜山區'},{ value: '大園區'},{ value: '觀音區'},{ value: '新屋區'},{ value: '復興區'}]
     const taichungAreaOptions = [{ value: '區域不限' },{ value: '中區'},{ value: '東區'},{ value: '南區'},{ value: '西區'},{ value: '北區'},{ value: '北屯區'},{ value: '西屯區'},{ value: '南屯區'},{ value: '太平區'},{ value: '大里區'},{ value: '霧峰區'},{ value: '烏日區'},{ value: '豐原區'},{ value: '后里區'},{ value: '石岡區'},{ value: '東勢區'},{ value: '新社區'},{ value: '潭子區'},{ value: '大雅區'},{ value: '神岡區'},{ value: '大肚區'},{ value: '沙鹿區'},{ value: '龍井區'},{ value: '梧棲區'},{ value: '清水區'},{ value: '大甲區'},{ value: '外埔區'},{ value: '大安區'},{ value: '和平區'}]
     const tainanAreaOptions = [{ value: '區域不限' },{ value: '中西區'},{ value: '東區'},{ value: '南區'},{ value: '北區'},{ value: '安平區'},{ value: '安南區'},{ value: '永康區'},{ value: '歸仁區'},{ value: '新化區'},{ value: '左鎮區'},{ value: '玉井區'},{ value: '楠西區'},{ value: '南化區'},{ value: '仁德區'},{ value: '關廟區'},{ value: '龍崎區'},{ value: '官田區'},{ value: '麻豆區'},{ value: '佳里區'},{ value: '西港區'},{ value: '七股區'},{ value: '將軍區'},{ value: '學甲區'},{ value: '北門區'},{ value: '新營區'},{ value: '後壁區'},{ value: '白河區'},{ value: '東山區'},{ value: '六甲區'},{ value: '下營區'},{ value: '柳營區'},{ value: '鹽水區'},{ value: '善化區'},{ value: '大內區'},{ value: '山上區'},{ value: '新市區'},{ value: '安定區'}]
-    const kaohsiungAreaOptions = [{ value: '區域不限' },{ value: '楠梓區'},{ value: '左營區'},{ value: '鼓山區'},{ value: '三民區'},{ value: '鹽埕區'},{ value: '前金區'},{ value: '新興區'},{ value: '苓雅區'},{ value: '前鎮區'},{ value: '旗津區'},{ value: '小港區'},{ value: '鳳山區'},{ value: '大寮區'},{ value: '鳥松區'},{ value: '林園區'},{ value: '仁武區'},{ value: '大樹區'},{ value: '大社區'},{ value: '岡山區'},{ value: '路竹區'},{ value: '橋頭區'},{ value: '梓官區'},{ value: '彌陀區'},{ value: '永安區'},{ value: '燕巢區'},{ value: '田寮區'},{ value: '阿蓮區'},{ value: '茄萣區'},{ value: '湖內區'},{ value: '旗山區'},{ value: '美濃區'},{ value: '內門區'},{ value: '杉林區'},{ value: '甲仙區'},{ value: '六龜區'},{ value: '茂林區'},{ value: '桃源區'},{ value: '那瑪夏區'}] 
+    const kaohsiungAreaOptions = [{ value: '區域不限' },{ value: '楠梓區'},{ value: '左營區'},{ value: '鼓山區'},{ value: '三民區'},{ value: '鹽埕區'},{ value: '前金區'},{ value: '新興區'},{ value: '苓雅區'},{ value: '前鎮區'},{ value: '旗津區'},{ value: '小港區'},{ value: '鳳山區'},{ value: '大寮區'},{ value: '鳥松區'},{ value: '林園區'},{ value: '仁武區'},{ value: '大樹區'},{ value: '大社區'},{ value: '岡山區'},{ value: '路竹區'},{ value: '橋頭區'},{ value: '梓官區'},{ value: '彌陀區'},{ value: '永安區'},{ value: '燕巢區'},{ value: '田寮區'},{ value: '阿蓮區'},{ value: '茄萣區'},{ value: '湖內區'},{ value: '旗山區'},{ value: '美濃區'},{ value: '內門區'},{ value: '杉林區'},{ value: '甲仙區'},{ value: '六龜區'},{ value: '茂林區'},{ value: '桃源區'},{ value: '那瑪夏區'}]
     const keelungAreaOptions = [{ value: '區域不限' },{ value: '仁愛區'},{ value: '中正區'},{ value: '信義區'},{ value: '中山區'},{ value: '安樂區'},{ value: '暖暖區'},{ value: '七堵區'}]
     const hsinchuCityAreaOptions = [{ value: '區域不限' },{ value: '東區'},{ value: '北區'},{ value: '香山區'}]
     const chiayiCityAreaOptions = [{ value: '區域不限' },{ value: '東區'},{ value: '西區'}]
@@ -128,11 +128,11 @@ const HousesList = (props) => {
                 getHousesArg.maxFloor = 0;
             }
         }
-        
+
 
         let reqUrl = `${housesListUrl}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&isDelete=${getHousesArg.isDelete}&&minPrice=${getHousesArg.minPrice}&&maxPrice=${getHousesArg.maxPrice}&&minPing=${getHousesArg.minPing}&&maxPing=${getHousesArg.maxPing}&&minRoom=${getHousesArg.minRoom}&&maxRoom=${getHousesArg.maxRoom}&&minFloor=${getHousesArg.minFloor}&&maxFloor=${getHousesArg.maxFloor}`
         const textQuery= document.getElementById('textQuery');
-        
+
         if(textQuery){
             const value = textQuery.value
             if(value !== '' && value !== undefined && value !== null){
@@ -204,7 +204,7 @@ const HousesList = (props) => {
         })
         .catch( (error) => message.error(error, 3))
     }
-    
+
     function resolveHousesList(response){
         console.log(response)
         data = []
@@ -398,7 +398,7 @@ const HousesList = (props) => {
             getHousesArg.area = ''
         }else{
             getHousesArg.area = area
-        }   
+        }
     }
 
     function changeTypeOfRental(typeOfRental) {
@@ -459,7 +459,7 @@ const HousesList = (props) => {
                 getHousesArg.minPrice = 0
                 getHousesArg.maxPrice = 999999
         }
-        
+
     }
 
     function changeRoom(room) {
@@ -539,7 +539,7 @@ const HousesList = (props) => {
                 getHousesArg.maxPing = '999999'
         }
     }
-    
+
     function changeFloor(floor) {
         const customFloor = document.getElementById('customFloor');
         customFloor.style.display = 'none'
@@ -612,11 +612,11 @@ const HousesList = (props) => {
         }
     }
 
-    
-      
+
+
       const columns = [
         {
-          title: '影像',
+          title: '房屋照片',
           dataIndex: 'image',
           key: 'image',
           width:'250px',
@@ -634,7 +634,7 @@ const HousesList = (props) => {
             )
         },
         {
-            title: '內容',
+            title: '房屋資訊',
             key: 'content',
             dataIndex: 'content',
             render: (content) => (
@@ -652,7 +652,7 @@ const HousesList = (props) => {
                   'color': '#0000ff',
                   'fontSize':'20px'
                   }}>{content[0]}</div>
-                  
+
                     <div style={{
                     'color':'#FF0000',
                      'fontSize':'20px'
@@ -683,7 +683,7 @@ const HousesList = (props) => {
                         刪除
                     </Button>
                     </div>
-                    
+
                 </div>
                 </Col>
                 </Row>
@@ -691,7 +691,7 @@ const HousesList = (props) => {
             ),
           },
       ];
-      
+
 
     function queryHouse(houseId){
         console.log(houseId)
@@ -744,7 +744,7 @@ const HousesList = (props) => {
         }
       ];
 
-      
+
 
     return (
         <div>
@@ -763,7 +763,7 @@ const HousesList = (props) => {
                         取消刪除
                     </Button>
                 </Space>
-                
+
                 }
             closable
             />
@@ -771,7 +771,7 @@ const HousesList = (props) => {
             ):null
             }
         <div>
-            
+
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
@@ -844,7 +844,7 @@ const HousesList = (props) => {
                 </Col>
                 <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
-            
+
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
@@ -852,25 +852,25 @@ const HousesList = (props) => {
                             width: '100%',
                         }}>
                     </Select>
-                    
+
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="坪數" size={size} options={pingOptions} onChange={changePing} style={{
                             width: '100%',
                         }}>
                     </Select>
-                    
+
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <Select allowClear placeholder="樓層" size={size} options={floorOptions} onChange={changeFloor} style={{
                             width: '100%',
                         }}>
                     </Select>
-                    
+
                 </Col>
                 <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
             </Row>
-            
+
             <Row style={{
                     'lineHeight':'30px',
                     'height': '30px'

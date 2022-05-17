@@ -302,7 +302,7 @@ function changeDate(e, dateString){
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
-                        <Checkbox disabled value='3'>一般會員</Checkbox>
+                        <Checkbox disabled value='3'>租客</Checkbox>
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
@@ -465,7 +465,7 @@ function changeDate(e, dateString){
                                     'display': 'inline-block',
                                     'textAlign': 'left',
                                 }}>
-                                    License:
+                                    營業員証號:
                                 </div>                                
                             </Col>
                             <Col xs={18} sm={18} md={18} lg={18} xl={18}>
@@ -483,7 +483,7 @@ function changeDate(e, dateString){
                                     'display': 'inline-block',
                                     'textAlign': 'left',
                                 }}>
-                                    負責區域:
+                                    經營地區:
                                 </div>                                
                             </Col>
                             <Col xs={18} sm={18} md={18} lg={18} xl={18}>
@@ -491,7 +491,7 @@ function changeDate(e, dateString){
                             </Col>
                     </Row>          
                     </div>  
-                    ): <div style={{ width: '100%' }}>負責區域:&nbsp;{salesScope}</div> }
+                    ): <div style={{ width: '100%' }}>經營地區:&nbsp;{salesScope}</div> }
                     </div>
                 
                 </Col>
