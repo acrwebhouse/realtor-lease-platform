@@ -473,7 +473,7 @@ function changeDate(e, dateString){
                             </Col>
                         </Row>
                         </div>): 
-                        <div style={{ width: '100%' }}>License:&nbsp;{salesLicense}</div> }
+                        <div style={{ width: '100%' }}>營業員証號:&nbsp;{salesLicense}</div> }
                     <br/>
                     {isEdit?( 
                     <div >
