@@ -174,8 +174,10 @@ const Register = (props) => {
         // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
         // console.log(initCityArea)
         // const temp = []
-        for(let x = 0; x< CityAreaOptions.length; x++) {
-            CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : true}
+        if(value[0].length === 2) {
+            for(let x = 0; x< CityAreaOptions.length; x++) {
+                CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : true}
+            }
         }
 
         if(value[0].length < 2 ) {

@@ -364,8 +364,8 @@ const HouseUpload = (prop) => {
                 'price' : parseInt(values['lease-price']),
                 'config' : {
                     'room' : parseInt(values['room']),
-                    'livingRoom' : parseInt(values['livingRoom']),
-                    'balcony' : parseInt(values['balcony']),
+                    'livingRoom' : values['livingRoom']?parseInt(values['livingRoom']) : 0,
+                    'balcony' : values['balcony']?parseInt(values['balcony']) : 0,
                     'bathroom' : parseInt(values['bathroom']),
                     "buildingType" : buildingType.indexOf(values['TypeOfBuild']) + 1
                 },
@@ -1352,31 +1352,49 @@ const HouseUpload = (prop) => {
 
                                     {/*</Col>*/}
                                     <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        {TrafficArr.length ? (
-                                            <>
-                                                <List
-                                                      // style={{fontSize: '1.2rem'}}
-                                                      dataSource={TrafficArr}
-                                                      renderItem={(traffic, index) => (
-                                                          <List.Item actions={[
-                                                              <Button icon={<DeleteOutlined />} onClick={() => {
-                                                                  if(!delTraffic ) {
-                                                                      TrafficArr.splice(index,1)
-                                                                      setDelTraffic(true)
-                                                                  }
-                                                              }}>
-                                                                  delete
-                                                              </Button>]}>
-                                                              {index+1}.名稱：{traffic.name.length>4 ?
-                                                              <abbr title={traffic.name}>{traffic.name.substring(0, 3) + '...' + traffic.name.substring(traffic.name.length - 2)}</abbr>
-                                                              :
-                                                              traffic.name}
-                                                              ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
-                                                          </List.Item>
-                                                      )}
-                                                />
-                                            </>
 
+                                        {TrafficArr.length ? (
+                                                <>
+                                                    <List
+                                                        style={{fontSize: '80%'}}
+                                                        dataSource={TrafficArr}
+                                                        renderItem={(traffic, index) => (
+                                                            <List.Item actions={[
+                                                                <Button icon={<DeleteOutlined style={{fontSize: '90%'}}/>} onClick={() => {
+                                                                    if(!delTraffic ) {
+                                                                        TrafficArr.splice(index,1)
+                                                                        setDelTraffic(true)
+                                                                    }
+                                                                }}>
+
+                                                                </Button>]}>
+                                                                {index+1}.名稱：{traffic.name.length>4 ?
+                                                                <abbr title={traffic.name}>{traffic.name.substring(0, 3) + '...' + traffic.name.substring(traffic.name.length - 2)}</abbr>
+                                                                :
+                                                                traffic.name}
+                                                                ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
+                                                            </List.Item>
+                                                        )}
+                                                    />
+                                                </>
+
+                                            // TrafficArr.map((traffic, index) => (
+                                            // <ol>
+                                            //     <li key={index} style={{display: "inline", margin: '0px 20px 0px 0px'}}>{traffic.name}</li>
+                                            //     <li key={index} style={{display: "inline", margin: '20px'}}>{traffic.distance}</li>
+                                            //     <li key={index} style={{display: "inline", margin: '20px'}}>{Traffic_Type[traffic.type-1]}</li>
+                                            //     <li key={index} style={{display: "inline", margin: '20px'}}>
+                                            //         <Button icon={<DeleteOutlined />} onClick={() => {
+                                            //         if(!delTraffic ) {
+                                            //             TrafficArr.splice(index,1)
+                                            //             setDelTraffic(true)
+                                            //         }
+                                            //         }}>
+                                            //             delete
+                                            //         </Button>
+                                            //     </li>
+                                            // </ol>
+                                            //     ))
                                             // <ol>
                                             //     {TrafficArr.map((traffic, index) => (
                                             //         <li key={index} className="trafficList" style={{fontSize: '1.2rem', width:'70%'}}>
@@ -1502,17 +1520,17 @@ const HouseUpload = (prop) => {
                                             {LifeArr.length ? (
                                                     <>
                                                         <List
-                                                            // style={{fontSize: '1.2rem'}}
+                                                            style={{fontSize: '80%'}}
                                                             dataSource={LifeArr}
                                                             renderItem={(life, index) => (
                                                                 <List.Item actions={[
-                                                                    <Button icon={<DeleteOutlined />} onClick={() => {
+                                                                    <Button icon={<DeleteOutlined style={{fontSize: '90%'}}/>} onClick={() => {
                                                                         if(!delLife ) {
                                                                             LifeArr.splice(index,1)
                                                                             setDelLife(true)
                                                                         }
                                                                     }}>
-                                                                        delete
+
                                                                     </Button>]}>
                                                                     {index+1}.名稱：{life.name.length>4 ?
                                                                     <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
@@ -1646,17 +1664,17 @@ const HouseUpload = (prop) => {
                                             {EducationArr.length ? (
                                                 <>
                                                     <List
-                                                        // style={{fontSize: '1.2rem'}}
+                                                        style={{fontSize: '80%'}}
                                                         dataSource={EducationArr}
                                                         renderItem={(education, index) => (
                                                             <List.Item actions={[
-                                                                <Button icon={<DeleteOutlined />} onClick={() => {
+                                                                <Button icon={<DeleteOutlined style={{fontSize: '90%'}}/>} onClick={() => {
                                                                     if(!delEdu ) {
                                                                         EducationArr.splice(index,1)
                                                                         setDelEdu(true)
                                                                     }
                                                                 }}>
-                                                                    delete
+
                                                                 </Button>]}>
                                                                 {index+1}.名稱：{education.name.length>4 ?
                                                                 <abbr title={education.name}>{education.name.substring(0, 3) + '...' + education.name.substring(education.name.length - 2)}</abbr>
