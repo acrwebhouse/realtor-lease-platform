@@ -298,15 +298,15 @@ function changeDate(e, dateString){
 
                     <Checkbox.Group value={roles} onChange={changeRoles}>
                     {
-                        <Checkbox disabled value='2'>屋主</Checkbox>
+                        isEdit?( <Checkbox value='2'>屋主</Checkbox>): <Checkbox disabled value='2'>屋主</Checkbox>
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
-                        <Checkbox disabled value='3'>租客</Checkbox>
+                        isEdit?( <Checkbox  value='3'>一般會員</Checkbox>): <Checkbox disabled value='3'>一般會員</Checkbox>
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
-                        <Checkbox disabled value='4'>房仲</Checkbox>
+                        isEdit?( <Checkbox value='4'>房仲</Checkbox>): <Checkbox disabled value='4'>房仲</Checkbox>
                     }
                     </Checkbox.Group>
                     
