@@ -265,8 +265,9 @@ const HousesList = (props) => {
                 }else{
                     item.content.push(`教育 : 無設施`);
                 }
-
-                item.content.push(`更新時間 : ${new Date(items[i].updateTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}`)
+                let date = ''+new Date(items[i].updateTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})
+                date= date.substring(0,date.indexOf(' '))
+                item.content.push(`更新時間 : ${date}`)
 
                 if(props.owner!==''&&props.owner!==undefined&&props.owner!==null){
                     item.content.push(items[i]._id)
@@ -620,10 +621,11 @@ const HousesList = (props) => {
           title: '房屋照片',
           dataIndex: 'image',
           key: 'image',
-          width:'250px',
+        //   width:'250px',
+        width:'40%',
         render: (image) => (
                 <div style={{
-                    height:'200px',
+                    height:'250px',
                     overflow:'hidden',
                 }}>
                     <Image
