@@ -6,7 +6,7 @@ import {
 import {HouseAxios} from './axiosApi'
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
-
+import {config} from '../Setting/config'
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
@@ -16,7 +16,7 @@ const HouseDetail = (prop) => {
     const [init, setInit] = useState(true);
     const [house, setHouse] = useState(true);
     const [housePhoto, setHousePhoto] = useState(['','','','','','','','','','']);
-    const houseService = 'http://34.81.209.11:5000'
+    const houseService = config.base_URL_House
     const [buildingType, setBuildingType] = useState('');
     const [typeOfRental, setTypeOfRental] = useState('');
     const [pattern, setPattern] = useState('');

@@ -3,9 +3,10 @@ import {Table, Button, Image, Input, Select, Row, Col, message, Alert, Space} fr
 import {HouseAxios} from './axiosApi'
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
+import {config} from '../Setting/config'
 
 const { Option } = Select;
-const houseService = 'http://34.81.209.11:5000'
+const houseService = config.base_URL_House
 const housesListUrl = 'house/getHouses'
 const removeHouseUrl = 'house/removeHouse'
 const houseDefaultImage = 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*'
