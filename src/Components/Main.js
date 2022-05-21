@@ -13,6 +13,7 @@ import {
   TeamOutlined ,
   LoginOutlined ,
   LogoutOutlined ,
+  PhoneOutlined ,
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
@@ -22,6 +23,8 @@ import HouseUpload from "./HouseUpload";
 import MemberList from "./MemberList";
 import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
+
+import Contact from "./Contact";
 
 const Main = () => {
     const [collapsed, setCollapsed] = useState(true);
@@ -33,6 +36,7 @@ const Main = () => {
     const [isShowUploadHouse, setIsShowUploadHouse] = useState(false);
     const [isShowMemberList, setIsShowMemberList] = useState(false);
     const [isShowMemberInfo, setIsShowMemberInfo] = useState(false);
+    const [isShowContact, setIsShowContact] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -42,6 +46,7 @@ const Main = () => {
         setIsShowUploadHouse(false)
         setIsShowMemberList(false)
         setIsShowMemberInfo(false)
+        setIsShowContact(false)
     }
 
     function toggleCollapsed() {
@@ -118,6 +123,13 @@ const Main = () => {
         setIsShowLoginSignIn(true)
     }
 
+    function contact(){
+        console.log('membercontactInfo')
+        turnOffPage()
+        setSelectMenu(['8'])
+        setIsShowContact(true)
+    }
+
     function logout(){
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
@@ -132,7 +144,7 @@ const Main = () => {
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
-        if( isShowHousesList === false ){
+        if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
             setSelectMenu(['1'])
             setIsShowHousesList(true)
@@ -189,7 +201,7 @@ const Main = () => {
         }
         if(roles.length > 0){
             loginSignInIsOpen(false)
-            if(toHouseList === true){
+            if(toHouseList === true && isShowContact !== true){
                 setSelectMenu(['1'])
             }
         } else{
@@ -235,6 +247,9 @@ const Main = () => {
           <Menu.Item key='5' id="memberInfoMenu" style={{'height':'50px','display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
+          <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
+            聯絡客服
+          </Menu.Item>
           <Menu.Item key='6' id="loginSignInMenu" style={{'height':'50px'}} icon={<LoginOutlined /> } onClick={loginSignIn}>
             註冊 / 登入
           </Menu.Item>
@@ -263,6 +278,10 @@ const Main = () => {
 
     {
         isShowMemberInfo?(<MemberInfo changeRolesMenu={changeRolesMenu}></MemberInfo>):null           
+    }
+
+    {
+        isShowContact?(<Contact></Contact>):null           
     }
 
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
