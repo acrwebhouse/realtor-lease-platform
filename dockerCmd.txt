@@ -1,0 +1,9 @@
+
+build docker
+docker build . -t acrwebdev/realtor-lease-platform
+
+docker push
+docker push acrwebdev/realtor-lease-platform
+
+run docker
+docker run -p 8080:3000 --restart=always --name=realtor-lease-platform -d acrwebdev/realtor-lease-platform
