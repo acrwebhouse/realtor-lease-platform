@@ -38,10 +38,13 @@ const HouseDetailOwnerEdit = (prop) => {
             const xToken = cookie.load('x-token')
             if(xToken){
                 const decodedToken = jwt_decode(xToken);
-                console.log(decodedToken)
-                if(decodedToken.id === owner){
-                    // setIsShow(true);
-                    // console.log('map!')
+                let isAdmin = false;
+                for(let i = 0 ;i<decodedToken.roles.length;i++){
+                    if(decodedToken.roles[i] === 1){
+                        isAdmin = true
+                    }
+                }
+                if(decodedToken.id === owner || isAdmin === true){
                     getHouse()
                 }else{
                     alert('您不是負責人無法編輯')
