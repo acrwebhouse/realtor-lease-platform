@@ -264,7 +264,9 @@ const HouseUpload = (prop) => {
                                     duration: 3,
                                 }).then(() => {
                                 })
-                                window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
+                                setTimeout(() => {
+                                    window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
+                                }, 2000)
 
                             } else {
                                 message.error(response.data.data, 3).then(() => {
@@ -677,30 +679,33 @@ const HouseUpload = (prop) => {
                             <Upload multiple={true}
                                     listType="picture-card"
                                     fileList={PictureList['fileList']}
-                                    maxCount={10}
+                                    maxCount={10-showPic.length}
                                     onRemove={PicRemove}
                                     beforeUpload={file => {
                                         console.log(file)
-                                        const isImage = photoType.includes(file.type);
-                                        PicTemp.push(file)
-                                        console.log(PicTemp)
-                                        if (!isImage) {
-                                            message.error(`${file.name} 不是圖片檔`).then(() => {
-                                                // Do something after login is successful.
-                                            });
-                                        }else {
-                                            // setPictureList(
-                                            //     [...PictureList, file]
-                                            // );
-                                            setPictureList(PicTemp);
-                                            return false;
+                                        if(PicTemp.length < 10-showPic.length) {
+                                            const isImage = photoType.includes(file.type);
+                                            PicTemp.push(file)
+                                            console.log(PicTemp)
+                                            if (!isImage) {
+                                                message.error(`${file.name} 不是圖片檔`).then(() => {
+                                                    // Do something after login is successful.
+                                                });
+                                            }else {
+                                                // setPictureList(
+                                                //     [...PictureList, file]
+                                                // );
+                                                setPictureList(PicTemp);
+                                                return false;
+                                            }
+
+                                            return isImage || Upload.LIST_IGNORE;
                                         }
 
-                                        return isImage || Upload.LIST_IGNORE;
                                     }}
                                 // onChange={CheckPicNum}
                             >
-                                {PictureList.length >= 10 ? null : uploadPicButton}
+                                {showPic.length+PictureList.length >= 10 ? null : uploadPicButton}
 
                             </Upload>
                         </Col>
@@ -739,7 +744,7 @@ const HouseUpload = (prop) => {
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                            <Divider> 附件上傳 (房屋謄本， PDF 檔，可後補）</Divider>
+                            <Divider> 附件上傳 (房屋謄本 & 授權書， PDF 檔，可後補）</Divider>
                         </Col>
                     </Row>
                     <Form.Item
@@ -1100,6 +1105,7 @@ const HouseUpload = (prop) => {
                                         <Form.Item
                                             name="floor"
                                             label="樓層"
+                                            tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓樓層'
                                             rules={[
                                                 {
                                                     required: true,

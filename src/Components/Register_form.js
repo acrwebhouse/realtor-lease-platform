@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.min.css';
 import {
     Form, Input, Radio, Select, Checkbox, Divider, DatePicker, Space,
-    Button, Col, Row, Cascader, message, Modal,
+    Button, Col, Row, message, Modal,
     // Upload
 } from "antd";
 // import { UploadOutlined } from '@ant-design/icons';
 import './Register_form.css'
-import CityAreaData from '../Datas/CityArea.json'
+// import CityAreaData from '../Datas/CityArea.json'
 // import axios from "./axiosApi";
 import {LoginRegisterAxios} from "./axiosApi"
 
@@ -16,7 +16,7 @@ const { Option } = Select;
 
 const dateFormat = 'YYYY/MM/DD';
 
-let CityAreaOptions = CityAreaData.CityArea
+// let CityAreaOptions = CityAreaData.CityArea
 
 const CityOptions = [{ value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
 const TaipeiAreaOptions = [{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
@@ -68,15 +68,22 @@ const Register = (props) => {
     const [ShowHide, setShowHide] = useState(defaultRole.length > 0 )
     const [SaleShowHide, setSaleShowHide] = useState(defaultRole.includes('房仲'))
     const [isEnableCityArea, setIsEnableCityArea] = useState(false)
-    const [initCityAreaData, setInitCityAreaData] = useState([])
+    // const [initCityAreaData, setInitCityAreaData] = useState([])
+    const [initCityData, setInitCityData] = useState([])
+    const [initAreaData, setInitAreaData] = useState([])
     const [RegisterData, setRegisterData] = useState(defaultRegisterData)
     const [Roles, setRoles] = useState([])
     const [CityAreaScope, setCityAreaScope] = useState([])
     const [bornDate, setBornDate] = useState('')
+    const [failMessage, setFailMessage] = useState('')
     const [isRunPost, setIsRunPost] = useState(false)
     const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false)
+    const [registerCheck, setRegisterCheck] = useState(false)
     const [areaOptions, setAreaOptions] = useState([]);
     const [selectArea, setSelectArea] = useState(null);
+    const [cityLock, setCityLock] = useState(false)
+    const [cityValid, setCityValid] = useState(false)
+    const [areaValid, setAreaValid] = useState(false)
     // const [isBackLogin, setIsBackLogin] = useState(false)
 
     // console.log(isBackLogin)
@@ -89,16 +96,23 @@ const Register = (props) => {
         setRoles(list.map(i => Number(i)))
     };
     console.log(Roles)
+    console.log(failMessage)
     useEffect(() => {
         // console.log(RegisterData)
         // console.log(CityAreaScope)
         if (isRunPost) {
             LoginRegisterAxios.post(SighUp_Auth, RegisterData)
-                .then( (response) => console.log(response))
-                .then(() => message.success(`註冊成功`, 2))
+                .then( (response) =>  {
+                    console.log(typeof(response['data']['data']))
+                    setRegisterCheck(response['data']['status'])
+                    response['data']['status'] ? message.success(`註冊成功`, 2) : message.error(`註冊失敗`, 2)
+                    setFailMessage(response['data']['data'])
+                })
                 .catch( (error) => message.error(`${error}`, 2))
 
             setIsRunPost(false)
+            setCityValid(false)
+            setAreaValid(false)
         }
     }, [isRunPost, RegisterData])
 
@@ -109,6 +123,12 @@ const Register = (props) => {
             setRoleCheck([])
             setIsReset(false);
             setShowHide(false)
+            setIsEnableCityArea(false);
+            setCityLock(false)
+            setInitCityData([]);
+            setInitAreaData([]);
+            setCityValid(false)
+            setAreaValid(false)
         }
     }, [initReset, form, setIsReset])
 
@@ -118,11 +138,12 @@ const Register = (props) => {
         console.log(dateString)
         setBornDate(dateString)
     }
-
+    console.log(areaValid, cityValid)
     const showRegisterData = (values) => {
         console.log('Received values of form: ', values);
         // const tempData = values;
         // console.log(tempData)
+
         setRegisterData(
             {
                 'account' : values['account'],
@@ -151,8 +172,14 @@ const Register = (props) => {
         )
         if(Roles.includes(4)) {
             if (LicensePattern.test(values['LicenseNumber'])) {
-                setIsSubmitModalVisible(true);
-                setIsRunPost(true)
+                if(initAreaData.length >=2 ) {
+                    setIsSubmitModalVisible(true);
+                    setIsRunPost(true)
+                }else {
+                    setIsSubmitModalVisible(false)
+                    message.loading('loading...', 0.5)
+                        .then(() => message.error('經營地區需填兩項', 3));
+                }
             }else {
                 setIsSubmitModalVisible(false)
                 errorLicenseFormat();
@@ -168,59 +195,154 @@ const Register = (props) => {
             .then(() => message.error('請輸入正確的營業員證號格式', 3));
     }
 
-    const showCityAreaData = (value) => {
-        console.log(value);
-        // console.log(value.length);
-        // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
-        // console.log(initCityArea)
-        // const temp = []
-        if(value[0].length === 2) {
-            for(let x = 0; x< CityAreaOptions.length; x++) {
-                CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : true}
-            }
-        }
-
-        if(value[0].length < 2 ) {
-            setInitCityAreaData([]);
-            setCityAreaScope([]);
-        } else {
-            if(value[1] && value[1].length < 2) {
-                setInitCityAreaData(value[0]);
-                setCityAreaScope([]);
-            } else {
-                setInitCityAreaData(value)
-                setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
-                if (value.length >= 2) {
-                    setCityAreaScope(
-                        {
-                            "scope": [
-                                {
-                                    "city": [value[0][0], value[1][0]],
-                                    "area": [value[0][1], value[1][1]]
-                                }
-                            ]
-                        }
-                    )
-                }
-            }
-
+    const onCityInCharge = (City) => {
+        console.log(City);
+        setCityValid(true)
+        setInitCityData(City)
+        setSelectArea(null)
+        setAreaOptions([])
+        switch(City){
+            case CityOptions[0].value:
+                setAreaOptions(TaipeiAreaOptions)
+                break;
+            case CityOptions[1].value:
+                setAreaOptions(NewTaipeiAreaOptions)
+                break;
+            case CityOptions[2].value:
+                setAreaOptions(TaoYuanAreaOptions)
+                break;
+            case CityOptions[3].value:
+                setAreaOptions(TaiChungAreaOptions)
+                break;
+            case CityOptions[4].value:
+                setAreaOptions(TaiNanAreaOptions)
+                break;
+            case CityOptions[5].value:
+                setAreaOptions(KaoHsiungAreaOptions)
+                break;
+            case CityOptions[6].value:
+                setAreaOptions(KeeLungAreaOptions)
+                break;
+            case CityOptions[7].value:
+                setAreaOptions(HsinChuCityAreaOptions)
+                break;
+            case CityOptions[8].value:
+                setAreaOptions(ChiaYiCityAreaOptions)
+                break;
+            case CityOptions[9].value:
+                setAreaOptions(HsinChuAreaOptions)
+                break;
+            case CityOptions[10].value:
+                setAreaOptions(MiaoLiAreaOptions)
+                break;
+            case CityOptions[11].value:
+                setAreaOptions(ChangHuaAreaOptions)
+                break;
+            case CityOptions[12].value:
+                setAreaOptions(NanTouAreaOptions)
+                break;
+            case CityOptions[13].value:
+                setAreaOptions(YunLinAreaOptions)
+                break;
+            case CityOptions[14].value:
+                setAreaOptions(chiayiAreaOptions)
+                break;
+            case CityOptions[15].value:
+                setAreaOptions(PingTungAreaOptions)
+                break;
+            case CityOptions[16].value:
+                setAreaOptions(YiLanAreaOptions)
+                break;
+            case CityOptions[17].value:
+                setAreaOptions(HuaLienAreaOptions)
+                break;
+            case CityOptions[18].value:
+                setAreaOptions(TaiTungAreaOptions)
+                break;
+            case CityOptions[19].value:
+                setAreaOptions(PengHuAreaOptions)
+                break;
+            case CityOptions[20].value:
+                setAreaOptions(KinMenAreaOptions)
+                break;
+            case CityOptions[21].value:
+                setAreaOptions(LianJiangAreaOptions)
+                break;
+            default:
         }
     }
+
+    const onAreaInCharge = (value) => {
+        console.log(value);
+        setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
+        setCityLock(true)
+        setAreaValid(true)
+        setInitAreaData(value)
+        if(value.length >= 2) {
+            setCityAreaScope({
+                    "scope": [
+                        {
+                            "city": [initCityData, initCityData],
+                            "area": [value[0], value[1]]
+                        }
+                    ]
+                }
+            )
+        }
+    }
+
+    // const showCityAreaData = (value) => {
+    //     console.log(value);
+    //     // console.log(value.length);
+    //     // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
+    //     // console.log(initCityArea)
+    //     // const temp = []
+    //     if(value[0].length === 2) {
+    //         for(let x = 0; x< CityAreaOptions.length; x++) {
+    //             CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : true}
+    //         }
+    //     }
+    //
+    //     if(value[0].length < 2 ) {
+    //         setInitCityAreaData([]);
+    //         setCityAreaScope([]);
+    //     } else {
+    //         if(value[1] && value[1].length < 2) {
+    //             setInitCityAreaData(value[0]);
+    //             setCityAreaScope([]);
+    //         } else {
+    //             setInitCityAreaData(value)
+    //             setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
+    //             if (value.length >= 2) {
+    //                 setCityAreaScope(
+    //                     {
+    //                         "scope": [
+    //                             {
+    //                                 "city": [value[0][0], value[1][0]],
+    //                                 "area": [value[0][1], value[1][1]]
+    //                             }
+    //                         ]
+    //                     }
+    //                 )
+    //             }
+    //         }
+    //     }
+    // }
     console.log(CityAreaScope)
     const resetCityArea = () => {
-        for(let x = 0; x< CityAreaOptions.length; x++) {
-            CityAreaOptions[x] = {...CityAreaOptions[x], "disabled" : false}
-        }
         setIsEnableCityArea(false);
-        setInitCityAreaData([]);
+        setCityLock(false)
+        // setInitCityAreaData([]);
+        setInitCityData([]);
+        setInitAreaData([]);
         setCityAreaScope([]);
     }
-
+    console.log(initCityData)
     const PhonePrefixSelector = (
         <Form.Item name="PhonePrefix" noStyle>
             <Select style={{
-                        width: 90,
-                    }}
+                width: 90,
+            }}
                     defaultValue="886"
                     disabled
             >
@@ -324,413 +446,497 @@ const Register = (props) => {
     // }
 
     const onReset = () => {
-        form.resetFields();
-        setIsEnableCityArea(false);
-        setInitCityAreaData([]);
-        setCityAreaScope([]);
-        setIsSubmitModalVisible(false)
-        setIsRegisterModalVisible(false)
-        setRegisterData([]);
-        setRoleCheck([])
-        setShowHide(false)
+        if(registerCheck) {
+            form.resetFields();
+            setIsEnableCityArea(false);
+            // setInitCityAreaData([]);
+            setInitCityData([]);
+            setInitAreaData([]);
+            setCityAreaScope([]);
+            setIsSubmitModalVisible(false)
+            setIsRegisterModalVisible(false)
+            setRegisterData([]);
+            setRoleCheck([])
+            setShowHide(false)
+            setCityLock(false)
+        } else {
+            setIsSubmitModalVisible(false)
+        }
+
     };
 
     return (
         <>
-                <h2>請選擇預想申請的使用者(可重複選)</h2>
-                <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
+            <h2>請選擇預想申請的使用者(可重複選)</h2>
+            <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
+                <Row>
+                    <Col span={4} offset={3}>
+                        <Checkbox value='2'>屋主</Checkbox>
+                    </Col>
+                    <Col span={4} offset={3}>
+                        <Checkbox value='3'>租客</Checkbox>
+                    </Col>
+                    <Col span={4} offset={3}>
+                        <Checkbox value='4'>房仲</Checkbox>
+                    </Col>
+                </Row>
+            </Checkbox.Group>
+            <Divider/>
+
+            {ShowHide &&
+                <Form
+
+                    form={form}
+                    className="register_form"
+                    name="registerForm"
+                    onFinish={showRegisterData}
+                    scrollToFirstError
+                >
+
                     <Row>
-                        <Col span={4} offset={3}>
-                            <Checkbox value='2'>屋主</Checkbox>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+
                         </Col>
-                        <Col span={4} offset={3}>
-                            <Checkbox value='3'>租客</Checkbox>
-                        </Col>
-                        <Col span={4} offset={3}>
-                            <Checkbox value='4'>房仲</Checkbox>
-                        </Col>
-                    </Row>
-                </Checkbox.Group>
-                <Divider/>
-
-                    {ShowHide &&
-                    <Form
-
-                        form={form}
-                        className="register_form"
-                        name="registerForm"
-                        onFinish={showRegisterData}
-                        scrollToFirstError
-                    >
-
-                            <Row>
-                                <Col xs={24} sm={3} md={3} lg={3} xl={3}>
-
-                                </Col>
-                                <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                    <Form.Item
-                                    name="account"
-                                    label="帳號"
-                                    rules={[
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="account"
+                                label="帳號"
+                                rules={[
                                     {
                                         required: true,
                                         message: '帳號欄位不能空白',
                                     },
-                                    ]}
-                                    style={{ width: '100%' }}
-                                    >
-                                        <Input size="large" placeholder="" style={{ width: '100%' }}/>
-                                    </Form.Item>
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input size="large" placeholder="" style={{ width: '100%' }}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item name="radio-gender"
+                                       label=" 性別"
+                                       rules={[
+                                           {
+                                               required: false,
+                                           },
+                                       ]}
+                                       style={{ width: '100%' }}
+                            >
+                                <Col style={{ width: '100%' }}>
+                                    <Radio.Group size="large">
+                                        <Row>
+                                            <Col span={4} offset={4}>
+                                                <Radio value={true}>男</Radio>
+                                            </Col>
+                                            <Col span={4} offset={12}>
+                                                <Radio value={false}>女</Radio>
+                                            </Col>
+                                        </Row>
+                                    </Radio.Group>
                                 </Col>
-                            </Row>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item name="radio-gender"
-                                           label=" 性別"
-                                           rules={[
-                                               {
-                                                   required: false,
-                                               },
-                                           ]}
-                                           style={{ width: '100%' }}
-                                >
-                                    <Col style={{ width: '100%' }}>
-                                        <Radio.Group size="large">
-                                            <Row>
-                                                <Col span={4} offset={4}>
-                                                    <Radio value={true}>男</Radio>
-                                                </Col>
-                                                <Col span={4} offset={12}>
-                                                    <Radio value={false}>女</Radio>
-                                                </Col>
-                                            </Row>
-                                        </Radio.Group>
-                                    </Col>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="email"
+                                label="E-mail"
+                                rules={[
+                                    {
+                                        type: 'email',
+                                        message: '輸入的 E-mail 格式不正確',
+                                    },
+                                    {
+                                        required: true,
+                                        message: 'E-mail欄位不能空白',
+                                    },
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input size="large" placeholder="" style={{ width: '100%' }}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item
-                                    name="email"
-                                    label="E-mail"
-                                    rules={[
-                                        {
-                                            type: 'email',
-                                            message: 'The input is not valid E-mail!',
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="password"
+                                label="密碼"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '密碼欄位不能空白',
+                                    },
+                                ]}
+                                hasFeedback
+                                style={{ width: '100%' }}
+                            >
+                                <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="confirm"
+                                label="密碼確認"
+                                dependencies={['password']}
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '密碼確認欄位不能空白',
+                                    },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('password') === value) {
+                                                return Promise.resolve();
+                                            }
+
+                                            return Promise.reject(new Error('輸入的值與密碼不相符'));
                                         },
-                                        {
-                                            required: true,
-                                            message: 'E-mail欄位不能空白',
-                                        },
-                                    ]}
-                                    style={{ width: '100%' }}
-                                >
-                                    <Input size="large" placeholder="" style={{ width: '100%' }}/>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                                    }),
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item
-                                    name="password"
-                                    label="密碼"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: '密碼欄位不能空白',
-                                        },
-                                    ]}
-                                    hasFeedback
-                                    style={{ width: '100%' }}
-                                >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="name"
+                                label="名稱"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '名稱欄位不能空白',
+                                    },
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input size="large" placeholder="" style={{ width: '100%' }}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item
-                                    name="confirm"
-                                    label="密碼確認"
-                                    dependencies={['password']}
-                                    hasFeedback
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: '密碼確認欄位不能空白',
-                                        },
-                                        ({ getFieldValue }) => ({
-                                            validator(_, value) {
-                                                if (!value || getFieldValue('password') === value) {
-                                                    return Promise.resolve();
-                                                }
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="phone"
+                                label="手機號碼"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '手機號碼欄位不能空白',
+                                    },
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input  addonBefore={PhonePrefixSelector}
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        size="large"
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
-                                                return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                                            },
-                                        }),
-                                    ]}
-                                    style={{ width: '100%' }}
-                                >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
-
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item
-                                    name="name"
-                                    label="名稱"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: '名稱欄位不能空白',
-                                        },
-                                    ]}
-                                    style={{ width: '100%' }}
-                                >
-                                    <Input size="large" placeholder="" style={{ width: '100%' }}/>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
-
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item
-                                    name="phone"
-                                    label="手機號碼"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: '手機號碼欄位不能空白',
-                                        },
-                                    ]}
-                                    style={{ width: '100%' }}
-                                >
-                                    <Input  addonBefore={PhonePrefixSelector}
-                                            style={{
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                label="聯絡地址"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: 'Please input your Address!',
+                                    },
+                                ]}
+                            >
+                                <Row>
+                                    <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="City"
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   style={{ width: '100%' }}
+                                        >
+                                            <Select size="large"  allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
                                                 width: '100%',
-                                            }}
-                                            size="large"
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                                            }}>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                        <Form.Item name="Area"
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   style={{ width: '100%' }}
+                                        >
+                                            <Select size="large" id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                                                width: '100%',
+                                            }}>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item name="address"
+                                                   style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                        >
+                                            <Input size="large"
+                                                   style={{
+                                                       width: '100%',
+                                                   }}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    {/*<Row>*/}
+                    {/*    <Col xs={24} sm={3} md={3} lg={3} xl={3}>*/}
+
+                    {/*    </Col>*/}
+                    {/*    <Col  xs={24} sm={21} md={21} lg={20} xl={18}>*/}
+                    {/*        <Form.Item*/}
+                    {/*            name="address"*/}
+                    {/*            label="聯絡地址"*/}
+                    {/*            rules={[*/}
+                    {/*                {*/}
+                    {/*                    required: false,*/}
+                    {/*                    message: 'Please input your Address!',*/}
+                    {/*                },*/}
+                    {/*            ]}*/}
+                    {/*            style={{ width: '100%' }}*/}
+                    {/*        >*/}
+                    {/*            <Input  addonBefore={AddressPrefixSelector}*/}
+                    {/*                    style={{*/}
+                    {/*                        width: '100%',*/}
+                    {/*                    }}*/}
+                    {/*            />*/}
+                    {/*        </Form.Item>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item label="生日">
+                                <Space direction="horizontal">
+                                    <DatePicker onChange={showDate} format={dateFormat}/>
+                                </Space>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    {SaleShowHide &&
+                        // <Divider>Extra item for Sales</Divider>
+                        <Divider>房仲額外欄位</Divider>
+                    }
+                    {SaleShowHide &&
                         <Row>
                             <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
                             </Col>
                             <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
                                 <Form.Item
-                                    label="聯絡地址"
+                                    name="LicenseNumber"
+                                    label="營業員證號"
                                     rules={[
                                         {
-                                            required: false,
-                                            message: 'Please input your Address!',
+                                            required: true,
+                                            message: '營業員證號欄位不能空白',
                                         },
                                     ]}
+                                    style={{ width: '100%' }}
+                                >
+                                    <Input size="large" placeholder="" style={{ width: '100%' }}/>
+                                </Form.Item>
+                            </Col>
+                        </Row>}
+                    {SaleShowHide &&
+                        <Row>
+                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+
+                            </Col>
+                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                                <Form.Item
+                                    label="經營地區"
+                                    required
+                                    tooltip="選擇同一城市裡兩個熟悉的區域，最好是鄰近的。 ex：松山區 中山區"
                                 >
                                     <Row>
-                                        <Col xs={5} sm={5} md={5} lg={5} xl={5}>
-                                            <Form.Item name="City"
-                                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                                       style={{ width: '100%' }}
-                                            >
-                                                <Select size="large" allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
+                                        <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                            <Space
+                                                direction="vertical"
+                                                style={{
                                                     width: '100%',
-                                                }}>
-                                                </Select>
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={5} sm={5} md={5} lg={5} xl={5}>
-                                            <Form.Item name="Area"
-                                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                                       style={{ width: '100%' }}
+                                                }}
                                             >
-                                                <Select size="large" id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                                                <Select size="large"
+                                                        disabled={isEnableCityArea || cityLock}
+                                                        status={!cityValid ? null  : initCityData.length? null : "error"}
+                                                        value={initCityData}
+                                                        id="citySelect"
+                                                        placeholder="縣市"
+                                                        options={CityOptions}
+                                                        onChange={onCityInCharge}
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
+                                                >
+                                                </Select>
+                                                {cityValid && initCityData.length < 1 && <p style={{color:'red'}}>此欄位不能空</p>}
+                                            </Space>
+                                        </Col>
+
+                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Space
+                                                direction="vertical"
+                                                style={{
                                                     width: '100%',
-                                                }}>
-                                                </Select>
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={14} sm={14} md={14} lg={14} xl={14}>
-                                            <Form.Item name="address"
-                                                       style={{ width: '100%' }}
-                                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                }}
                                             >
-                                                <Input size="large"
-                                                    style={{
-                                                        width: '100%',
-                                                    }}
-                                                />
-                                            </Form.Item>
+                                                <Select mode="multiple"
+                                                        disabled={isEnableCityArea}
+                                                        size="large"
+                                                        id="area"
+                                                    // defaultValue={'松山區'}
+                                                        status={!areaValid ? null  : initAreaData.length? null : "error"}
+                                                        value={initAreaData}
+                                                        allowClear
+                                                        placeholder="區域"
+                                                        options={areaOptions}
+                                                        onChange={onAreaInCharge}
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
+                                                >
+                                                </Select>
+                                                {areaValid && initAreaData.length<1 && <p style={{color:'red'}}>此欄位不能空</p>}
+                                            </Space>
+                                        </Col>
+                                        <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                                            <Button type="primary"
+                                                    size="large"
+                                                    htmlType="button"
+                                                    onClick={resetCityArea}>
+                                                重置區域
+                                            </Button>
                                         </Col>
                                     </Row>
                                 </Form.Item>
                             </Col>
                         </Row>
-                        {/*<Row>*/}
-                        {/*    <Col xs={24} sm={3} md={3} lg={3} xl={3}>*/}
+                        // <Row>
+                        //     <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+                        //
+                        //     </Col>
+                        //     <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                        //         <Form.Item label="經營地區"
+                        //                    required
+                        //                    rules={[
+                        //                        {
+                        //                            required: true,
+                        //                            message: '區域欄位不能空白',
+                        //                        },
+                        //                    ]}
+                        //                    tooltip="選擇同一城市裡兩個熟悉的區域，最好是鄰近的。 ex：松山區 中山區"
+                        //                    style={{width: '100%'}}
+                        //         >
+                        //             {/*<Cascader size="large"*/}
+                        //             {/*          style={{width: '100%'}}*/}
+                        //             {/*          options={CityAreaOptions}*/}
+                        //             {/*          onChange={showCityAreaData}*/}
+                        //             {/*          value={initCityAreaData}*/}
+                        //             {/*          disabled={isEnableCityArea}*/}
+                        //             {/*          multiple*/}
+                        //             {/*          maxTagCount="responsive"*/}
+                        //             {/*/>*/}
+                        //             <span>
+                        //                             <Button type="primary"
+                        //                                     size="small"
+                        //                                     htmlType="button"
+                        //                                     onClick={resetCityArea}>
+                        //                                 重置區域
+                        //                             </Button>
+                        //                         </span>
+                        //         </Form.Item>
+                        //     </Col>
+                        // </Row>
+                    }
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
-                        {/*    </Col>*/}
-                        {/*    <Col  xs={24} sm={21} md={21} lg={20} xl={18}>*/}
-                        {/*        <Form.Item*/}
-                        {/*            name="address"*/}
-                        {/*            label="聯絡地址"*/}
-                        {/*            rules={[*/}
-                        {/*                {*/}
-                        {/*                    required: false,*/}
-                        {/*                    message: 'Please input your Address!',*/}
-                        {/*                },*/}
-                        {/*            ]}*/}
-                        {/*            style={{ width: '100%' }}*/}
-                        {/*        >*/}
-                        {/*            <Input  addonBefore={AddressPrefixSelector}*/}
-                        {/*                    style={{*/}
-                        {/*                        width: '100%',*/}
-                        {/*                    }}*/}
-                        {/*            />*/}
-                        {/*        </Form.Item>*/}
-                        {/*    </Col>*/}
-                        {/*</Row>*/}
-
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
-
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item label="生日">
-                                    <Space direction="horizontal">
-                                        <DatePicker onChange={showDate} format={dateFormat}/>
-                                    </Space>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        {SaleShowHide &&
-                        // <Divider>Extra item for Sales</Divider>
-                            <Divider>房仲額外欄位</Divider>
-                        }
-                        {SaleShowHide &&
-                            <Row>
-                                <Col xs={24} sm={3} md={3} lg={3} xl={3}>
-
-                                </Col>
-                                <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                    <Form.Item
-                                        name="LicenseNumber"
-                                        label="營業員證號"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: '營業員證號欄位不能空白',
-                                            },
-                                        ]}
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item>
+                                <Button type="primary"
+                                        htmlType="submit"
+                                        className='login-form-button'
+                                        shape="round"
+                                        onClick={() => {
+                                            setCityValid(true)
+                                            setAreaValid(true)
+                                        }}
                                         style={{ width: '100%' }}
-                                    >
-                                        <Input size="large" placeholder="" style={{ width: '100%' }}/>
-                                    </Form.Item>
-                                </Col>
-                            </Row>}
-                        {SaleShowHide &&
-                            <Row>
-                                <Col xs={24} sm={3} md={3} lg={3} xl={3}>
+                                >
+                                    {/*Submit*/}
+                                    送出
+                                </Button>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                                </Col>
-                                <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                    <Form.Item label="經營地區"
-                                               required
-                                               rules={[
-                                                   {
-                                                       required: true,
-                                                       message: '區域欄位不能空白',
-                                                   },
-                                               ]}
-                                               tooltip="選擇同一城市裡兩個熟悉的區域，最好是鄰近的。 ex：松山區 中山區"
-                                               style={{width: '100%'}}
-                                    >
-                                                <Cascader size="large"
-                                                    style={{width: '100%'}}
-                                                    options={CityAreaOptions}
-                                                    onChange={showCityAreaData}
-                                                    value={initCityAreaData}
-                                                    disabled={isEnableCityArea}
-                                                    multiple
-                                                    maxTagCount="responsive"
-                                                />
-                                                <span>
-                                                    <Button type="primary"
-                                                            size="small"
-                                                            htmlType="button"
-                                                            onClick={resetCityArea}>
-                                                        重置區域
-                                                    </Button>
-                                                </span>
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        }
-                        <Row>
-                            <Col xs={24} sm={3} md={3} lg={3} xl={3}>
-
-                            </Col>
-                            <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
-                                <Form.Item>
-                                        <Button type="primary"
-                                                htmlType="submit"
-                                                className='login-form-button'
-                                                shape="round"
-                                            // onClick={showSubmitModal}
-                                                style={{ width: '100%' }}
-                                        >
-                                            {/*Submit*/}
-                                            送出
-                                        </Button>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Modal visible={isSubmitModalVisible}
-                               className="SubmitModal"
-                               width={700}
-                               okText="Submit"
-                               cancelText="Return"
-                               onCancel={onReset}
-                               footer={[
-                                   <Button key="back" className="return-login" onClick={onReset}>
-                                       返回
-                                   </Button>,
-                               ]}
-                        >
-                            {/*<h2>感謝您註冊成為本平台會員，請登入您個人的Email做帳戶授權驗證，謝謝</h2>*/}
-                            <h2>感謝您註冊成為本平台會員，謝謝</h2>
-                        </Modal>
-                    </Form>}
+                    <Modal visible={isSubmitModalVisible}
+                           className="SubmitModal"
+                           width={700}
+                           okText="Submit"
+                           cancelText="Return"
+                           onCancel={onReset}
+                           footer={[
+                               <Button key="back" className="return-login" onClick={onReset}>
+                                   返回
+                               </Button>,
+                           ]}
+                    >
+                        {/*<h2>感謝您註冊成為本平台會員，請登入您個人的Email做帳戶授權驗證，謝謝</h2>*/}
+                        {registerCheck ? <h2>感謝您註冊成為本平台會員，謝謝</h2> : failMessage.includes('acc') ? <h2>註冊失敗，帳號已註冊過</h2> :<h2>註冊失敗，電子郵件已註冊過</h2> }
+                    </Modal>
+                </Form>}
             <Divider/>
-       </>
+        </>
     )
 }
 
