@@ -75,8 +75,17 @@ const Main = () => {
       };
 
     function collectAccessTime(){
-        setTimeout(() => {
-            const reqUrl = `${collectAccessTimeUrl}`
+        // setTimeout(() => {
+        //     const reqUrl = `${collectAccessTimeUrl}`
+        //     CollectAxios.get(
+        //         reqUrl
+        //     )
+        //     .then( (response) => {
+        //         console.log('collectAccessTime success')
+        //     })
+        //     .catch( (error) => console.log('collectAccessTime error'))
+        //   }, 5000)
+        const reqUrl = `${collectAccessTimeUrl}`
             CollectAxios.get(
                 reqUrl
             )
@@ -84,7 +93,6 @@ const Main = () => {
                 console.log('collectAccessTime success')
             })
             .catch( (error) => console.log('collectAccessTime error'))
-          }, 5000)
     }
 
     useEffect(() => {
