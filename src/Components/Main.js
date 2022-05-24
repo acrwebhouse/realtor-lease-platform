@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
+import {CollectAxios} from './axiosApi'
 
 import {
   CloudUploadOutlined,
@@ -25,6 +26,8 @@ import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
 
 import Contact from "./Contact";
+
+const collectAccessTimeUrl = 'collect/accessTime'
 
 const Main = () => {
     const [collapsed, setCollapsed] = useState(true);
@@ -69,10 +72,24 @@ const Main = () => {
         
       };
 
+    function collectAccessTime(){
+        setTimeout(() => {
+            const reqUrl = `${collectAccessTimeUrl}`
+            CollectAxios.get(
+                reqUrl
+            )
+            .then( (response) => {
+                console.log('collectAccessTime success')
+            })
+            .catch( (error) => console.log('collectAccessTime error'))
+          }, 5000)
+    }
+
     useEffect(() => {
         if (init) {
             setInit(false)
             console.log('init')
+            collectAccessTime()
             const xToken = cookie.load('x-token')
             if(xToken!== null && xToken!== undefined){
                 const decodedToken = jwt_decode(xToken);
