@@ -32,7 +32,7 @@ const Collect = (props) => {
 
         <div>
             <br/><br/>
-            <Divider>搜集資料</Divider>
+            <Divider>資料採集</Divider>
             <Row>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{

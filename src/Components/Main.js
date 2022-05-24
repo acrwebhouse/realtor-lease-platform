@@ -15,17 +15,17 @@ import {
   LoginOutlined ,
   LogoutOutlined ,
   PhoneOutlined ,
+  MonitorOutlined ,
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
 import MyHousesList from "./MyHousesList";
 import HouseUpload from "./HouseUpload";
-
 import MemberList from "./MemberList";
 import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
-
 import Contact from "./Contact";
+import Collect from "./Collect";
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -40,6 +40,7 @@ const Main = () => {
     const [isShowMemberList, setIsShowMemberList] = useState(false);
     const [isShowMemberInfo, setIsShowMemberInfo] = useState(false);
     const [isShowContact, setIsShowContact] = useState(false);
+    const [isShowCollect, setIsShowCollect] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -50,6 +51,7 @@ const Main = () => {
         setIsShowMemberList(false)
         setIsShowMemberInfo(false)
         setIsShowContact(false)
+        setIsShowCollect(false)
     }
 
     function toggleCollapsed() {
@@ -147,6 +149,13 @@ const Main = () => {
         setIsShowContact(true)
     }
 
+    function collect(){
+        console.log('collect')
+        turnOffPage()
+        setSelectMenu(['9'])
+        setIsShowCollect(true)
+    }
+
     function logout(){
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
@@ -155,11 +164,13 @@ const Main = () => {
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
+        const collectMenu = document.getElementById('collectMenu');
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
+        collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
@@ -187,6 +198,7 @@ const Main = () => {
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
+        const collectMenu = document.getElementById('collectMenu');
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -195,6 +207,7 @@ const Main = () => {
                 memberInfoMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
+                collectMenu.style.display = 'flex'
             }
             if(roles[i]===3){
                 logoutMenu.style.display = 'flex'
@@ -228,6 +241,7 @@ const Main = () => {
             memberInfoMenu.style.display = 'flex'
             logoutMenu.style.display = 'flex'
             loginSignInMenu.style.display = 'none'
+            collectMenu.style.display = 'none'
             loginSignInIsOpen(false)
         }
     }
@@ -264,6 +278,9 @@ const Main = () => {
           <Menu.Item key='5' id="memberInfoMenu" style={{'height':'50px','display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
+          <Menu.Item key='9' id="collectMenu" style={{'height':'50px','display':'none'}} icon={<MonitorOutlined />} onClick={collect}>
+          資料採集
+          </Menu.Item>
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
             聯絡客服
           </Menu.Item>
@@ -295,6 +312,10 @@ const Main = () => {
 
     {
         isShowMemberInfo?(<MemberInfo changeRolesMenu={changeRolesMenu}></MemberInfo>):null           
+    }
+
+    {
+        isShowCollect?(<Collect></Collect>):null           
     }
 
     {
