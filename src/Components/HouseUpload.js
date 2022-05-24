@@ -56,13 +56,7 @@ const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'ima
 const annexType = ['application/pdf']
 const PicTemp = []
 const AnnexTemp = []
-// const convertString = (word) =>{
-//     switch(word.toLowerCase().trim()){
-//         case "yes": case "true": case "1": return true;
-//         case "no": case "false": case "0": case null: return false;
-//         default: return Boolean(word);
-//     }
-// }
+
 
 const HouseUpload = (prop) => {
     const xToken = cookie.load('x-token')
@@ -102,7 +96,6 @@ const HouseUpload = (prop) => {
     const [photoData, setPhotoData] = useState([]);
     const [annexData, setAnnexData] = useState([]);
     const [isRunPost, setIsRunPost] = useState(false)
-
 
     const showTrafficModal = () => {
         setTrafficVisible(true);
@@ -433,6 +426,7 @@ const HouseUpload = (prop) => {
     // );
 
     const changeCity = (City) => {
+
         setSelectArea(null)
         setAreaOptions([])
         switch(City){
@@ -986,7 +980,14 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select size="large" id="area" value={selectArea}  allowClear placeholder="區域" options={areaOptions} onChange={changeArea} style={{
+                                            <Select size="large"
+                                                    id="area"
+                                                    value={selectArea}
+                                                    allowClear
+                                                    placeholder="區域"
+                                                    options={areaOptions}
+                                                    onChange={changeArea}
+                                                    style={{
                                                 width: '100%',
                                             }}>
                                             </Select>
@@ -1001,7 +1002,6 @@ const HouseUpload = (prop) => {
                                                            message: '此欄位不能為空白',
                                                        },
                                                    ]}
-                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
                                             <Input size="large"
                                                 style={{
@@ -1105,7 +1105,7 @@ const HouseUpload = (prop) => {
                                         <Form.Item
                                             name="floor"
                                             label="樓層"
-                                            tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓樓層'
+                                            tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓層'
                                             rules={[
                                                 {
                                                     required: true,

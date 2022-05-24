@@ -837,7 +837,7 @@ const Register = (props) => {
                                                         value={initAreaData}
                                                         allowClear
                                                         placeholder="區域"
-                                                        options={areaOptions}
+                                                        options={initCityData.length > 0 ? areaOptions : null}
                                                         onChange={onAreaInCharge}
                                                         style={{
                                                             width: '100%',
