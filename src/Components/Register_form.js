@@ -282,8 +282,12 @@ const Register = (props) => {
             setCityAreaScope({
                     "scope": [
                         {
-                            "city": [initCityData, initCityData],
-                            "area": [value[0], value[1]]
+                            "city": initCityData,
+                            "area": value[0]
+                        },
+                        {
+                            "city": initCityData,
+                            "area": value[1]
                         }
                     ]
                 }
