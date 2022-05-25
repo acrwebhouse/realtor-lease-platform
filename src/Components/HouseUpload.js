@@ -386,8 +386,18 @@ const HouseUpload = (prop) => {
                 'annex' : prop.defaultValue ? AnnexData : annexData // AnnexData have defaultData, annexData new Upload
             }
         )
-        setIsRunPost(true)
-
+        if (showPic.length+PictureList.length < 1) {
+            message.warning({
+                content: '照片至少上傳一張',
+                style: {
+                    fontSize: '40px',
+                    marginTop: '20vh',
+                },
+                duration: 2,
+            }).then()
+        }else {
+            setIsRunPost(true)
+        }
         console.log(TrafficArr);
         // console.log(photoData)
         if (!prop.defaultValue) {
@@ -551,28 +561,29 @@ const HouseUpload = (prop) => {
         });
         setPicUploading(true)
         console.log(formData.values())
-        PicAnnexAxios.post(House_Pic_Auth, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }})
-            .then( (response) => {
-                console.log(response)
-                setPhotoData(response['data']['data'])
-                setAnnexEnable(true)
-                // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
-                // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
-                PicData = [...PicData, ...response['data']['data']]
-            })
-            .then(() => {
-                // setPictureList([])
-                message.success('照片上傳成功').then();
-            })
-            .catch(() => {
-                message.error('upload failed.').then();
-            })
-            .finally(() => {
-                setPicUploading(false)
-            });
+
+            PicAnnexAxios.post(House_Pic_Auth, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }})
+                .then( (response) => {
+                    console.log(response)
+                    setPhotoData(response['data']['data'])
+                    setAnnexEnable(true)
+                    // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
+                    // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
+                    PicData = [...PicData, ...response['data']['data']]
+                })
+                .then(() => {
+                    // setPictureList([])
+                    message.success('照片上傳成功').then();
+                })
+                .catch(() => {
+                    message.error('upload failed.').then();
+                })
+                .finally(() => {
+                    setPicUploading(false)
+                });
     };
     // console.log(photoData, annexData)
     const handleAnnexUpload = () => {
