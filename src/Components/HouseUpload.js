@@ -565,6 +565,7 @@ const HouseUpload = (prop) => {
             PicAnnexAxios.post(House_Pic_Auth, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                    "x-token" : xToken
                 }})
                 .then( (response) => {
                     console.log(response)
@@ -597,6 +598,7 @@ const HouseUpload = (prop) => {
         PicAnnexAxios.post(House_Annex_Auth, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
+                "x-token" : xToken
             }})
             .then( (response) => {
                 console.log(response)
