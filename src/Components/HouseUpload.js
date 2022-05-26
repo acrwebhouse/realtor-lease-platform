@@ -243,7 +243,12 @@ const HouseUpload = (prop) => {
 
         if (isRunPost) {
             prop.defaultValue ?
-                    HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner}))
+                    HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner}), {
+                        headers: {
+                            "content-type": "application/json",
+                            "accept": "application/json",
+                            "x-token" : xToken,
+                        }})
                         // .then( (response) => console.log(response.data.status))
                         .then((response) => {
                             console.log(response)
@@ -292,7 +297,13 @@ const HouseUpload = (prop) => {
                         .catch((error) => message.error(`${error}`, 2))
 
                 :
-            HouseAxios.post(House_Auth, HouseData)
+            HouseAxios.post(House_Auth, HouseData, {
+                headers: {
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    "x-token" : xToken,
+                }
+            })
                 // .then( (response) => console.log(response.data.status))
                 .then((response) => {
                     console.log(response.data)
