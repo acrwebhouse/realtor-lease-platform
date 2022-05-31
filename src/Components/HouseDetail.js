@@ -450,7 +450,7 @@ const HouseDetail = (prop) => {
         <div>
 
             {
-                prop.isOwner?(<div Style='float:right'>
+                prop.isOwner?(<div Style='float:left'>
                     <Button type="primary" onClick={() => editHouse()} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
@@ -458,15 +458,14 @@ const HouseDetail = (prop) => {
                     <Button type="primary" onClick={() => removeHouse()} danger style={{width: '70px'}}>
                         刪除
                     </Button>
-                    &nbsp; 
-                    <Button type="primary"  onClick={() => closePage()} style={{'float':'right', 'textAlign': 'center',width: '70px'}}>
-                        關閉
-                    </Button>
-                </div>):<div Style='float:right'><Button type="primary"  onClick={() => closePage()} style={{'float':'right', 'textAlign': 'center',width: '70px'}}>
-                        關閉
-                    </Button></div>
+                </div>):null
             }
             
+            <div style={{'position':'sticky' ,'top':'0px' ,'float':'right','zIndex':100 }}>
+                <Button type="primary"  onClick={() => closePage()} style={{'textAlign': 'center',width: '70px'}}>
+                        關閉
+                    </Button></div>
+
             <Divider>基本資料</Divider>
             <Row>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col>
