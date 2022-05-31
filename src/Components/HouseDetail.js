@@ -8,6 +8,10 @@ import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 
+import {
+    CloseSquareTwoTone,
+  } from '@ant-design/icons';
+
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
 
@@ -460,10 +464,11 @@ const HouseDetail = (prop) => {
                     </Button>
                 </div>):null
             }
-            
+
             <div style={{'position':'sticky' ,'top':'0px' ,'float':'right','zIndex':100 }}>
-                <Button type="primary"  onClick={() => closePage()} style={{'textAlign': 'center',width: '70px'}}>
-                        關閉
+                <Button   onClick={() => closePage()} style={{ 'backgroundColor': 'transparent','borderColor':'transparent', 'textAlign': 'center',width: '50px'}}>
+                        {/* X */}
+                        <CloseSquareTwoTone style={{ fontSize: '25px' }} />
                     </Button></div>
 
             <Divider>基本資料</Divider>
