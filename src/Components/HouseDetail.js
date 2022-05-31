@@ -374,6 +374,17 @@ const HouseDetail = (prop) => {
         window.close();
     }
 
+    function shareLink(){
+        const url = window.location.origin + '/HouseDetail/'+id
+        const dummy = document.createElement('input') 
+        document.body.appendChild(dummy);
+        dummy.value = url;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        message.success('分享連結已複製到剪貼簿', 3);
+    }
+
     function removeHouseAction(){
         const houseId = id
         const reqUrl = `${removeHouseUrl}`
@@ -492,6 +503,12 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         <br/>
+                        <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                        分享連結
+                        </Button>
+                        <br/>
+                        <br/>
+                        
                         <div style={{'fontSize':'15px','borderRadius': '30px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}>
                         {/* <div style={{'fontSize':'15px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
                             <br/>
