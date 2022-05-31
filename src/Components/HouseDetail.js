@@ -370,6 +370,10 @@ const HouseDetail = (prop) => {
         setIsShowDeleteAlert(true)
     }
 
+    function closePage(){
+        window.close();
+    }
+
     function removeHouseAction(){
         const houseId = id
         const reqUrl = `${removeHouseUrl}`
@@ -443,8 +447,15 @@ const HouseDetail = (prop) => {
                     <Button type="primary" onClick={() => removeHouse()} danger style={{width: '70px'}}>
                         刪除
                     </Button>
-                </div>):null    
+                    &nbsp; 
+                    <Button type="primary"  onClick={() => closePage()} style={{'float':'right', 'textAlign': 'center',width: '70px'}}>
+                        關閉
+                    </Button>
+                </div>):<div Style='float:right'><Button type="primary"  onClick={() => closePage()} style={{'float':'right', 'textAlign': 'center',width: '70px'}}>
+                        關閉
+                    </Button></div>
             }
+            
             <Divider>基本資料</Divider>
             <Row>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col>
