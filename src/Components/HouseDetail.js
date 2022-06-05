@@ -386,7 +386,7 @@ const HouseDetail = (prop) => {
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
-        message.success('分享連結已複製到剪貼簿', 3);
+        message.success('連結已複製到剪貼簿', 3);
     }
 
     function removeHouseAction(){
@@ -454,7 +454,7 @@ const HouseDetail = (prop) => {
         <div>
 
             {
-                prop.isOwner?(<div Style='float:left'>
+                prop.isOwner?(<div Style='float:right'>
                     <Button type="primary" onClick={() => editHouse()} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
@@ -465,11 +465,10 @@ const HouseDetail = (prop) => {
                 </div>):null
             }
 
-            <div style={{'position':'sticky' ,'top':'0px' ,'float':'right','zIndex':100 }}>
+            {/* <div style={{'position':'sticky' ,'top':'0px' ,'float':'right','zIndex':100 }}>
                 <Button   onClick={() => closePage()} style={{ 'backgroundColor': 'transparent','borderColor':'transparent', 'textAlign': 'center',width: '50px'}}>
-                        {/* X */}
                         <CloseSquareTwoTone style={{ fontSize: '25px' }} />
-                    </Button></div>
+                    </Button></div> */}
 
             <Divider>基本資料</Divider>
             <Row>
@@ -508,7 +507,7 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         <br/>
                         <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
-                        分享連結
+                        複製連結
                         </Button>
                         <br/>
                         <br/>
