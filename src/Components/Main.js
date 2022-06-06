@@ -56,7 +56,6 @@ const Main = () => {
 
     function toggleCollapsed() {
         const mainMenu = document.getElementById('mainMenu');
-        
         if( collapsed === false)
         {
             setShowMenuUnfoldOutlined('flex')
@@ -67,7 +66,7 @@ const Main = () => {
         }else{
             setShowMenuUnfoldOutlined('none')
             setShowMenuFoldOutlined('flex')
-            mainMenu.style.width = '100%'
+            mainMenu.style.width = '256px'
             mainMenu.style.height = 'auto'
             setCollapsed(false)
         }
@@ -257,7 +256,7 @@ const Main = () => {
 
     return (
         <div>
-        <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
+        <div style={{ width: 51,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
