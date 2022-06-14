@@ -199,6 +199,7 @@ const Main = () => {
     }
 
     function changeRolesMenu(roles,toHouseList){
+        console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const memberListMenu = document.getElementById('memberListMenu');
@@ -206,6 +207,13 @@ const Main = () => {
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
+        myHousesListMenu.style.display = 'none'
+        uploadHousesMenu.style.display = 'none'
+        memberListMenu.style.display = 'none'
+        memberInfoMenu.style.display = 'none'
+        logoutMenu.style.display = 'none'
+        loginSignInMenu.style.display = 'none'
+        collectMenu.style.display = 'none'
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
