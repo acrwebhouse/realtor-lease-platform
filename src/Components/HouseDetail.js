@@ -455,15 +455,22 @@ const HouseDetail = (prop) => {
 
             {
                 prop.isOwner?(<div Style='float:right'>
+                    <Button type="primary" onClick={() => removeHouse()} danger style={{width: '70px'}}>
+                        刪除
+                    </Button>
+                </div>):null   
+            }
+
+            {
+                prop.isOwner && prop.isAdmin === false ?(<div Style='float:right'>
                     <Button type="primary" onClick={() => editHouse()} style={{width: '70px',backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
                     &nbsp; 
-                    <Button type="primary" onClick={() => removeHouse()} danger style={{width: '70px'}}>
-                        刪除
-                    </Button>
-                </div>):null
+                </div>):null   
             }
+
+            
 
             {/* <div style={{'position':'sticky' ,'top':'0px' ,'float':'right','zIndex':100 }}>
                 <Button   onClick={() => closePage()} style={{ 'backgroundColor': 'transparent','borderColor':'transparent', 'textAlign': 'center',width: '50px'}}>
