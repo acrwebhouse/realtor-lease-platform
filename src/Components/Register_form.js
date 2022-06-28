@@ -170,23 +170,30 @@ const Register = (props) => {
                 'address': values['City']+values['Area']+values['address']
             }
         )
-        if(Roles.includes(4)) {
-            if (LicensePattern.test(values['LicenseNumber'])) {
-                if(initAreaData.length >=2 ) {
-                    setIsSubmitModalVisible(true);
-                    setIsRunPost(true)
+        if(('886'+values['phone']).length > 12 || ('886'+values['phone']).length < 12 ) {
+            setIsSubmitModalVisible(false)
+            errorPhoneFormat();
+        } else {
+            if(Roles.includes(4)) {
+
+                if (LicensePattern.test(values['LicenseNumber'])) {
+                    if(initAreaData.length >=2 ) {
+                        setIsSubmitModalVisible(true);
+                        setIsRunPost(true)
+                    }else {
+                        setIsSubmitModalVisible(false)
+                        message.loading('loading...', 0.5)
+                            .then(() => message.error('經營地區需填兩項', 3));
+                    }
                 }else {
                     setIsSubmitModalVisible(false)
-                    message.loading('loading...', 0.5)
-                        .then(() => message.error('經營地區需填兩項', 3));
+                    errorLicenseFormat();
                 }
-            }else {
-                setIsSubmitModalVisible(false)
-                errorLicenseFormat();
+
+            }else{
+                setIsSubmitModalVisible(true);
+                setIsRunPost(true)
             }
-        }else{
-            setIsSubmitModalVisible(true);
-            setIsRunPost(true)
         }
     };
 
@@ -195,6 +202,10 @@ const Register = (props) => {
             .then(() => message.error('請輸入正確的營業員證號格式', 3));
     }
 
+    const errorPhoneFormat = () => {
+        message.loading('loading...', 0.5)
+            .then(() => message.error('請輸入正確的手機號格式或長度(不需要打0)', 3));
+    }
     const onCityInCharge = (City) => {
         console.log(City);
         setCityValid(true)

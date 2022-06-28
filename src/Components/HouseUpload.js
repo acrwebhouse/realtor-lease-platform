@@ -1,5 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Modal, Input, InputNumber, Select, Divider, Row, Col, Checkbox, Upload, message, List} from "antd";
+import {
+    Form,
+    Button,
+    Modal,
+    Input,
+    InputNumber,
+    Select,
+    Divider,
+    Row,
+    Col,
+    Checkbox,
+    Upload,
+    message,
+    List,
+    Image
+} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseAxios, PicAnnexAxios} from './axiosApi'
 import { DeleteOutlined } from '@ant-design/icons';
@@ -9,6 +24,8 @@ import {config} from '../Setting/config'
 
 const houseService = config.base_URL_House
 const { Option } = Select;
+
+const fallback ='data:image/png;base64,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'
 
 const CityOptions = [{ value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
 const TaipeiAreaOptions = [{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
@@ -57,6 +74,16 @@ const annexType = ['application/pdf']
 const PicTemp = []
 const AnnexTemp = []
 
+const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = () => resolve(reader.result);
+
+        reader.onerror = (error) => reject(error);
+    });
+
 
 const HouseUpload = (prop) => {
     const xToken = cookie.load('x-token')
@@ -89,6 +116,7 @@ const HouseUpload = (prop) => {
     const [PictureList, setPictureList] = useState([]);
     const [AnnexEnable, setAnnexEnable] = useState(false);
     const [FormDataEnable, setFormDataEnable] = useState(false);
+    console.log(FormDataEnable)
     const [AnnexList, setAnnexList] = useState([]);
     const [PicUploading, setPicUploading] = useState(false);
     const [AnnexUploading, setAnnexUploading] = useState(false);
@@ -96,6 +124,10 @@ const HouseUpload = (prop) => {
     const [photoData, setPhotoData] = useState([]);
     const [annexData, setAnnexData] = useState([]);
     const [isRunPost, setIsRunPost] = useState(false)
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
+
 
     const showTrafficModal = () => {
         setTrafficVisible(true);
@@ -350,7 +382,7 @@ const HouseUpload = (prop) => {
             PicData.splice(0, PicData.length)
             AnnexData.splice(0, AnnexData.length)
         }
-    }, [isRunPost, HouseData, prop.defaultValue])
+    }, [isRunPost, HouseData, prop.defaultValue, xToken])
 
     const UploadHouseData = (values) => {
         console.log('Received values of form: ', values);
@@ -598,6 +630,19 @@ const HouseUpload = (prop) => {
                 });
     };
     // console.log(photoData, annexData)
+
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+
+        setPreviewImage(file.url || file.preview);
+        setPreviewVisible(true);
+        setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+    };
+
+    const handlePreviewCancel = () => setPreviewVisible(false);
+
     const handleAnnexUpload = () => {
 
         const formData = new FormData();
@@ -675,8 +720,11 @@ const HouseUpload = (prop) => {
                                 <List
                                     bordered
                                     dataSource={showPic}
+                                    // style={{width:'80%'}}
                                     renderItem={(Pic, index) => (
-                                        <List.Item actions={[
+                                        <List.Item
+
+                                            actions={[
                                             <Button icon={<DeleteOutlined />} onClick={() => {
                                                     if(!delPic ) {
                                                         PicData.splice(index, 1)
@@ -689,43 +737,62 @@ const HouseUpload = (prop) => {
                                             </Button>]}>
                                             {/*{Pic}*/}
                                             {/*{'\u3000'.repeat(35)}*/}
-                                            <a href={PicPreURL+Pic} ><img src={PicPreURL+Pic} width={90} height={60} alt={Pic}/></a>
+                                            {/*<a href={PicPreURL+Pic} ><img src={PicPreURL+Pic} width={150} height={150} alt={Pic}/></a>*/}
+                                            <div style={{
+                                                // height:'150px',
+                                                overflow:'hidden',
+                                            }}>
+                                                <Image  src={PicPreURL+Pic} width={150} height={150} fallback={fallback} />
+                                                {/*<img src={PicPreURL+Pic} width={150} height={150} alt={Pic}/>*/}
+                                            </div>
                                         </List.Item>
                                     )}
                                 />
                                 : []}
-                            <Upload multiple={true}
-                                    listType="picture-card"
-                                    fileList={PictureList['fileList']}
-                                    maxCount={10-showPic.length}
-                                    onRemove={PicRemove}
-                                    beforeUpload={file => {
-                                        console.log(file)
-                                        if(PicTemp.length < 10-showPic.length) {
-                                            const isImage = photoType.includes(file.type);
-                                            PicTemp.push(file)
-                                            console.log(PicTemp)
-                                            if (!isImage) {
-                                                message.error(`${file.name} 不是圖片檔`).then(() => {
-                                                    // Do something after login is successful.
-                                                });
-                                            }else {
-                                                // setPictureList(
-                                                //     [...PictureList, file]
-                                                // );
-                                                setPictureList(PicTemp);
-                                                return false;
+                            <>
+                                <Upload multiple={true}
+                                        listType="picture-card"
+                                        fileList={PictureList['fileList']}
+                                        maxCount={10-showPic.length}
+                                        onRemove={PicRemove}
+                                        onPreview={handlePreview}
+                                        beforeUpload={file => {
+                                            console.log(file)
+                                            if(PicTemp.length < 10-showPic.length) {
+                                                const isImage = photoType.includes(file.type);
+                                                PicTemp.push(file)
+                                                console.log(PicTemp)
+                                                if (!isImage) {
+                                                    message.error(`${file.name} 不是圖片檔`).then(() => {
+                                                        // Do something after login is successful.
+                                                    });
+                                                }else {
+                                                    // setPictureList(
+                                                    //     [...PictureList, file]
+                                                    // );
+                                                    setPictureList(PicTemp);
+                                                    return false;
+                                                }
+
+                                                return isImage || Upload.LIST_IGNORE;
                                             }
 
-                                            return isImage || Upload.LIST_IGNORE;
-                                        }
+                                        }}
+                                    // onChange={CheckPicNum}
+                                >
+                                    {showPic.length+PictureList.length >= 10 ? null : uploadPicButton}
+                                </Upload>
+                                <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handlePreviewCancel}>
+                                    <img
+                                        alt="example"
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        src={previewImage}
+                                    />
+                                </Modal>
+                            </>
 
-                                    }}
-                                // onChange={CheckPicNum}
-                            >
-                                {showPic.length+PictureList.length >= 10 ? null : uploadPicButton}
-
-                            </Upload>
                         </Col>
                     </Row>
                 </Form.Item>

@@ -56,7 +56,6 @@ const Main = () => {
 
     function toggleCollapsed() {
         const mainMenu = document.getElementById('mainMenu');
-        
         if( collapsed === false)
         {
             setShowMenuUnfoldOutlined('flex')
@@ -67,7 +66,7 @@ const Main = () => {
         }else{
             setShowMenuUnfoldOutlined('none')
             setShowMenuFoldOutlined('flex')
-            mainMenu.style.width = '100%'
+            mainMenu.style.width = '256px'
             mainMenu.style.height = 'auto'
             setCollapsed(false)
         }
@@ -200,6 +199,7 @@ const Main = () => {
     }
 
     function changeRolesMenu(roles,toHouseList){
+        console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const memberListMenu = document.getElementById('memberListMenu');
@@ -207,6 +207,13 @@ const Main = () => {
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
+        myHousesListMenu.style.display = 'none'
+        uploadHousesMenu.style.display = 'none'
+        memberListMenu.style.display = 'none'
+        memberInfoMenu.style.display = 'none'
+        logoutMenu.style.display = 'none'
+        loginSignInMenu.style.display = 'none'
+        collectMenu.style.display = 'none'
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -257,7 +264,7 @@ const Main = () => {
 
     return (
         <div>
-        <div style={{ width: 256,'position':'absolute','zIndex':10 }}>
+        <div style={{ width: 51,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
           <MenuFoldOutlined style={{display : showMenuFoldOutlined }}></MenuFoldOutlined>
