@@ -13,6 +13,7 @@ import HouseDetailOwnerEdit from "./Components/HouseDetailOwnerEdit";
 import Collect from "./Components/Collect";
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import ResetPassword from "./Components/ResetPassword";
 import Main from "./Components/Main";
 // ReactDOM.render(
 //     <App />,
@@ -33,6 +34,7 @@ ReactDOM.render(
           <Route path="/HouseDetailOwner/:id/:owner" element={<HouseDetailOwner/>}/>
           <Route path="/HouseDetailOwnerEdit/:id/:owner" element={<HouseDetailOwnerEdit/>}/>
           <Route path="/Collect" element={<Collect/>}/>
+          <Route path="/reset-password" element={<ResetPassword/>}/>
       </Routes>
 
   </BrowserRouter>

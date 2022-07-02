@@ -16,6 +16,7 @@ import {
   LogoutOutlined ,
   PhoneOutlined ,
   MonitorOutlined ,
+  HeartOutlined ,
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
@@ -26,6 +27,8 @@ import MemberInfo from "./MemberInfo";
 import LoginSignIn from "./LoginSignIn";
 import Contact from "./Contact";
 import Collect from "./Collect";
+import MatchNeed from "./MatchNeed";
+
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -41,6 +44,7 @@ const Main = () => {
     const [isShowMemberInfo, setIsShowMemberInfo] = useState(false);
     const [isShowContact, setIsShowContact] = useState(false);
     const [isShowCollect, setIsShowCollect] = useState(false);
+    const [isShowMatchNeed, setIsShowMatchNeed] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -52,6 +56,7 @@ const Main = () => {
         setIsShowMemberInfo(false)
         setIsShowContact(false)
         setIsShowCollect(false)
+        setIsShowMatchNeed(false)
     }
 
     function toggleCollapsed() {
@@ -144,6 +149,13 @@ const Main = () => {
         setIsShowMemberInfo(true)
     }
 
+    function matchNeed(){
+        console.log('matchNeed')
+        turnOffPage()
+        setSelectMenu(['10'])
+        setIsShowMatchNeed(true)
+    }
+
     function loginSignIn(){
         console.log('loginSignIn')
         setIsShowLoginSignIn(true)
@@ -172,6 +184,7 @@ const Main = () => {
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
+        const matchNeedMenu = document.getElementById('matchNeedMenu');
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
@@ -179,6 +192,7 @@ const Main = () => {
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
+        matchNeedMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
             setSelectMenu(['1'])
@@ -207,6 +221,7 @@ const Main = () => {
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
+        const matchNeedMenu = document.getElementById('matchNeedMenu');
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
@@ -214,6 +229,7 @@ const Main = () => {
         logoutMenu.style.display = 'none'
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
+        matchNeedMenu.style.display = 'flex'
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -293,6 +309,9 @@ const Main = () => {
           <Menu.Item key='5' id="memberInfoMenu" style={{'height':'50px','display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
+          <Menu.Item key='10' id="matchNeedMenu" style={{'height':'50px','display':'flex'}} icon={<HeartOutlined />} onClick={matchNeed}>
+            媒合系統
+          </Menu.Item>
           <Menu.Item key='9' id="collectMenu" style={{'height':'50px','display':'none'}} icon={<MonitorOutlined />} onClick={collect}>
           資料採集
           </Menu.Item>
@@ -320,6 +339,12 @@ const Main = () => {
     {
         isShowUploadHouse?(<HouseUpload></HouseUpload>):null           
     }
+
+    {
+        isShowMatchNeed?(<MatchNeed></MatchNeed>):null           
+    }
+
+
 
     {
         isShowMemberList?(<MemberList></MemberList>):null           
