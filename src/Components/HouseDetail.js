@@ -12,6 +12,8 @@ import {
     CloseSquareTwoTone,
   } from '@ant-design/icons';
 
+import GoogleMapHouse from "./GoogleMapHouse";
+
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
 
@@ -754,6 +756,19 @@ const HouseDetail = (prop) => {
                         }, // click row
                     };}}
             />        
+                </Col>
+            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
+            </Row> 
+            
+            <Divider>地圖位置</Divider>
+            <Row>
+            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
+                <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
+                            textAlign: 'center',
+                        }}>
+                            
+                <GoogleMapHouse/>
+                    
                 </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
             </Row> 

@@ -14,6 +14,7 @@ import Collect from "./Components/Collect";
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import ResetPassword from "./Components/ResetPassword";
+import VerifyUser from "./Components/VerifyUser";
 import Main from "./Components/Main";
 // ReactDOM.render(
 //     <App />,
@@ -35,6 +36,7 @@ ReactDOM.render(
           <Route path="/HouseDetailOwnerEdit/:id/:owner" element={<HouseDetailOwnerEdit/>}/>
           <Route path="/Collect" element={<Collect/>}/>
           <Route path="/reset-password" element={<ResetPassword/>}/>
+          <Route path="/verifyUser" element={<VerifyUser/>}/>
       </Routes>
 
   </BrowserRouter>
