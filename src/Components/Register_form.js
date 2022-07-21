@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import 'antd/dist/antd.min.css';
 import {
     Form, Input, Radio, Select, Checkbox, Divider, DatePicker, Space,
@@ -85,6 +85,10 @@ const Register = (props) => {
     const [cityValid, setCityValid] = useState(false)
     const [areaValid, setAreaValid] = useState(false)
     // const [isBackLogin, setIsBackLogin] = useState(false)
+
+    const [count, setCount] = useState(10)
+    const [enableCount, setEnableCount] = useState(false)
+    const latestCount = useRef(count) // 定义一个ref，初始值是10
 
     // console.log(isBackLogin)
     const onRoleChange = list => {
@@ -479,6 +483,27 @@ const Register = (props) => {
         }
 
     };
+
+    useEffect(() => {
+        latestCount.current = count // 更新
+    })
+    useEffect(() => {
+        const timer = setInterval(() => {
+                if(enableCount){
+                    if (latestCount.current === 0) { // 此处判断latestCount.current，而不是count
+                        clearInterval(timer)
+                        setEnableCount(false)
+                        setCount(10)
+                        return
+                    }
+                    setCount(c => c - 1)
+                }
+            }
+            , 1000)
+        return () => {
+            clearInterval(timer)
+        }
+    }, [enableCount])
 
     return (
         <>
@@ -947,7 +972,15 @@ const Register = (props) => {
                            ]}
                     >
                         {/*<h2>感謝您註冊成為本平台會員，請登入您個人的Email做帳戶授權驗證，謝謝</h2>*/}
-                        {registerCheck ? <h2>感謝您註冊成為本平台會員，謝謝</h2> : failMessage.includes('acc') ? <h2>註冊失敗，帳號已註冊過</h2> :<h2>註冊失敗，電子郵件已註冊過</h2> }
+                        {registerCheck ?
+                            (<>
+                                <h2>感謝您註冊成為本平台會員</h2>
+                                <p>本平台會自動發送帳號驗證郵件，請登入您個人的Email做帳戶授權驗證，謝謝</p>
+                                <p>如果沒收到授權驗證信，請點下方按鈕重新發送</p>
+                                <Button type="primary" disabled={enableCount} onClick={() => setEnableCount(true)}>
+                                    重新發送 {enableCount ? count : []}
+                                </Button>
+                            </>) : failMessage.includes('acc') ? <h2>註冊失敗，帳號已註冊過</h2> :<h2>註冊失敗，電子郵件已註冊過</h2> }
                     </Modal>
                 </Form>}
             <Divider/>

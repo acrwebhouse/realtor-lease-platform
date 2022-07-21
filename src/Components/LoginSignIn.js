@@ -1,11 +1,12 @@
 import { Form, Input, message, Button, Checkbox, Modal } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css'
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect} from "react";
 import Register from "./Register_form";
 // import axios from "./axiosApi";
 import {LoginRegisterAxios} from "./axiosApi"
 import cookie from 'react-cookies'
+import ForgotPassword from "./ForgotPassword";
 
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
@@ -16,6 +17,7 @@ const LoginRegister = (props) => {
     // const onBlur = useRef(null)
 
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
+    const [isResetPasswordModalVisible, setIsResetPasswordModalVisible] = useState(false);
     // const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
     const [LoginData, setLoginData] = useState()
     const [rememberMe, setRememberMe] = useState(false)
@@ -29,6 +31,11 @@ const LoginRegister = (props) => {
         setIsRegisterModalVisible(true);
     };
 
+    const showResetPasswordModal = () => {
+        console.log(props)
+        // props.loginSignInIsOpen(false)
+        setIsResetPasswordModalVisible(true);
+    }
     // const showLoginModal = () => {
     //     setIsLoginModalVisible(true);
     // };
@@ -38,25 +45,30 @@ const LoginRegister = (props) => {
         setIsReset(true);
     };
 
+    const handleResetPasswordCancel = () => {
+        setIsResetPasswordModalVisible(false);
+        setIsReset(true);
+    };
+
     const handleLoginCancel = () => {
         props.loginSignInIsOpen(false)
         // setIsLoginModalVisible(false);
     };
 
     const errorAccountOrMailFormat = () => {
-         message.loading('loading...', 0.5)
-             .then(() => message.error('請輸入正確的帳號或電子郵件格式', 3));
+        message.loading('loading...', 0.5)
+            .then(() => message.error('請輸入正確的帳號或電子郵件格式', 3));
     }
 
     const onFinish =  (values) => {
         // console.log('Success:', values);
-       const {remember, ...tempData} = values
+        const {remember, ...tempData} = values
         // console.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
-                setLoginData(tempData)
-                setRememberMe(remember)
-                setIsRunPost(true);
+            setLoginData(tempData)
+            setRememberMe(remember)
+            setIsRunPost(true);
         } else {
             errorAccountOrMailFormat();
         }
@@ -88,7 +100,7 @@ const LoginRegister = (props) => {
                         cookie.save('x-token',response.data.data.token,{path:'/'})
                         message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2)
                     }
-                    
+
                 })
                 .catch( (error) => message.error(`${error}`, 2))
 
@@ -124,7 +136,7 @@ const LoginRegister = (props) => {
                            註冊
                        </Button>
                    ]}
-                   // centered="false"
+                // centered="false"
             >
                 <Form
                     form={form}
@@ -151,7 +163,7 @@ const LoginRegister = (props) => {
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
                                placeholder="Account/Email"
                                size="large"
-                               // ref={onBlur}
+                            // ref={onBlur}
                         />
                     </Form.Item>
                     <Form.Item
@@ -181,6 +193,16 @@ const LoginRegister = (props) => {
                                 記憶帳號密碼
                             </Checkbox>
                         </Form.Item>
+
+                        <Button type="link"
+                                style={{float: 'right'}}
+                                className='reset-password-button'
+                            // shape="round"
+                                onClick={showResetPasswordModal}
+                        >
+                            {/*Log in*/}
+                            忘記密碼
+                        </Button>
                         {/*<a className="login-form-forgot"*/}
                         {/*   href="http://www.localhost:3000/PasswordReset">*/}
                         {/*    /!*Forgot password*!/*/}
@@ -213,6 +235,23 @@ const LoginRegister = (props) => {
                             <Register setIsRegisterModalVisible={setIsRegisterModalVisible}
                                       initReset={isReset}
                                       setIsReset={setIsReset}/>
+                        </Modal>
+                        <Modal title="重置密碼"
+                               visible={isResetPasswordModalVisible}
+                               className="ModalResetPassword"
+                               width={700}
+                               okText="Submit"
+                               cancelText="Return"
+                               onCancel={handleResetPasswordCancel}
+                               footer={[
+                                   <Button key="back" className="ss" onClick={handleResetPasswordCancel}>
+                                       返回
+                                   </Button>,
+                               ]}
+                        >
+                            <ForgotPassword setIsResetPasswordModalVisible={setIsResetPasswordModalVisible}
+                                            initReset={isReset}
+                                            setIsReset={setIsReset}/>
                         </Modal>
                     </Form.Item>
                 </Form>
