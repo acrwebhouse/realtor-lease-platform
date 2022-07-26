@@ -1,14 +1,72 @@
 import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
+import {HouseAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {config} from "../Setting/config";
-const MapSource = "https://www.google.com/maps/embed/v1/place?key=" +config.GoogleMapKey + "&q=116台北市文山區興隆路2段96巷"
-console.log(MapSource)
+import {useParams} from "react-router-dom";
+
+const houseListUrl = 'house/getHouse'
+
+const defaultMapSource = "https://www.google.com/maps/embed/v1/place?key=" +config.GoogleMapKey + "&q="
+console.log(defaultMapSource)
 
 const GoogleMapHouse = (props) => {
+    const { id } = useParams();
+    const [init, setInit] = useState(true);
+    const [house, setHouse ] = useState(null);
+    const [MapSource, setMapSource] = useState('')
+    // console.log(house)
+
+    const getHouse = () => {
+        let reqUrl = `${houseListUrl}?id=${id}&&isDelete=false`
+        HouseAxios.get(
+            reqUrl,{}
+        )
+            .then( (response) => {
+                // setHouse(response)
+                resolveHouse(response)
+            })
+            .catch( (error) => message.error(error, 3))
+    }
+
+
+
+    const resolveHouse = (response) => {
+        if(response.data.status){
+            const data = response.data.data
+            setHouse(data)
+        }
+    }
+
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+            getHouse()
+        }
+    }, )
+
+    useEffect(()=>{
+        if(!init && house) {
+            console.log(house.houseNumber.alley, house.houseNumber.lane)
+            let houseExtraData = '';
+            if(house.houseNumber.lane) {
+                if(house.houseNumber.alley) {
+                    houseExtraData = house.address+house.houseNumber.lane+'巷' + house.houseNumber.alley+'弄' + house.houseNumber.number1+'號'
+                } else {
+                    houseExtraData = house.address+house.houseNumber.lane+'巷' + house.houseNumber.number1+'號'
+                }
+            } else {
+                houseExtraData = house.address+ house.houseNumber.number1+'號'
+            }
+            setMapSource(defaultMapSource+house.address+houseExtraData)
+            console.log(MapSource)
+        }
+    }, [init, house])
+
+
+
     return (
             <iframe
                 width="600"
