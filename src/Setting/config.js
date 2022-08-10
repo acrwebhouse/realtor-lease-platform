@@ -18,5 +18,6 @@ const config = {
      'base_URL_Collect' : 'http://35.234.42.100:6001',
      'contactPhone' : '0909123456',
      'contactMail' : 'acr.webhouse@gmail.com',
-
+ }
+     
 export {config}
