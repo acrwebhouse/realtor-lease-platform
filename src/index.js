@@ -16,6 +16,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import ResetPassword from "./Components/ResetPassword";
 import VerifyUser from "./Components/VerifyUser";
 import Main from "./Components/Main";
+import Link from "./Components/Link";
 // ReactDOM.render(
 //     <App />,
 //   document.getElementById('root')
@@ -37,6 +38,7 @@ ReactDOM.render(
           <Route path="/Collect" element={<Collect/>}/>
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/verifyUser" element={<VerifyUser/>}/>
+          <Route path="/link" element={<Link/>}/>
       </Routes>
 
   </BrowserRouter>
