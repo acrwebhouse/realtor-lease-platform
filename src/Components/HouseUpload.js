@@ -91,7 +91,7 @@ const HouseUpload = (prop) => {
     console.log('HouseUpload cookie x-token: '+xToken)
     console.log('HouseUpload cookie decodedToken: '+JSON.stringify(decodedToken))
     console.log('HouseUpload cookie id: '+decodedToken.id)
-
+    console.log(prop.defaultValue)
     const PicPreURL = prop.defaultValue? houseService+'/resource/'+prop.defaultValue._id+'/photo/' : []
     console.log(PicPreURL)
     const [form] = Form.useForm();
@@ -440,22 +440,24 @@ const HouseUpload = (prop) => {
             }).then()
         }else {
             setIsRunPost(true)
+
+            if (!prop.defaultValue) {
+                setAnnexEnable(false)
+                setFormDataEnable(false)
+                setPictureList([])
+                form_photo.resetFields()
+                setAnnexList([])
+                form_annex.resetFields()
+                form.resetFields()
+                setExtraRequire([])
+                setShowHideManageFee(false)
+                setShowHideGarbageFee(false)
+            }
+
         }
         console.log(TrafficArr);
         // console.log(photoData)
-        if (!prop.defaultValue) {
 
-            setAnnexEnable(false)
-            setFormDataEnable(false)
-            setPictureList([])
-            form_photo.resetFields()
-            setAnnexList([])
-            form_annex.resetFields()
-            form.resetFields()
-            setExtraRequire([])
-            setShowHideManageFee(false)
-            setShowHideGarbageFee(false)
-        }
 
         // window.location.replace(window.location.origin+'/HouseDetailOwner/'+prop.defaultValue._id+'/'+ prop.defaultValue.owner)
     };
@@ -756,8 +758,12 @@ const HouseUpload = (prop) => {
                                         maxCount={10-showPic.length}
                                         onRemove={PicRemove}
                                         onPreview={handlePreview}
+                                        accept={'.jpg, .png, .svg, .bmp, .jpeg'}
                                         beforeUpload={file => {
                                             console.log(file)
+                                            if(PicTemp.length > 0) {
+                                                PicTemp.splice(0, PicTemp.length)
+                                            }
                                             if(PicTemp.length < 10-showPic.length) {
                                                 const isImage = photoType.includes(file.type);
                                                 PicTemp.push(file)
@@ -817,7 +823,7 @@ const HouseUpload = (prop) => {
                 </Form.Item>
             </Form>
             {
-                AnnexEnable &&
+                // AnnexEnable &&
                 <Form
 
                     form={form_annex}
@@ -866,8 +872,12 @@ const HouseUpload = (prop) => {
                                         fileList={AnnexList['fileList']}
                                         maxCount={10}
                                         onRemove={AnnexRemove}
+                                        accept={'.pdf'}
                                         beforeUpload={file => {
                                             console.log(file)
+                                            if(AnnexTemp.length > 0) {
+                                                AnnexTemp.splice(0, AnnexTemp.length)
+                                            }
                                             const isFile = annexType.includes(file.type);
                                             AnnexTemp.push(file)
                                             console.log(AnnexTemp)
@@ -926,9 +936,8 @@ const HouseUpload = (prop) => {
             </Row>
             {
                 // FormDataEnable &&
-                AnnexEnable &&
+                // AnnexEnable &&
                 <Form
-
                     form={form}
                     className="HouseUpload_form"
                     name="HouseUpload"

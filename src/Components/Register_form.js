@@ -47,7 +47,8 @@ const defaultRank = 0;
 const defaultHouseIds = []
 const defaultRegisterData = {}
 
-const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3}[0-9]{6}[\u4e00-\u9fa5]/
+const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3, 4}[0-9]{6}[\u4e00-\u9fa5]/
+const AccountPattern = /^.[A-Za-z0-9]+$/
 
 const convertString = (word) =>{
     switch(word.toLowerCase().trim()){
@@ -58,6 +59,7 @@ const convertString = (word) =>{
 }
 
 const SighUp_Auth = "/auth/signUp"
+const SendVerifyUser_Auth = "/auth/sendVerifyUserMailByMail"
 
 const Register = (props) => {
     const { setIsRegisterModalVisible, initReset, setIsReset } = props
@@ -85,6 +87,7 @@ const Register = (props) => {
     const [cityValid, setCityValid] = useState(false)
     const [areaValid, setAreaValid] = useState(false)
     // const [isBackLogin, setIsBackLogin] = useState(false)
+    const [VerifyUserEnable, setVerifyUserEnable] = useState(false)
 
     const [count, setCount] = useState(10)
     const [enableCount, setEnableCount] = useState(false)
@@ -101,6 +104,7 @@ const Register = (props) => {
     };
     console.log(Roles)
     console.log(failMessage)
+    //register API
     useEffect(() => {
         // console.log(RegisterData)
         // console.log(CityAreaScope)
@@ -117,8 +121,23 @@ const Register = (props) => {
             setIsRunPost(false)
             setCityValid(false)
             setAreaValid(false)
+
         }
     }, [isRunPost, RegisterData])
+
+    //send VerifyUse Mail api
+    console.log(RegisterData.mail)
+    useEffect(() => {
+        if (VerifyUserEnable) {
+            LoginRegisterAxios.get(SendVerifyUser_Auth+"?mail="+RegisterData.mail)
+                .then( (response) =>  {
+                    console.log(response)
+                })
+                .catch( (error) => message.error(`${error}`, 2))
+
+            setVerifyUserEnable(false)
+        }
+    }, [VerifyUserEnable, RegisterData])
 
     //reset form data when click return
     useEffect(() => {
@@ -174,31 +193,37 @@ const Register = (props) => {
                 'address': values['City']+values['Area']+values['address']
             }
         )
-        if(('886'+values['phone']).length > 12 || ('886'+values['phone']).length < 12 ) {
+        if(!AccountPattern.test(values['account'])) {
             setIsSubmitModalVisible(false)
-            errorPhoneFormat();
-        } else {
-            if(Roles.includes(4)) {
+            errorAccoutFormat();
+        }else {
+            if(('886'+values['phone']).length > 12 || ('886'+values['phone']).length < 12 ) {
+                setIsSubmitModalVisible(false)
+                errorPhoneFormat();
+            } else {
+                if(Roles.includes(4)) {
 
-                if (LicensePattern.test(values['LicenseNumber'])) {
-                    if(initAreaData.length >=2 ) {
-                        setIsSubmitModalVisible(true);
-                        setIsRunPost(true)
+                    if (LicensePattern.test(values['LicenseNumber'])) {
+                        if(initAreaData.length >=2 ) {
+                            setIsSubmitModalVisible(true);
+                            setIsRunPost(true)
+                        }else {
+                            setIsSubmitModalVisible(false)
+                            message.loading('loading...', 0.5)
+                                .then(() => message.error('經營地區需填兩項', 3));
+                        }
                     }else {
                         setIsSubmitModalVisible(false)
-                        message.loading('loading...', 0.5)
-                            .then(() => message.error('經營地區需填兩項', 3));
+                        errorLicenseFormat();
                     }
-                }else {
-                    setIsSubmitModalVisible(false)
-                    errorLicenseFormat();
-                }
 
-            }else{
-                setIsSubmitModalVisible(true);
-                setIsRunPost(true)
+                }else{
+                    setIsSubmitModalVisible(true);
+                    setIsRunPost(true)
+                }
             }
         }
+
     };
 
     const errorLicenseFormat = () => {
@@ -210,6 +235,12 @@ const Register = (props) => {
         message.loading('loading...', 0.5)
             .then(() => message.error('請輸入正確的手機號格式或長度(不需要打0)', 3));
     }
+
+    const errorAccoutFormat = () => {
+        message.loading('loading...', 0.5)
+            .then(() => message.error('帳戶只能輸入大小寫英文與數字', 3));
+    }
+
     const onCityInCharge = (City) => {
         console.log(City);
         setCityValid(true)
@@ -977,7 +1008,11 @@ const Register = (props) => {
                                 <h2>感謝您註冊成為本平台會員</h2>
                                 <p>本平台會自動發送帳號驗證郵件，請登入您個人的Email做帳戶授權驗證，謝謝</p>
                                 <p>如果沒收到授權驗證信，請點下方按鈕重新發送</p>
-                                <Button type="primary" disabled={enableCount} onClick={() => setEnableCount(true)}>
+                                <Button type="primary" disabled={enableCount}
+                                        onClick={() => {
+                                            setEnableCount(true)
+                                            setVerifyUserEnable(true)
+                                }}>
                                     重新發送 {enableCount ? count : []}
                                 </Button>
                             </>) : failMessage.includes('acc') ? <h2>註冊失敗，帳號已註冊過</h2> :<h2>註冊失敗，電子郵件已註冊過</h2> }

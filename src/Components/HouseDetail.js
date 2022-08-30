@@ -391,6 +391,10 @@ const HouseDetail = (prop) => {
         message.success('連結已複製到剪貼簿', 3);
     }
 
+    const reserveLink = () => {
+
+    }
+
     function removeHouseAction(){
         const houseId = id
         const reqUrl = `${removeHouseUrl}`
@@ -515,9 +519,16 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         <br/>
-                        <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
-                        複製連結
-                        </Button>
+                        <div>
+                            <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                                複製連結
+                            </Button>
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <Button type="primary" onClick={() => reserveLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                                我要看房
+                            </Button>
+                        </div>
+
                         <br/>
                         <br/>
                         

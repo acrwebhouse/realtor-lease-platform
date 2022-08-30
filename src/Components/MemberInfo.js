@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
+import {LoginRegisterAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
+const SendResetPassword_Auth = '/auth/sendResetPasswordMail/'
 
 const MemberInfo = (props) => {
 
@@ -47,6 +48,7 @@ const MemberInfo = (props) => {
     const [isShowExtraData, setIsShowExtraData] = useState(false);
     const [editUser, setEditUser] = useState({});
     const [editDate, setEditDate] = useState(moment('2022-01-01', dateFormat));
+    const [EnableResetPW, setEnableResetPW] = useState(false);
     const xToken = cookie.load('x-token')
     const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3}[0-9]{6}[\u4e00-\u9fa5]/
 
@@ -430,6 +432,32 @@ function changeDate(e, dateString){
     setEditUser(editUserValue)
 }
 
+    const ResetPW = () => {
+        setEnableResetPW(true);
+    }
+
+    useEffect(() => {
+        if (EnableResetPW) {
+        LoginRegisterAxios.get(SendResetPassword_Auth+'?accountOrMail='+user.account, {
+            headers: {
+                "accept": "application/json",
+            }
+        })
+            .then( (response) =>  {
+                console.log(response)
+                if(response.data.status) {
+                    message.success('請至郵件信箱進行重置密碼的設定', 2)
+                }else {
+                    message.error(`${response.data.data}`, 2)
+                }
+            })
+            .catch( (error) => {message.error(`${error}`, 2)})
+
+            setEnableResetPW(false)
+        }
+    }, [EnableResetPW])
+
+
     return (
 
         <div>
@@ -516,9 +544,19 @@ function changeDate(e, dateString){
                                 </div>                                
                             </Col>
                             <Col xs={20} sm={20} md={20} lg={20} xl={20}>
-                                <Input onChange={editPassword} style={{ width: '100%' }} defaultValue={user.password}></Input>
+                                {/*<Input onChange={editPassword} style={{ width: '100%' }} defaultValue={user.password} disabled></Input>*/}
+                                <Input onChange={editPassword} style={{ width: '100%' }} defaultValue={'******'} disabled></Input>
                             </Col>
                         </Row>
+                            <Row>
+                                <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+
+                                </Col>
+                                <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                                    <Button onClick={ResetPW} type='primary'>重置密碼</Button>
+                                </Col>
+                            </Row>
+
                         </div>): 
                         <div>密碼:&nbsp;******</div> }
                     <br/>

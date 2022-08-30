@@ -1,20 +1,49 @@
 import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
+import {LoginRegisterAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 
+// console.log(typeof(window.location.href))
+const SighUp_Auth = "/auth/verifyUser"
+const User_verify_xToken = window.location.href.split('key=')[1]
+console.log(User_verify_xToken)
 
 const VerifyUser = (props) => {
 
-    const [verify, setVerify] = useState(true)
+    const [verify, setVerify] = useState([])
 
     const backToInitPage = () => {
         setTimeout(() => {
             window.location.replace("https://matchrentdev.com")
         }, 1000)
     }
+
+    //send VerifyUse Mail api
+
+    useEffect(() => {
+        // if (VerifyUserEnable) {
+            LoginRegisterAxios.get(SighUp_Auth, {
+                headers: {
+                    "accept": "application/json",
+                    "x-token" : User_verify_xToken,
+                }
+            })
+                .then( (response) =>  {
+                    console.log(response)
+                    if(response.data.status) {
+                        setVerify(true)
+                    }else {
+                        setVerify(false)
+                        message.error(`${response.data.data}`, 2)
+                    }
+                })
+                .catch( (error) => message.error(`${error}`, 2))
+
+            // setVerifyUserEnable(false)
+        // }
+    }, [User_verify_xToken])
 
     return (
         <div>

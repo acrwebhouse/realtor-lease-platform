@@ -7,15 +7,18 @@ const config = {
     'base_URL_Collect' : 'https://matchrentdev.com/collect-service',
     'contactPhone' : '0909123456',
     'contactMail' : 'acr.webhouse@gmail.com',
-    'GoogleMapKey' : 'AIzaSyDWp63cNSe_gqS5D4UEPcRrM9o3mv8cbYs',
+    'GoogleMapKey' : 'AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE',
 }
 
 // const config = {
-//     'base_URL_Auth' : 'http://34.81.209.11:3000',
-//     'base_URL_User' : 'http://34.81.209.11:4000',
-//     'base_URL_House' : 'http://34.81.209.11:5000',
-//     'base_URL_Collect' : 'http://34.81.209.11:6001',
-//     'contactPhone' : '0909123456',
-//     'contactMail' : 'acr.webhouse@gmail.com',
+//     'base_URL_Auth': 'http://35.234.42.100:3000/',
+//     'base_URL_User': 'http://35.234.42.100:4000/',
+//     'base_URL_House': 'http://35.234.42.100:5000/',
+//     'base_URL_Collect': 'http://35.234.42.100:6001/',
+//     'contactPhone': '0909123456',
+//     'contactMail': 'acr.webhouse@gmail.com',
+// }
 
 export {config}
+
+
