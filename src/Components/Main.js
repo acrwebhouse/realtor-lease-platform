@@ -236,6 +236,7 @@ const Main = () => {
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
         const relativeLinkMenu = document.getElementById('relativeLinkMenu')
+        const relativeLinkContent = document.getElementById('relativeLinkContent')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
@@ -244,7 +245,7 @@ const Main = () => {
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         matchNeedMenu.style.display = 'flex'
-        relativeLinkMenu.style.display = 'flex'
+
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -333,14 +334,18 @@ const Main = () => {
           資料採集
           </Menu.Item>
           <Menu.SubMenu
+                id="relativeLinkMenu"
                 key='11'
                 title={"更多"}
                 icon={<InfoCircleOutlined />}
           >
-              <Menu.Item key='12' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
+              <Menu.Item key='12' id="relativeLinkContent" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
                     相關連結
               </Menu.Item>
           </Menu.SubMenu>
+          {/* <Menu.Item key='12' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
+                    相關連結
+              </Menu.Item> */}
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
             聯絡客服
           </Menu.Item>
