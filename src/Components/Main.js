@@ -182,7 +182,7 @@ const Main = () => {
     const relativeLink = () => {
         console.log('relativeLink')
         turnOffPage()
-        setSelectMenu(['11'])
+        setSelectMenu(['12'])
         setIsShowRelativeLink(true)
     }
 
@@ -334,11 +334,11 @@ const Main = () => {
           </Menu.Item>
           <Menu.SubMenu
                 key='11'
-                title={<span>更多</span>}
+                title={"更多"}
                 icon={<InfoCircleOutlined />}
           >
               <Menu.Item key='12' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
-                   <span> 相關連結</span>
+                    相關連結
               </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
