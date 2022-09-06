@@ -15,8 +15,10 @@ import {
   LoginOutlined ,
   LogoutOutlined ,
   PhoneOutlined ,
+  InfoCircleOutlined,
   MonitorOutlined ,
   HeartOutlined ,
+  LinkOutlined,
 } from '@ant-design/icons';
 
 import HousesList from "./HousesList";
@@ -28,7 +30,7 @@ import LoginSignIn from "./LoginSignIn";
 import Contact from "./Contact";
 import Collect from "./Collect";
 import MatchNeed from "./MatchNeed";
-
+import Link from "./Link";
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -45,6 +47,7 @@ const Main = () => {
     const [isShowContact, setIsShowContact] = useState(false);
     const [isShowCollect, setIsShowCollect] = useState(false);
     const [isShowMatchNeed, setIsShowMatchNeed] = useState(false);
+    const [isShowRelativeLink, setIsShowRelativeLink] = useState(true);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -57,6 +60,7 @@ const Main = () => {
         setIsShowContact(false)
         setIsShowCollect(false)
         setIsShowMatchNeed(false)
+        setIsShowRelativeLink(false)
     }
 
     function toggleCollapsed() {
@@ -175,6 +179,13 @@ const Main = () => {
         setIsShowCollect(true)
     }
 
+    const relativeLink = () => {
+        console.log('relativeLink')
+        turnOffPage()
+        setSelectMenu(['11'])
+        setIsShowRelativeLink(true)
+    }
+
     function logout(){
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
@@ -185,6 +196,7 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
+        const furtherMenu = document.getElementById('furtherMenu')
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
@@ -193,6 +205,7 @@ const Main = () => {
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
         matchNeedMenu.style.display = 'flex'
+        furtherMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
             setSelectMenu(['1'])
@@ -222,6 +235,7 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
+        const furtherMenu = document.getElementById('furtherMenu')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
@@ -230,6 +244,7 @@ const Main = () => {
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         matchNeedMenu.style.display = 'flex'
+        furtherMenu.style.display = 'flex'
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -270,6 +285,7 @@ const Main = () => {
             uploadHousesMenu.style.display = 'none'
             memberListMenu.style.display = 'none'
             memberInfoMenu.style.display = 'flex'
+            furtherMenu.style.display = 'flex'
             logoutMenu.style.display = 'flex'
             loginSignInMenu.style.display = 'none'
             collectMenu.style.display = 'none'
@@ -290,6 +306,7 @@ const Main = () => {
           selectedKeys = {selectMenu}
           defaultOpenKeys={['sub1']}
           mode="inline"
+          // mode="vertical"
           theme="dark"
           inlineCollapsed={collapsed}
           style={{width : '0%',height : '10px' }}
@@ -315,6 +332,14 @@ const Main = () => {
           <Menu.Item key='9' id="collectMenu" style={{'height':'50px','display':'none'}} icon={<MonitorOutlined />} onClick={collect}>
           資料採集
           </Menu.Item>
+          <Menu.SubMenu
+                title={<span>更多</span>}
+                icon={<InfoCircleOutlined />}
+          >
+              <Menu.Item key='11' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
+                   <span> 相關連結</span>
+              </Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
             聯絡客服
           </Menu.Item>
@@ -324,6 +349,7 @@ const Main = () => {
           <Menu.Item key='7' id="logoutMenu" style={{'height':'50px','display':'none'}} icon={<LogoutOutlined />} onClick={logout}>
             登出
           </Menu.Item>
+
         </Menu>
         
       </div>
@@ -357,7 +383,9 @@ const Main = () => {
     {
         isShowCollect?(<Collect></Collect>):null           
     }
-
+    {
+        isShowRelativeLink?(<Link></Link>):null
+    }
     {
         isShowContact?(<Contact></Contact>):null           
     }

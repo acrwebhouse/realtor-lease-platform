@@ -121,7 +121,6 @@ const ResetPassword = (props) => {
             { ChangingVerify ?
                 <div>
 
-                    <h1>重置密碼</h1>
                     <Form
                         form={form}
                         className="resetPassword_form"
@@ -130,9 +129,18 @@ const ResetPassword = (props) => {
                         scrollToFirstError
                     >
                         <Row>
-                            {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
 
-                            {/*</Col>*/}
+                            </Col>
+                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                                <h1>重置密碼</h1>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
+
+                            </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                                 <Form.Item
                                     name="password"
@@ -152,9 +160,9 @@ const ResetPassword = (props) => {
                         </Row>
 
                         <Row>
-                            {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
 
-                            {/*</Col>*/}
+                            </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                                 <Form.Item
                                     name="confirm"
@@ -183,9 +191,9 @@ const ResetPassword = (props) => {
                             </Col>
                         </Row>
                         <Row>
-                            {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
 
-                            {/*</Col>*/}
+                            </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                                 <Form.Item
                                     name="CaptchaVerify"
@@ -208,9 +216,9 @@ const ResetPassword = (props) => {
                             </Col>
                         </Row>
                         <Row>
-                            {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
 
-                            {/*</Col>*/}
+                            </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                                 <Form.Item>
                                     <Button type="primary"
