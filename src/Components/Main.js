@@ -196,7 +196,7 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
-        const furtherMenu = document.getElementById('furtherMenu')
+        const relativeLinkMenu = document.getElementById('relativeLinkMenu')
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
@@ -205,7 +205,7 @@ const Main = () => {
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
         matchNeedMenu.style.display = 'flex'
-        furtherMenu.style.display = 'flex'
+        relativeLinkMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
             setSelectMenu(['1'])
@@ -235,7 +235,7 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
-        const furtherMenu = document.getElementById('furtherMenu')
+        const relativeLinkMenu = document.getElementById('relativeLinkMenu')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
@@ -244,7 +244,7 @@ const Main = () => {
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         matchNeedMenu.style.display = 'flex'
-        furtherMenu.style.display = 'flex'
+        relativeLinkMenu.style.display = 'flex'
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
                 myHousesListMenu.style.display = 'flex'
@@ -285,7 +285,7 @@ const Main = () => {
             uploadHousesMenu.style.display = 'none'
             memberListMenu.style.display = 'none'
             memberInfoMenu.style.display = 'flex'
-            furtherMenu.style.display = 'flex'
+            relativeLinkMenu.style.display = 'flex'
             logoutMenu.style.display = 'flex'
             loginSignInMenu.style.display = 'none'
             collectMenu.style.display = 'none'
@@ -333,10 +333,11 @@ const Main = () => {
           資料採集
           </Menu.Item>
           <Menu.SubMenu
+                key='11'
                 title={<span>更多</span>}
                 icon={<InfoCircleOutlined />}
           >
-              <Menu.Item key='11' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
+              <Menu.Item key='12' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
                    <span> 相關連結</span>
               </Menu.Item>
           </Menu.SubMenu>
