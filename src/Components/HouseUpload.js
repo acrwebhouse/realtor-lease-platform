@@ -622,6 +622,7 @@ const HouseUpload = (prop) => {
                 })
                 .then(() => {
                     // setPictureList([])
+
                     message.success('照片上傳成功').then();
                 })
                 .catch(() => {
@@ -761,9 +762,7 @@ const HouseUpload = (prop) => {
                                         accept={'.jpg, .png, .svg, .bmp, .jpeg'}
                                         beforeUpload={file => {
                                             console.log(file)
-                                            if(PicTemp.length > 0) {
-                                                PicTemp.splice(0, PicTemp.length)
-                                            }
+
                                             if(PicTemp.length < 10-showPic.length) {
                                                 const isImage = photoType.includes(file.type);
                                                 PicTemp.push(file)
@@ -814,7 +813,7 @@ const HouseUpload = (prop) => {
                                     shape="round"
                                     loading={PicUploading}
                                     disabled={PictureList.length === 0}
-                                // onClick={() => message.success('照片上傳成功')}
+                                    // onClick={() => message.success('照片上傳成功')}
                             >
                                 {PicUploading ? 'Uploading' : '提交照片'}
                             </Button>
