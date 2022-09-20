@@ -21,7 +21,6 @@ const HouseDetailOwnerEdit = (prop) => {
             reqUrl,{}
         )
         .then( (response) => {
-            setIsShow(true);
             if(response.data.data){
                 console.log(response.data.data)
                 setHouse(response.data.data)
