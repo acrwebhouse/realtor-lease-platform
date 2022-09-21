@@ -92,6 +92,7 @@ const HouseUpload = (prop) => {
     console.log('HouseUpload cookie decodedToken: '+JSON.stringify(decodedToken))
     console.log('HouseUpload cookie id: '+decodedToken.id)
     console.log(prop.defaultValue)
+
     const PicPreURL = prop.defaultValue? houseService+'/resource/'+prop.defaultValue._id+'/photo/' : []
     console.log(PicPreURL)
     const [form] = Form.useForm();
@@ -127,7 +128,7 @@ const HouseUpload = (prop) => {
     const [previewVisible, setPreviewVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-
+    const [PicUploadCheck, setPicUploadCheck] = useState(false)
 
     const showTrafficModal = () => {
         setTrafficVisible(true);
@@ -252,6 +253,7 @@ const HouseUpload = (prop) => {
         }
         console.log(temp)
         setExtraRequire(temp)
+
     },[prop.defaultValue])
 
 
@@ -439,21 +441,31 @@ const HouseUpload = (prop) => {
                 duration: 2,
             }).then()
         }else {
-            setIsRunPost(true)
+            if(!PicUploadCheck) {
+                message.warning({
+                    content: '請記得按下提交照片',
+                    style: {
+                        fontSize: '40px',
+                        marginTop: '20vh',
+                    },
+                    duration: 2,
+                }).then()
+            } else {
+                setIsRunPost(true)
 
-            if (!prop.defaultValue) {
-                setAnnexEnable(false)
-                setFormDataEnable(false)
-                setPictureList([])
-                form_photo.resetFields()
-                setAnnexList([])
-                form_annex.resetFields()
-                form.resetFields()
-                setExtraRequire([])
-                setShowHideManageFee(false)
-                setShowHideGarbageFee(false)
+                if (!prop.defaultValue) {
+                    setAnnexEnable(false)
+                    setFormDataEnable(false)
+                    setPictureList([])
+                    form_photo.resetFields()
+                    setAnnexList([])
+                    form_annex.resetFields()
+                    form.resetFields()
+                    setExtraRequire([])
+                    setShowHideManageFee(false)
+                    setShowHideGarbageFee(false)
+                }
             }
-
         }
         console.log(TrafficArr);
         // console.log(photoData)
@@ -622,7 +634,7 @@ const HouseUpload = (prop) => {
                 })
                 .then(() => {
                     // setPictureList([])
-
+                    setPicUploadCheck(true)
                     message.success('照片上傳成功').then();
                 })
                 .catch(() => {
@@ -943,7 +955,7 @@ const HouseUpload = (prop) => {
                     onFinish={UploadHouseData}
                     scrollToFirstError
                     initialValues={{
-                            "name" : prop.defaultValue?prop.defaultValue.name: [],
+                            "name" : prop.defaultValue?prop.defaultValue.name:[],
                             "TypeOfBuild": prop.defaultValue?buildingType[prop.defaultValue.config.buildingType-1] : [],
                             "TypeOfRental" : prop.defaultValue? RentalType[prop.defaultValue.saleInfo.typeOfRental-1] : [],
                             "City" : prop.defaultValue?prop.defaultValue.city:[],
