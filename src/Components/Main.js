@@ -47,7 +47,7 @@ const Main = () => {
     const [isShowContact, setIsShowContact] = useState(false);
     const [isShowCollect, setIsShowCollect] = useState(false);
     const [isShowMatchNeed, setIsShowMatchNeed] = useState(false);
-    const [isShowRelativeLink, setIsShowRelativeLink] = useState(true);
+    const [isShowRelativeLink, setIsShowRelativeLink] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
