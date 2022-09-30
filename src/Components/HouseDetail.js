@@ -33,6 +33,7 @@ const HouseDetail = (prop) => {
     const [annex, setAnnex] = useState(null);
     const [phone, setPhone] = useState('');
     const [mail, setMail] = useState('');
+    const [remark, setRemark] = useState('');
     const [owner, setOwner] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
 
@@ -292,8 +293,11 @@ const HouseDetail = (prop) => {
             }
 
         }
-
-        setFeature(data)
+        if(data === ''){
+            setFeature('無')
+        }else{
+            setFeature(data)
+        }
     }
 
     function resolveHouse(response){
@@ -310,9 +314,18 @@ const HouseDetail = (prop) => {
             changeFeature(data)
             changePattern(data)
             setHost(data)
+            changeRemark(data)
             
         }
         
+    }
+
+    function changeRemark(house){
+        if(house.remark !== null && house.remark !== undefined){
+            setRemark(house.remark)
+        }else{
+            setRemark('無')
+        }
     }
 
     function setHost(data){
@@ -518,6 +531,11 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
+                        {
+                            prop.isOwner?(
+                                <div style={{'fontSize':'10px'}}>{`備註：${remark}`}</div>
+                            ):null   
+                        }
                         <br/>
                         <div>
                             <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
