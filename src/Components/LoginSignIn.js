@@ -96,6 +96,12 @@ const LoginRegister = (props) => {
                     if(response.data.data === null ||response.data.data === undefined){
                         message.error(`帳號或密碼錯誤`, 2)
                     }else{
+                        const userId = response.data.data._id;
+                        if(typeof(appJsInterface) !== 'undefined'){
+                            // eslint-disable-next-line no-undef
+                            appJsInterface.saveUserId(userId);
+                        }
+                        
                         props.changeRolesMenu(response.data.data.roles,true)
                         cookie.save('x-token',response.data.data.token,{path:'/'})
                         message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2)
