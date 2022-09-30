@@ -533,7 +533,7 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         {
                             prop.isOwner?(
-                                <div style={{'fontSize':'10px'}}>{`備註：${remark}`}</div>
+                                <div style={{'fontSize':'10px',width: '200px'}}>{`備註：${remark}`}</div>
                             ):null   
                         }
                         <br/>
