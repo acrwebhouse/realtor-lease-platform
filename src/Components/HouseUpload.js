@@ -443,7 +443,7 @@ const HouseUpload = (prop) => {
                 duration: 2,
             }).then()
         }else {
-            if(!PicUploadCheck) {
+            if(!PicUploadCheck && !prop.defaultValue) {
                 message.warning({
                     content: '請記得按下提交照片',
                     style: {
@@ -2029,7 +2029,12 @@ const HouseUpload = (prop) => {
                                 //     },
                                 // ]}
                             >
-                                <Input.TextArea  showCount allowClear maxLength={100}/>
+                                <Input.TextArea  rows={12}
+                                                 autoSize={{minRows: 12,maxRows: 12}}
+                                                 showCount
+                                                 allowClear
+                                                 maxLength={100}
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
