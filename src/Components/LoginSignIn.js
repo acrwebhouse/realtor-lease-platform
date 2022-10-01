@@ -99,7 +99,7 @@ const LoginRegister = (props) => {
                         const userId = response.data.data._id;
                         if(typeof(appJsInterface) !== 'undefined'){
                             // eslint-disable-next-line no-undef
-                            appJsInterface.saveUserId(userId);
+                            appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
                         
                         props.changeRolesMenu(response.data.data.roles,true)
