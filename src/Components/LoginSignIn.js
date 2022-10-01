@@ -12,6 +12,11 @@ const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+window.setDefaultAccountPassword = function(account,password){
+    console.log('==window==setDefaultAccountPassword==account==',account)
+    console.log('==window==setDefaultAccountPassword==password==',password)
+}
+
 const LoginRegister = (props) => {
 
     // const onBlur = useRef(null)
@@ -111,6 +116,11 @@ const LoginRegister = (props) => {
                 .catch( (error) => message.error(`${error}`, 2))
 
             setIsRunPost(false)
+        }else{
+            if(typeof(appJsInterface) !== 'undefined'){
+                // eslint-disable-next-line no-undef
+                appJsInterface.setAccountPassword();
+            }
         }
 
     }, [LoginData, rememberMe, isRunPost, props])
