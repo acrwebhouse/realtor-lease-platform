@@ -35,6 +35,7 @@ const HouseDetail = (prop) => {
     const [mail, setMail] = useState('');
     const [remark, setRemark] = useState('');
     const [owner, setOwner] = useState('');
+    const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
 
 
@@ -65,15 +66,17 @@ const HouseDetail = (prop) => {
             render: (type) => {
               return type
             }
-        },
-        {
-            title: '距離(公尺)',
-            dataIndex: 'distance',
-            key: 'distance',
-            render: (distance) => {
-              return distance
-            }
-        },
+        }
+        //暫時註解,未來開放
+        // ,
+        // {
+        //     title: '距離(公尺)',
+        //     dataIndex: 'distance',
+        //     key: 'distance',
+        //     render: (distance) => {
+        //       return distance
+        //     }
+        // },
       ];
 
       const annexColumns = [
@@ -315,9 +318,35 @@ const HouseDetail = (prop) => {
             changePattern(data)
             setHost(data)
             changeRemark(data)
-            
+            changeAddressDetail(data)
         }
         
+    }
+
+    function changeAddressDetail(house){
+        const houseNumber = house.houseNumber
+        const floor = house.floor
+        const room = house.room
+        let value = ''
+        if(houseNumber.lane !== null){
+            value = value+houseNumber.lane+'巷'
+        }
+        if(houseNumber.alley !== null){
+            value = value+houseNumber.alley+'弄'
+        }
+        if(houseNumber.number1 !== null){
+            value = value+houseNumber.number1+'號'
+            if(houseNumber.number2 !== null){
+                value = value+'之'+houseNumber.number2
+            }
+        }
+        if(floor !== null){
+            value = value+floor+'樓'
+        }
+        if(room !== null){
+            value = value+room+'室'
+        }
+        setAddressDetail(value)
     }
 
     function changeRemark(house){
@@ -524,7 +553,11 @@ const HouseDetail = (prop) => {
                         'color':'#FF0000',
                         'fontSize':'20px'
                         }}>{`價格：${house.price}元 / 月`}</div>
-                        <div style={{'fontSize':'15px'}}>{`地址：${house.address}`}</div>
+                        {
+                            prop.isOwner?(
+                                <div style={{'fontSize':'15px'}}>{`地址：${house.address}${addressDetail}`}</div>
+                            ):<div style={{'fontSize':'15px'}}>{`地址：${house.address}`}</div>
+                        }
                         <div style={{'fontSize':'15px'}}>{`格局：${pattern}`}</div>  
                         <div style={{'fontSize':'15px'}}>{`空間：${house.ping} 坪`}</div> 
                         <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
