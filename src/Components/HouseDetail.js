@@ -37,6 +37,7 @@ const HouseDetail = (prop) => {
     const [owner, setOwner] = useState('');
     const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
+    const [hostGender, setHostGender] = useState('');
 
 
 
@@ -260,9 +261,13 @@ const HouseDetail = (prop) => {
             let data = `${house.config.room} 房 ${house.config.livingRoom} 廳`
             if(house.config.bathroom){
                 data = data + ` ${house.config.bathroom} 衛`
+            }else{
+                data = data + ` 0 衛`
             }
             if(house.config.balcony){
                 data = data + ` ${house.config.balcony} 陽台`
+            }else{
+                data = data + ` 0 陽台`
             }
             setPattern(data)
         }
@@ -319,6 +324,13 @@ const HouseDetail = (prop) => {
             setHost(data)
             changeRemark(data)
             changeAddressDetail(data)
+            let hostGender = ''
+            if(data.hostGender === false){
+                hostGender = hostGender + ' 小姐'
+             }else{
+                hostGender = hostGender + ' 先生'
+            }
+            setHostGender(hostGender)
         }
         
     }
@@ -563,12 +575,23 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
                         <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
+                        {
+                            prop.isOwner?(
+                                <div style={{'fontSize':'15px'}}>{`屋主：${house.hostName} ${hostGender}`}</div>
+                            ):null   
+                        }
+                        {
+                            prop.isOwner?(
+                                <div style={{'fontSize':'15px'}}>{`屋主電話：${house.hostPhone}`}</div>
+                            ):null   
+                        }
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         {
                             prop.isOwner?(
                                 <div style={{'fontSize':'10px',width: '200px'}}>{`備註：${remark}`}</div>
                             ):null   
                         }
+                        
                         <br/>
                         <div>
                             <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>

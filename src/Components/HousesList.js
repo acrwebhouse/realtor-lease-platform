@@ -249,19 +249,22 @@ const HousesList = (props) => {
                     }
                 }
                 if(items[i].traffic && items[i].traffic.length >0 ){
-                    item.content.push(`交通 : 距${items[i].traffic[0].name} ${items[i].traffic[0].distance} 公尺`)
+                    // item.content.push(`交通 : 距${items[i].traffic[0].name} ${items[i].traffic[0].distance} 公尺`)
+                    item.content.push(`交通 : 近 ${items[i].traffic[0].name}`)
                 }else{
                     item.content.push(`交通 : 無設施`);
                 }
 
                 if(items[i].life && items[i].life.length >0){
-                    item.content.push(`生活 : 距${items[i].life[0].name} ${items[i].life[0].distance} 公尺`)
+                    // item.content.push(`生活 : 距${items[i].life[0].name} ${items[i].life[0].distance} 公尺`)
+                    item.content.push(`生活 : 近 ${items[i].life[0].name}`)
                 }else{
                     item.content.push(`生活 : 無設施`);
                 }
 
                 if(items[i].educate && items[i].educate.length >0){
-                    item.content.push(`教育 : 距${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
+                    // item.content.push(`教育 : 距${items[i].educate[0].name} ${items[i].educate[0].distance} 公尺`)
+                    item.content.push(`教育 : 近 ${items[i].educate[0].name}`)
                 }else{
                     item.content.push(`教育 : 無設施`);
                 }
