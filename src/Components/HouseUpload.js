@@ -74,6 +74,7 @@ const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'ima
 const annexType = ['application/pdf']
 const PicTemp = []
 const AnnexTemp = []
+const hostGenderArr=['小姐', '先生']
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -85,6 +86,26 @@ const getBase64 = (file) =>
         reader.onerror = (error) => reject(error);
     });
 
+const convertString = (word) =>{
+    switch(word.toLowerCase().trim()){
+        case "yes": case "true": case "1": return true;
+        case "no": case "false": case "0": case null: return false;
+        default: return Boolean(word);
+    }
+}
+
+const PhonePrefixSelector = (
+    <Form.Item name="PhonePrefix" noStyle>
+        <Select style={{
+            width: 90,
+        }}
+                defaultValue="886"
+                disabled
+        >
+            <Option value="886">+886</Option>
+        </Select>
+    </Form.Item>
+);
 
 const HouseUpload = (prop) => {
     const xToken = cookie.load('x-token')
@@ -405,10 +426,13 @@ const HouseUpload = (prop) => {
                 'floor' : parseInt(values['floor']),
                 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
                 'price' : parseInt(values['lease-price']),
+                'hostName': values['hostName'],
+                'hostGender': convertString(String(hostGenderArr.indexOf(values['hostGender']))),
+                'hostPhone': '886' + values['hostPhone'],
                 'config' : {
                     'room' : parseInt(values['room']),
-                    'livingRoom' : values['livingRoom']?parseInt(values['livingRoom']) : 0,
-                    'balcony' : values['balcony']?parseInt(values['balcony']) : 0,
+                    'livingRoom' : (typeof(values['livingRoom']) === 'number') ? parseInt(values['livingRoom']) : 0,
+                    'balcony' : (typeof(values['balcony']) === 'number') ? parseInt(values['balcony']) : 0,
                     'bathroom' : parseInt(values['bathroom']),
                     "buildingType" : buildingType.indexOf(values['TypeOfBuild']) + 1
                 },
@@ -433,42 +457,49 @@ const HouseUpload = (prop) => {
                 'remark' : values['remark']
             }
         )
-        if (showPic.length+PictureList.length < 1) {
-            message.warning({
-                content: '照片至少上傳一張',
-                style: {
-                    fontSize: '40px',
-                    marginTop: '20vh',
-                },
-                duration: 2,
-            }).then()
-        }else {
-            if(!PicUploadCheck && !prop.defaultValue) {
+        if(('886'+values['hostPhone']).length == 12 || ('886'+values['hostPhone']).length == 10 ) {
+            // setIsSubmitModalVisible(false)
+            if (showPic.length+PictureList.length < 1) {
                 message.warning({
-                    content: '請記得按下提交照片',
+                    content: '照片至少上傳一張',
                     style: {
                         fontSize: '40px',
                         marginTop: '20vh',
                     },
                     duration: 2,
                 }).then()
-            } else {
-                setIsRunPost(true)
+            }else {
+                if(!PicUploadCheck && !prop.defaultValue) {
+                    message.warning({
+                        content: '請記得按下提交照片',
+                        style: {
+                            fontSize: '40px',
+                            marginTop: '20vh',
+                        },
+                        duration: 2,
+                    }).then()
+                } else {
+                    setIsRunPost(true)
 
-                if (!prop.defaultValue) {
-                    setAnnexEnable(false)
-                    setFormDataEnable(false)
-                    setPictureList([])
-                    form_photo.resetFields()
-                    setAnnexList([])
-                    form_annex.resetFields()
-                    form.resetFields()
-                    setExtraRequire([])
-                    setShowHideManageFee(false)
-                    setShowHideGarbageFee(false)
+                    if (!prop.defaultValue) {
+                        setAnnexEnable(false)
+                        setFormDataEnable(false)
+                        setPictureList([])
+                        form_photo.resetFields()
+                        setAnnexList([])
+                        form_annex.resetFields()
+                        form.resetFields()
+                        setExtraRequire([])
+                        setShowHideManageFee(false)
+                        setShowHideGarbageFee(false)
+                    }
                 }
             }
+
+        } else {
+            errorPhoneFormat();
         }
+
         console.log(TrafficArr);
         // console.log(photoData)
 
@@ -493,6 +524,11 @@ const HouseUpload = (prop) => {
     //         </Select>
     //     </Form.Item>
     // );
+
+    const errorPhoneFormat = () => {
+        message.loading('loading...', 0.5)
+            .then(() => message.error('請輸入正確的市話或手機號格式與長度(不需要打0)', 3));
+    }
 
     const changeCity = (City) => {
 
@@ -1209,6 +1245,81 @@ const HouseUpload = (prop) => {
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
                         </Col>
+                        <Col  xs={21} sm={15} md={15} lg={12} xl={9}>
+                            <Form.Item
+                                name="hostName"
+                                label="屋主"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: '欄位不能空白',
+                                    },
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input size="large"
+                                       placeholder="填屋主的姓氏或名字"
+                                       style={{
+                                           width: '100%',
+                                       }}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={3} sm={3} md={3} lg={3} xl={3}>
+                            <Form.Item name="hostGender"
+                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                       style={{ width: '100%' }}
+                                       rules={[
+                                           {
+                                               required: false,
+                                               message: '此欄位不能為空白',
+                                           },
+                                       ]}
+                            >
+                                <Select size="large"
+                                        id="area"
+                                    // value={selectArea}
+                                        allowClear
+                                        placeholder="性別"
+                                        options={[{ value: '先生'},{ value: '小姐'}]}
+                                    // onChange={changeArea}
+                                        style={{
+                                            width: '100%',
+                                        }}>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                name="hostPhone"
+                                label="屋主電話"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: '手機號碼欄位不能空白',
+                                    },
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                <Input  addonBefore={PhonePrefixSelector}
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        size="large"
+                                        placeholder='市話或手機'
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
 
                                 <Row>
@@ -1478,7 +1589,7 @@ const HouseUpload = (prop) => {
                                         {TrafficArr.length ? (
                                                 <>
                                                     <List
-                                                        style={{fontSize: '80%'}}
+                                                        style={{fontSize: '120%'}}
                                                         dataSource={TrafficArr}
                                                         renderItem={(traffic, index) => (
                                                             <List.Item actions={[
@@ -1491,10 +1602,14 @@ const HouseUpload = (prop) => {
 
                                                                 </Button>]}>
                                                                 {index+1}.名稱：{traffic.name.length>4 ?
+                                                                // <abbr title={traffic.name}>{traffic.name.substring(0, 3) + '...' + traffic.name.substring(traffic.name.length - 2)}</abbr>
+                                                                // :
+                                                                // traffic.name}
+                                                                // ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
                                                                 <abbr title={traffic.name}>{traffic.name.substring(0, 3) + '...' + traffic.name.substring(traffic.name.length - 2)}</abbr>
                                                                 :
                                                                 traffic.name}
-                                                                ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
+                                                                ， 類型：{Traffic_Type[traffic.type-1]}
                                                             </List.Item>
                                                         )}
                                                     />
@@ -1579,26 +1694,26 @@ const HouseUpload = (prop) => {
                                             >
                                                 <Input size="large" placeholder="" style={{width: '100%'}}/>
                                             </Form.Item>
-                                            <Form.Item
-                                                // name="TrafficDistance"
-                                                name="distance"
-                                                label="距離："
-                                                tooltip='限制距離在1000公尺內'
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            >
-                                                <InputNumber placeholder=""
-                                                             style={{width: '100%'}}
-                                                             min={0}
-                                                             max={1000}
-                                                             size="large"
-                                                    // formatter={value => `${value} 公尺`}
-                                                             addonAfter="公尺"
-                                                />
-                                            </Form.Item>
+                                            {/*<Form.Item*/}
+                                            {/*    // name="TrafficDistance"*/}
+                                            {/*    name="distance"*/}
+                                            {/*    label="距離："*/}
+                                            {/*    tooltip='限制距離在1000公尺內'*/}
+                                            {/*    rules={[*/}
+                                            {/*        {*/}
+                                            {/*            required: true,*/}
+                                            {/*        },*/}
+                                            {/*    ]}*/}
+                                            {/*>*/}
+                                            {/*    <InputNumber placeholder=""*/}
+                                            {/*                 style={{width: '100%'}}*/}
+                                            {/*                 min={0}*/}
+                                            {/*                 max={1000}*/}
+                                            {/*                 size="large"*/}
+                                            {/*        // formatter={value => `${value} 公尺`}*/}
+                                            {/*                 addonAfter="公尺"*/}
+                                            {/*    />*/}
+                                            {/*</Form.Item>*/}
                                             <Form.Item
                                                 // name="TrafficType"
                                                 name="type"
@@ -1642,7 +1757,7 @@ const HouseUpload = (prop) => {
                                             {LifeArr.length ? (
                                                     <>
                                                         <List
-                                                            style={{fontSize: '80%'}}
+                                                            style={{fontSize: '120%'}}
                                                             dataSource={LifeArr}
                                                             renderItem={(life, index) => (
                                                                 <List.Item actions={[
@@ -1655,10 +1770,14 @@ const HouseUpload = (prop) => {
 
                                                                     </Button>]}>
                                                                     {index+1}.名稱：{life.name.length>4 ?
+                                                                    // <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
+                                                                    // :
+                                                                    // life.name}
+                                                                    // ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
                                                                     <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
                                                                     :
                                                                     life.name}
-                                                                    ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
+                                                                    ，類型：{Life_Type[life.type-1]}
                                                                 </List.Item>
                                                             )}
                                                         />
@@ -1722,26 +1841,26 @@ const HouseUpload = (prop) => {
                                             >
                                                 <Input size="large" placeholder="" style={{width: '100%'}}/>
                                             </Form.Item>
-                                            <Form.Item
-                                                // name="LifeDistance"
-                                                name="distance"
-                                                label="距離："
-                                                tooltip='限制距離在1000公尺內'
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            >
-                                                <InputNumber placeholder=""
-                                                             style={{width: '100%'}}
-                                                             min={0}
-                                                             max={1000}
-                                                             size="large"
-                                                    // formatter={value => `${value} 公尺`}
-                                                             addonAfter="公尺"
-                                                />
-                                            </Form.Item>
+                                            {/*<Form.Item*/}
+                                            {/*    // name="LifeDistance"*/}
+                                            {/*    name="distance"*/}
+                                            {/*    label="距離："*/}
+                                            {/*    tooltip='限制距離在1000公尺內'*/}
+                                            {/*    rules={[*/}
+                                            {/*        {*/}
+                                            {/*            required: true,*/}
+                                            {/*        },*/}
+                                            {/*    ]}*/}
+                                            {/*>*/}
+                                            {/*    <InputNumber placeholder=""*/}
+                                            {/*                 style={{width: '100%'}}*/}
+                                            {/*                 min={0}*/}
+                                            {/*                 max={1000}*/}
+                                            {/*                 size="large"*/}
+                                            {/*        // formatter={value => `${value} 公尺`}*/}
+                                            {/*                 addonAfter="公尺"*/}
+                                            {/*    />*/}
+                                            {/*</Form.Item>*/}
                                             <Form.Item
                                                 // name="LifeType"
                                                 name="type"
@@ -1786,7 +1905,7 @@ const HouseUpload = (prop) => {
                                             {EducationArr.length ? (
                                                 <>
                                                     <List
-                                                        style={{fontSize: '80%'}}
+                                                        style={{fontSize: '120%'}}
                                                         dataSource={EducationArr}
                                                         renderItem={(education, index) => (
                                                             <List.Item actions={[
@@ -1799,10 +1918,14 @@ const HouseUpload = (prop) => {
 
                                                                 </Button>]}>
                                                                 {index+1}.名稱：{education.name.length>4 ?
+                                                                // <abbr title={education.name}>{education.name.substring(0, 3) + '...' + education.name.substring(education.name.length - 2)}</abbr>
+                                                                // :
+                                                                // education.name}
+                                                                // ， 距離：{education.distance} 公尺 ， 類型：{Edu_Type[education.type-1]}
                                                                 <abbr title={education.name}>{education.name.substring(0, 3) + '...' + education.name.substring(education.name.length - 2)}</abbr>
                                                                 :
                                                                 education.name}
-                                                                ， 距離：{education.distance} 公尺 ， 類型：{Edu_Type[education.type-1]}
+                                                                ， 類型：{Edu_Type[education.type-1]}
                                                             </List.Item>
                                                         )}
                                                     />
@@ -1866,26 +1989,26 @@ const HouseUpload = (prop) => {
                                             >
                                                 <Input size="large" placeholder="" style={{width: '100%'}}/>
                                             </Form.Item>
-                                            <Form.Item
-                                                // name="EduDistance"
-                                                name="distance"
-                                                label="距離："
-                                                tooltip='限制距離在1000公尺內'
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                    },
-                                                ]}
-                                            >
-                                                <InputNumber placeholder=""
-                                                             style={{width: '100%'}}
-                                                             min={0}
-                                                             max={1000}
-                                                             size="large"
-                                                    // formatter={value => `${value} 公尺`}
-                                                             addonAfter="公尺"
-                                                />
-                                            </Form.Item>
+                                            {/*<Form.Item*/}
+                                            {/*    // name="EduDistance"*/}
+                                            {/*    name="distance"*/}
+                                            {/*    label="距離："*/}
+                                            {/*    tooltip='限制距離在1000公尺內'*/}
+                                            {/*    rules={[*/}
+                                            {/*        {*/}
+                                            {/*            required: true,*/}
+                                            {/*        },*/}
+                                            {/*    ]}*/}
+                                            {/*>*/}
+                                            {/*    <InputNumber placeholder=""*/}
+                                            {/*                 style={{width: '100%'}}*/}
+                                            {/*                 min={0}*/}
+                                            {/*                 max={1000}*/}
+                                            {/*                 size="large"*/}
+                                            {/*        // formatter={value => `${value} 公尺`}*/}
+                                            {/*                 addonAfter="公尺"*/}
+                                            {/*    />*/}
+                                            {/*</Form.Item>*/}
                                             <Form.Item
                                                 // name="EduType"
                                                 name="type"

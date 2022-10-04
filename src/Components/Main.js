@@ -204,7 +204,7 @@ const Main = () => {
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
-        matchNeedMenu.style.display = 'flex'
+        // matchNeedMenu.style.display = 'flex'
         relativeLinkMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
@@ -244,7 +244,7 @@ const Main = () => {
         logoutMenu.style.display = 'none'
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
-        matchNeedMenu.style.display = 'flex'
+        // matchNeedMenu.style.display = 'flex'
 
         for(let i =0;i<roles.length;i++){
             if(roles[i]===1){
@@ -327,25 +327,25 @@ const Main = () => {
           <Menu.Item key='5' id="memberInfoMenu" style={{'height':'50px','display':'none'}} icon={<UserOutlined />} onClick={memberInfo}>
             會員中心
           </Menu.Item>
-          <Menu.Item key='10' id="matchNeedMenu" style={{'height':'50px','display':'flex'}} icon={<HeartOutlined />} onClick={matchNeed}>
-            媒合系統
-          </Menu.Item>
+          {/*<Menu.Item key='10' id="matchNeedMenu" style={{'height':'50px','display':'flex'}} icon={<HeartOutlined />} onClick={matchNeed}>*/}
+          {/*  媒合系統*/}
+          {/*</Menu.Item>*/}
           <Menu.Item key='9' id="collectMenu" style={{'height':'50px','display':'none'}} icon={<MonitorOutlined />} onClick={collect}>
           資料採集
           </Menu.Item>
-          <Menu.SubMenu
-                id="relativeLinkMenu"
-                key='11'
-                title={"更多"}
-                icon={<InfoCircleOutlined />}
-          >
-              <Menu.Item key='12' id="relativeLinkContent" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
-                    相關連結
-              </Menu.Item>
-          </Menu.SubMenu>
+          {/*<Menu.SubMenu*/}
+          {/*      id="relativeLinkMenu"*/}
+          {/*      key='11'*/}
+          {/*      title={"更多"}*/}
+          {/*      icon={<InfoCircleOutlined />}*/}
+          {/*>*/}
+          {/*    <Menu.Item key='12' id="relativeLinkContent" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>*/}
+          {/*          相關連結*/}
+          {/*    </Menu.Item>*/}
+          {/*</Menu.SubMenu>*/}
           {/* <Menu.Item key='12' id="relativeLinkMenu" onClick={relativeLink} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
                     相關連結
-              </Menu.Item> */}
+              </Menu.Item> */} {/*no use*/}
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
             聯絡客服
           </Menu.Item>
