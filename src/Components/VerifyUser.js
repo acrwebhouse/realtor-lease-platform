@@ -4,6 +4,7 @@ import cookie from 'react-cookies'
 import {LoginRegisterAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
+import {config} from '../Setting/config'
 
 // console.log(typeof(window.location.href))
 const SighUp_Auth = "/auth/verifyUser"
@@ -16,7 +17,7 @@ const VerifyUser = (props) => {
 
     const backToInitPage = () => {
         setTimeout(() => {
-            window.location.replace("https://matchrentdev.com")
+            window.location.replace(config.mainPage)
         }, 1000)
     }
 
