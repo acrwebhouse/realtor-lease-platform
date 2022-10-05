@@ -1,11 +1,11 @@
 
 
 const config = {
-    'base_URL_Auth' : 'https://matchrentdev.com/auth-service',
-    'base_URL_User' : 'https://matchrentdev.com/user-service',
-    'base_URL_House' : 'https://matchrentdev.com/house-service',
-    'base_URL_Collect' : 'https://matchrentdev.com/collect-service',
-    'contactPhone' : '0909123456',
+    'base_URL_Auth' : 'https://matchrenthouse.com/auth-service',
+    'base_URL_User' : 'https://matchrenthouse.com/user-service',
+    'base_URL_House' : 'https://matchrenthouse.com/house-service',
+    'base_URL_Collect' : 'https://matchrenthouse.com/collect-service',
+    'contactPhone' : '0912951085',
     'contactMail' : 'acr.webhouse@gmail.com',
     'GoogleMapKey' : 'AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE',
 }
