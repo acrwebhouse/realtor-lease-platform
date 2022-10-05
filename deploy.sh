@@ -5,6 +5,6 @@ mkdir code
 cd code
 git clone https://github.com/acrwebhouse/realtor-lease-platform.git
 cd realtor-lease-platform
-git checkout -b develop origin/develop
+git checkout -b alpha origin/alpha
 sudo docker build . -t acrwebdev/realtor-lease-platform
 sudo docker run -p 8080:3000 --restart=always --name=realtor-lease-platform -d acrwebdev/realtor-lease-platform
