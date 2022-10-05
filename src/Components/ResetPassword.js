@@ -13,6 +13,7 @@ import {UserAxios} from './axiosApi'
 // import moment from 'moment';
 import Captcha from "demos-react-captcha";
 import cookie from "react-cookies";
+import {config} from '../Setting/config'
 
 const userData_Auth = '/user/getPersonalInfo'
 const editUser_Auth = 'user/editUser'
@@ -112,7 +113,7 @@ const ResetPassword = (props) => {
 
     const backToInitPage = () => {
         setTimeout(() => {
-            window.location.replace("https://matchrentdev.com")
+            window.location.replace(config.mainPage)
         }, 1000)
     }
 
