@@ -196,7 +196,6 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
-        const relativeLinkMenu = document.getElementById('relativeLinkMenu')
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
@@ -205,12 +204,12 @@ const Main = () => {
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
         // matchNeedMenu.style.display = 'flex'
-        relativeLinkMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
             setSelectMenu(['1'])
             setIsShowHousesList(true)
         }
+        console.log('====remove(x-token)=====')
         cookie.remove('x-token')
     }
 
