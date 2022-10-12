@@ -1003,6 +1003,9 @@ const HouseUpload = (prop) => {
                             "alley" : prop.defaultValue?prop.defaultValue.houseNumber.alley:[],
                             "NO1" : prop.defaultValue?prop.defaultValue.houseNumber.number1:[],
                             "NO2" : prop.defaultValue?prop.defaultValue.houseNumber.number2:[],
+                            "hostName": prop.defaultValue?prop.defaultValue.hostName:[],
+                            "hostGender" :prop.defaultValue?prop.defaultValue.hostGender ? '先生' : '小姐':[],
+                            "hostPhone": prop.defaultValue?prop.defaultValue.hostPhone.substring(3):[],
                             "floor" : prop.defaultValue?prop.defaultValue.floor : [],
                             "room-number" : prop.defaultValue?prop.defaultValue.room : [],
                             "room" : prop.defaultValue?prop.defaultValue.config.room : [],
@@ -1222,7 +1225,7 @@ const HouseUpload = (prop) => {
                                             <Input size="large"
                                                 placeholder=""
                                                 style={{width: '100%'}}
-                                                suffix='號之'
+                                                suffix='號'
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1231,9 +1234,10 @@ const HouseUpload = (prop) => {
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
-                                            <Input size="large"
-                                                placeholder="非必填"
-                                                style={{width: '100%'}}
+                                            <Input  size="large"
+                                                    placeholder="   非必填"
+                                                    style={{width: '100%'}}
+                                                    prefix='之'
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1245,48 +1249,46 @@ const HouseUpload = (prop) => {
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
                         </Col>
-                        <Col  xs={21} sm={15} md={15} lg={12} xl={9}>
-                            <Form.Item
-                                name="hostName"
-                                label="屋主"
-                                rules={[
-                                    {
-                                        required: false,
-                                        message: '欄位不能空白',
-                                    },
-                                ]}
-                                style={{ width: '100%' }}
-                            >
-                                <Input size="large"
-                                       placeholder="填屋主的姓氏或名字"
-                                       style={{
-                                           width: '100%',
-                                       }}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={3} sm={3} md={3} lg={3} xl={3}>
-                            <Form.Item name="hostGender"
-                                // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
-                                       style={{ width: '100%' }}
-                                       rules={[
-                                           {
-                                               required: false,
-                                               message: '此欄位不能為空白',
-                                           },
-                                       ]}
-                            >
-                                <Select size="large"
-                                        id="area"
-                                    // value={selectArea}
-                                        allowClear
-                                        placeholder="性別"
-                                        options={[{ value: '先生'},{ value: '小姐'}]}
-                                    // onChange={changeArea}
-                                        style={{
-                                            width: '100%',
-                                        }}>
-                                </Select>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item label="屋主">
+                                <Row>
+                                    <Col  xs={18} sm={19} md={19} lg={20} xl={21}>
+                                        <Form.Item name="hostName"
+                                                       style={{width: '100%'}}
+                                        >
+                                            <Input size="large"
+                                                       placeholder="填屋主的姓氏或名字"
+                                                       style={{
+                                                           width: '100%',
+                                                       }}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={6} sm={5} md={5} lg={4} xl={3}>
+                                        <Form.Item name="hostGender"
+                                            // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   style={{width: '100%'}}
+                                                   rules={[
+                                                       {
+                                                           required: false,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                   ]}
+                                        >
+                                            <Select size="large"
+                                                    id="area"
+                                                // value={selectArea}
+                                                    allowClear
+                                                    placeholder="性別"
+                                                    options={[{ value: '先生'},{ value: '小姐'}]}
+                                                // onChange={changeArea}
+                                                    style={{
+                                                        width: '100%',
+                                                    }}>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
                             </Form.Item>
                         </Col>
                     </Row>
