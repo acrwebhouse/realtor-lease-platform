@@ -337,27 +337,20 @@ const HouseDetail = (prop) => {
 
     function changeAddressDetail(house){
         const houseNumber = house.houseNumber
-        const floor = house.floor
-        const room = house.room
         let value = ''
-        if(houseNumber.lane !== null){
+        if(houseNumber.lane !== null && houseNumber.lane !== ''&& houseNumber.lane !==undefined){
             value = value+houseNumber.lane+'巷'
         }
-        if(houseNumber.alley !== null){
+        if(houseNumber.alley !== null && houseNumber.alley !== ''&& houseNumber.alley !==undefined){
             value = value+houseNumber.alley+'弄'
         }
-        if(houseNumber.number1 !== null){
+        if(houseNumber.number1 !== null && houseNumber.number1 !== ''&& houseNumber.number1 !==undefined){
             value = value+houseNumber.number1+'號'
-            if(houseNumber.number2 !== null){
+            if(houseNumber.number2 !== null && houseNumber.number2 !== ''&& houseNumber.number2 !==undefined){
                 value = value+'之'+houseNumber.number2
             }
         }
-        if(floor !== null){
-            value = value+floor+'樓'
-        }
-        if(room !== null){
-            value = value+room+'室'
-        }
+
         setAddressDetail(value)
     }
 
@@ -575,6 +568,11 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
                         <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
+                        {
+                            prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
+                                <div style={{'fontSize':'15px'}}>{`房間${house.room} ${hostGender}`}</div>
+                            ):null   
+                        }
                         {
                             prop.isOwner?(
                                 <div style={{'fontSize':'15px'}}>{`屋主：${house.hostName} ${hostGender}`}</div>

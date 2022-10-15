@@ -47,7 +47,7 @@ const defaultRank = 0;
 const defaultHouseIds = []
 const defaultRegisterData = {}
 
-const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3, 4}[0-9]{6}[\u4e00-\u9fa5]/
+const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3,4}[0-9]{6}[\u4e00-\u9fa5]/
 const AccountPattern = /^.[A-Za-z0-9]+$/
 
 const convertString = (word) =>{
@@ -63,7 +63,6 @@ const SendVerifyUser_Auth = "/auth/sendVerifyUserMailByMail"
 
 const Register = (props) => {
     const { setIsRegisterModalVisible, initReset, setIsReset } = props
-    // console.log(initReset)
     const [form] = Form.useForm();
 
     const [roleCheck, setRoleCheck] = useState(defaultRole);

@@ -11,6 +11,7 @@ const houseListUrl = 'house/getHouse'
 
 const defaultMapSource = "https://www.google.com/maps/embed/v1/place?key=" +config.GoogleMapKey + "&q="
 console.log(defaultMapSource)
+const aa= 'https://www.google.com/maps/embed/v1/place?key=AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE&q=25.037525,121.5637819999995'
 
 const GoogleMapHouse = (props) => {
     const { id } = useParams();
@@ -30,8 +31,6 @@ const GoogleMapHouse = (props) => {
             })
             .catch( (error) => message.error(error, 3))
     }
-
-
 
     const resolveHouse = (response) => {
         if(response.data.status){
@@ -60,12 +59,12 @@ const GoogleMapHouse = (props) => {
             } else {
                 houseExtraData = house.address+ house.houseNumber.number1+'號'
             }
-            setMapSource(defaultMapSource+house.address+houseExtraData)
+            setMapSource(defaultMapSource+houseExtraData)
             console.log(MapSource)
+            console.log(house.address)
+            console.log(houseExtraData)
         }
     }, [init, house])
-
-
 
     return (
             <iframe
