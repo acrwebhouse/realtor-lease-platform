@@ -63,7 +63,6 @@ const SendVerifyUser_Auth = "/auth/sendVerifyUserMailByMail"
 
 const Register = (props) => {
     const { setIsRegisterModalVisible, initReset, setIsReset } = props
-    // console.log(initReset)
     const [form] = Form.useForm();
 
     const [roleCheck, setRoleCheck] = useState(defaultRole);
