@@ -42,7 +42,7 @@ ReactDOM.render(
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/verifyUser" element={<VerifyUser/>}/>
           <Route path="/link" element={<Link/>}/>
-          <Route path="/ReserveHouseDetail" element={<ReserveHouseDetail/>}/>
+          <Route path="/ReserveHouseDetail/:id" element={<ReserveHouseDetail/>}/>
           <Route path="/ReserveHouseList" element={<ReserveHouseList/>}/>
       </Routes>
 

@@ -4,13 +4,15 @@ import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
-
+import {
+    useParams
+  } from "react-router-dom";
 
 const ReserveHouseDetail = (props) => {
-
+    let { id } = useParams();
     return (
         <div>
-            
+            {id}
             ReserveHouseDetail page
             
         </div>
