@@ -32,6 +32,14 @@ import Collect from "./Collect";
 import MatchNeed from "./MatchNeed";
 import Link from "./Link";
 
+import CompanyApply from "./CompanyApply";
+import CompanyApplyList from "./CompanyApplyList";
+import CompanyEmployeeInfo from "./CompanyEmployeeInfo";
+import CompanyHouseDetail from "./CompanyHouseDetail";
+import CompanyHouseList from "./CompanyHouseList";
+import CompanyInfo from "./CompanyInfo";
+import CompanyMyHouseList from "./CompanyMyHouseList";
+
 const collectAccessTimeUrl = 'collect/accessTime'
 
 const Main = () => {
@@ -48,6 +56,15 @@ const Main = () => {
     const [isShowCollect, setIsShowCollect] = useState(false);
     const [isShowMatchNeed, setIsShowMatchNeed] = useState(false);
     const [isShowRelativeLink, setIsShowRelativeLink] = useState(false);
+
+    const [isShowCompanyApply, setIsShowCompanyApply] = useState(false);
+    const [isShowCompanyApplyList, setIsShowCompanyApplyList] = useState(false);
+    const [isShowCompanyEmployeeInfo, setIsShowCompanyEmployeeInfo] = useState(false);
+    const [isShowCompanyHouseDetail, setIsShowCompanyHouseDetail] = useState(false);
+    const [isShowCompanyHouseList, setIsShowCompanyHouseList] = useState(false);
+    const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
+    const [isShowCompanyMyHouseList, setIsShowCompanyMyHouseList] = useState(false);
+
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
