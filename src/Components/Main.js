@@ -99,14 +99,14 @@ const Main = () => {
         <Icon component={companyEnterpriseSvg} {...props} />
     );
     
-    const personProfileSvg  = () => (
-        <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 122.88 122.88">
-          <path d="M61.44,0A61.46,61.46,0,1,1,18,18,61.21,61.21,0,0,1,61.44,0ZM23,97.79c3.29-1.71,7.16-2.13,11-2.54,6.89-.75,13.78-1.49,16.38-11.47a.58.58,0,0,1,.06-.17c-3.17-2.73-5.8-5.09-6.31-10.68h-.29a4,4,0,0,1-1.91-.5,5.25,5.25,0,0,1-2.1-2.55A11.62,11.62,0,0,1,39,66v0c0-.41,0-1.19,0-1.93s0-1.29.1-1.64a1.58,1.58,0,0,1,.09-.31c.68-1.89,1.72-2.51,3.1-2.47l-.91-.6c-.49-6.14,1-16.78-5.72-18.8,12.61-15.58,27.14-24,38.06-10.19,13.14.69,18.42,21.58,7.93,30.37l-.06.52a6,6,0,0,1,1.22-.24,3.85,3.85,0,0,1,2.14.41,3,3,0,0,1,1.49,1.81,5.55,5.55,0,0,1-.07,3.12c-.48,1.51-1.09,3.25-1.66,4.72a3.37,3.37,0,0,1-1,1.64,3.07,3.07,0,0,1-2.22.54l-.46,0c-.1,5.19-2.64,7.57-6,10.69l-.51.48c3,8.41,9.17,9.45,15.34,10.49,3.62.6,7.23,1.21,10.31,3A52.94,52.94,0,1,0,23,97.79Z" />
+    const propertySvg  = () => (
+        <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 122.88 115.52">
+          <path d="M119.2,111.86V3.66H57.86V41l-3.65-2.9V2.68A2.89,2.89,0,0,1,55.05.87h0A2.92,2.92,0,0,1,57.13,0h62.8A2.92,2.92,0,0,1,122,.86l.13.14a2.9,2.9,0,0,1,.74,1.94V31.15h0v80.71H104V87.1a1.67,1.67,0,0,0-1.67-1.67H90.44v30.09h32.44v-3.66ZM7.74,115.51V79.74a6.18,6.18,0,0,1-4.27.2A5.08,5.08,0,0,1,1.12,78.3,5.2,5.2,0,0,1,0,75.64a6.72,6.72,0,0,1,1.61-5h0a1.67,1.67,0,0,1,.23-.23l38.38-30a1.38,1.38,0,0,1,1.81-.07l38.47,29.9h0l.17.15a6.34,6.34,0,0,1,1.79,5.84,5.39,5.39,0,0,1-3.4,3.82,5.9,5.9,0,0,1-4.57-.3v35.59H70.77V78.18c0-.68-26.39-21.54-29.3-23.81-3.09,2.35-30,23-30,23.91v37.24ZM41.33,79.2A14.75,14.75,0,0,1,56,93.89v15.65H26.64V93.89A14.73,14.73,0,0,1,41.33,79.2Zm1.27,2.62V93.93H53.46v0A12.17,12.17,0,0,0,42.6,81.82Zm0,14.66V107H53.46V96.48ZM40.05,107V96.48H29.2V107Zm0-13.06V81.82A12.18,12.18,0,0,0,29.2,93.89v0ZM23.94,112.32H58.71v2.55H23.94v-2.55ZM66.68,12.87h9.85a.29.29,0,0,1,.28.28v11.4a.28.28,0,0,1-.28.27H66.68a.27.27,0,0,1-.28-.27V13.15a.28.28,0,0,1,.28-.28Zm33.86,0h9.85a.29.29,0,0,1,.28.28v11.4a.28.28,0,0,1-.28.27h-9.85a.28.28,0,0,1-.28-.27V13.15a.29.29,0,0,1,.28-.28Zm-16.93,0h9.85a.29.29,0,0,1,.28.28v11.4a.28.28,0,0,1-.28.27H83.61a.27.27,0,0,1-.28-.27V13.15a.28.28,0,0,1,.28-.28ZM66.68,35.76h9.85a.28.28,0,0,1,.28.27v11.4a.29.29,0,0,1-.28.28H66.68a.28.28,0,0,1-.28-.28V36a.27.27,0,0,1,.28-.27Zm33.86,0h9.85a.28.28,0,0,1,.28.27v11.4a.29.29,0,0,1-.28.28h-9.85a.29.29,0,0,1-.28-.28V36a.28.28,0,0,1,.28-.27Zm-16.93,0h9.85a.28.28,0,0,1,.28.27v11.4a.29.29,0,0,1-.28.28H83.61a.28.28,0,0,1-.28-.28V36a.27.27,0,0,1,.28-.27Zm16.93,22.88h9.85a.29.29,0,0,1,.28.28V70.31a.29.29,0,0,1-.28.28h-9.85a.29.29,0,0,1-.28-.28V58.92a.29.29,0,0,1,.28-.28Zm-16.93,0h9.85a.29.29,0,0,1,.28.28V70.31a.29.29,0,0,1-.28.28h-3V66.82l-7.11-5.64V58.92a.28.28,0,0,1,.28-.28Z" />
         </svg>
       );
     
-    const PersonProfileIcon = (props: Partial<CustomIconComponentProps>) => (
-        <Icon component={personProfileSvg} {...props} />
+    const PropertyIcon = (props: Partial<CustomIconComponentProps>) => (
+        <Icon component={propertySvg} {...props} />
     );
 
     function turnOffPage(){
@@ -462,15 +462,15 @@ const Main = () => {
               </Menu.Item> */} {/*no use*/}
 
           <Menu.Item key='13' id="companyApply" style={{'height':'50px'}} icon={<SearchCompanyIcon />} onClick={companyApply}>
-            公司申請
+            加入公司
           </Menu.Item>
           <Menu.SubMenu
                id="relativeLinkMenu"
                key='14'
                title={"公司"}
-               icon={<InfoCircleOutlined />} >
+               icon={<PropertyIcon />} >
               <Menu.Item key='18' id="companyInfo" onClick={companyInfo} style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
-                    公司資料
+                    公司簡介
               </Menu.Item>
               <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     租屋列表
@@ -481,10 +481,10 @@ const Main = () => {
               <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
                     審核申請
               </Menu.Item>
-              <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<LinkOutlined />}>
+              <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
                     員工列表
               </Menu.Item>
-              <Menu.Item key='16' id="companyEmployeeInfo" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<PersonProfileIcon />}>
+              <Menu.Item key='16' id="companyEmployeeInfo" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>
                     員工中心
               </Menu.Item>
               
