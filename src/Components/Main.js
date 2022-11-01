@@ -111,7 +111,7 @@ const Main = () => {
         <Icon component={propertySvg} {...props} />
     );
     
-    const getPersonalInfo = (xToken) => {
+    const changeUserMenu = (xToken) => {
         const userListUrl = 'user/getPersonalInfo'
         let reqUrl = `${userListUrl}`
         UserAxios.get(
@@ -127,9 +127,54 @@ const Main = () => {
                 response.data.data.bornDate = ''
             }
             setUser(response.data.data)
-            console.log('===getPersonalInfo=====',response)
+            if(response.data.data !== undefined){
+                const roles = response.data.data.roles
+                const exeUser = response.data.data
+                const employeeData = getCurrentEmployeeData(exeUser)
+                changeRolesMenu(roles)
+                changeEmployeeMenu(employeeData)
+            }
+            
         })
         .catch( (error) => message.error(error, 3))
+    }
+
+    function changeEmployeeMenu(employee){
+        const relativeLinkMenu = document.getElementById('relativeLinkMenu');
+        const companyApplyMenu = document.getElementById('companyApplyMenu');
+        if(employee.state === 2 || employee.state === 4){
+            relativeLinkMenu.display = 'flex'
+            const companyInfo = document.getElementById('companyInfo');
+            const companyHouseList = document.getElementById('companyHouseList');
+            const companyMyHouseList = document.getElementById('companyMyHouseList');
+            const companyApplyList = document.getElementById('companyApplyList');
+            const companyEmployeesList = document.getElementById('companyEmployeesList');
+            const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
+            companyInfo.display = 'flex'
+            companyHouseList.display = 'flex'
+            companyMyHouseList.display = 'flex'
+            companyEmployeeInfo.display = 'flex'
+            if(employee.rank === 0){
+                companyApplyList.style.display = 'flex'
+                companyEmployeesList.style.display = 'flex'
+            }
+        }else{
+            companyApplyMenu.style.display = 'flex'
+        }
+    }
+
+    function getCurrentEmployeeData(user){
+        console.log('===getCurrentEmployeeData===',user)
+        const currentCompanyId = user.companyId
+        console.log('===currentCompanyId===',currentCompanyId)
+        let result = {}
+        for(let i = 0 ;i<user.employeesData.length; i++){
+            if(user.employeesData[i].companyId === currentCompanyId){
+                result = user.employeesData[i]
+                i = user.employeesData.length
+            }
+        }
+        return result
     }
 
     function turnOffPage(){
@@ -200,10 +245,10 @@ const Main = () => {
             if(xToken!== null && xToken!== undefined){
                 const decodedToken = jwt_decode(xToken);
                 console.log(decodedToken)
-                const roles = decodedToken.roles
-                changeRolesMenu(roles)
+                // const roles = decodedToken.roles
+                // changeRolesMenu(roles)
 
-                getPersonalInfo(xToken)
+                changeUserMenu(xToken)
             }
             
         }
@@ -336,6 +381,9 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
+        const relativeLinkMenu = document.getElementById('relativeLinkMenu');
+        const companyApplyMenu = document.getElementById('companyApplyMenu');
+
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
@@ -343,13 +391,14 @@ const Main = () => {
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
+        relativeLinkMenu.style.display = 'none'
+        companyApplyMenu.style.display = 'none'
         // matchNeedMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
             turnOffPage()
             setSelectMenu(['1'])
             setIsShowHousesList(true)
         }
-        console.log('====remove(x-token)=====')
         cookie.remove('x-token')
     }
 
@@ -486,13 +535,14 @@ const Main = () => {
                     相關連結
               </Menu.Item> */} {/*no use*/}
 
-          <Menu.Item key='13' id="companyApply" style={{'height':'50px'}} icon={<SearchCompanyIcon />} onClick={companyApply}>
+          <Menu.Item key='13' id="companyApplyMenu" style={{'height':'50px','display':'none'}} icon={<SearchCompanyIcon />} onClick={companyApply}>
             加入公司
           </Menu.Item>
           <Menu.SubMenu
                id="relativeLinkMenu"
                key='14'
                title={"公司"}
+               style={{'display':'none'}}
                icon={<PropertyIcon />} >
               <Menu.Item key='18' id="companyInfo" onClick={companyInfo} style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
                     公司簡介
