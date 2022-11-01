@@ -140,20 +140,22 @@ const Main = () => {
     }
 
     function changeEmployeeMenu(employee){
+        console.log('==changeEmployeeMenu=====',employee)
         const relativeLinkMenu = document.getElementById('relativeLinkMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
         if(employee.state === 2 || employee.state === 4){
-            relativeLinkMenu.display = 'flex'
             const companyInfo = document.getElementById('companyInfo');
             const companyHouseList = document.getElementById('companyHouseList');
             const companyMyHouseList = document.getElementById('companyMyHouseList');
             const companyApplyList = document.getElementById('companyApplyList');
             const companyEmployeesList = document.getElementById('companyEmployeesList');
             const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
-            companyInfo.display = 'flex'
-            companyHouseList.display = 'flex'
-            companyMyHouseList.display = 'flex'
-            companyEmployeeInfo.display = 'flex'
+            companyApplyMenu.style.display = 'none'
+            relativeLinkMenu.style.display = 'flex'
+            companyInfo.style.display = 'flex'
+            companyHouseList.style.display = 'flex'
+            companyMyHouseList.style.display = 'flex'
+            companyEmployeeInfo.style.display = 'flex'
             if(employee.rank === 0){
                 companyApplyList.style.display = 'flex'
                 companyEmployeesList.style.display = 'flex'
