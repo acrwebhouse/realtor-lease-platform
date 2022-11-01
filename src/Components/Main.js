@@ -151,7 +151,8 @@ const Main = () => {
             const companyEmployeesList = document.getElementById('companyEmployeesList');
             const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
             companyApplyMenu.style.display = 'none'
-            relativeLinkMenu.style.display = 'flex'
+            relativeLinkMenu.style.display = null;
+            // relativeLinkMenu.style.display = 'flex'
             companyInfo.style.display = 'flex'
             companyHouseList.style.display = 'flex'
             companyMyHouseList.style.display = 'flex'
