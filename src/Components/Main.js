@@ -641,7 +641,7 @@ const Main = () => {
         isShowCompanyEmployeesList?(<CompanyEmployeesList></CompanyEmployeesList>):null           
     }
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
-            <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeRolesMenu={changeRolesMenu} ></LoginSignIn>
+            <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeUserMenu={changeUserMenu} ></LoginSignIn>
         </div>
         </div>
         

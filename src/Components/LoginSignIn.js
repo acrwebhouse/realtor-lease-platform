@@ -106,8 +106,7 @@ const LoginRegister = (props) => {
                             // eslint-disable-next-line no-undef
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
-                        
-                        props.changeRolesMenu(response.data.data.roles,true)
+                        props.changeUserMenu(response.data.data.token,true)
                         cookie.save('x-token',response.data.data.token,{path:'/'})
                         message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2)
                     }
