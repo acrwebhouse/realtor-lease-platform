@@ -364,8 +364,10 @@ function sendEdit(){
             setData(editUser)
             seIsEdit(false)
             const token = response.data.data.token
-            const roles = response.data.data.roles
-            props.changeRolesMenu(roles)
+            // const roles = response.data.data.roles
+            // props.changeRolesMenu(roles)
+            const user = response.data.data
+            props.changeUserMenu(user)
             cookie.save('x-token',token,{path:'/'})
             message.success('編輯成功', 3);
             const baseDiv = document.getElementById('baseDiv')
