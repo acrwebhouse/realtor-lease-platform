@@ -71,7 +71,7 @@ const Main = () => {
 
     const [user, setUser] = useState({});
 
-    const [companyId, setCompanyId] = useState('');
+    const [currentEmployeeData, setCurrentEmployeeData] = useState('');
 
     const surveysAuditSvg = () => (
         <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 386 511.9">
@@ -133,8 +133,7 @@ const Main = () => {
                 const roles = response.data.data.roles
                 const exeUser = response.data.data
                 const employeeData = getCurrentEmployeeData(exeUser)
-                console.log('====setCompanyId=====',exeUser.companyId)
-                setCompanyId(exeUser.companyId)
+                setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
             }
@@ -144,7 +143,6 @@ const Main = () => {
     }
 
     function changeEmployeeMenu(employee){
-        console.log('==changeEmployeeMenu=====',employee)
         const relativeLinkMenu = document.getElementById('relativeLinkMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
         if(employee.state === 2 || employee.state === 4){
@@ -171,9 +169,7 @@ const Main = () => {
     }
 
     function getCurrentEmployeeData(user){
-        console.log('===getCurrentEmployeeData===',user)
         const currentCompanyId = user.companyId
-        console.log('===currentCompanyId===',currentCompanyId)
         let result = {}
         for(let i = 0 ;i<user.employeesData.length; i++){
             if(user.employeesData[i].companyId === currentCompanyId){
@@ -551,7 +547,7 @@ const Main = () => {
                title={"公司"}
                style={{'display':'none'}}
                icon={<PropertyIcon />} >
-              <Menu.Item key='18' id="companyInfo" onClick={companyInfo} companyId={companyId} style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
+              <Menu.Item key='18' id="companyInfo" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
                     公司簡介
               </Menu.Item>
               <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
@@ -633,13 +629,13 @@ const Main = () => {
         isShowCompanyApplyList?(<CompanyApplyList></CompanyApplyList>):null           
     }
     {
-        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo></CompanyEmployeeInfo>):null           
+        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={JSON.stringify(currentEmployeeData)}></CompanyEmployeeInfo>):null           
     }
     {
         isShowCompanyHouseList?(<CompanyHouseList></CompanyHouseList>):null           
     }
     {
-        isShowCompanyInfo?(<CompanyInfo></CompanyInfo>):null           
+        isShowCompanyInfo?(<CompanyInfo info={JSON.stringify(currentEmployeeData.companyData[0])}></CompanyInfo>):null           
     }
     {
         isShowCompanyMyHouseList?(<CompanyMyHouseList></CompanyMyHouseList>):null           

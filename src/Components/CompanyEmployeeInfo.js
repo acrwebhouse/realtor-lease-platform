@@ -12,7 +12,7 @@ const CompanyEmployeeInfo = (props) => {
     let { id } = useParams();
     return (
         <div>
-            {id}
+            {props.info}
             CompanyEmployeeInfo page
             
         </div>
