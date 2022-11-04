@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, message, Alert, Space} from "antd";
+import {Table, Button, Image, Divider, Row, Col, message, Alert, Space, Form, Input, } from "antd";
 import {
     useParams
   } from "react-router-dom";
@@ -16,9 +16,13 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
+const reserve_Auth = 'reserveHouse/addReserveHouse'
 
 const HouseDetail = (prop) => {
     let { id } = useParams();
+    const houseId = id ;
+    console.log(houseId)
+    const [form_reserve] = Form.useForm();
     const [init, setInit] = useState(true);
     const [house, setHouse] = useState(true);
     const [housePhoto, setHousePhoto] = useState(['','','','','','','','','','']);
@@ -38,9 +42,12 @@ const HouseDetail = (prop) => {
     const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [hostGender, setHostGender] = useState('');
+    const [reserveVisible, setReserveVisible] = useState(false);
+    const [reserveClientData, setReserveClientData] = useState([])
+    const [isRunPost, setIsRunPost] = useState(false)
 
-
-
+    console.log(house['owner'])
+    console.log(house['_id'])
     const fallback ='data:image/png;base64,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'
       
       const columns = [
@@ -438,9 +445,106 @@ const HouseDetail = (prop) => {
         message.success('連結已複製到剪貼簿', 3);
     }
 
-    const reserveLink = () => {
-
+    const reserveFormEnable = () => {
+        setReserveVisible(true)
     }
+
+    const UploadReserveData = (values) => {
+        console.log(values)
+        const xToken = cookie.load('x-token')
+        if (xToken) {
+            setReserveClientData({
+                "host": house['owner'],
+                "houseId": house['_id'],
+                "state": 0,
+                "type": 1,
+                "clientName": '',
+                "clientPhone": ''
+            })
+            setIsRunPost(true)
+        } else {
+            if(values['reserveName'] && values['reservePhone']) {
+                setReserveClientData({
+                    "host": house['owner'],
+                    "houseId": house['_id'],
+                    "state": 0,
+                    "type": 1,
+                    "clientName": values['reserveName'],
+                    "clientPhone": values['reservePhone']
+                })
+                setIsRunPost(true)
+            }else {
+                message.error({
+                    content: '如未登入，姓名與聯絡電話都需要填寫。',
+                    style: {
+                        fontSize: '40px',
+                        marginTop: '20vh',
+                        color: 'darkred'
+                    },
+                    duration: 3,
+                }).then(() => {
+                })
+            }
+        }
+    }
+
+    console.log(reserveClientData)
+
+    useEffect(() => {
+
+        if (isRunPost) {
+            const xToken = cookie.load('x-token')
+
+            xToken ?
+                HouseAxios.post(reserve_Auth, reserveClientData, {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        "x-token" : xToken,
+                    }})
+                    // .then( (response) => console.log(response.data.status))
+                    .then((response) => {
+                        console.log(response.data)
+                        message.success({
+                            content: '已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。',
+                            style: {
+                                fontSize: '40px',
+                                marginTop: '20vh',
+                            },
+                            duration: 2,
+                        }).then()
+
+                    })
+                    .catch((error) => message.error(`${error}`, 2))
+
+                :
+                HouseAxios.post(reserve_Auth, reserveClientData, {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                    }
+                })
+                    // .then( (response) => console.log(response.data.status))
+                    .then((response) => {
+                        console.log(response.data)
+                        message.success({
+                            content: '已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。',
+                            style: {
+                                fontSize: '40px',
+                                marginTop: '20vh',
+                            },
+                            duration: 2,
+                        }).then()
+                    })
+
+                    .catch( (error) => message.error(`${error}`, 2))
+
+            setIsRunPost(false)
+        }
+    }, [isRunPost, reserveClientData])
+
+    const tt = cookie.load('x-token')
+    console.log(tt)
 
     function removeHouseAction(){
         const houseId = id
@@ -469,6 +573,7 @@ const HouseDetail = (prop) => {
         .catch( (error) => message.error(error, 3))
         cancelRemoveHouse()
     }
+
 
     useEffect(() => {
         if (init) {
@@ -551,8 +656,8 @@ const HouseDetail = (prop) => {
                         }}>                                
                         <div style={{
                         'color': '#0000ff',
-                        'fontSize':'20px'
-                        }}>{`名稱：${house.name}`}</div>
+                        'fontSize':'40px'
+                        }}>{`${house.name}`}</div>
                   
                         <div style={{
                         'color':'#FF0000',
@@ -592,18 +697,58 @@ const HouseDetail = (prop) => {
                         
                         <br/>
                         <div>
-                            <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
-                                複製連結
-                            </Button>
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                            {/*<Button type="primary" onClick={() => reserveLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>*/}
-                            {/*    我要看房*/}
-                            {/*</Button>*/}
+                            <div>
+                                <Button type="primary" onClick={() => shareLink()} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                                    複製連結
+                                </Button>
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <Button type="primary" onClick={() => reserveFormEnable()} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                                    預約看房
+                                </Button>
+                            </div>
+                            <div>
+                                <br/>
+                                {reserveVisible?
+                                    <div style={{display:'flex', borderRadius: '15px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
+                                        <Form form={form_reserve} layout="vertical" name="ReserveForm" onFinish={UploadReserveData}>
+                                            <Form.Item
+                                                name="reserveName"
+                                                label="姓名："
+                                                tooltip="範例 : 丁一二"
+                                                rules={[
+                                                    {
+                                                        required: false,
+                                                    },
+                                                ]}
+                                            >
+                                                <Input size="large" placeholder="範例 : 丁一二" style={{width: '270px', }}/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="reservePhone"
+                                                label="聯絡電話："
+                                                tooltip="範例 : 0912345678"
+                                                rules={[
+                                                    {
+                                                        required: false,
+                                                    },
+                                                ]}
+                                            >
+                                                <Input size="large" placeholder="範例 : 0912345678" style={{width: '270px'}}/>
+                                            </Form.Item>
+                                            <p style={{color:'darkorange'}}>如果已登入帳戶，可直接按送出。</p>
+                                            <Button type="primary"
+                                                    shape="round"
+                                                    htmlType="submit"
+                                                    style={{width: '100%'}}>
+                                                送出
+                                            </Button>
+                                        </Form>
+                                    </div> : []
+                                }
+                            </div>
                         </div>
+                        <br/>
 
-                        <br/>
-                        <br/>
-                        
                         <div style={{'fontSize':'15px','borderRadius': '30px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}>
                         {/* <div style={{'fontSize':'15px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
                             <br/>
