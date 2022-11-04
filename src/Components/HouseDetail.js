@@ -445,6 +445,17 @@ const HouseDetail = (prop) => {
         a.click()
     }
 
+    function lineClick(lineId){
+        console.log('===lineId===',lineId)
+        let a = document.createElement('a');
+        a.href = 'https://line.me/R/ti/p/'+lineId;
+        // a.href = 'https://line.me/R/ti/p/@linedevelopers';
+        // console.log('https://line.me/R/ti/p/@linedevelopers')
+        console.log('https://line.me/R/ti/p/'+lineId)
+        document.body.appendChild(a);
+        a.click()
+    }
+
     const reserveLink = () => {
 
     }
@@ -615,15 +626,13 @@ const HouseDetail = (prop) => {
                         {/* <div style={{'fontSize':'15px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
                             <br/>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
-                            {/* <div >&nbsp;&nbsp;{`電話：${phone}`}</div> */}
                             <Button type="primary" onClick={() => phoneClick(phone)} style={{width: '250px' }}>
                                 電話聯絡
                             </Button>
                             <br/>
-                            <Button type="primary" onClick={() => phoneClick()} style={{width: '250px',backgroundColor : '#00cc00' }}>
+                            <Button type="primary" onClick={() => lineClick('mousebro')} style={{width: '250px',backgroundColor : '#00cc00' }}>
                                 line 聯絡
                             </Button>
-                            {/* <div >&nbsp;&nbsp;{`信箱：${mail}`}</div> */}
                             <br/>
                         </div>
                         <br/>
