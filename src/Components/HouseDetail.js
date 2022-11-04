@@ -438,6 +438,13 @@ const HouseDetail = (prop) => {
         message.success('連結已複製到剪貼簿', 3);
     }
 
+    function phoneClick(phoneNumber){
+        let a = document.createElement('a');
+        a.href = 'tel:'+phoneNumber;
+        document.body.appendChild(a);
+        a.click()
+    }
+
     const reserveLink = () => {
 
     }
@@ -604,17 +611,24 @@ const HouseDetail = (prop) => {
                         <br/>
                         <br/>
                         
-                        <div style={{'fontSize':'15px','borderRadius': '30px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}>
+                        {/* <div style={{'fontSize':'15px','borderRadius': '30px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
                         {/* <div style={{'fontSize':'15px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
                             <br/>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
-                            <div >&nbsp;&nbsp;{`電話：${phone}`}</div>
-                            <div >&nbsp;&nbsp;{`信箱：${mail}`}</div>
+                            {/* <div >&nbsp;&nbsp;{`電話：${phone}`}</div> */}
+                            <Button type="primary" onClick={() => phoneClick(phone)} style={{width: '250px' }}>
+                                電話聯絡
+                            </Button>
+                            <br/>
+                            <Button type="primary" onClick={() => phoneClick()} style={{width: '250px',backgroundColor : '#00cc00' }}>
+                                line 聯絡
+                            </Button>
+                            {/* <div >&nbsp;&nbsp;{`信箱：${mail}`}</div> */}
                             <br/>
                         </div>
                         <br/>
                         {/* {JSON.stringify(house)} */}
-                    </div>           
+                    {/* </div>            */}
                 </Col>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col> 
             </Row>
