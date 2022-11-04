@@ -743,6 +743,9 @@ const HouseUpload = (prop) => {
     console.log(PictureList)
 
     console.log(prop.defaultValue)
+    console.log('===companyId====',prop.companyId)
+    console.log('===companyState====',prop.companyState)
+    
     // console.log(typeof(prop.defaultValue.floor))
     return (
 

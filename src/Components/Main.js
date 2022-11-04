@@ -71,7 +71,7 @@ const Main = () => {
 
     const [user, setUser] = useState({});
 
-    const [currentEmployeeData, setCurrentEmployeeData] = useState('');
+    const [currentEmployeeData, setCurrentEmployeeData] = useState({});
 
     const surveysAuditSvg = () => (
         <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 386 511.9">
@@ -594,7 +594,7 @@ const Main = () => {
     }
 
     {
-        isShowUploadHouse?(<HouseUpload></HouseUpload>):null           
+        isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null           
     }
 
     {
