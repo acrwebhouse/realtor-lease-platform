@@ -447,13 +447,11 @@ const HouseDetail = (prop) => {
 
     function lineClick(lineId){
         console.log('===lineId===',lineId)
-        let a = document.createElement('a');
-        a.href = 'https://line.me/R/ti/p/'+lineId;
-        // a.href = 'https://line.me/R/ti/p/@linedevelopers';
-        // console.log('https://line.me/R/ti/p/@linedevelopers')
-        console.log('https://line.me/R/ti/p/'+lineId)
-        document.body.appendChild(a);
-        a.click()
+        let strWindowFeatures = `
+            height=600,
+            width=600,
+        `;
+        window.open('https://line.me/ti/p/~'+lineId,'加入好友',strWindowFeatures)
     }
 
     const reserveLink = () => {
