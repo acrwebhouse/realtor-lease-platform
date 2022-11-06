@@ -7,13 +7,14 @@ import moment from 'moment';
 import {
     useParams
   } from "react-router-dom";
+import CompanyList from "./CompanyList";
 
 const CompanyApply = (props) => {
     let { id } = useParams();
     return (
         <div>
             {id}
-            CompanyApply page
+            <CompanyList/>
             
         </div>
     );
