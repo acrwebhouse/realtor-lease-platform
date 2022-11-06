@@ -115,7 +115,7 @@ const CompanyList = (props) => {
             title: '內容',
             dataIndex: 'content',
             key: 'content',
-            //  width:'100px',
+            //  width:'50px',
             render: (content) => {
               return <div style={{
                   'textAlign': 'center',
@@ -136,26 +136,29 @@ const CompanyList = (props) => {
 
                 <div >
                 </div>
-              </div>
-              </div>
-              },
-          },
-          {
-            title: '',
-            dataIndex: 'content',
-            key: 'content',
-            // width:'100px',
-            render: (content) => {
-              return <div style={{
-                  'textAlign': 'center',
-              }}>
-                {<Button type="primary" onClick={() => apply(content[5])} style={{width: '100px' }}>
+                <Button type="primary" onClick={() => apply(content[5])} style={{width: '100px' }}>
                         申請加入
                     </Button>
-                    }
+              </div>
               </div>
               },
           },
+        //   {
+        //     title: '',
+        //     dataIndex: 'content',
+        //     key: 'content',
+        //     // width:'100px',
+        //     render: (content) => {
+        //       return <div style={{
+        //           'textAlign': 'center',
+        //       }}>
+        //         {<Button type="primary" onClick={() => apply(content[5])} style={{width: '50px' }}>
+        //                 申請
+        //             </Button>
+        //             }
+        //       </div>
+        //       },
+        //   },
       ];
 
     return (
