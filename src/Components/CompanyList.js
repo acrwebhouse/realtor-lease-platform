@@ -140,7 +140,7 @@ const CompanyList = (props) => {
               },
           },
           {
-            title: '動作',
+            title: '',
             dataIndex: 'content',
             key: 'content',
             // width:'100px',
