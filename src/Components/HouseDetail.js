@@ -629,12 +629,12 @@ const HouseDetail = (prop) => {
                             <br/>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
                             <br/>
-                            &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '100px' }}>
+                            &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
                                 電話聯絡
                             </Button>
                             {
                                 lineId !== null && lineId !== undefined && lineId !== ''?(
-                                    <Button type="primary" onClick={() => lineClick(lineId)} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                                    <Button type="primary" onClick={() => lineClick(lineId)} style={{marginLeft: '20px', width: '135px',backgroundColor : '#00cc00' }}>
                                         line 加好友
                                     </Button>
                                 ):null           
