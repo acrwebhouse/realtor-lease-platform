@@ -32,6 +32,7 @@ const HouseDetail = (prop) => {
     const [educate, setEducate] = useState(null);
     const [annex, setAnnex] = useState(null);
     const [phone, setPhone] = useState('');
+    const [lineId, setLineId] = useState('');
     const [mail, setMail] = useState('');
     const [remark, setRemark] = useState('');
     const [owner, setOwner] = useState('');
@@ -372,6 +373,7 @@ const HouseDetail = (prop) => {
         setOwner(name)
         setPhone(data.ownerDetail.phone)
         setMail(data.ownerDetail.mail)
+        setLineId(data.ownerDetail.lineId)
     }
 
     function basename(str) {
@@ -567,8 +569,8 @@ const HouseDetail = (prop) => {
                         }}>                                
                         <div style={{
                         'color': '#0000ff',
-                        'fontSize':'20px'
-                        }}>{`名稱：${house.name}`}</div>
+                        'fontSize':'40px'
+                        }}>{`${house.name}`}</div>
                   
                         <div style={{
                         'color':'#FF0000',
@@ -618,24 +620,27 @@ const HouseDetail = (prop) => {
                         </div>
 
                         <br/>
-                        <br/>
-                        
-                        {/* <div style={{'fontSize':'15px','borderRadius': '30px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
-                        {/* <div style={{'fontSize':'15px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
+
+                        <div style={{'fontSize':'15px' ,'borderStyle':'solid','borderColor':'#FFAC55','backgroundColor':'#FFE4CA' }}>
                             <br/>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
-                            <Button type="primary" onClick={() => phoneClick(phone)} style={{width: '250px' }}>
+                            &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '100px' }}>
                                 電話聯絡
                             </Button>
+                            {
+                                lineId !== null && lineId !== undefined && lineId !== ''?(
+                                    <Button type="primary" onClick={() => lineClick(lineId)} style={{width: '100px',backgroundColor : '#00cc00' }}>
+                                        line 加好友
+                                    </Button>
+                                ):null           
+                            }
                             <br/>
-                            <Button type="primary" onClick={() => lineClick('mousebro')} style={{width: '250px',backgroundColor : '#00cc00' }}>
-                                line 聯絡
-                            </Button>
                             <br/>
                         </div>
                         <br/>
+                        
                         {/* {JSON.stringify(house)} */}
-                    {/* </div>            */}
+                    </div>           
                 </Col>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col> 
             </Row>
