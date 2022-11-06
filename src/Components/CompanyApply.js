@@ -28,7 +28,7 @@ const CompanyApply = (props) => {
         console.log('====111===')
         if (init) {
             console.log('====222===')
-            if(props.currentEmployeeData !==null && props.currentEmployeeData !==undefined){
+            if(props.currentEmployeeData !==null && props.currentEmployeeData !==undefined && JSON.stringify(props.currentEmployeeData) !=='{}'){
                 console.log('====333===',props.currentEmployeeData)
                 setIsShowCompanyApplyState(true)
             }else{

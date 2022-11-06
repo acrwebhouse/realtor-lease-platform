@@ -114,6 +114,7 @@ const Main = () => {
     );
     
     const changeUserMenu = (xToken) => {
+        console.log('===changeUserMenu=====')
         const userListUrl = 'user/getPersonalInfo'
         let reqUrl = `${userListUrl}`
         UserAxios.get(
