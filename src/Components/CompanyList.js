@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
+import {CompanyAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
+
 import {
     useParams
   } from "react-router-dom";
@@ -13,14 +14,94 @@ import {
 const CompanyList = (props) => {
     let { id } = useParams();
     const [size] = useState("large");
-    const [memberList, setMemberList] = useState([]);
+    const [companyList, setCompanyList] = useState([]);
+    const companyListUrl = 'company/getCompanyList'
+    const [init, setInit] = useState(true);
+
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+            getCompanyList()
+        }
+    }, )
+
+    let data = [
+        {
+          key: '1',
+          name: '科技公司',
+          owner :'負責人',
+          unifiedBusinessNo: '2345678',
+          phone: '0912636123',
+          mail: "acr.webffhousve@gmail.com",
+          address : '台北市',
+        }
+      ];
+
+    const [getCompanyListArg] = useState({
+        start : '0',
+        count : '9999999',
+        unifiedBusinessNo : '',
+        name : '',  
+    });
+
+    const getCompanyList = () => {
+        let reqUrl = `${companyListUrl}?start=${getCompanyListArg.start}&&count=${getCompanyListArg.count}`
+        const textQueryName= document.getElementById('textQueryName');
+        const textQueryUnifiedBusinessNo= document.getElementById('textQueryUnifiedBusinessNo');
+        
+        if(textQueryName){
+            const value = textQueryName.value
+            if(value !== '' && value !== undefined && value !== null){
+                reqUrl = `${reqUrl}&&name=${value}`
+            }
+        }
+
+        if(textQueryUnifiedBusinessNo){
+            const value = textQueryUnifiedBusinessNo.value
+            if(value !== '' && value !== undefined && value !== null){
+                reqUrl = `${reqUrl}&&unifiedBusinessNo=${value}`
+            }
+        }
+
+        reqUrl = `${reqUrl}&&state=2`
+
+        CompanyAxios.get(
+                reqUrl,{}
+            )
+            .then( (response) => {
+                console.log(response)
+                resolveCompantList(response)
+                // resolveMemberList(response)
+            })
+            .catch( (error) => message.error(error, 3))
+    }
+
+    function resolveCompantList(response){
+        data = []
+        if(response.data && response.data.data){
+            const items = response.data.data
+            for(let i = 0 ;i<items.length; i++){
+                const item = {
+                    key: i,
+                    name: items[i].name,
+                    content: [`統一編號 : ${items[i].unifiedBusinessNo}`,`地址 : ${items[i].address}`,`負責人 : ${items[i].owner}`,`電話 : ${items[i].phone}`,`信箱 : ${items[i].mail}`,items[i]._id],
+                    }
+                data.push(item)
+            }
+            setCompanyList(data)
+        }
+    }
+
+    function apply(applyId){
+        console.log(applyId)
+    }
 
     const columns = [
         {
           title: '名稱',
           dataIndex: 'name',
           key: 'name',
-          width:'100px',
+        //   width:'100px',
           render: (name) => {
             return <div style={{
                 'textAlign': 'center',
@@ -51,23 +132,26 @@ const CompanyList = (props) => {
                       {content[3]}
                       <br/>
                       {content[4]}
-                      <br/>
-                      {content[5]}
-                      <br/>
-                      {content[6]}
-                      <br/>
-                      {content[7]}
-                      <br/>
+
                 <div >
-                    {/* <Button type="primary" onClick={() => queryUser(content[8])} style={{width: '70px' }}>
-                        查看
-                    </Button>
-                    &nbsp; */}
-                    {/* <Button type="primary" onClick={() => removeUser(content[8])} danger style={{width: '70px'}}>
-                        刪除
-                    </Button> */}
-                    </div>
+                </div>
               </div>
+              </div>
+              },
+          },
+          {
+            title: '是否加入',
+            dataIndex: 'content',
+            key: 'content',
+            // width:'100px',
+            render: (content) => {
+              return <div style={{
+                  'textAlign': 'center',
+              }}>
+                {<Button type="primary" onClick={() => apply(content[5])} style={{width: '100px' }}>
+                        申請加入
+                    </Button>
+                    }
               </div>
               },
           },
@@ -78,8 +162,8 @@ const CompanyList = (props) => {
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    {/* <Button type="primary" onClick={getUserList} style={{ */}
-                    <Button type="primary" onClick={''} style={{
+                    <Button type="primary" onClick={getCompanyList} style={{
+                    // <Button type="primary" onClick={''} style={{
                             width: '100%',
                             height: '40px',
                             backgroundColor:'#008000',
@@ -88,14 +172,14 @@ const CompanyList = (props) => {
                     </Button>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Input id="textQuery" placeholder="公司名稱"  style={{
+                    <Input id="textQueryName" placeholder="公司名稱"  style={{
                             width: '100%',
                             height: '40px',
                         }}>
                     </Input>
                 </Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Input id="textQuery" placeholder="統一編號"  style={{
+                    <Input id="textQueryUnifiedBusinessNo" placeholder="統一編號"  style={{
                             width: '100%',
                             height: '40px',
                         }}>
@@ -111,7 +195,7 @@ const CompanyList = (props) => {
             <Table
                 columns={columns}
                 pagination={{ position: ['topLeft', 'bottomRight'] }}
-                dataSource={memberList}
+                dataSource={companyList}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: event => {
