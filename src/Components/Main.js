@@ -136,6 +136,7 @@ const Main = () => {
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
+                console.log(employeeData)
             }
             
         })
@@ -623,7 +624,7 @@ const Main = () => {
 
 
     {
-        isShowCompanyApply?(<CompanyApply></CompanyApply>):null           
+        isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
     }
     {
         isShowCompanyApplyList?(<CompanyApplyList></CompanyApplyList>):null           

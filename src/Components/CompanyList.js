@@ -94,6 +94,7 @@ const CompanyList = (props) => {
 
     function apply(applyId){
         console.log(applyId)
+        props.showApplyingUI()
     }
 
     const columns = [
