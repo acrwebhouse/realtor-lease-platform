@@ -39,6 +39,7 @@ const HouseDetail = (prop) => {
     const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [hostGender, setHostGender] = useState('');
+    const [showFloor2, setShowFloor2] = useState('');
 
 
 
@@ -331,6 +332,9 @@ const HouseDetail = (prop) => {
              }else{
                 hostGender = hostGender + ' 先生'
             }
+            if(data.floor2 !== null && data.floor2 !== undefined && data.floor2 !== ''){
+                setShowFloor2(' 之 '+data.floor2)
+            }
             setHostGender(hostGender)
         }
         
@@ -585,7 +589,7 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`空間：${house.ping} 坪`}</div> 
                         <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
                         <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
-                        <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
+                        <div style={{'fontSize':'15px'}}>{`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`}</div>
                         {
                             prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
                                 <div style={{'fontSize':'15px'}}>{`房間${house.room} ${hostGender}`}</div>
