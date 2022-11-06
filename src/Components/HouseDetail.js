@@ -625,7 +625,7 @@ const HouseDetail = (prop) => {
 
                         <br/>
 
-                        <div style={{'fontSize':'15px' ,'borderStyle':'solid','borderColor':'#FFAC55','backgroundColor':'#FFE4CA' }}>
+                        <div style={{'fontSize':'15px' ,'borderRadius': '30px','borderStyle':'solid','borderColor':'#FFAC55','backgroundColor':'#FFE4CA' }}>
                             <br/>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
                             &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '100px' }}>
