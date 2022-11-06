@@ -630,13 +630,13 @@ const Main = () => {
         isShowCompanyApplyList?(<CompanyApplyList></CompanyApplyList>):null           
     }
     {
-        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={JSON.stringify(currentEmployeeData)}></CompanyEmployeeInfo>):null           
+        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={currentEmployeeData}></CompanyEmployeeInfo>):null           
     }
     {
         isShowCompanyHouseList?(<CompanyHouseList></CompanyHouseList>):null           
     }
     {
-        isShowCompanyInfo?(<CompanyInfo info={JSON.stringify(currentEmployeeData.companyData[0])}></CompanyInfo>):null           
+        isShowCompanyInfo?(<CompanyInfo info={currentEmployeeData.companyData[0]}></CompanyInfo>):null           
     }
     {
         isShowCompanyMyHouseList?(<CompanyMyHouseList></CompanyMyHouseList>):null           

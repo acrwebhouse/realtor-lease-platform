@@ -12,7 +12,7 @@ const CompanyEmployeeInfo = (props) => {
     let { id } = useParams();
     return (
         <div>
-            {props.info}
+            {JSON.stringify(props.info)}
             CompanyEmployeeInfo page
             
         </div>

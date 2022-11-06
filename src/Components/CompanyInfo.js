@@ -12,7 +12,7 @@ const CompanyInfo = (props) => {
     let { id } = useParams();
     return (
         <div>
-            {props.info}
+            {JSON.stringify(props.info)}
             {/* {props.companyId} */}
             
             {/* {console.log(props)} */}
