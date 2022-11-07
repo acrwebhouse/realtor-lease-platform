@@ -36,15 +36,20 @@ const HouseDetail = (prop) => {
     const [educate, setEducate] = useState(null);
     const [annex, setAnnex] = useState(null);
     const [phone, setPhone] = useState('');
+    const [lineId, setLineId] = useState('');
     const [mail, setMail] = useState('');
     const [remark, setRemark] = useState('');
     const [owner, setOwner] = useState('');
     const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [hostGender, setHostGender] = useState('');
+
     const [reserveVisible, setReserveVisible] = useState(false);
     const [reserveClientData, setReserveClientData] = useState([])
     const [isRunPost, setIsRunPost] = useState(false)
+
+    const [showFloor2, setShowFloor2] = useState('');
+
 
     console.log(house['owner'])
     console.log(house['_id'])
@@ -337,6 +342,9 @@ const HouseDetail = (prop) => {
              }else{
                 hostGender = hostGender + ' 先生'
             }
+            if(data.floor2 !== null && data.floor2 !== undefined && data.floor2 !== ''){
+                setShowFloor2(' 之 '+data.floor2)
+            }
             setHostGender(hostGender)
         }
         
@@ -379,6 +387,7 @@ const HouseDetail = (prop) => {
         setOwner(name)
         setPhone(data.ownerDetail.phone)
         setMail(data.ownerDetail.mail)
+        setLineId(data.ownerDetail.lineId)
     }
 
     function basename(str) {
@@ -445,9 +454,27 @@ const HouseDetail = (prop) => {
         message.success('連結已複製到剪貼簿', 3);
     }
 
+
     const reserveFormEnable = () => {
         setReserveVisible(true)
     }
+
+    function phoneClick(phoneNumber){
+        let a = document.createElement('a');
+        a.href = 'tel:'+phoneNumber;
+        document.body.appendChild(a);
+        a.click()
+    }
+
+    function lineClick(lineId){
+        console.log('===lineId===',lineId)
+        let strWindowFeatures = `
+            height=600,
+            width=600,
+        `;
+        window.open('https://line.me/ti/p/~'+lineId,'加入好友',strWindowFeatures)
+    }
+
 
     const UploadReserveData = (values) => {
         console.log(values)
@@ -672,7 +699,7 @@ const HouseDetail = (prop) => {
                         <div style={{'fontSize':'15px'}}>{`空間：${house.ping} 坪`}</div> 
                         <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
                         <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
-                        <div style={{'fontSize':'15px'}}>{`樓層：${house.floor} 樓`}</div>
+                        <div style={{'fontSize':'15px'}}>{`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`}</div>
                         {
                             prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
                                 <div style={{'fontSize':'15px'}}>{`房間${house.room} ${hostGender}`}</div>
@@ -749,15 +776,28 @@ const HouseDetail = (prop) => {
                         </div>
                         <br/>
 
-                        <div style={{'fontSize':'15px','borderRadius': '30px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}>
-                        {/* <div style={{'fontSize':'15px' ,'borderStyle':'solid' ,'borderColor':'#FFAC55' }}> */}
+
+                        <br/>
+
+                        <div style={{'fontSize':'15px' ,'borderRadius': '30px','borderStyle':'solid','borderColor':'#FFAC55','backgroundColor':'#FFE4CA' }}>
                             <br/>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
-                            <div >&nbsp;&nbsp;{`電話：${phone}`}</div>
-                            <div >&nbsp;&nbsp;{`信箱：${mail}`}</div>
+                            <br/>
+                            &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
+                                電話聯絡
+                            </Button>
+                            {
+                                lineId !== null && lineId !== undefined && lineId !== ''?(
+                                    <Button type="primary" onClick={() => lineClick(lineId)} style={{marginLeft: '20px', width: '135px',backgroundColor : '#00cc00' }}>
+                                        line 加好友
+                                    </Button>
+                                ):null           
+                            }
+                            <br/>
                             <br/>
                         </div>
                         <br/>
+                        
                         {/* {JSON.stringify(house)} */}
                     </div>           
                 </Col>
