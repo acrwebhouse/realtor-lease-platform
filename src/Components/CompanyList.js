@@ -85,7 +85,7 @@ const CompanyList = (props) => {
                 const item = {
                     key: i,
                     name: items[i].name,
-                    content: [`統一編號 : ${items[i].unifiedBusinessNo}`,`地址 : ${items[i].address}`,`負責人 : ${items[i].owner}`,`電話 : ${items[i].phone}`,`信箱 : ${items[i].mail}`,items[i]._id],
+                    content: [`統一編號 : ${items[i].unifiedBusinessNo}`,`地址 : ${items[i].address}`,`負責人 : ${items[i].owner}`,`電話 : ${items[i].phone}`,`信箱 : ${items[i].mail}`,items[i]._id,items[i].name],
                     }
                 data.push(item)
             }
@@ -115,19 +115,52 @@ const CompanyList = (props) => {
     }
 
     const columns = [
-        {
-          title: '名稱',
-          dataIndex: 'name',
-          key: 'name',
-        //   width:'100px',
-          render: (name) => {
-            return <div style={{
-                'textAlign': 'center',
-            }}>
-              {name}
-            </div>
-            },
-        },
+        // {
+        //   title: '名稱',
+        //   dataIndex: 'name',
+        //   key: 'name',
+        // //   width:'100px',
+        //   render: (name) => {
+        //     return <div style={{
+        //         'textAlign': 'center',
+        //     }}>
+        //       {name}
+        //     </div>
+        //     },
+        // },
+          {
+            title: '公司資訊',
+            dataIndex: 'content',
+            key: 'content',
+            render: (content) => {
+              return <div style={{
+                  'textAlign': 'center',
+              }}>
+                  <div style={{
+                  'display': 'inline-block',
+                  'textAlign': 'left',
+                  }}>
+                      <div style={{
+                        'color': '#0000ff',
+                        'fontSize':'20px'
+                     }}>{content[6]}</div>
+                      {content[0]}
+                      <br/>
+                      {content[1]}
+                      <br/>
+                      {content[2]}
+                      <br/>
+                      {content[3]}
+                      <br/>
+                      {content[4]}
+
+                <div >
+                </div>
+              </div>
+              </div>
+              },
+              
+          },
           {
             title: '內容',
             dataIndex: 'content',
@@ -141,24 +174,15 @@ const CompanyList = (props) => {
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                      {content[0]}
-                      <br/>
-                      {content[1]}
-                      <br/>
-                      {content[2]}
-                      <br/>
-                      {content[3]}
-                      <br/>
-                      {content[4]}
-
-                <div >
-                </div>
-                <Button type="primary" onClick={() => apply(content[5])} style={{width: '100px' }}>
+                    <Button type="primary" onClick={() => apply(content[5])} style={{width: '80px' }}>
                         申請加入
                     </Button>
+                <div >
+                </div>
               </div>
               </div>
               },
+              
           },
       ];
 
