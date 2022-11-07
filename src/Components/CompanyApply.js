@@ -27,8 +27,8 @@ const CompanyApply = (props) => {
     function showCompanyListUI(){
         const xToken = cookie.load('x-token')
         props.changeUserMenu(xToken)
-        setIsShowCompanyApplyState(true)
-        setIsShowCompanyList(false)
+        setIsShowCompanyApplyState(false)
+        setIsShowCompanyList(true)
     }
 
     useEffect(() => {

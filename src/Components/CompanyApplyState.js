@@ -18,11 +18,17 @@ const CompanyApplyState = (props) => {
         }
     }, )
 
+    function cancelApply(){
+        props.showCompanyListUI()
+    }
+
     return (
         <div>
             {'CompanyApplyState page'}
             {JSON.stringify(props.currentEmployeeData)}
-            
+            <Button type="primary" onClick={() => cancelApply()} style={{width: '100px' }}>
+                        取消申請
+            </Button>
         </div>
     );
 };
