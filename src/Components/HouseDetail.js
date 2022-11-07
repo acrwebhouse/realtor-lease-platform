@@ -683,7 +683,8 @@ const HouseDetail = (prop) => {
                         }}>                                
                         <div style={{
                         'color': '#0000ff',
-                        'fontSize':'40px'
+                        'fontSize':'40px',
+                        'width': '350px',
                         }}>{`${house.name}`}</div>
                   
                         <div style={{
