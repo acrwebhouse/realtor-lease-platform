@@ -19,6 +19,7 @@ import Icon,{
   MonitorOutlined ,
   HeartOutlined ,
   LinkOutlined,
+  MailOutlined ,
 } from '@ant-design/icons';
 import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 
@@ -32,6 +33,7 @@ import Contact from "./Contact";
 import Collect from "./Collect";
 import MatchNeed from "./MatchNeed";
 import Link from "./Link";
+import ReserveHouseList from "./ReserveHouseList";
 
 import CompanyApply from "./CompanyApply";
 import CompanyApplyList from "./CompanyApplyList";
@@ -66,6 +68,8 @@ const Main = () => {
     const [isShowCompanyMyHouseList, setIsShowCompanyMyHouseList] = useState(false);
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
     
+    const [isShowReserveHouseList, setIsShowReserveHouseList] = useState(false);
+
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -186,6 +190,7 @@ const Main = () => {
         setIsShowHousesList(false)
         setIsShowMyHousesList(false)
         setIsShowUploadHouse(false)
+        setIsShowReserveHouseList(false)
         setIsShowMemberList(false)
         setIsShowMemberInfo(false)
         setIsShowContact(false)
@@ -375,11 +380,18 @@ const Main = () => {
         setIsShowCompanyEmployeesList(true)
     }
 
+    function reserveHouseList(){
+        console.log('reserveHouseList')
+        turnOffPage()
+        setSelectMenu(['21'])
+        setIsShowReserveHouseList(true)
+    }
     
     function logout(){
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
+        const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -392,6 +404,7 @@ const Main = () => {
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
+        reserveHouseListMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
@@ -422,6 +435,7 @@ const Main = () => {
         console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
+        const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -432,6 +446,7 @@ const Main = () => {
         const relativeLinkContent = document.getElementById('relativeLinkContent')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
+        reserveHouseListMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
@@ -464,6 +479,7 @@ const Main = () => {
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
+                reserveHouseListMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
@@ -513,6 +529,9 @@ const Main = () => {
           </Menu.Item>
           <Menu.Item key='3' id="uploadHousesMenu" style={{'height':'50px','display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
+          </Menu.Item>
+          <Menu.Item key='21' id="reserveHouseListMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouseList}>
+            預約列表
           </Menu.Item>
           <Menu.Item key='4' id="memberListMenu" style={{'height':'50px','display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
             會員列表
@@ -598,6 +617,11 @@ const Main = () => {
     {
         isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null           
     }
+
+    {
+        isShowReserveHouseList?(<ReserveHouseList></ReserveHouseList>):null           
+    }
+
 
     {
         isShowMatchNeed?(<MatchNeed></MatchNeed>):null           
