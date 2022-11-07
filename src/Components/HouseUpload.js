@@ -158,6 +158,8 @@ const HouseUpload = (prop) => {
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
     const [PicUploadCheck, setPicUploadCheck] = useState(false)
+    const [hostPhone, setHostPhone] = useState('')
+
 
     const showTrafficModal = () => {
         setTrafficVisible(true);
@@ -431,13 +433,17 @@ const HouseUpload = (prop) => {
                     'number2' : values['NO2']  ? parseInt(values['NO2']) : '',
                 },
                 'totalFloor' : parseInt(values['totalfloor']),
-                'floor' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ? FloorOptions.findIndex(x => x.value === values['floorNo1']) - 4 : parseInt(values['totalfloor']),
+                'floor' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ?     // index 0 => '頂樓加蓋' ， 1 => '地下三樓' ， 2 => '地下二樓'
+                    FloorOptions.findIndex(x => x.value === values['floorNo1']) < 4 ?       //  3 => '地下一樓' ， 4 => '1樓' and so on。
+                        FloorOptions.findIndex(x => x.value === values['floorNo1']) - 4     // index 0 => totalFloor , index 1 ~ 3 => index - 4, index 4 ~ 99 => index -3
+                        : FloorOptions.findIndex(x => x.value === values['floorNo1']) - 3
+                    : parseInt(values['totalfloor']),
                 'floor2' : values['floorNo2'] ? parseInt(values['floorNo2']) : '',
                 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
                 'price' : parseInt(values['lease-price']),
                 'hostName': values['hostName'],
                 'hostGender': convertString(String(hostGenderArr.indexOf(values['hostGender']))),
-                'hostPhone': '886' + values['hostPhone'],
+                'hostPhone': hostPhone,
                 'config' : {
                     'room' : parseInt(values['room']),
                     'livingRoom' : (typeof(values['livingRoom']) === 'number') ? parseInt(values['livingRoom']) : 0,
@@ -463,12 +469,12 @@ const HouseUpload = (prop) => {
                 },
                 'photo' : prop.defaultValue ? PicData : photoData, // PicData have defaultData, photoData new Upload
                 'annex' : prop.defaultValue ? AnnexData : annexData, // AnnexData have defaultData, annexData new Upload
-                'remark' : values['remark'],
-                "belongType": 1,
-                "belongId": decodedToken.id
+                'remark' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ? values['remark'] : '頂樓加蓋，' + values['remark'],
+                "belongType": prop.companyState === 2 || prop.companyState === 4 ? 2 : 1,
+                "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : decodedToken.id
             }
         )
-        if(('886'+values['hostPhone']).length == 12 || ('886'+values['hostPhone']).length == 10 ) {
+        if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 12  ) {
             // setIsSubmitModalVisible(false)
             if (showPic.length+PictureList.length < 1) {
                 message.warning({
@@ -536,10 +542,32 @@ const HouseUpload = (prop) => {
     //     </Form.Item>
     // );
 
+    /* phone Format set up */
+
+    const normalizeInput = (value, previousValue) => {
+        console.log(value)
+        if (!value) return value;
+        const currentValue = value.replace(/[^\d]/g, "");
+        const cvLength = currentValue.length;
+
+        if (!previousValue || value.length > previousValue.length) {
+            if (cvLength < 5) return currentValue;
+            if (cvLength < 8)
+                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+        }
+    };
+
+
+    console.log(hostPhone)
+
+
     const errorPhoneFormat = () => {
         message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的市話或手機號格式與長度(不需要打0)', 3));
+            .then(() => message.error('請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)', 3));
     }
+
+
 
     const changeCity = (City) => {
 
@@ -1428,14 +1456,24 @@ const HouseUpload = (prop) => {
                                     },
                                 ]}
                                 style={{ width: '100%' }}
+
                             >
-                                <Input  addonBefore={PhonePrefixSelector}
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                        size="large"
-                                        placeholder='市話或手機'
-                                />
+                                <>
+                                    <Input
+                                        // addonBefore={PhonePrefixSelector}
+                                            style={{
+                                                width: '100%',
+                                            }}
+                                            size="large"
+                                            placeholder='09xx-xxx-xxx'
+                                            value={hostPhone}
+                                            onChange={(e) => {
+                                                console.log(e.target.value)
+                                                setHostPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                            }
+                                            }
+                                    />
+                                </>
                             </Form.Item>
                         </Col>
                     </Row>

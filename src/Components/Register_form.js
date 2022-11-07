@@ -87,7 +87,7 @@ const Register = (props) => {
     const [areaValid, setAreaValid] = useState(false)
     // const [isBackLogin, setIsBackLogin] = useState(false)
     const [VerifyUserEnable, setVerifyUserEnable] = useState(false)
-
+    const [ownerPhone, setOwnerPhone] = useState("")
     const [count, setCount] = useState(10)
     const [enableCount, setEnableCount] = useState(false)
     const latestCount = useRef(count) // 定义一个ref，初始值是10
@@ -187,16 +187,17 @@ const Register = (props) => {
                 },
                 'houseIds': defaultHouseIds,
                 // 'phone': values['PhonePrefix']+values['phone']
-                'phone': '886'+values['phone'],
+                'phone': ownerPhone,
                 'mail': values['email'],
-                'address': values['City']+values['Area']+values['address']
+                'address': values['City']+values['Area']+values['address'],
+                'lineId' : values['lineID']
             }
         )
         if(!AccountPattern.test(values['account'])) {
             setIsSubmitModalVisible(false)
             errorAccoutFormat();
         }else {
-            if(('886'+values['phone']).length > 12 || ('886'+values['phone']).length < 12 ) {
+            if(ownerPhone.slice(0, 2) !== '09' || ownerPhone.length < 12 ) {
                 setIsSubmitModalVisible(false)
                 errorPhoneFormat();
             } else {
@@ -225,6 +226,24 @@ const Register = (props) => {
 
     };
 
+    console.log(RegisterData)
+
+    const normalizeInput = (value, previousValue) => {
+        console.log(value)
+        if (!value) return value;
+        const currentValue = value.replace(/[^\d]/g, "");
+        const cvLength = currentValue.length;
+
+        if (!previousValue || value.length > previousValue.length) {
+            if (cvLength < 5) return currentValue;
+            if (cvLength < 8)
+                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+        }
+    };
+
+    console.log(ownerPhone)
+
     const errorLicenseFormat = () => {
         message.loading('loading...', 0.5)
             .then(() => message.error('請輸入正確的營業員證號格式', 3));
@@ -232,7 +251,7 @@ const Register = (props) => {
 
     const errorPhoneFormat = () => {
         message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的手機號格式或長度(不需要打0)', 3));
+            .then(() => message.error('請輸入正確的手機號格式或長度(09xx-xxx-xxx)', 3));
     }
 
     const errorAccoutFormat = () => {
@@ -713,7 +732,33 @@ const Register = (props) => {
                             </Form.Item>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
+                        </Col>
+                        <Col  xs={24} sm={21} md={21} lg={20} xl={18}>
+                            <Form.Item
+                                name="lineID"
+                                label="lineID"
+                                rules={[
+                                    {
+                                        required: false,
+                                        message: 'lineID欄位不能空白',
+                                    },
+                                ]}
+                                style={{ width: '100%' }}
+                            >
+                                    <Input
+                                        // addonBefore={PhonePrefixSelector}
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        size="large"
+                                        placeholder='ex:handsomeBoy123'
+                                    />
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col xs={24} sm={3} md={3} lg={3} xl={3}>
 
@@ -724,18 +769,28 @@ const Register = (props) => {
                                 label="手機號碼"
                                 rules={[
                                     {
-                                        required: true,
+                                        required: false,
                                         message: '手機號碼欄位不能空白',
                                     },
                                 ]}
                                 style={{ width: '100%' }}
                             >
-                                <Input  addonBefore={PhonePrefixSelector}
+                                <>
+                                    <Input
+                                        // addonBefore={PhonePrefixSelector}
                                         style={{
                                             width: '100%',
                                         }}
                                         size="large"
-                                />
+                                        placeholder='09xx-xxx-xxx'
+                                        value={ownerPhone}
+                                        onChange={(e) => {
+                                            console.log(e.target.value)
+                                            setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                        }
+                                        }
+                                    />
+                                </>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -851,7 +906,7 @@ const Register = (props) => {
                                     ]}
                                     style={{ width: '100%' }}
                                 >
-                                    <Input size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input size="large" placeholder="ex：100年登字123456號" style={{ width: '100%' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>}
