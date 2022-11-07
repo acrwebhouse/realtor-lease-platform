@@ -16,6 +16,7 @@ const CompanyList = (props) => {
     const [size] = useState("large");
     const [companyList, setCompanyList] = useState([]);
     const companyListUrl = 'company/getCompanyList'
+    const applyEmployeesUrl = '/employees/applyEmployees'
     const [init, setInit] = useState(true);
 
     useEffect(() => {
@@ -92,9 +93,25 @@ const CompanyList = (props) => {
         }
     }
 
-    function apply(applyId){
-        console.log(applyId)
-        props.showApplyingUI()
+    function apply(companyId){
+        const xToken = cookie.load('x-token')
+        const data = {
+            companyId
+        }
+        CompanyAxios.post(applyEmployeesUrl, data, {
+            headers: {
+                "content-type": "application/json",
+                "accept": "application/json",
+                "x-token" : xToken,
+            }
+        }).then( (response) => {
+            if(response.data.status === true){
+                message.success('申請中', 3);
+                props.showApplyingUI();
+            }else{
+                message.error('申請失敗', 3)
+            }
+        }).catch( (error) => message.error(error, 3))
     }
 
     const columns = [
@@ -143,22 +160,6 @@ const CompanyList = (props) => {
               </div>
               },
           },
-        //   {
-        //     title: '',
-        //     dataIndex: 'content',
-        //     key: 'content',
-        //     // width:'100px',
-        //     render: (content) => {
-        //       return <div style={{
-        //           'textAlign': 'center',
-        //       }}>
-        //         {<Button type="primary" onClick={() => apply(content[5])} style={{width: '50px' }}>
-        //                 申請
-        //             </Button>
-        //             }
-        //       </div>
-        //       },
-        //   },
       ];
 
     return (

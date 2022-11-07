@@ -10,14 +10,18 @@ import {
 
 const CompanyApplyState = (props) => {
     let { id } = useParams();
+    const [init, setInit] = useState(true);
+
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+        }
+    }, )
+
     return (
         <div>
-
-            {/* {'777777'} */}
+            {'CompanyApplyState page'}
             {JSON.stringify(props.currentEmployeeData)}
-            {/* {props.companyId} */}
-            
-            {/* {console.log(props)} */}
             
         </div>
     );
