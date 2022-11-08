@@ -652,7 +652,7 @@ const Main = () => {
         isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
     }
     {
-        isShowCompanyApplyList?(<CompanyApplyList></CompanyApplyList>):null           
+        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData}></CompanyApplyList>):null           
     }
     {
         isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={currentEmployeeData}></CompanyEmployeeInfo>):null           

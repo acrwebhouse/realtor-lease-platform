@@ -4,15 +4,56 @@ import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
+import {CompanyAxios} from './axiosApi'
 import {
     useParams
   } from "react-router-dom";
 
+
+
 const CompanyApplyList = (props) => {
     let { id } = useParams();
+    const [init, setInit] = useState(true);
+    const getCompanyApplyListUrl = '/employees/getEmployeesListByCompanyId'
+
+    useEffect(() => {
+        if (init) {
+            // if(props.currentEmployeeData !==null && props.currentEmployeeData !==undefined && JSON.stringify(props.currentEmployeeData) !=='{}'){
+            //     setIsShowCompanyApplyState(true)
+            // }else{
+            //     setIsShowCompanyList(true)
+            // }
+            getCompanyApplyList()
+            setInit(false)
+        }
+    }, )
+
+    const [getCompanyApplyListArg] = useState({
+        start : '0',
+        count : '9999999',
+        states : '1',
+    });
+
+    function getCompanyApplyList(){
+        const xToken = cookie.load('x-token')
+        let reqUrl = `${getCompanyApplyListUrl}?companyId=${props.currentEmployeeData.companyId}&&start=${getCompanyApplyListArg.start}&&count=${getCompanyApplyListArg.count}&&states=${getCompanyApplyListArg.states}`
+        CompanyAxios.get(
+                reqUrl,{
+                    headers:{
+                        'x-Token':xToken
+                    }
+                })
+            .then( (response) => {
+                console.log('===getCompanyApplyList=====')
+                console.log(response)
+            })
+            .catch( (error) => message.error(error, 3))
+    }
+
     return (
         <div>
-            {id}
+            <Divider>審核列表</Divider>
+            {JSON.stringify(props.currentEmployeeData)}
             CompanyApplyList page
             
         </div>
