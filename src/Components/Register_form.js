@@ -242,6 +242,16 @@ const Register = (props) => {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.keyCode === 8) {
+            console.log('true');
+            console.log(ownerPhone)
+            setOwnerPhone((prevState) => prevState.substring(0, prevState.length-1))
+        } else {
+            console.log('false')
+        }
+    }
+
     console.log(ownerPhone)
 
     const errorLicenseFormat = () => {
@@ -784,6 +794,7 @@ const Register = (props) => {
                                         size="large"
                                         placeholder='09xx-xxx-xxx'
                                         value={ownerPhone}
+                                        onKeyDown={(e) => handleKeyDown(e)}
                                         onChange={(e) => {
                                             console.log(e.target.value)
                                             setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))

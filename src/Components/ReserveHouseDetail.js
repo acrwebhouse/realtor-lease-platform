@@ -50,6 +50,7 @@ const ReserveHouseDetail = (props) => {
         setIsShowDeleteAlert(true)
     }
 
+    //get
     useEffect(() => {
         const xToken = cookie.load('x-token')
         HouseAxios.get(get_reserve_Auth+'?id='+id, {
@@ -64,6 +65,7 @@ const ReserveHouseDetail = (props) => {
         }).catch( (error) => message.error(error, 3))
     }, [] )
 
+    //delete
     useEffect(() => {
         const xToken = cookie.load('x-token')
         if(enableDel) {

@@ -476,6 +476,8 @@ const HouseUpload = (prop) => {
         )
         if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 12  ) {
             // setIsSubmitModalVisible(false)
+            errorPhoneFormat();
+        } else {
             if (showPic.length+PictureList.length < 1) {
                 message.warning({
                     content: '照片至少上傳一張',
@@ -512,9 +514,6 @@ const HouseUpload = (prop) => {
                     }
                 }
             }
-
-        } else {
-            errorPhoneFormat();
         }
 
         console.log(TrafficArr);
