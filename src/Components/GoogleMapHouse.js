@@ -67,16 +67,16 @@ const GoogleMapHouse = (props) => {
     }, [init, house])
 
     return (
-            <iframe
-                width="600"
-                height="450"
-                style={{border: "0"}}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src={MapSource}
-            >
-            </iframe>
+                <iframe
+                    width="440"
+                    height="440"
+                    style={{border: "0"}}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={MapSource}
+                />
+
     );
 };
 

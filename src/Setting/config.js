@@ -5,6 +5,7 @@ const config = {
     'base_URL_User' : 'https://matchrenthouse.com/user-service',
     'base_URL_House' : 'https://matchrenthouse.com/house-service',
     'base_URL_Collect' : 'https://matchrenthouse.com/collect-service',
+    'base_URL_Company' : 'https://matchrenthouse.com/company-service',
     'contactPhone' : '0912951085',
     'contactMail' : 'acr.webhouse@gmail.com',
     'GoogleMapKey' : 'AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE',

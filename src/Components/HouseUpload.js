@@ -52,6 +52,13 @@ const PengHuAreaOptions = [{ value: '馬公市'},{ value: '湖西鄉'},{ value: 
 const KinMenAreaOptions = [{ value: '金城鎮'},{ value: '金湖鎮'},{ value: '金沙鎮'},{ value: '金寧鄉'},{ value: '烈嶼鄉'},{ value: '烏坵鄉'}]
 const LianJiangAreaOptions = [{ value: '南竿鄉'},{ value: '北竿鄉'},{ value: '莒光鄉'},{ value: '東引鄉'}]
 
+const FloorOptions = [{value: '頂樓加蓋'},{value: '地下三樓'},{value: '地下二樓'},{value: '地下一樓'}]
+for (let i = 1; i < 100; i++) {
+    FloorOptions.push({
+        value: i + '樓'
+    });
+}
+console.log(FloorOptions)
 
 const defaultExtraRequire = [];
 let PicData = [];
@@ -151,6 +158,8 @@ const HouseUpload = (prop) => {
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
     const [PicUploadCheck, setPicUploadCheck] = useState(false)
+    const [hostPhone, setHostPhone] = useState('')
+
 
     const showTrafficModal = () => {
         setTrafficVisible(true);
@@ -405,6 +414,8 @@ const HouseUpload = (prop) => {
             EducationArr.splice(0, EducationArr.length)
             PicData.splice(0, PicData.length)
             AnnexData.splice(0, AnnexData.length)
+            setHostPhone('')
+
         }
     }, [isRunPost, HouseData, prop.defaultValue, xToken])
 
@@ -423,12 +434,18 @@ const HouseUpload = (prop) => {
                     'number1' : parseInt(values['NO1']),
                     'number2' : values['NO2']  ? parseInt(values['NO2']) : '',
                 },
-                'floor' : parseInt(values['floor']),
+                'totalFloor' : parseInt(values['totalfloor']),
+                'floor' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ?     // index 0 => '頂樓加蓋' ， 1 => '地下三樓' ， 2 => '地下二樓'
+                    FloorOptions.findIndex(x => x.value === values['floorNo1']) < 4 ?       //  3 => '地下一樓' ， 4 => '1樓' and so on。
+                        FloorOptions.findIndex(x => x.value === values['floorNo1']) - 4     // index 0 => totalFloor , index 1 ~ 3 => index - 4, index 4 ~ 99 => index -3
+                        : FloorOptions.findIndex(x => x.value === values['floorNo1']) - 3
+                    : parseInt(values['totalfloor']),
+                'floor2' : values['floorNo2'] ? parseInt(values['floorNo2']) : '',
                 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
                 'price' : parseInt(values['lease-price']),
                 'hostName': values['hostName'],
                 'hostGender': convertString(String(hostGenderArr.indexOf(values['hostGender']))),
-                'hostPhone': '886' + values['hostPhone'],
+                'hostPhone': hostPhone,
                 'config' : {
                     'room' : parseInt(values['room']),
                     'livingRoom' : (typeof(values['livingRoom']) === 'number') ? parseInt(values['livingRoom']) : 0,
@@ -454,11 +471,15 @@ const HouseUpload = (prop) => {
                 },
                 'photo' : prop.defaultValue ? PicData : photoData, // PicData have defaultData, photoData new Upload
                 'annex' : prop.defaultValue ? AnnexData : annexData, // AnnexData have defaultData, annexData new Upload
-                'remark' : values['remark']
+                'remark' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ? values['remark'] : '頂樓加蓋，' + values['remark'],
+                "belongType": prop.companyState === 2 || prop.companyState === 4 ? 2 : 1,
+                "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : decodedToken.id
             }
         )
-        if(('886'+values['hostPhone']).length == 12 || ('886'+values['hostPhone']).length == 10 ) {
+        if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 12  ) {
             // setIsSubmitModalVisible(false)
+            errorPhoneFormat();
+        } else {
             if (showPic.length+PictureList.length < 1) {
                 message.warning({
                     content: '照片至少上傳一張',
@@ -495,9 +516,6 @@ const HouseUpload = (prop) => {
                     }
                 }
             }
-
-        } else {
-            errorPhoneFormat();
         }
 
         console.log(TrafficArr);
@@ -525,10 +543,32 @@ const HouseUpload = (prop) => {
     //     </Form.Item>
     // );
 
+    /* phone Format set up */
+
+    const normalizeInput = (value, previousValue) => {
+        console.log(value)
+        if (!value) return value;
+        const currentValue = value.replace(/[^\d]/g, "");
+        const cvLength = currentValue.length;
+
+        if (!previousValue || value.length > previousValue.length) {
+            if (cvLength < 5) return currentValue;
+            if (cvLength < 8)
+                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+        }
+    };
+
+
+    console.log(hostPhone)
+
+
     const errorPhoneFormat = () => {
         message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的市話或手機號格式與長度(不需要打0)', 3));
+            .then(() => message.error('請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)', 3));
     }
+
+
 
     const changeCity = (City) => {
 
@@ -743,6 +783,9 @@ const HouseUpload = (prop) => {
     console.log(PictureList)
 
     console.log(prop.defaultValue)
+    console.log('===companyId====',prop.companyId)
+    console.log('===companyState====',prop.companyState)
+    
     // console.log(typeof(prop.defaultValue.floor))
     return (
 
@@ -884,7 +927,7 @@ const HouseUpload = (prop) => {
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                            <Divider> 附件上傳 (房屋謄本 & 授權書， PDF 檔，可後補）</Divider>
+                            <Divider> 附件上傳 (房屋謄本 & 授權書， PDF or 圖片檔，可後補）</Divider>
                         </Col>
                     </Row>
                     <Form.Item
@@ -921,7 +964,7 @@ const HouseUpload = (prop) => {
                                         fileList={AnnexList['fileList']}
                                         maxCount={10}
                                         onRemove={AnnexRemove}
-                                        accept={'.pdf'}
+                                        accept={'.pdf, .jpg, .png, .svg, .bmp, .jpeg'}
                                         beforeUpload={file => {
                                             console.log(file)
                                             if(AnnexTemp.length > 0) {
@@ -1250,6 +1293,113 @@ const HouseUpload = (prop) => {
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+
+                            <Row>
+                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                                {/*</Col>*/}
+                                <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <Form.Item
+                                        name="totalfloor"
+                                        label="總樓層"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '此欄位不能為空白',
+                                            },
+                                        ]}
+                                    >
+                                        <InputNumber placeholder=""
+                                                     style={{width: '100%'}}
+                                                     min={1}
+                                                     size="large"
+                                            // formatter={value => `${value} 公尺`}
+                                                     addonAfter="樓"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item label="樓層">
+                                <Row justify="start">
+                                    <Col  xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item
+                                            name="floorNo1"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: '此欄位不能為空白',
+                                                },
+                                            ]}
+                                        >
+                                            <Select
+                                                size={"large"}
+                                                style={{ width: '100%' }}
+                                                placeholder="樓層"
+                                                options={FloorOptions}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                        <Form.Item style={{ width: '100%' }}
+                                            // style={{ display: 'inline-block',  width: 'calc(30% - 4px)', margin: '0 4px' }}
+                                                   name="floorNo2"
+                                        >
+                                            <Input  size="large"
+                                                    placeholder="   非必填"
+                                                    style={{width: '100%'}}
+                                                    prefix='之'
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    {/*<Row>*/}
+                    {/*    <Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+
+                    {/*    </Col>*/}
+                    {/*    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>*/}
+
+                    {/*        <Row>*/}
+                    {/*            /!*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*!/*/}
+
+                    {/*            /!*</Col>*!/*/}
+                    {/*            <Col  xs={24} sm={24} md={24} lg={24} xl={24}>*/}
+                    {/*                <Form.Item*/}
+                    {/*                    name="floor"*/}
+                    {/*                    label="樓層"*/}
+                    {/*                    tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓層'*/}
+                    {/*                    rules={[*/}
+                    {/*                        {*/}
+                    {/*                            required: true,*/}
+                    {/*                            message: '此欄位不能為空白',*/}
+                    {/*                        },*/}
+                    {/*                    ]}*/}
+                    {/*                >*/}
+                    {/*                    <Select*/}
+                    {/*                        size={"large"}*/}
+                    {/*                        style={{ width: '100%' }}*/}
+                    {/*                        placeholder="樓層"*/}
+                    {/*                        options={FloorOptions}*/}
+                    {/*                    />*/}
+                    {/*                </Form.Item>*/}
+                    {/*            </Col>*/}
+                    {/*        </Row>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                             <Form.Item label="屋主">
                                 <Row>
                                     <Col  xs={18} sm={19} md={19} lg={20} xl={21}>
@@ -1307,51 +1457,28 @@ const HouseUpload = (prop) => {
                                     },
                                 ]}
                                 style={{ width: '100%' }}
+
                             >
-                                <Input  addonBefore={PhonePrefixSelector}
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                        size="large"
-                                        placeholder='市話或手機'
-                                />
+                                <>
+                                    <Input
+                                        // addonBefore={PhonePrefixSelector}
+                                            style={{
+                                                width: '100%',
+                                            }}
+                                            size="large"
+                                            placeholder='09xx-xxx-xxx'
+                                            value={hostPhone}
+                                            onChange={(e) => {
+                                                console.log(e.target.value)
+                                                setHostPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                            }
+                                            }
+                                    />
+                                </>
                             </Form.Item>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
-                        </Col>
-                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-
-                                <Row>
-                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
-
-                                    {/*</Col>*/}
-                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <Form.Item
-                                            name="floor"
-                                            label="樓層"
-                                            tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓層'
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: '此欄位不能為空白',
-                                                },
-                                            ]}
-                                        >
-                                        <InputNumber placeholder=""
-                                                     style={{width: '100%'}}
-                                                     min={-2}
-                                                     size="large"
-                                            // formatter={value => `${value} 公尺`}
-                                                     addonAfter="樓"
-                                        />
-                                            </Form.Item>
-                                    </Col>
-                                </Row>
-                        </Col>
-                    </Row>
                     <Row>
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 

@@ -348,7 +348,6 @@ function removeUser(userId){
           title: '名稱',
           dataIndex: 'name',
           key: 'name',
-          width:'100px',
           render: (name) => {
             return <div style={{
                 'textAlign': 'center',
@@ -361,7 +360,6 @@ function removeUser(userId){
             title: '內容',
             dataIndex: 'content',
             key: 'content',
-            //  width:'100px',
             render: (content) => {
               return <div style={{
                   'textAlign': 'center',
