@@ -391,7 +391,7 @@ const Main = () => {
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
-        const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
+        // const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -404,7 +404,7 @@ const Main = () => {
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
-        reserveHouseListMenu.style.display = 'none'
+        // reserveHouseListMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
@@ -435,7 +435,7 @@ const Main = () => {
         console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
-        const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
+        // const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -446,7 +446,7 @@ const Main = () => {
         const relativeLinkContent = document.getElementById('relativeLinkContent')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
-        reserveHouseListMenu.style.display = 'none'
+        // reserveHouseListMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
@@ -479,7 +479,7 @@ const Main = () => {
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
-                reserveHouseListMenu.style.display = 'flex'
+                // reserveHouseListMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
@@ -530,9 +530,9 @@ const Main = () => {
           <Menu.Item key='3' id="uploadHousesMenu" style={{'height':'50px','display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item key='21' id="reserveHouseListMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouseList}>
-            預約列表
-          </Menu.Item>
+          {/*<Menu.Item key='21' id="reserveHouseListMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouseList}>*/}
+          {/*  預約列表*/}
+          {/*</Menu.Item>*/}
           <Menu.Item key='4' id="memberListMenu" style={{'height':'50px','display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
             會員列表
           </Menu.Item>
@@ -559,38 +559,38 @@ const Main = () => {
                     相關連結
               </Menu.Item> */} {/*no use*/}
 
-          <Menu.Item key='13' id="companyApplyMenu" style={{'height':'50px','display':'none'}} icon={<SearchCompanyIcon />} onClick={companyApply}>
-            加入公司
-          </Menu.Item>
-          <Menu.SubMenu
-               id="relativeLinkMenu"
-               key='14'
-               title={"公司"}
-               style={{'display':'none'}}
-               icon={<PropertyIcon />} >
-              <Menu.Item key='18' id="companyInfo" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
-                    公司簡介
-              </Menu.Item>
-              <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
-                    租屋列表
-              </Menu.Item>
-              <Menu.Item key='19' id="companyMyHouseList" onClick={companyMyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeFilled />}>
-                    我的租屋
-              </Menu.Item>
-              <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
-                    審核申請
-              </Menu.Item>
-              <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
-                    員工列表
-              </Menu.Item>
-              <Menu.Item key='16' id="companyEmployeeInfo" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>
-                    員工中心
-              </Menu.Item>
-              
-              
-              
+         {/* <Menu.Item key='13' id="companyApplyMenu" style={{'height':'50px','display':'none'}} icon={<SearchCompanyIcon />} onClick={companyApply}>*/}
+         {/*   加入公司*/}
+         {/* </Menu.Item>*/}
+         {/* <Menu.SubMenu*/}
+         {/*      id="relativeLinkMenu"*/}
+         {/*      key='14'*/}
+         {/*      title={"公司"}*/}
+         {/*      style={{'display':'none'}}*/}
+         {/*      icon={<PropertyIcon />} >*/}
+         {/*     <Menu.Item key='18' id="companyInfo" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>*/}
+         {/*           公司簡介*/}
+         {/*     </Menu.Item>*/}
+         {/*     <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>*/}
+         {/*           租屋列表*/}
+         {/*     </Menu.Item>*/}
+         {/*     <Menu.Item key='19' id="companyMyHouseList" onClick={companyMyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeFilled />}>*/}
+         {/*           我的租屋*/}
+         {/*     </Menu.Item>*/}
+         {/*     <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>*/}
+         {/*           審核申請*/}
+         {/*     </Menu.Item>*/}
+         {/*     <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>*/}
+         {/*           員工列表*/}
+         {/*     </Menu.Item>*/}
+         {/*     <Menu.Item key='16' id="companyEmployeeInfo" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>*/}
+         {/*           員工中心*/}
+         {/*     </Menu.Item>*/}
+         {/*     */}
+         {/*     */}
+         {/*     */}
 
-         </Menu.SubMenu>
+         {/*</Menu.SubMenu>*/}
 
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
             聯絡客服
@@ -618,9 +618,9 @@ const Main = () => {
         isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null           
     }
 
-    {
-        isShowReserveHouseList?(<ReserveHouseList></ReserveHouseList>):null           
-    }
+    {/*{*/}
+    {/*    isShowReserveHouseList?(<ReserveHouseList></ReserveHouseList>):null           */}
+    {/*}*/}
 
 
     {
@@ -648,27 +648,27 @@ const Main = () => {
     }
 
 
-    {
-        isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
-    }
-    {
-        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData}></CompanyApplyList>):null           
-    }
-    {
-        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={currentEmployeeData}></CompanyEmployeeInfo>):null           
-    }
-    {
-        isShowCompanyHouseList?(<CompanyHouseList></CompanyHouseList>):null           
-    }
-    {
-        isShowCompanyInfo?(<CompanyInfo info={currentEmployeeData.companyData[0]}></CompanyInfo>):null           
-    }
-    {
-        isShowCompanyMyHouseList?(<CompanyMyHouseList></CompanyMyHouseList>):null           
-    }
-    {
-        isShowCompanyEmployeesList?(<CompanyEmployeesList></CompanyEmployeesList>):null           
-    }
+    {/*{*/}
+    {/*    isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           */}
+    {/*}*/}
+    {/*{*/}
+    {/*    isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData}></CompanyApplyList>):null           */}
+    {/*}*/}
+    {/*{*/}
+    {/*    isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={currentEmployeeData}></CompanyEmployeeInfo>):null           */}
+    {/*}*/}
+    {/*{*/}
+    {/*    isShowCompanyHouseList?(<CompanyHouseList></CompanyHouseList>):null           */}
+    {/*}*/}
+    {/*{*/}
+    {/*    isShowCompanyInfo?(<CompanyInfo info={currentEmployeeData.companyData[0]}></CompanyInfo>):null           */}
+    {/*}*/}
+    {/*{*/}
+    {/*    isShowCompanyMyHouseList?(<CompanyMyHouseList></CompanyMyHouseList>):null           */}
+    {/*}*/}
+    {/*{*/}
+    {/*    isShowCompanyEmployeesList?(<CompanyEmployeesList></CompanyEmployeesList>):null           */}
+    {/*}*/}
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
             <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeUserMenu={changeUserMenu} ></LoginSignIn>
         </div>

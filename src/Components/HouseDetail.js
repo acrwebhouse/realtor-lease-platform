@@ -733,9 +733,9 @@ console.log(showFloor2)
                                     複製連結
                                 </Button>
                                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                <Button type="primary" onClick={() => reserveFormEnable()} style={{width: '100px',backgroundColor : '#00cc00' }}>
-                                    預約看房
-                                </Button>
+                                {/*<Button type="primary" onClick={() => reserveFormEnable()} style={{width: '100px',backgroundColor : '#00cc00' }}>*/}
+                                {/*    預約看房*/}
+                                {/*</Button>*/}
                             </div>
                             {reserveVisible?<div>
                                 <br/>
