@@ -120,7 +120,7 @@ const Register = (props) => {
             setIsRunPost(false)
             setCityValid(false)
             setAreaValid(false)
-
+            setOwnerPhone('')
         }
     }, [isRunPost, RegisterData])
 

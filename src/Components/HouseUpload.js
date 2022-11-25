@@ -414,6 +414,8 @@ const HouseUpload = (prop) => {
             EducationArr.splice(0, EducationArr.length)
             PicData.splice(0, PicData.length)
             AnnexData.splice(0, AnnexData.length)
+            setHostPhone('')
+
         }
     }, [isRunPost, HouseData, prop.defaultValue, xToken])
 

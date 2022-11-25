@@ -349,7 +349,7 @@ const HouseDetail = (prop) => {
         }
         
     }
-
+console.log(showFloor2)
     function changeAddressDetail(house){
         const houseNumber = house.houseNumber
         let value = ''
@@ -455,9 +455,7 @@ const HouseDetail = (prop) => {
     }
 
 
-    const reserveFormEnable = () => {
-        setReserveVisible(true)
-    }
+
 
     function phoneClick(phoneNumber){
         let a = document.createElement('a');
@@ -475,9 +473,8 @@ const HouseDetail = (prop) => {
         window.open('https://line.me/ti/p/~'+lineId,'加入好友',strWindowFeatures)
     }
 
-
-    const UploadReserveData = (values) => {
-        console.log(values)
+    const reserveFormEnable = () => {
+        console.log(house)
         const xToken = cookie.load('x-token')
         if (xToken) {
             setReserveClientData({
@@ -490,6 +487,13 @@ const HouseDetail = (prop) => {
             })
             setIsRunPost(true)
         } else {
+            setReserveVisible(true)
+        }
+
+    }
+
+    const UploadReserveData = (values) => {
+        console.log(values)
             if(values['reserveName'] && values['reservePhone']) {
                 setReserveClientData({
                     "host": house['owner'],
@@ -512,7 +516,6 @@ const HouseDetail = (prop) => {
                 }).then(() => {
                 })
             }
-        }
     }
 
     console.log(reserveClientData)
@@ -734,9 +737,9 @@ const HouseDetail = (prop) => {
                                     預約看房
                                 </Button>
                             </div>
-                            <div>
+                            {reserveVisible?<div>
                                 <br/>
-                                {reserveVisible?
+
                                     <div style={{display:'flex', borderRadius: '15px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
                                         <Form form={form_reserve} layout="vertical" name="ReserveForm" onFinish={UploadReserveData}>
                                             <Form.Item
@@ -771,17 +774,13 @@ const HouseDetail = (prop) => {
                                                 送出
                                             </Button>
                                         </Form>
-                                    </div> : []
-                                }
-                            </div>
+                                    </div>
+
+                            </div> : []}
                         </div>
                         <br/>
 
-
-                        <br/>
-
-                        <div style={{'fontSize':'15px' ,'borderRadius': '30px','borderStyle':'solid','borderColor':'#FFAC55','backgroundColor':'#FFE4CA' }}>
-                            <br/>
+                        <div style={{display:'flex', 'fontSize':'15px', 'padding' : '10px' ,'borderRadius': '5px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
                             <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
                             <br/>
                             &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
@@ -794,7 +793,6 @@ const HouseDetail = (prop) => {
                                     </Button>
                                 ):null           
                             }
-                            <br/>
                             <br/>
                         </div>
                         <br/>

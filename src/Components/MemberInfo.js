@@ -418,6 +418,12 @@ function editPhone(e){
     setEditUser(editUserValue)
 }
 
+function editLineId(e){
+    const editUserValue = editUser
+    editUserValue.lineId = e.target.value
+    setEditUser(editUserValue)
+}
+
 function editLicense(e){
     const editUserValue = editUser
     if(editUserValue.rolesInfo.sales){
@@ -611,6 +617,24 @@ function changeDate(e, dateString){
                     <div>地址:&nbsp;{user.address}</div> }
                     <br/>
                     <div>信箱:&nbsp;{user.mail}</div> 
+                    <br/>
+                    {isEdit?(
+                            <div >
+                                <Row>
+                                    <Col xs={4} sm={4} md={4} lg={4} xl={4}>
+                                        <div style={{
+                                            'display': 'inline-block',
+                                            'textAlign': 'left',
+                                        }}>
+                                            LineID:
+                                        </div>
+                                    </Col>
+                                    <Col xs={20} sm={20} md={20} lg={20} xl={20}>
+                                        <Input onChange={editLineId} style={{ width: '100%' }} defaultValue={user.lineId}></Input>
+                                    </Col>
+                                </Row>
+                            </div>):
+                        <div>LineID:&nbsp;{user.lineId}</div> }
                     <br/>
                     {isEdit?(
                          <div >
