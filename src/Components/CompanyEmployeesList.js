@@ -246,12 +246,9 @@ const CompanyEmployeesList = (props) => {
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    {/* <Button type="primary" onClick={() => applyResult(true,content[6])} style={{width: '80px' }}>
-                        同意
+                    <Button type="primary"  style={{width: '80px' }}>
+                        編輯
                     </Button>
-                    <Button type="primary" danger onClick={() => applyResult(false,content[6])} style={{width: '80px' }}>
-                        拒絕
-                    </Button> */}
                 <div >
                 </div>
               </div>
