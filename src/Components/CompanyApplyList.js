@@ -16,6 +16,7 @@ const CompanyApplyList = (props) => {
     const [init, setInit] = useState(true);
     const [companyApplyList , setCompanyApplyList] = useState([]);
     const getCompanyApplyListUrl = '/employees/getEmployeesListByCompanyId'
+    const editEmployees = '/employees/editEmployees'
 
     let data = [
         {
@@ -93,6 +94,7 @@ const CompanyApplyList = (props) => {
                     item.content.push(`帳號 : ${items[i].userData[0].account}`)
                     item.content.push(`電話 : ${items[i].userData[0].phone}`)
                     item.content.push(`信箱 : ${items[i].userData[0].mail}`)
+                    item.content.push(items[i])
 
                 }
                 data.push(item)
@@ -102,9 +104,37 @@ const CompanyApplyList = (props) => {
         }
     }
 
-    function applyResult(isPass,applyId){
-        console.log('==applyResult===isPass==',isPass)
-        console.log('==applyResult===applyId==',applyId)
+    function applyResult(isPass,employee){
+        const body = {
+            'id': employee._id,
+            'companyId': employee.companyId,
+            'userId': employee.userId,
+            'rank': employee.rank,
+            'managerId': employee.managerId,
+            'state': employee.state,
+            'isResign': employee.isResign
+          }
+        if(isPass === true){
+            body.state = 2
+        }else{
+            body.state = 3
+        }
+
+        const xToken = cookie.load('x-token')
+        let reqUrl = `${editEmployees}`
+        CompanyAxios.put(reqUrl, body, {
+            headers:{
+                'x-Token':xToken
+            }
+        }).then((response) => {
+            console.log(response)
+            if(response.data.status === true){
+                getCompanyApplyList()
+            }else{
+                message.error('審核失敗', 3)
+            }
+        }).catch( (error) => message.error(error, 3))
+
     }
 
     const columns = [
@@ -165,10 +195,10 @@ const CompanyApplyList = (props) => {
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    <Button type="primary" onClick={() => applyResult(true,content[0])} style={{width: '80px' }}>
+                    <Button type="primary" onClick={() => applyResult(true,content[6])} style={{width: '80px' }}>
                         同意
                     </Button>
-                    <Button type="primary" danger onClick={() => applyResult(false,content[0])} style={{width: '80px' }}>
+                    <Button type="primary" danger onClick={() => applyResult(false,content[6])} style={{width: '80px' }}>
                         拒絕
                     </Button>
                 <div >
