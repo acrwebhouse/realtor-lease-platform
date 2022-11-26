@@ -162,7 +162,7 @@ const CompanyList = (props) => {
               
           },
           {
-            title: '內容',
+            title: '',
             dataIndex: 'content',
             key: 'content',
             //  width:'50px',
