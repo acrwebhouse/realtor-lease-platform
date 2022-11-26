@@ -14,6 +14,7 @@ import {
 const CompanyApplyList = (props) => {
     let { id } = useParams();
     const [init, setInit] = useState(true);
+    const [applyList , setApplyList] = useState([]);
     const getCompanyApplyListUrl = '/employees/getEmployeesListByCompanyId'
 
     useEffect(() => {
@@ -46,6 +47,11 @@ const CompanyApplyList = (props) => {
             .then( (response) => {
                 console.log('===getCompanyApplyList=====')
                 console.log(response)
+                if(response.data.status === true){
+                    setApplyList(response.data.data)
+                }else{
+                    message.error('抓取公司審核列表失敗', 3)
+                }
             })
             .catch( (error) => message.error(error, 3))
     }
@@ -53,7 +59,7 @@ const CompanyApplyList = (props) => {
     return (
         <div>
             <Divider>審核列表</Divider>
-            {JSON.stringify(props.currentEmployeeData)}
+            {JSON.stringify(applyList)}
             CompanyApplyList page
             
         </div>
