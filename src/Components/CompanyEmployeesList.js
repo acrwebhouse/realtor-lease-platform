@@ -246,8 +246,11 @@ const CompanyEmployeesList = (props) => {
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    <Button type="primary"  style={{width: '80px' }}>
+                    <Button type="primary"   style={{width: '80px' , backgroundColor : '#00cc00' }}>
                         編輯
+                    </Button>
+                    <Button type="primary" danger  style={{width: '80px' }}>
+                        離職
                     </Button>
                 <div >
                 </div>
