@@ -578,7 +578,7 @@ const Main = () => {
                     我的租屋
               </Menu.Item>
               <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
-                    審核申請
+                    審核列表
               </Menu.Item>
               <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
                     員工列表

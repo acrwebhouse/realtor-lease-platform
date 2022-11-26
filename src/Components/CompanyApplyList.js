@@ -61,7 +61,7 @@ const CompanyApplyList = (props) => {
                 console.log(response)
                 if(response.data.status === true){
                     // setCompanyApplyList(response.data.data)
-                    resolveCompantList(response)
+                    resolveCompanyApplyList(response)
                 }else{
                     message.error('抓取公司審核列表失敗', 3)
                 }
@@ -69,24 +69,42 @@ const CompanyApplyList = (props) => {
             .catch( (error) => message.error(error, 3))
     }
 
-    function resolveCompantList(response){
+    function resolveCompanyApplyList(response){
         data = []
         if(response.data && response.data.data){
             const items = response.data.data
             for(let i = 0 ;i<items.length; i++){
                 const item = {
                     key: i,
-                    name: items[i].name,
-                    content: [`統一編號 : ${items[i].unifiedBusinessNo}`,`地址 : ${items[i].address}`,`負責人 : ${items[i].owner}`,`電話 : ${items[i].phone}`,`信箱 : ${items[i].mail}`,items[i]._id,items[i].name],
+                    name: items[i]._id,
+                    // content: [`統一編號 : ${items[i].unifiedBusinessNo}`,`地址 : ${items[i].address}`,`負責人 : ${items[i].owner}`,`電話 : ${items[i].phone}`,`信箱 : ${items[i].mail}`,items[i]._id,items[i].name],
+                    content : []
                     }
+                if(items[i].userData.length > 0){
+                    item.content = [items[i]._id,`姓名 : ${items[i].userData[0].name}`]
+                    if(items[i].userData[0].gender === true){
+                        item.content.push('性別 : 男')
+                    } else if(items[i].userData[0].gender === false){
+                        item.content.push('性別 : 女')
+                    } else {
+                        item.content.push('性別 : 男')
+                    }
+
+                    item.content.push(`帳號 : ${items[i].userData[0].account}`)
+                    item.content.push(`電話 : ${items[i].userData[0].phone}`)
+                    item.content.push(`信箱 : ${items[i].userData[0].mail}`)
+
+                }
                 data.push(item)
             }
+            console.log('===data====',data)
             setCompanyApplyList(data)
         }
     }
 
     function applyResult(isPass,applyId){
-
+        console.log('==applyResult===isPass==',isPass)
+        console.log('==applyResult===applyId==',applyId)
     }
 
     const columns = [
@@ -118,16 +136,14 @@ const CompanyApplyList = (props) => {
                       <div style={{
                         'color': '#0000ff',
                         'fontSize':'20px'
-                     }}>{content[6]}</div>
-                      {content[0]}
-                      <br/>
-                      {content[1]}
-                      <br/>
+                     }}>{content[1]}</div>
                       {content[2]}
                       <br/>
                       {content[3]}
                       <br/>
                       {content[4]}
+                      <br/>
+                      {content[5]}
 
                 <div >
                 </div>
@@ -149,10 +165,10 @@ const CompanyApplyList = (props) => {
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    <Button type="primary" onClick={() => applyResult(true,'')} style={{width: '80px' }}>
+                    <Button type="primary" onClick={() => applyResult(true,content[0])} style={{width: '80px' }}>
                         同意
                     </Button>
-                    <Button type="primary" danger onClick={() => applyResult(false,'')} style={{width: '80px' }}>
+                    <Button type="primary" danger onClick={() => applyResult(false,content[0])} style={{width: '80px' }}>
                         拒絕
                     </Button>
                 <div >
