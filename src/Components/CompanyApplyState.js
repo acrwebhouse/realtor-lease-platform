@@ -3,7 +3,7 @@ import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, Da
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
-import moment from 'moment';
+import {CompanyAxios} from './axiosApi'
 import {
     useParams
   } from "react-router-dom";
@@ -11,6 +11,7 @@ import {
 const CompanyApplyState = (props) => {
     let { id } = useParams();
     const [init, setInit] = useState(true);
+    const cancelApplyEmployeesUrl = '/employees/cancelApplyEmployees'
 
     useEffect(() => {
         if (init) {
@@ -19,7 +20,26 @@ const CompanyApplyState = (props) => {
     }, )
 
     function cancelApply(){
-        props.showCompanyListUI()
+        const xToken = cookie.load('x-token')
+        let reqUrl = `${cancelApplyEmployeesUrl}`
+        let body = {
+            id: '',
+        }
+        if(props.currentEmployeeData !== undefined){
+            body.id = props.currentEmployeeData._id
+        }
+        CompanyAxios.put(reqUrl, body, {
+            headers:{
+                'x-Token':xToken
+            }
+        }).then((response) => {
+            console.log(response)
+            if(response.data.status === true){
+                props.showCompanyListUI()
+            }else{
+                message.error('取消失敗', 3)
+            }
+        }).catch( (error) => message.error(error, 3))
     }
 
     return (
