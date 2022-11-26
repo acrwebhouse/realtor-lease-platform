@@ -182,10 +182,11 @@ const CompanyApplyList = (props) => {
 
     return (
         <div>
-            <Divider>審核列表</Divider>
+            
             <Row>
             <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+            <Divider>審核列表</Divider>
             <Table
                 columns={columns}
                 pagination={{ position: ['topLeft', 'bottomRight'] }}

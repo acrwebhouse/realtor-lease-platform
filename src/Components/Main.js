@@ -40,7 +40,6 @@ import CompanyApplyList from "./CompanyApplyList";
 import CompanyEmployeeInfo from "./CompanyEmployeeInfo";
 import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
-import CompanyMyHouseList from "./CompanyMyHouseList";
 import CompanyEmployeesList from "./CompanyEmployeesList";
 
 const collectAccessTimeUrl = 'collect/accessTime'
@@ -65,7 +64,6 @@ const Main = () => {
     const [isShowCompanyEmployeeInfo, setIsShowCompanyEmployeeInfo] = useState(false);
     const [isShowCompanyHouseList, setIsShowCompanyHouseList] = useState(false);
     const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
-    const [isShowCompanyMyHouseList, setIsShowCompanyMyHouseList] = useState(false);
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
     
     const [isShowReserveHouseList, setIsShowReserveHouseList] = useState(false);
@@ -154,7 +152,6 @@ const Main = () => {
         if(employee.state === 2 || employee.state === 4){
             const companyInfo = document.getElementById('companyInfo');
             const companyHouseList = document.getElementById('companyHouseList');
-            const companyMyHouseList = document.getElementById('companyMyHouseList');
             const companyApplyList = document.getElementById('companyApplyList');
             const companyEmployeesList = document.getElementById('companyEmployeesList');
             const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
@@ -163,7 +160,6 @@ const Main = () => {
             // relativeLinkMenu.style.display = 'flex'
             companyInfo.style.display = 'flex'
             companyHouseList.style.display = 'flex'
-            companyMyHouseList.style.display = 'flex'
             companyEmployeeInfo.style.display = 'flex'
             if(employee.rank === 0){
                 companyApplyList.style.display = 'flex'
@@ -202,7 +198,6 @@ const Main = () => {
         setIsShowCompanyEmployeeInfo(false);
         setIsShowCompanyHouseList(false);
         setIsShowCompanyInfo(false);
-        setIsShowCompanyMyHouseList(false);
         setIsShowCompanyEmployeesList(false)
     }
 
@@ -364,13 +359,6 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['18'])
         setIsShowCompanyInfo(true)
-    }
-
-    const companyMyHouseList = () =>{
-        console.log('companyMyHouseList')
-        turnOffPage()
-        setSelectMenu(['19'])
-        setIsShowCompanyMyHouseList(true)
     }
 
     const companyEmployeesList = () =>{
@@ -574,9 +562,6 @@ const Main = () => {
               <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     租屋列表
               </Menu.Item>
-              <Menu.Item key='19' id="companyMyHouseList" onClick={companyMyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeFilled />}>
-                    我的租屋
-              </Menu.Item>
               <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
                     審核列表
               </Menu.Item>
@@ -662,9 +647,6 @@ const Main = () => {
     }
     {
         isShowCompanyInfo?(<CompanyInfo info={currentEmployeeData.companyData[0]}></CompanyInfo>):null           
-    }
-    {
-        isShowCompanyMyHouseList?(<CompanyMyHouseList></CompanyMyHouseList>):null           
     }
     {
         isShowCompanyEmployeesList?(<CompanyEmployeesList></CompanyEmployeesList>):null           
