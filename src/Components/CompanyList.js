@@ -134,7 +134,7 @@ const CompanyList = (props) => {
             key: 'content',
             render: (content) => {
               return <div style={{
-                  'textAlign': 'center',
+                //   'textAlign': 'center',
               }}>
                   <div style={{
                   'display': 'inline-block',
