@@ -181,6 +181,12 @@ const HousesList = (props) => {
             reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
         }
 
+        if(props.isCompanyList === true){
+            getHousesArg.belongType = 2
+            getHousesArg.belongId = props.companyId
+            reqUrl = `${reqUrl}&&belongType=${getHousesArg.belongType}&&belongId=${getHousesArg.belongId}`
+        }
+
         if(props.owner!==''&&props.owner!==undefined&&props.owner!==null){
             let sendOwner = true
             for(let i = 0 ;i<props.roles.length;i++){

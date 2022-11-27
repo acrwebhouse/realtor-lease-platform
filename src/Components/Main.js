@@ -643,7 +643,7 @@ const Main = () => {
         isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={currentEmployeeData}></CompanyEmployeeInfo>):null           
     }
     {
-        isShowCompanyHouseList?(<CompanyHouseList></CompanyHouseList>):null           
+        isShowCompanyHouseList?(<CompanyHouseList companyId={currentEmployeeData.companyData[0]._id}></CompanyHouseList>):null           
     }
     {
         isShowCompanyInfo?(<CompanyInfo info={currentEmployeeData.companyData[0]}></CompanyInfo>):null           
