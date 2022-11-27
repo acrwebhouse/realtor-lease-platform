@@ -41,6 +41,8 @@ import CompanyEmployeeInfo from "./CompanyEmployeeInfo";
 import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
 import CompanyEmployeesList from "./CompanyEmployeesList";
+import CompanyTransactionList from "./CompanyTransactionList";
+
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -67,7 +69,9 @@ const Main = () => {
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
     
     const [isShowReserveHouseList, setIsShowReserveHouseList] = useState(false);
+    const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
 
+    
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -152,6 +156,7 @@ const Main = () => {
         if(employee.state === 2 || employee.state === 4){
             const companyInfo = document.getElementById('companyInfo');
             const companyHouseList = document.getElementById('companyHouseList');
+            const companyTransactionList = document.getElementById('companyTransactionList');
             const companyApplyList = document.getElementById('companyApplyList');
             const companyEmployeesList = document.getElementById('companyEmployeesList');
             const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
@@ -161,6 +166,7 @@ const Main = () => {
             companyInfo.style.display = 'flex'
             companyHouseList.style.display = 'flex'
             companyEmployeeInfo.style.display = 'flex'
+            companyTransactionList.style.display = 'flex'
             if(employee.rank === 0){
                 companyApplyList.style.display = 'flex'
                 companyEmployeesList.style.display = 'flex'
@@ -199,6 +205,7 @@ const Main = () => {
         setIsShowCompanyHouseList(false);
         setIsShowCompanyInfo(false);
         setIsShowCompanyEmployeesList(false)
+        setIsShowCompanyTransactionList(false)
     }
 
     function toggleCollapsed() {
@@ -375,6 +382,13 @@ const Main = () => {
         setIsShowReserveHouseList(true)
     }
     
+    function companyTransactionList(){
+        console.log('companyTransactionList')
+        turnOffPage()
+        setSelectMenu(['22'])
+        setIsShowCompanyTransactionList(true)
+    }
+
     function logout(){
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
@@ -562,6 +576,9 @@ const Main = () => {
               <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     租屋列表
               </Menu.Item>
+              <Menu.Item key='22' id="companyTransactionList" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+                    成交紀錄
+              </Menu.Item>
               <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
                     審核列表
               </Menu.Item>
@@ -651,6 +668,11 @@ const Main = () => {
     {
         isShowCompanyEmployeesList?(<CompanyEmployeesList currentEmployeeData={currentEmployeeData}></CompanyEmployeesList>):null           
     }
+    {
+        isShowCompanyTransactionList?(<CompanyTransactionList currentEmployeeData={currentEmployeeData}></CompanyTransactionList>):null           
+    }
+
+
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
             <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeUserMenu={changeUserMenu} ></LoginSignIn>
         </div>
