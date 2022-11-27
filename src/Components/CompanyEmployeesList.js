@@ -46,11 +46,7 @@ const CompanyEmployeesList = (props) => {
                     }
                 })
             .then( (response) => {
-                console.log('===getCompanyApplyList=====')
-                console.log(response)
                 if(response.data.status === true){
-                    // setCompanyApplyList(response.data.data)
-                    // resolveCompanyApplyList(response)
                     resolveCompanyApplyList(response)
                 }else{
                     message.error('抓取員工列表失敗', 3)
