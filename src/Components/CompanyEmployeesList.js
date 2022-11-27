@@ -245,6 +245,7 @@ const CompanyEmployeesList = (props) => {
                     <Button type="primary"   style={{width: '80px' , backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
+                    &nbsp;&nbsp;&nbsp;
                     <Button type="primary" danger  style={{width: '80px' }}>
                         離職
                     </Button>

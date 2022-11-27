@@ -58,8 +58,6 @@ const CompanyApplyList = (props) => {
                     }
                 })
             .then( (response) => {
-                console.log('===getCompanyApplyList=====')
-                console.log(response)
                 if(response.data.status === true){
                     // setCompanyApplyList(response.data.data)
                     resolveCompanyApplyList(response)
@@ -198,6 +196,7 @@ const CompanyApplyList = (props) => {
                     <Button type="primary" onClick={() => applyResult(true,content[6])} style={{width: '80px' }}>
                         同意
                     </Button>
+                    &nbsp;&nbsp;&nbsp;
                     <Button type="primary" danger onClick={() => applyResult(false,content[6])} style={{width: '80px' }}>
                         拒絕
                     </Button>
