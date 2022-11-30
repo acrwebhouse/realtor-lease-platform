@@ -58,7 +58,7 @@ for (let i = 1; i < 100; i++) {
         value: i + '樓'
     });
 }
-console.log(FloorOptions)
+console.log(FloorOptions[0])
 
 const defaultExtraRequire = [];
 let PicData = [];
@@ -78,7 +78,7 @@ const House_Annex_Auth = 'house/uploadHouseAnnex/'
 const House_Auth = 'house/addHouse/'
 const Edit_House_Auth = 'house/editHouse'
 const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
-const annexType = ['application/pdf']
+const annexType = ['application/pdf', 'image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
 const PicTemp = []
 const AnnexTemp = []
 const hostGenderArr=['小姐', '先生']
@@ -98,6 +98,16 @@ const convertString = (word) =>{
         case "yes": case "true": case "1": return true;
         case "no": case "false": case "0": case null: return false;
         default: return Boolean(word);
+    }
+}
+
+const FloorCheck = (FloorValue, remark) => {
+    if (remark.indexOf('頂樓加蓋，') === 0){
+        return '0'
+    } else if(FloorValue < 0) {
+        return FloorValue + 4
+    } else {
+        return FloorValue + 3
     }
 }
 
@@ -158,7 +168,7 @@ const HouseUpload = (prop) => {
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
     const [PicUploadCheck, setPicUploadCheck] = useState(false)
-    const [hostPhone, setHostPhone] = useState('')
+    const [hostPhone, setHostPhone] = useState(prop.defaultValue?prop.defaultValue.hostPhone:'')
 
 
     const showTrafficModal = () => {
@@ -308,103 +318,105 @@ const HouseUpload = (prop) => {
 
         if (isRunPost) {
             prop.defaultValue ?
-                    HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner}), {
-                        headers: {
-                            "content-type": "application/json",
-                            "accept": "application/json",
-                            "x-token" : xToken,
-                        }})
-                        // .then( (response) => console.log(response.data.status))
-                        .then((response) => {
-                            console.log(response)
-                            if (response.data.status === true) {
-                                message.success({
-                                    content: '房屋資料更新成功',
-                                    style: {
-                                        fontSize: '40px',
-                                        marginTop: '20vh',
-                                    },
-                                    duration: 3,
-                                }).then(() => {
-                                })
-                                setTimeout(() => {
-                                    window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
-                                }, 2000)
+                HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner}), {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        "x-token" : xToken,
+                    }})
+                    // .then( (response) => console.log(response.data.status))
+                    .then((response) => {
+                        console.log(response)
+                        if (response.data.status === true) {
+                            message.success({
+                                content: '房屋資料更新成功',
+                                style: {
+                                    fontSize: '40px',
+                                    marginTop: '20vh',
+                                },
+                                duration: 3,
+                            }).then(() => {
+                            })
+                            setTimeout(() => {
+                                window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
+                            }, 2000)
 
-                            } else {
-                                message.error(response.data.data, 3).then(() => {
-                                })
-                            }
+                        } else {
+                            message.error(response.data.data, 3).then(() => {
+                            })
+                        }
 
-                            // if(!response.data.status && response.data.data.includes('house address is exist')) {
-                            //     message.error({
-                            //         content: '此地址已存在，請重新填寫正確地址',
-                            //         style: {
-                            //             fontSize: '40px',
-                            //             marginTop: '20vh',
-                            //         },
-                            //         duration: 4,
-                            //     }).then()
-                            //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                            // }else{
-                            //     message.success({
-                            //         content: '房屋資料上傳成功',
-                            //         style: {
-                            //             fontSize: '40px',
-                            //             marginTop: '20vh',
-                            //         },
-                            //         duration: 2,
-                            //     }).then(() => {})
-                            //     // message.success(`房屋資料上傳成功`, 2, ).then()
-                            // }
+                        // if(!response.data.status && response.data.data.includes('house address is exist')) {
+                        //     message.error({
+                        //         content: '此地址已存在，請重新填寫正確地址',
+                        //         style: {
+                        //             fontSize: '40px',
+                        //             marginTop: '20vh',
+                        //         },
+                        //         duration: 4,
+                        //     }).then()
+                        //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
+                        // }else{
+                        //     message.success({
+                        //         content: '房屋資料上傳成功',
+                        //         style: {
+                        //             fontSize: '40px',
+                        //             marginTop: '20vh',
+                        //         },
+                        //         duration: 2,
+                        //     }).then(() => {})
+                        //     // message.success(`房屋資料上傳成功`, 2, ).then()
+                        // }
 
-                        })
-                        .catch((error) => message.error(`${error}`, 2))
+                    })
+                    .catch((error) => message.error(`${error}`, 2))
 
                 :
-            HouseAxios.post(House_Auth, HouseData, {
-                headers: {
-                    "content-type": "application/json",
-                    "accept": "application/json",
-                    "x-token" : xToken,
-                }
-            })
-                // .then( (response) => console.log(response.data.status))
-                .then((response) => {
-                    console.log(response.data)
-                    message.success({
-                        content: '房屋資料上傳成功',
-                        style: {
-                            fontSize: '40px',
-                            marginTop: '20vh',
-                        },
-                        duration: 2,
-                    }).then()
-                    // if(!response.data.status && response.data.data.includes('house address is exist')) {
-                    //     message.error({
-                    //         content: '此地址已存在，請重新填寫正確地址',
-                    //         style: {
-                    //             fontSize: '40px',
-                    //             marginTop: '20vh',
-                    //         },
-                    //         duration: 4,
-                    //     }).then()
-                    //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                    // }else{
-                    //     message.success({
-                    //         content: '房屋資料上傳成功',
-                    //         style: {
-                    //             fontSize: '40px',
-                    //             marginTop: '20vh',
-                    //         },
-                    //         duration: 2,
-                    //     }).then(() => {})
-                    //     // message.success(`房屋資料上傳成功`, 2, ).then()
-                    // }
-
+                HouseAxios.post(House_Auth, HouseData, {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        "x-token" : xToken,
+                    }
                 })
+                    // .then( (response) => console.log(response.data.status))
+                    .then((response) => {
+                        console.log(response.data)
+                        if(response.data.status) {
+                            message.success({
+                                content: '房屋資料上傳成功',
+                                style: {
+                                    fontSize: '40px',
+                                    marginTop: '20vh',
+                                },
+                                duration: 2,
+                            }).then()
+                        }
+                        // if(!response.data.status && response.data.data.includes('house address is exist')) {
+                        //     message.error({
+                        //         content: '此地址已存在，請重新填寫正確地址',
+                        //         style: {
+                        //             fontSize: '40px',
+                        //             marginTop: '20vh',
+                        //         },
+                        //         duration: 4,
+                        //     }).then()
+                        //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
+                        // }else{
+                        //     message.success({
+                        //         content: '房屋資料上傳成功',
+                        //         style: {
+                        //             fontSize: '40px',
+                        //             marginTop: '20vh',
+                        //         },
+                        //         duration: 2,
+                        //     }).then(() => {})
+                        //     // message.success(`房屋資料上傳成功`, 2, ).then()
+                        // }
 
-                .catch( (error) => message.error(`${error}`, 2))
+                    })
+
+                    .catch( (error) => message.error(`${error}`, 2))
 
             setIsRunPost(false)
             PicTemp.splice(0, PicTemp.length)
@@ -434,12 +446,12 @@ const HouseUpload = (prop) => {
                     'number1' : parseInt(values['NO1']),
                     'number2' : values['NO2']  ? parseInt(values['NO2']) : '',
                 },
-                'totalFloor' : parseInt(values['totalfloor']),
+                'totalFloor' : parseInt(values['totalFloor']),
                 'floor' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ?     // index 0 => '頂樓加蓋' ， 1 => '地下三樓' ， 2 => '地下二樓'
                     FloorOptions.findIndex(x => x.value === values['floorNo1']) < 4 ?       //  3 => '地下一樓' ， 4 => '1樓' and so on。
                         FloorOptions.findIndex(x => x.value === values['floorNo1']) - 4     // index 0 => totalFloor , index 1 ~ 3 => index - 4, index 4 ~ 99 => index -3
                         : FloorOptions.findIndex(x => x.value === values['floorNo1']) - 3
-                    : parseInt(values['totalfloor']),
+                    : parseInt(values['totalFloor']),
                 'floor2' : values['floorNo2'] ? parseInt(values['floorNo2']) : '',
                 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
                 'price' : parseInt(values['lease-price']),
@@ -697,30 +709,30 @@ const HouseUpload = (prop) => {
         setPicUploading(true)
         console.log(formData.values())
 
-            PicAnnexAxios.post(House_Pic_Auth, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    "x-token" : xToken
-                }})
-                .then( (response) => {
-                    console.log(response)
-                    setPhotoData(response['data']['data'])
-                    setAnnexEnable(true)
-                    // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
-                    // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
-                    PicData = [...PicData, ...response['data']['data']]
-                })
-                .then(() => {
-                    // setPictureList([])
-                    setPicUploadCheck(true)
-                    message.success('照片上傳成功').then();
-                })
-                .catch(() => {
-                    message.error('upload failed.').then();
-                })
-                .finally(() => {
-                    setPicUploading(false)
-                });
+        PicAnnexAxios.post(House_Pic_Auth, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "x-token" : xToken
+            }})
+            .then( (response) => {
+                console.log(response)
+                setPhotoData(response['data']['data'])
+                setAnnexEnable(true)
+                // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
+                // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
+                PicData = [...PicData, ...response['data']['data']]
+            })
+            .then(() => {
+                // setPictureList([])
+                setPicUploadCheck(true)
+                message.success('照片上傳成功').then();
+            })
+            .catch(() => {
+                message.error('upload failed.').then();
+            })
+            .finally(() => {
+                setPicUploading(false)
+            });
     };
     // console.log(photoData, annexData)
 
@@ -785,7 +797,7 @@ const HouseUpload = (prop) => {
     console.log(prop.defaultValue)
     console.log('===companyId====',prop.companyId)
     console.log('===companyState====',prop.companyState)
-    
+
     // console.log(typeof(prop.defaultValue.floor))
     return (
 
@@ -821,16 +833,16 @@ const HouseUpload = (prop) => {
                                         <List.Item
 
                                             actions={[
-                                            <Button icon={<DeleteOutlined />} onClick={() => {
+                                                <Button icon={<DeleteOutlined />} onClick={() => {
                                                     if(!delPic ) {
                                                         PicData.splice(index, 1)
                                                         showPic.splice(index, 1)
                                                         setDelPic(true)
                                                     }
                                                 }
-                                            }>
-                                                delete
-                                            </Button>]}>
+                                                }>
+                                                    delete
+                                                </Button>]}>
                                             {/*{Pic}*/}
                                             {/*{'\u3000'.repeat(35)}*/}
                                             {/*<a href={PicPreURL+Pic} ><img src={PicPreURL+Pic} width={150} height={150} alt={Pic}/></a>*/}
@@ -906,7 +918,7 @@ const HouseUpload = (prop) => {
                                     shape="round"
                                     loading={PicUploading}
                                     disabled={PictureList.length === 0}
-                                    // onClick={() => message.success('照片上傳成功')}
+                                // onClick={() => message.success('照片上傳成功')}
                             >
                                 {PicUploading ? 'Uploading' : '提交照片'}
                             </Button>
@@ -945,12 +957,12 @@ const HouseUpload = (prop) => {
                                         renderItem={(annex, index) => (
                                             <List.Item actions={[
                                                 <Button icon={<DeleteOutlined />} onClick={() => {
-                                                        if(!delAnnex ) {
-                                                            AnnexData.splice(index, 1)
-                                                            showAnnex.splice(index, 1)
-                                                            setDelAnnex(true)
-                                                        }
+                                                    if(!delAnnex ) {
+                                                        AnnexData.splice(index, 1)
+                                                        showAnnex.splice(index, 1)
+                                                        setDelAnnex(true)
                                                     }
+                                                }
                                                 }>
                                                     delete
                                                 </Button>]}>
@@ -1036,31 +1048,32 @@ const HouseUpload = (prop) => {
                     onFinish={UploadHouseData}
                     scrollToFirstError
                     initialValues={{
-                            "name" : prop.defaultValue?prop.defaultValue.name:[],
-                            "TypeOfBuild": prop.defaultValue?buildingType[prop.defaultValue.config.buildingType-1] : [],
-                            "TypeOfRental" : prop.defaultValue? RentalType[prop.defaultValue.saleInfo.typeOfRental-1] : [],
-                            "City" : prop.defaultValue?prop.defaultValue.city:[],
-                            "Area" : prop.defaultValue?prop.defaultValue.area:[],
-                            "address" : prop.defaultValue?prop.defaultValue.address.substring(prop.defaultValue.city.length+prop.defaultValue.area.length):[],
-                            "lane" : prop.defaultValue?prop.defaultValue.houseNumber.lane:[],
-                            "alley" : prop.defaultValue?prop.defaultValue.houseNumber.alley:[],
-                            "NO1" : prop.defaultValue?prop.defaultValue.houseNumber.number1:[],
-                            "NO2" : prop.defaultValue?prop.defaultValue.houseNumber.number2:[],
-                            "hostName": prop.defaultValue?prop.defaultValue.hostName:[],
-                            "hostGender" :prop.defaultValue?prop.defaultValue.hostGender ? '先生' : '小姐':[],
-                            "hostPhone": prop.defaultValue?prop.defaultValue.hostPhone.substring(3):[],
-                            "floor" : prop.defaultValue?prop.defaultValue.floor : [],
-                            "room-number" : prop.defaultValue?prop.defaultValue.room : [],
-                            "room" : prop.defaultValue?prop.defaultValue.config.room : [],
-                            "livingRoom" : prop.defaultValue?prop.defaultValue.config.livingRoom : [],
-                            "bathroom" : prop.defaultValue?prop.defaultValue.config.bathroom : [],
-                            "balcony" : prop.defaultValue?prop.defaultValue.config.balcony : [],
-                            "ping" : prop.defaultValue?prop.defaultValue.ping:[],
-                            "lease-price" : prop.defaultValue?prop.defaultValue.price:[],
-                            "manageFee" : prop.defaultValue?prop.defaultValue.saleInfo.manager ? prop.defaultValue.saleInfo.managerPrice : [] : [],
-                            "garbageFee" : prop.defaultValue?prop.defaultValue.saleInfo.garbage ? prop.defaultValue.saleInfo.garbagePrice : [] : [],
-                            "remark" : prop.defaultValue?prop.defaultValue.remark : []
-                        }}
+                        "name" : prop.defaultValue?prop.defaultValue.name:[],
+                        "TypeOfBuild": prop.defaultValue?buildingType[prop.defaultValue.config.buildingType-1] : [],
+                        "TypeOfRental" : prop.defaultValue? RentalType[prop.defaultValue.saleInfo.typeOfRental-1] : [],
+                        "City" : prop.defaultValue?prop.defaultValue.city:[],
+                        "Area" : prop.defaultValue?prop.defaultValue.area:[],
+                        "address" : prop.defaultValue?prop.defaultValue.address.substring(prop.defaultValue.city.length+prop.defaultValue.area.length):[],
+                        "lane" : prop.defaultValue?prop.defaultValue.houseNumber.lane:[],
+                        "alley" : prop.defaultValue?prop.defaultValue.houseNumber.alley:[],
+                        "NO1" : prop.defaultValue?prop.defaultValue.houseNumber.number1:[],
+                        "NO2" : prop.defaultValue?prop.defaultValue.houseNumber.number2:[],
+                        "hostName": prop.defaultValue?prop.defaultValue.hostName:[],
+                        "hostGender" :prop.defaultValue?prop.defaultValue.hostGender ? '先生' : '小姐':[],
+                        "totalFloor": prop.defaultValue?prop.defaultValue.totalFloor:[],
+                        "floorNo2": prop.defaultValue?prop.defaultValue.floor2:[],
+                        "floorNo1" : prop.defaultValue?FloorOptions[FloorCheck(prop.defaultValue.floor ,prop.defaultValue.remark)].value : [],
+                        "room-number" : prop.defaultValue?prop.defaultValue.room : [],
+                        "room" : prop.defaultValue?prop.defaultValue.config.room : [],
+                        "livingRoom" : prop.defaultValue?prop.defaultValue.config.livingRoom : [],
+                        "bathroom" : prop.defaultValue?prop.defaultValue.config.bathroom : [],
+                        "balcony" : prop.defaultValue?prop.defaultValue.config.balcony : [],
+                        "ping" : prop.defaultValue?prop.defaultValue.ping:[],
+                        "lease-price" : prop.defaultValue?prop.defaultValue.price:[],
+                        "manageFee" : prop.defaultValue?prop.defaultValue.saleInfo.manager ? prop.defaultValue.saleInfo.managerPrice : [] : [],
+                        "garbageFee" : prop.defaultValue?prop.defaultValue.saleInfo.garbage ? prop.defaultValue.saleInfo.garbagePrice : [] : [],
+                        "remark" : prop.defaultValue?prop.defaultValue.remark.indexOf('頂樓加蓋，') === 0 ? prop.defaultValue.remark.slice(5) : prop.defaultValue.remark : []
+                    }}
 
                 >
                     <Row>
@@ -1184,8 +1197,8 @@ const HouseUpload = (prop) => {
                                                     options={areaOptions}
                                                     onChange={changeArea}
                                                     style={{
-                                                width: '100%',
-                                            }}>
+                                                        width: '100%',
+                                                    }}>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -1200,9 +1213,9 @@ const HouseUpload = (prop) => {
                                                    ]}
                                         >
                                             <Input size="large"
-                                                style={{
-                                                    width: '100%',
-                                                }}
+                                                   style={{
+                                                       width: '100%',
+                                                   }}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1236,9 +1249,9 @@ const HouseUpload = (prop) => {
                                         >
 
                                             <Input size="large"
-                                                placeholder="非必填"
-                                                style={{width: '100%'}}
-                                                suffix='巷'
+                                                   placeholder="非必填"
+                                                   style={{width: '100%'}}
+                                                   suffix='巷'
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1248,9 +1261,9 @@ const HouseUpload = (prop) => {
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
                                             <Input size="large"
-                                                placeholder="非必填"
-                                                style={{width: '100%'}}
-                                                suffix='弄'
+                                                   placeholder="非必填"
+                                                   style={{width: '100%'}}
+                                                   suffix='弄'
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1266,9 +1279,9 @@ const HouseUpload = (prop) => {
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
                                             <Input size="large"
-                                                placeholder=""
-                                                style={{width: '100%'}}
-                                                suffix='號'
+                                                   placeholder=""
+                                                   style={{width: '100%'}}
+                                                   suffix='號'
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1300,7 +1313,7 @@ const HouseUpload = (prop) => {
                                 {/*</Col>*/}
                                 <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
                                     <Form.Item
-                                        name="totalfloor"
+                                        name="totalFloor"
                                         label="總樓層"
                                         rules={[
                                             {
@@ -1404,13 +1417,13 @@ const HouseUpload = (prop) => {
                                 <Row>
                                     <Col  xs={18} sm={19} md={19} lg={20} xl={21}>
                                         <Form.Item name="hostName"
-                                                       style={{width: '100%'}}
+                                                   style={{width: '100%'}}
                                         >
                                             <Input size="large"
-                                                       placeholder="填屋主的姓氏或名字"
-                                                       style={{
-                                                           width: '100%',
-                                                       }}
+                                                   placeholder="填屋主的姓氏或名字"
+                                                   style={{
+                                                       width: '100%',
+                                                   }}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1462,17 +1475,17 @@ const HouseUpload = (prop) => {
                                 <>
                                     <Input
                                         // addonBefore={PhonePrefixSelector}
-                                            style={{
-                                                width: '100%',
-                                            }}
-                                            size="large"
-                                            placeholder='09xx-xxx-xxx'
-                                            value={hostPhone}
-                                            onChange={(e) => {
-                                                console.log(e.target.value)
-                                                setHostPhone((prevState) => normalizeInput(e.target.value, prevState))
-                                            }
-                                            }
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        size="large"
+                                        placeholder='09xx-xxx-xxx'
+                                        value={hostPhone}
+                                        onChange={(e) => {
+                                            console.log(e.target.value)
+                                            setHostPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                        }
+                                        }
                                     />
                                 </>
                             </Form.Item>
@@ -1612,21 +1625,21 @@ const HouseUpload = (prop) => {
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
 
-                                <Row>
-                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                            <Row>
+                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                                    {/*</Col>*/}
-                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <Form.Item
-                                            name="lease-price"
-                                            label="租金"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: '此欄位不能為空白',
-                                                },
-                                            ]}
-                                        >
+                                {/*</Col>*/}
+                                <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <Form.Item
+                                        name="lease-price"
+                                        label="租金"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '此欄位不能為空白',
+                                            },
+                                        ]}
+                                    >
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
@@ -1634,9 +1647,9 @@ const HouseUpload = (prop) => {
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="元/月"
                                         />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
 
                         </Col>
                     </Row>
@@ -1646,21 +1659,21 @@ const HouseUpload = (prop) => {
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
 
-                                <Row>
-                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                            <Row>
+                                {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                                    {/*</Col>*/}
-                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <Form.Item
-                                            name="ping"
-                                            label="坪數"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: '此欄位不能為空白',
-                                                },
-                                            ]}
-                                        >
+                                {/*</Col>*/}
+                                <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <Form.Item
+                                        name="ping"
+                                        label="坪數"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '此欄位不能為空白',
+                                            },
+                                        ]}
+                                    >
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
@@ -1668,9 +1681,9 @@ const HouseUpload = (prop) => {
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="坪"
                                         />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
 
@@ -1710,12 +1723,12 @@ const HouseUpload = (prop) => {
                             <Form.Provider>
                                 <Form.Item label="鄰近交通" >
                                     <Row>
-                                    {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
+                                        {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                                    {/*</Col>*/}
-                                    <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        {/*</Col>*/}
+                                        <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
 
-                                        {TrafficArr.length ? (
+                                            {TrafficArr.length ? (
                                                 <>
                                                     <List
                                                         style={{fontSize: '120%'}}
@@ -1744,57 +1757,57 @@ const HouseUpload = (prop) => {
                                                     />
                                                 </>
 
-                                            // TrafficArr.map((traffic, index) => (
-                                            // <ol>
-                                            //     <li key={index} style={{display: "inline", margin: '0px 20px 0px 0px'}}>{traffic.name}</li>
-                                            //     <li key={index} style={{display: "inline", margin: '20px'}}>{traffic.distance}</li>
-                                            //     <li key={index} style={{display: "inline", margin: '20px'}}>{Traffic_Type[traffic.type-1]}</li>
-                                            //     <li key={index} style={{display: "inline", margin: '20px'}}>
-                                            //         <Button icon={<DeleteOutlined />} onClick={() => {
-                                            //         if(!delTraffic ) {
-                                            //             TrafficArr.splice(index,1)
-                                            //             setDelTraffic(true)
-                                            //         }
-                                            //         }}>
-                                            //             delete
-                                            //         </Button>
-                                            //     </li>
-                                            // </ol>
-                                            //     ))
-                                            // <ol>
-                                            //     {TrafficArr.map((traffic, index) => (
-                                            //         <li key={index} className="trafficList" style={{fontSize: '1.2rem', width:'70%'}}>
-                                            //             {/*名稱：{traffic.TrafficName}, 距離：{traffic.TrafficDistance} 公尺 , 類型：{Traffic_Type[traffic.TrafficType-1]}*/}
-                                            //             名稱：{traffic.name} ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
-                                            //             {/*<span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>*/}
-                                            //
-                                            //             <Button icon={<DeleteOutlined />} onClick={() => {
-                                            //                 if(!delTraffic ) {
-                                            //                     TrafficArr.splice(index,1)
-                                            //                     setDelTraffic(true)
-                                            //                 }
-                                            //             }}>
-                                            //                 delete
-                                            //             </Button>
-                                            //         </li>
-                                            //     ))}
-                                            // </ol>
-                                        ) :  null}
-                                         {/*<p style={{fontSize: '1.2rem'}}>NONE</p>*/}
-                                        <Button type="dashed"
-                                                htmlType="button"
-                                                style={{
-                                                    margin: '0 8px',
-                                                    width: "50%"
-                                                }}
-                                                disabled={TrafficArr.length >= 20}
-                                                onClick={showTrafficModal}
-                                                block icon={<PlusOutlined />}
-                                        >
-                                            新增交通資訊
-                                        </Button>
-                                    </Col>
-                                </Row>
+                                                // TrafficArr.map((traffic, index) => (
+                                                // <ol>
+                                                //     <li key={index} style={{display: "inline", margin: '0px 20px 0px 0px'}}>{traffic.name}</li>
+                                                //     <li key={index} style={{display: "inline", margin: '20px'}}>{traffic.distance}</li>
+                                                //     <li key={index} style={{display: "inline", margin: '20px'}}>{Traffic_Type[traffic.type-1]}</li>
+                                                //     <li key={index} style={{display: "inline", margin: '20px'}}>
+                                                //         <Button icon={<DeleteOutlined />} onClick={() => {
+                                                //         if(!delTraffic ) {
+                                                //             TrafficArr.splice(index,1)
+                                                //             setDelTraffic(true)
+                                                //         }
+                                                //         }}>
+                                                //             delete
+                                                //         </Button>
+                                                //     </li>
+                                                // </ol>
+                                                //     ))
+                                                // <ol>
+                                                //     {TrafficArr.map((traffic, index) => (
+                                                //         <li key={index} className="trafficList" style={{fontSize: '1.2rem', width:'70%'}}>
+                                                //             {/*名稱：{traffic.TrafficName}, 距離：{traffic.TrafficDistance} 公尺 , 類型：{Traffic_Type[traffic.TrafficType-1]}*/}
+                                                //             名稱：{traffic.name} ， 距離：{traffic.distance} 公尺 ， 類型：{Traffic_Type[traffic.type-1]}
+                                                //             {/*<span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>*/}
+                                                //
+                                                //             <Button icon={<DeleteOutlined />} onClick={() => {
+                                                //                 if(!delTraffic ) {
+                                                //                     TrafficArr.splice(index,1)
+                                                //                     setDelTraffic(true)
+                                                //                 }
+                                                //             }}>
+                                                //                 delete
+                                                //             </Button>
+                                                //         </li>
+                                                //     ))}
+                                                // </ol>
+                                            ) :  null}
+                                            {/*<p style={{fontSize: '1.2rem'}}>NONE</p>*/}
+                                            <Button type="dashed"
+                                                    htmlType="button"
+                                                    style={{
+                                                        margin: '0 8px',
+                                                        width: "50%"
+                                                    }}
+                                                    disabled={TrafficArr.length >= 20}
+                                                    onClick={showTrafficModal}
+                                                    block icon={<PlusOutlined />}
+                                            >
+                                                新增交通資訊
+                                            </Button>
+                                        </Col>
+                                    </Row>
 
                                     <Modal title="交通資訊"
                                            visible={trafficVisible}
@@ -1854,9 +1867,9 @@ const HouseUpload = (prop) => {
                                                 ]}
                                             >
                                                 <Select size="large"
-                                                    style={{
-                                                        width: '100%',
-                                                    }}
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
                                                 >
                                                     <Option value="1">捷運站</Option>
                                                     <Option value="2">公車/客運</Option>
@@ -1884,33 +1897,33 @@ const HouseUpload = (prop) => {
                                         {/*</Col>*/}
                                         <Col  xs={24} sm={24} md={24} lg={24} xl={24}>
                                             {LifeArr.length ? (
-                                                    <>
-                                                        <List
-                                                            style={{fontSize: '120%'}}
-                                                            dataSource={LifeArr}
-                                                            renderItem={(life, index) => (
-                                                                <List.Item actions={[
-                                                                    <Button icon={<DeleteOutlined style={{fontSize: '90%'}}/>} onClick={() => {
-                                                                        if(!delLife ) {
-                                                                            LifeArr.splice(index,1)
-                                                                            setDelLife(true)
-                                                                        }
-                                                                    }}>
+                                                <>
+                                                    <List
+                                                        style={{fontSize: '120%'}}
+                                                        dataSource={LifeArr}
+                                                        renderItem={(life, index) => (
+                                                            <List.Item actions={[
+                                                                <Button icon={<DeleteOutlined style={{fontSize: '90%'}}/>} onClick={() => {
+                                                                    if(!delLife ) {
+                                                                        LifeArr.splice(index,1)
+                                                                        setDelLife(true)
+                                                                    }
+                                                                }}>
 
-                                                                    </Button>]}>
-                                                                    {index+1}.名稱：{life.name.length>4 ?
-                                                                    // <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
-                                                                    // :
-                                                                    // life.name}
-                                                                    // ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
-                                                                    <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
-                                                                    :
-                                                                    life.name}
-                                                                    ，類型：{Life_Type[life.type-1]}
-                                                                </List.Item>
-                                                            )}
-                                                        />
-                                                    </>
+                                                                </Button>]}>
+                                                                {index+1}.名稱：{life.name.length>4 ?
+                                                                // <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
+                                                                // :
+                                                                // life.name}
+                                                                // ， 距離：{life.distance} 公尺 ， 類型：{Life_Type[life.type-1]}
+                                                                <abbr title={life.name}>{life.name.substring(0, 3) + '...' + life.name.substring(life.name.length - 2)}</abbr>
+                                                                :
+                                                                life.name}
+                                                                ，類型：{Life_Type[life.type-1]}
+                                                            </List.Item>
+                                                        )}
+                                                    />
+                                                </>
                                                 // <ol>
                                                 //     {LifeArr.map((life, index) => (
                                                 //         <li key={index} className="lifeList" style={{fontSize: '1.2rem'}}>
@@ -2002,8 +2015,8 @@ const HouseUpload = (prop) => {
                                             >
                                                 <Select size="large"
                                                         style={{
-                                                        width: '100%',
-                                                    }}
+                                                            width: '100%',
+                                                        }}
                                                 >
                                                     <Option value="1">夜市</Option>
                                                     <Option value="2">科學圓區</Option>
@@ -2149,9 +2162,9 @@ const HouseUpload = (prop) => {
                                                 ]}
                                             >
                                                 <Select size="large"
-                                                    style={{
-                                                        width: '100%',
-                                                    }}
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
                                                 >
                                                     <Option value="1">幼稚園</Option>
                                                     <Option value="2">小學</Option>
