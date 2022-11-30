@@ -1,47 +1,95 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Table,
-    Space,
-    Radio,
-    Button,
-    Image,
-    Input,
-    Select,
     Divider,
     Row,
     Col,
-    DatePicker,
     message,
-    Alert,
-    Checkbox,
-    Result,
     Descriptions
 } from "antd";
 import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
-import moment from 'moment';
-import {
-    useParams
-} from "react-router-dom";
+import {CompanyAxios} from './axiosApi'
 
 const CompanyEmployeeInfo = (props) => {
-    let { id } = useParams();
-    const employeeData = props.info.userData[0]
-    console.log(employeeData)
-    console.log(props)
+    const [init, setInit] = useState(true);
+    const [employeeData, setEmployeeData] = useState(
+        {
+            name : '',
+            gender : true,
+            companyData : [{
+                name : ''
+            }],
+            managerData : [],
+            bornDate : '',
+            phone : '',
+            address : '',
+            mail : '',
+            scope : '',
+        }
+    );
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+             getCompanyEmployeeInfo()
+        }
+    }, )
+
+    function getCompanyEmployeeInfo(){
+        let reqUrl = `/employees/getPersonalEmployeesInfo`
+        const xToken = cookie.load('x-token')
+        CompanyAxios.get(
+                reqUrl,{
+                    headers:{
+                        'x-Token':xToken
+                    }
+                })
+            .then( (response) => {
+                if(response.data.status === true){
+                    resolveCompanyEmployeet(response.data.data)
+                }else{
+                    message.error('員工資訊取得失敗', 3)
+                }
+            })
+            .catch( (error) => message.error(error, 3))
+    }
+
+    function resolveCompanyEmployeet(list){
+        for(let i = 0 ;i<list.length; i++){
+            if(list[i]._id === props.employeeId){
+                const item = list[i]
+                const data = {
+                    name : item.userData[0].name,
+                    gender : item.userData[0].gender,
+                    companyData : item.companyData,
+                    managerData : item.managerData,
+                    bornDate : item.userData[0].bornDate,
+                    phone : item.userData[0].phone,
+                    address : item.userData[0].address,
+                    mail : item.userData[0].mail,
+                    scope : '',
+                }
+                if(item.userData[0].rolesInfo.sales !== undefined && item.userData[0].rolesInfo.sales.scope !== undefined){
+                    let writeScope = ''
+                    for(let j = 0 ;j < item.userData[0].rolesInfo.sales.scope.length; j++){
+                        writeScope = writeScope + item.userData[0].rolesInfo.sales.scope[j].city + ' ' + item.userData[0].rolesInfo.sales.scope[j].area
+                        if( j !== item.userData[0].rolesInfo.sales.scope.length-1){
+                            writeScope = writeScope + ','
+                        }
+                    }
+                    data.scope = writeScope
+                }
+                setEmployeeData(data)
+                i = list.length
+            }
+        }
+    }
 
 
     return (
         <div>
-            {/*{JSON.stringify(props.info)}*/}
-            {/*CompanyEmployeeInfo page*/}
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>
                     <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                        {/*{id}*/}
-                        {/*ReserveHouseDetail page*/}
                         <Divider>員工資訊</Divider>
                         <Descriptions bordered>
                             <Descriptions.Item label="名稱" span={3}>{employeeData.name}</Descriptions.Item>
@@ -49,23 +97,20 @@ const CompanyEmployeeInfo = (props) => {
                                 {employeeData.gender ? '男' : '女'}
                             </Descriptions.Item>
                             <Descriptions.Item label="公司" span={3}>
-                                {props.info.companyData[0].name}
+                                {employeeData.companyData[0].name}
                             </Descriptions.Item>
                             <Descriptions.Item label="主管" span={3}>
-                                {props.info.managerData.length > 0 ? props.info.managerData[0].name : '-'}
+                                {employeeData.managerData.length > 0 ? employeeData.managerData[0].name : '-'}
                             </Descriptions.Item>
                             <Descriptions.Item label="主管郵件" span={3}>
-                                {props.info.managerData.length > 0 ? props.info.managerData[0].mail : '-'}
+                                {employeeData.managerData.length > 0 ? employeeData.managerData[0].mail : '-'}
                             </Descriptions.Item>
                             <Descriptions.Item label="生日" span={3}>{employeeData.bornDate}</Descriptions.Item>
                             <Descriptions.Item label="聯絡電話" span={3}>{employeeData.phone}</Descriptions.Item>
                             <Descriptions.Item label="聯絡地址" span={3}>{employeeData.address}</Descriptions.Item>
                             <Descriptions.Item label="電子郵件" span={3}>{employeeData.mail}</Descriptions.Item>
-                            <Descriptions.Item label="負責城市" span={3}>
-                                {employeeData.rolesInfo.sales.scope[0].city}
-                            </Descriptions.Item>
                             <Descriptions.Item label="負責區域" span={3}>
-                                {employeeData.rolesInfo.sales.scope[0].area} {employeeData.rolesInfo.sales.scope[1].area}
+                                        {employeeData.scope}
                             </Descriptions.Item>
 
                         </Descriptions>
