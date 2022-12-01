@@ -43,6 +43,7 @@ const CompanyInfo = (props) => {
                 reqUrl,{
                 })
             .then( (response) => {
+                console.log(response)
                 if(response.data.status === true){
                     setCompanyData(response.data.data)
                 }else{
@@ -52,6 +53,7 @@ const CompanyInfo = (props) => {
             .catch( (error) => message.error(error, 3))
     }
 
+    console.log(companyData)
     return (
         <div>
             <div>

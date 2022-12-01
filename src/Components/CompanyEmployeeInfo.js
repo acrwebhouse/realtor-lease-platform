@@ -23,12 +23,20 @@ const CompanyEmployeeInfo = (props) => {
             phone : '',
             address : '',
             mail : '',
+<<<<<<< HEAD
             scope : '',
+=======
+            scope : [{
+                city : '',
+                area : ''
+            }],
+>>>>>>> cb82600 (Reserve function & Company function)
         }
     );
     useEffect(() => {
         if (init) {
             setInit(false)
+<<<<<<< HEAD
              getCompanyEmployeeInfo()
         }
     }, )
@@ -82,7 +90,69 @@ const CompanyEmployeeInfo = (props) => {
             }
         }
     }
+=======
+            getCompanyEmployeeInfo()
+        }
+    }, )
+>>>>>>> cb82600 (Reserve function & Company function)
 
+    function getCompanyEmployeeInfo(){
+        let reqUrl = `/employees/getPersonalEmployeesInfo`
+        const xToken = cookie.load('x-token')
+        CompanyAxios.get(
+            reqUrl,{
+                headers:{
+                    'x-Token':xToken
+                }
+            })
+            .then( (response) => {
+                if(response.data.status === true){
+                    resolveCompanyEmployeet(response.data.data)
+                }else{
+                    message.error('員工資訊取得失敗', 3)
+                }
+            })
+            .catch( (error) => message.error(error, 3))
+    }
+
+    function resolveCompanyEmployeet(list){
+        for(let i = 0 ;i<list.length; i++){
+            if(list[i]._id === props.employeeId){
+                const item = list[i]
+                const data = {
+                    name : item.userData[0].name,
+                    gender : item.userData[0].gender,
+                    companyData : item.companyData,
+                    managerData : item.managerData,
+                    bornDate : item.userData[0].bornDate,
+                    phone : item.userData[0].phone,
+                    address : item.userData[0].address,
+                    mail : item.userData[0].mail,
+                    scope : [{
+                        city : '',
+                        area : ''
+                    }],
+                }
+                if(item.userData[0].rolesInfo.sales !== undefined && item.userData[0].rolesInfo.sales.scope !== undefined){
+                    let writeScopeCity = ''
+                    let writeScopeArea = ''
+                    for(let j = 0 ;j < item.userData[0].rolesInfo.sales.scope.length; j++){
+                        writeScopeCity = item.userData[0].rolesInfo.sales.scope[j].city
+                        writeScopeArea = writeScopeArea + item.userData[0].rolesInfo.sales.scope[j].area
+                        if( j !== item.userData[0].rolesInfo.sales.scope.length-1){
+                            writeScopeArea = writeScopeArea + ','
+                        }
+                    }
+                    data.scope.city = writeScopeCity
+                    data.scope.area = writeScopeArea
+                }
+                setEmployeeData(data)
+                i = list.length
+            }
+        }
+    }
+
+    console.log(employeeData)
 
     return (
         <div>
@@ -109,8 +179,16 @@ const CompanyEmployeeInfo = (props) => {
                             <Descriptions.Item label="聯絡電話" span={3}>{employeeData.phone}</Descriptions.Item>
                             <Descriptions.Item label="聯絡地址" span={3}>{employeeData.address}</Descriptions.Item>
                             <Descriptions.Item label="電子郵件" span={3}>{employeeData.mail}</Descriptions.Item>
+<<<<<<< HEAD
                             <Descriptions.Item label="負責區域" span={3}>
                                         {employeeData.scope}
+=======
+                            <Descriptions.Item label="負責城市" span={3}>
+                                {employeeData.scope.city}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="負責區域" span={3}>
+                                {employeeData.scope.area}
+>>>>>>> cb82600 (Reserve function & Company function)
                             </Descriptions.Item>
 
                         </Descriptions>
