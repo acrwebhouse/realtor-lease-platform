@@ -33,7 +33,7 @@ import Contact from "./Contact";
 import Collect from "./Collect";
 import MatchNeed from "./MatchNeed";
 import Link from "./Link";
-import ReserveHouseList from "./ReserveHouseList";
+import ReserveHouse from "./ReserveHouse";
 
 import CompanyApply from "./CompanyApply";
 import CompanyApplyList from "./CompanyApplyList";
@@ -68,7 +68,7 @@ const Main = () => {
     const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
     
-    const [isShowReserveHouseList, setIsShowReserveHouseList] = useState(false);
+    const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
 
     
@@ -193,7 +193,7 @@ const Main = () => {
         setIsShowHousesList(false)
         setIsShowMyHousesList(false)
         setIsShowUploadHouse(false)
-        setIsShowReserveHouseList(false)
+        setIsShowReserveHouse(false)
         setIsShowMemberList(false)
         setIsShowMemberInfo(false)
         setIsShowContact(false)
@@ -376,11 +376,11 @@ const Main = () => {
         setIsShowCompanyEmployeesList(true)
     }
 
-    function reserveHouseList(){
-        console.log('reserveHouseList')
+    function reserveHouse(){
+        console.log('reserveHouse')
         turnOffPage()
         setSelectMenu(['21'])
-        setIsShowReserveHouseList(true)
+        setIsShowReserveHouse(true)
     }
     
     function companyTransactionList(){
@@ -394,7 +394,7 @@ const Main = () => {
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
-        const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
+        const reserveHouseMenu = document.getElementById('reserveHouseMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -407,7 +407,7 @@ const Main = () => {
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
-        reserveHouseListMenu.style.display = 'none'
+        reserveHouseMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
@@ -438,7 +438,7 @@ const Main = () => {
         console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
-        const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
+        const reserveHouseMenu = document.getElementById('reserveHouseMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -449,7 +449,7 @@ const Main = () => {
         const relativeLinkContent = document.getElementById('relativeLinkContent')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
-        reserveHouseListMenu.style.display = 'none'
+        reserveHouseMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
@@ -482,7 +482,7 @@ const Main = () => {
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
-                reserveHouseListMenu.style.display = 'flex'
+                reserveHouseMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
@@ -533,7 +533,7 @@ const Main = () => {
           <Menu.Item key='3' id="uploadHousesMenu" style={{'height':'50px','display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
           </Menu.Item>
-          <Menu.Item key='21' id="reserveHouseListMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouseList}>
+          <Menu.Item key='21' id="reserveHouseMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouse}>
             預約列表
           </Menu.Item>
           <Menu.Item key='4' id="memberListMenu" style={{'height':'50px','display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
@@ -622,7 +622,7 @@ const Main = () => {
     }
 
     {
-        isShowReserveHouseList?(<ReserveHouseList></ReserveHouseList>):null           
+        isShowReserveHouse?(<ReserveHouse></ReserveHouse>):null           
     }
 
 

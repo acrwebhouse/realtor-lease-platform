@@ -37,7 +37,8 @@ const reserveStateArr = [{ value: '未接洽' },{ value: '接洽中' }, { value:
 console.log(reserveStateArr[0].value)
 
 const ReserveHouseDetail = (props) => {
-    let { id } = useParams();
+    // let { id } = useParams();
+    const id = props.reserveHouseDetailId
     console.log(id)
     const [tenantData, setTenantData] = useState([])
     const [enableShowInfo, setEnableShowInfo] = useState(false)
@@ -283,7 +284,7 @@ const ReserveHouseDetail = (props) => {
             <br/>
             <Button type="primary"
                     onClick={() => {
-
+                        props.showReserveHouseListUI()
                     }}>
                 返回
             </Button>

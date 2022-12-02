@@ -17,8 +17,6 @@ import ResetPassword from "./Components/ResetPassword";
 import VerifyUser from "./Components/VerifyUser";
 import Main from "./Components/Main";
 import Link from "./Components/Link";
-import ReserveHouseDetail from "./Components/ReserveHouseDetail";
-import ReserveHouseList from "./Components/ReserveHouseList";
 
 // ReactDOM.render(
 //     <App />,
@@ -42,8 +40,6 @@ ReactDOM.render(
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/verifyUser" element={<VerifyUser/>}/>
           <Route path="/link" element={<Link/>}/>
-          <Route path="/ReserveHouseDetail/:id" element={<ReserveHouseDetail/>}/>
-          <Route path="/ReserveHouseList" element={<ReserveHouseList/>}/>
       </Routes>
 
   </BrowserRouter>

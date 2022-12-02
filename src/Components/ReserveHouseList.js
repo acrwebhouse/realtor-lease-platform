@@ -110,7 +110,8 @@ const ReserveHouseList = (props) => {
         console.log(houseId)
         const xToken = cookie.load('x-token')
         const decodedToken = jwt_decode(xToken);
-        openInNewTab(`/reserveHouseDetail/${houseId}`)
+        // openInNewTab(`/reserveHouseDetail/${houseId}`)
+        props.showReserveHouseDetailUI(houseId)
     }
 
     const columns = [
