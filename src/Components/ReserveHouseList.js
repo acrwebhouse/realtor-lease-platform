@@ -321,7 +321,7 @@ const ReserveHouseList = (props, ref) => {
 
     console.log(reserveHouseData)
     return (
-        <div>
+        <div style={{width: '100%' }}>
             {
                 isShowDeleteAlert?(
                     <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

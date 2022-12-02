@@ -32,8 +32,8 @@ const ReserveHouse = (props) => {
 
     return (
         <div>
-            <div id="reserveHouseListDiv">
-                <ReserveHouseList ref={sub} showReserveHouseDetailUI={showReserveHouseDetailUI}></ReserveHouseList>
+            <div id="reserveHouseListDiv" style={{width: '100%' }}>
+                <ReserveHouseList ref={sub}  showReserveHouseDetailUI={showReserveHouseDetailUI} ></ReserveHouseList>
             </div>
             {
                 isShowReserveHouseDetail?(<ReserveHouseDetail reserveHouseDetailId={reserveHouseDetailId} showReserveHouseListUI={showReserveHouseListUI} currentEmployeeData={props.currentEmployeeData}></ReserveHouseDetail>):null             
