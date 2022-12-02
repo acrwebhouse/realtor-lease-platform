@@ -1,28 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, {useRef,useEffect, useState} from 'react';
 import ReserveHouseDetail from "./ReserveHouseDetail";
 import ReserveHouseList from "./ReserveHouseList";
 
 
 const ReserveHouse = (props) => {
     const [init, setInit] = useState(true);
-    const [isShowReserveHouseList, setIsShowReserveHouseList] = useState(false);
     const [isShowReserveHouseDetail, setIsShowReserveHouseDetail] = useState(false);
     const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
+    const sub = useRef();
 
     function showReserveHouseDetailUI(reserveHouseId){
+        const reserveHouseListDiv = document.getElementById('reserveHouseListDiv');
         setReserveHouseDetailId(reserveHouseId)
-        setIsShowReserveHouseList(false)
+        reserveHouseListDiv.style.display = 'none'
         setIsShowReserveHouseDetail(true)
     }
 
     function showReserveHouseListUI(){
-        setIsShowReserveHouseList(true)
+        sub.current.refreshList();
+        const reserveHouseListDiv = document.getElementById('reserveHouseListDiv');
+        reserveHouseListDiv.style.display = 'flex'
         setIsShowReserveHouseDetail(false)
     }
 
     useEffect(() => {
         if (init) {
-            setIsShowReserveHouseList(true)
             setIsShowReserveHouseDetail(false)
             setInit(false)
         }
@@ -30,9 +32,9 @@ const ReserveHouse = (props) => {
 
     return (
         <div>
-            {
-                isShowReserveHouseList?(<ReserveHouseList showReserveHouseDetailUI={showReserveHouseDetailUI}></ReserveHouseList>):null                        
-            }
+            <div id="reserveHouseListDiv">
+                <ReserveHouseList ref={sub} showReserveHouseDetailUI={showReserveHouseDetailUI}></ReserveHouseList>
+            </div>
             {
                 isShowReserveHouseDetail?(<ReserveHouseDetail reserveHouseDetailId={reserveHouseDetailId} showReserveHouseListUI={showReserveHouseListUI} currentEmployeeData={props.currentEmployeeData}></ReserveHouseDetail>):null             
             }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,forwardRef,useImperativeHandle} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result, Switch} from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
@@ -13,7 +13,7 @@ const remove_reserve_Auth = 'reserveHouse/removeReserveHouse'
 const sortOptions = [{ value: '時間近到遠' }, { value: '時間遠到近' }, { value: '接洽狀態' }];
 const reserveStateArr = ['未接洽', '接洽中', '完成看房']
 console.log(sortOptions[2].value)
-const ReserveHouseList = (props) => {
+const ReserveHouseList = (props, ref) => {
     console.log(props)
     const [reserveHouseData, setReserveHouseData] = useState([])
     const [enableDel, setEnableDel] = useState(false);
@@ -45,6 +45,12 @@ const ReserveHouseList = (props) => {
     }, [] )
 
     console.log(reserveHouseData)
+
+    useImperativeHandle(ref, () => ({
+        refreshList() {
+            getHousesList()
+        }
+    }))
 
     const getHousesList = () => {
         const xToken = cookie.load('x-token')
@@ -406,4 +412,4 @@ const ReserveHouseList = (props) => {
     );
 };
 
-export default ReserveHouseList;
+export default forwardRef(ReserveHouseList);
