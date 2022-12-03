@@ -118,6 +118,11 @@ const CompanyEmployeesList = (props) => {
             item.content.push(items[i].rank)
             item.content.push(items[i].state)
             item.content.push(items[i])
+            if(items[i].rank === 0){
+                item.content.push(`none`)
+            }else{
+                item.content.push(`flex`)
+            }
             showArr.push(item)
             
         }
@@ -135,7 +140,7 @@ const CompanyEmployeesList = (props) => {
     }
 
     function resigning(){
-        console.log('====resigning=====')
+        console.log('====resigning==willResignEmployee===',willResignEmployee)
         let reqUrl = `${editEmployeesUrl}`
         const body = {
             'id': willResignEmployee._id,
@@ -146,6 +151,9 @@ const CompanyEmployeesList = (props) => {
             'state': willResignEmployee.state,
             'isResign': true
           }
+
+        console.log(body)
+
         const xToken = cookie.load('x-token')
         CompanyAxios.put(reqUrl, body, {
             headers:{
@@ -154,6 +162,7 @@ const CompanyEmployeesList = (props) => {
         }).then((response) => {
             console.log(response)
             if(response.data.status === true){
+                // message.success('離職成功', 3)
                 getCompanyEmployeesList()
             }else{
                 message.error('離職失敗', 3)
@@ -192,7 +201,7 @@ const CompanyEmployeesList = (props) => {
                     <br/>
                     {content[7]}
                     <br/>
-                    {content[8]}
+                    狀態：已離職
 
               <div >
               </div>
@@ -275,6 +284,7 @@ const CompanyEmployeesList = (props) => {
             render: (content) => {
               return <div style={{
                   'textAlign': 'center',
+                  'display':content[13],
               }}>
                   <div style={{
                   'display': 'inline-block',
