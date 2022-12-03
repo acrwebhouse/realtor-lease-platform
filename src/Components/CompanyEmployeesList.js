@@ -61,68 +61,64 @@ const CompanyEmployeesList = (props) => {
         if(response.data && response.data.data){
             const items = response.data.data
             for(let i = 0 ;i<items.length; i++){
-                const item = {
-                    key: i,
-                    name: items[i]._id,
-                    content : []
-                    }
-                    console.log(items[i])
+                console.log(items[i])
                 if(items[i].isResign === true){
-                    item.content = [items[i]._id,`姓名 : ${items[i].userData[0].name}`]
-                            if(items[i].userData[0].gender === true){
-                                item.content.push('性別 : 男')
-                        } else if(items[i].userData[0].gender === false){
-                            item.content.push('性別 : 女')
-                        } else {
-                            item.content.push('性別 : 男')
-                        }
-                        item.content.push(`帳號 : ${items[i].userData[0].account}`)
-                        item.content.push(`電話 : ${items[i].userData[0].phone}`)
-                        item.content.push(`信箱 : ${items[i].userData[0].mail}`)
-                        if(items[i].managerData.length > 0){
-                            item.content.push(`主管 : ${items[i].managerData[0].name}`)
-                        }else{
-                            item.content.push(`主管 : 無`)
-                        }
-                        item.content.push(`等級 : ${items[i].rank}`)
-                        item.content.push(`狀態 : ${items[i].state}`)
-                        item.content.push(items[i])
-                        isResignEmployee.push(item)
-                        
+                    combineShowColumnContent(isResignEmployee,items,i)     
                 }else if(items[i].state === 2 || items[i].state === 4){
-                    if(items[i].userData.length > 0){
-                        item.content = [items[i]._id,`姓名 : ${items[i].userData[0].name}`]
-                            if(items[i].userData[0].gender === true){
-                                item.content.push('性別 : 男')
-                        } else if(items[i].userData[0].gender === false){
-                            item.content.push('性別 : 女')
-                        } else {
-                            item.content.push('性別 : 男')
-                        }
-                        item.content.push(`帳號 : ${items[i].userData[0].account}`)
-                        item.content.push(`電話 : ${items[i].userData[0].phone}`)
-                        item.content.push(`信箱 : ${items[i].userData[0].mail}`)
-                        if(items[i].managerData.length > 0){
-                            item.content.push(`主管 : ${items[i].managerData[0].name}`)
-                        }else{
-                            item.content.push(`主管 : 無`)
-                        }
-                        item.content.push(`等級 : ${items[i].rank}`)
-                        if(items[i].state === 2){
-                            item.content.push(`狀態 : 正式員工`)
-                        }else{
-                            item.content.push(`狀態 : 停權`)
-                        }
-                        
-                        item.content.push(items[i])
-                        employee.push(item)
-                        
-                    }
+                    combineShowColumnContent(employee,items,i)
                 }
             }
         }
         setEmployeesList(employee)
         setIsResignEmployeesList(isResignEmployee)
+    }
+
+    function combineShowColumnContent(showArr,items,i){
+        const item = {
+            key: i,
+            name: items[i]._id,
+            content : []
+        }
+        if(items[i].userData.length > 0){
+            item.content = [items[i]._id,`姓名 : ${items[i].userData[0].name}`]
+                if(items[i].userData[0].gender === true){
+                    item.content.push('性別 : 男')
+            } else if(items[i].userData[0].gender === false){
+                item.content.push('性別 : 女')
+            } else {
+                item.content.push('性別 : 男')
+            }
+            item.content.push(`帳號 : ${items[i].userData[0].account}`)
+            item.content.push(`電話 : ${items[i].userData[0].phone}`)
+            item.content.push(`信箱 : ${items[i].userData[0].mail}`)
+            if(items[i].managerData.length > 0){
+                item.content.push(`主管 : ${items[i].managerData[0].name}`)
+            }else{
+                item.content.push(`主管 : 無`)
+            }
+            if(items[i].rank === 0){
+                item.content.push(`等級 : 管理者`)
+            }else{
+                item.content.push(`等級 : ${items[i].rank}`)
+            }
+            if(items[i].state === 2){
+                item.content.push(`狀態 : 正式員工`)
+            }else{
+                item.content.push(`狀態 : 停權`)
+            }
+            
+            if(items[i].managerData.length > 0){
+                item.content.push(items[i].managerData[0])
+            }else{
+                item.content.push({})
+            }
+            item.content.push(items[i].rank)
+            item.content.push(items[i].state)
+            item.content.push(items[i])
+            showArr.push(item)
+            
+        }
+                        
     }
 
     const isResignemployeesColumns = [
