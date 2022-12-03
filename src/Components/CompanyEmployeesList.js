@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
+import {CompanyAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams
   } from "react-router-dom";
-  import {CompanyAxios} from './axiosApi'
 
 
 
@@ -16,9 +15,13 @@ const CompanyEmployeesList = (props) => {
     const [init, setInit] = useState(true);
     const [employeesList , setEmployeesList] = useState([]);
     const [isResignEmployeesList , setIsResignEmployeesList] = useState([]);
-    const getCompanyApplyListUrl = '/employees/getEmployeesListByCompanyId'
+    const getEmployeesListByCompanyIdUrl = '/employees/getEmployeesListByCompanyId'
+    const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
+    const [willResignEmployee, setWillResignEmployee] = useState({});
 
-    const [getCompanyApplyListArg] = useState({
+    const editEmployeesUrl = 'employees/editEmployees'
+
+    const [getCompanyEmployeesListArg] = useState({
         start : '0',
         count : '9999999',
     });
@@ -37,8 +40,8 @@ const CompanyEmployeesList = (props) => {
 
     function getCompanyEmployeesList(){
         const xToken = cookie.load('x-token')
-        getCompanyApplyListArg.states = 2
-        let reqUrl = `${getCompanyApplyListUrl}?companyId=${props.currentEmployeeData.companyId}&&start=${getCompanyApplyListArg.start}&&count=${getCompanyApplyListArg.count}`
+        getCompanyEmployeesListArg.states = 2
+        let reqUrl = `${getEmployeesListByCompanyIdUrl}?companyId=${props.currentEmployeeData.companyId}&&start=${getCompanyEmployeesListArg.start}&&count=${getCompanyEmployeesListArg.count}`
         CompanyAxios.get(
                 reqUrl,{
                     headers:{
@@ -119,6 +122,45 @@ const CompanyEmployeesList = (props) => {
             
         }
                         
+    }
+
+    function resignAction(resignEmployee){
+        setWillResignEmployee(resignEmployee)
+        setIsShowDeleteAlert(true)
+    }
+
+    function cancelResign(){
+        setWillResignEmployee({})
+        setIsShowDeleteAlert(false)
+    }
+
+    function resigning(){
+        console.log('====resigning=====')
+        let reqUrl = `${editEmployeesUrl}`
+        const body = {
+            'id': willResignEmployee._id,
+            'companyId': willResignEmployee.companyId,
+            'userId': willResignEmployee.userId,
+            'rank': willResignEmployee.rank,
+            'managerId': willResignEmployee.managerId,
+            'state': willResignEmployee.state,
+            'isResign': true
+          }
+        const xToken = cookie.load('x-token')
+        CompanyAxios.put(reqUrl, body, {
+            headers:{
+                'x-Token':xToken
+            }
+        }).then((response) => {
+            console.log(response)
+            if(response.data.status === true){
+                getCompanyEmployeesList()
+            }else{
+                message.error('離職失敗', 3)
+            }
+        }).catch( (error) => message.error(error, 3))
+        cancelResign()
+        
     }
 
     const isResignemployeesColumns = [
@@ -242,7 +284,7 @@ const CompanyEmployeesList = (props) => {
                         編輯
                     </Button>
                     &nbsp;&nbsp;&nbsp;
-                    <Button type="primary" danger  style={{width: '80px' }}>
+                    <Button type="primary" danger  onClick={() => resignAction(content[12])} style={{width: '80px' }}>
                         離職
                     </Button>
                 <div >
@@ -256,6 +298,28 @@ const CompanyEmployeesList = (props) => {
 
     return (
         <div>
+        {
+            isShowDeleteAlert?(
+            <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
+            <Alert
+                afterClose={cancelResign}
+                type="error"
+                action={
+                <Space>
+                    <Button size="small" type="ghost" onClick={resigning}>
+                        確定離職
+                    </Button>
+                    <Button size="small" type="ghost" onClick={cancelResign}>
+                        取消離職
+                    </Button>
+                </Space>
+                
+                }
+            closable
+            />
+            </div>
+            ):null
+            }
         <Row>
             <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
