@@ -114,6 +114,7 @@ const CompanyApplyList = (props) => {
           }
         if(isPass === true){
             body.state = 2
+            body.isResign = false
         }else{
             body.state = 3
         }
