@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
+import {Table, Space, Modal, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
@@ -18,7 +18,7 @@ const CompanyEmployeesList = (props) => {
     const getEmployeesListByCompanyIdUrl = '/employees/getEmployeesListByCompanyId'
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [willResignEmployee, setWillResignEmployee] = useState({});
-
+    const [editOpen, setEditOpen] = useState(false);
     const editEmployeesUrl = 'employees/editEmployees'
 
     const [getCompanyEmployeesListArg] = useState({
@@ -172,6 +172,11 @@ const CompanyEmployeesList = (props) => {
         
     }
 
+    function editEmployees(employee){
+        console.log('==editEmployees=====',employee)
+        setEditOpen(true)
+    }
+
     const isResignemployeesColumns = [
         {
           title: '人員',
@@ -290,7 +295,7 @@ const CompanyEmployeesList = (props) => {
                   'display': 'inline-block',
                   'textAlign': 'left',
                   }}>
-                    <Button type="primary"   style={{width: '80px' , backgroundColor : '#00cc00' }}>
+                    <Button type="primary"  onClick={() => editEmployees(content[12])}  style={{width: '80px' , backgroundColor : '#00cc00' }}>
                         編輯
                     </Button>
                     &nbsp;&nbsp;&nbsp;
@@ -365,7 +370,41 @@ const CompanyEmployeesList = (props) => {
             </Col>
             <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
         </Row>
-            
+
+        <Modal
+        visible={editOpen}
+        // open={true}
+        closable={false}
+        title="Title"
+        // onOk={() => editEmployees(true)}
+        // onCancel={() => editEmployees(true)}
+        // onOk={handleOk}
+        // onCancel={handleCancel}
+        // footer={[
+        //   <Button key="back" onClick={handleCancel}>
+        //     Return
+        //   </Button>,
+        //   <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+        //     Submit
+        //   </Button>,
+        //   <Button
+        //     key="link"
+        //     href="https://google.com"
+        //     type="primary"
+        //     loading={loading}
+        //     onClick={handleOk}
+        //   >
+        //     Search on Google
+        //   </Button>,
+        // ]}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+
         </div>
     );
 };
