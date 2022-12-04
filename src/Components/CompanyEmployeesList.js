@@ -19,6 +19,9 @@ const CompanyEmployeesList = (props) => {
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [willResignEmployee, setWillResignEmployee] = useState({});
     const [editOpen, setEditOpen] = useState(false);
+    const [editEmployee, setEditEmployee] = useState({});
+    const [willEditEmployee, setWillEditEmployee] = useState({});
+    const [editEmployeeTitle, setEditEmployeeTitle] = useState('');
     const editEmployeesUrl = 'employees/editEmployees'
 
     const [getCompanyEmployeesListArg] = useState({
@@ -174,7 +177,17 @@ const CompanyEmployeesList = (props) => {
 
     function editEmployees(employee){
         console.log('==editEmployees=====',employee)
+        setEditEmployeeTitle('員工 '+ employee.userData[0].name)
+        setEditEmployee(employee)
+        setWillEditEmployee(employee)
         setEditOpen(true)
+    }
+
+    function cancelEditEmployees(){
+        console.log('=====cancelEditEmployees====')
+        setEditEmployee({})
+        setWillEditEmployee({})
+        setEditOpen(false)
     }
 
     const isResignemployeesColumns = [
@@ -374,25 +387,25 @@ const CompanyEmployeesList = (props) => {
         <Modal
         visible={editOpen}
         // open={true}
-        closable={false}
-        title="Title"
+        // closable={() => cancelEditEmployees()}
+        title={editEmployeeTitle}
         // onOk={() => editEmployees(true)}
-        // onCancel={() => editEmployees(true)}
+        onCancel={() => cancelEditEmployees()}
         // onOk={handleOk}
-        // onCancel={handleCancel}
+        footer={null}
+        // onCancel={cancelEditEmployees}
         // footer={[
-        //   <Button key="back" onClick={handleCancel}>
+        //   <Button key="back" onClick={() => editEmployees(true)}>
         //     Return
         //   </Button>,
-        //   <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+        //   <Button key="submit" type="primary"  onClick={() => editEmployees(true)}>
         //     Submit
         //   </Button>,
         //   <Button
         //     key="link"
         //     href="https://google.com"
         //     type="primary"
-        //     loading={loading}
-        //     onClick={handleOk}
+        //     onClick={() => editEmployees(true)}
         //   >
         //     Search on Google
         //   </Button>,
