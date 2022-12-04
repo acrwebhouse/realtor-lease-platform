@@ -411,11 +411,24 @@ const CompanyEmployeesList = (props) => {
         //   </Button>,
         // ]}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        等級
+        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
+             編輯等級
+        </Button>
+        <br/>
+        <br/>
+        管理者
+        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
+             編輯管理
+        </Button>
+        <br/>
+        <br/>
+        狀態
+        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
+             編輯狀態
+        </Button>
+        <br/>
+        <br/>
       </Modal>
 
         </div>
