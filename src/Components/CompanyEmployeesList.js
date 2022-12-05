@@ -61,7 +61,7 @@ const CompanyEmployeesList = (props) => {
     function getEmployeeRankByUserId(userId){
         let result = ''
         for(let i = 0 ;i<employeesList.length; i++){
-            if(employeesList[i].userId === userId){
+            if(employeesList[i].content[12].userId === userId){
                 result = employeesList[i].content[10]
                 i = employeesList.length
             }
@@ -208,7 +208,7 @@ const CompanyEmployeesList = (props) => {
         switchEditEmployeesUI(0)
         setEditEmployeeTitle('員工 '+ editEmployees.userData[0].name)
         if(editEmployees.managerData.length > 0){
-            setShowOrgEmployeeManager(editEmployees.managerData[0].name + '( 等級 : ' + getEmployeeRankByUserId(editEmployees.managerData[0]._id) +')')
+            setShowOrgEmployeeManager(editEmployees.managerData[0].name + '( 等級 : ' + getEmployeeRankByUserId(editEmployees.managerId) +')')
         }else{
             setShowOrgEmployeeManager('無')
         }
@@ -637,7 +637,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             編輯主管 :&nbsp;
             <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
-                            color: '50%',
+                            width: '50%',
                         }}>
             </Select>
             <br/>
