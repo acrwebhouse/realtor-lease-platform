@@ -30,6 +30,7 @@ const CompanyEmployeesList = (props) => {
     const [isShowEditEmployeeRank, setIsShowEditEmployeeRank] = useState(false);
     const [isShowEditEmployeeManager, setIsShowEditEmployeeManager] = useState(false);
     const [isShowEditEmployeeManagerRank, setIsShowEditEmployeeManagerRank] = useState(false);
+    const [isShowEditEmployeeRankManager, setIsShowEditEmployeeRankManager] = useState(false);
     let [editEmployeeRankOptions, setEditEmployeeRankOptions] = useState([]);
     let [editEmployeeManagerOptions, setEditEmployeeManagerOptions] = useState([]);
     let [editEmployeeManagerMapping, setEditEmployeeManagerMapping] = useState({});
@@ -228,6 +229,7 @@ const CompanyEmployeesList = (props) => {
         setEditEmployee({})
         setWillEditEmployee({})
         setIsShowEditEmployeeManagerRank(false)
+        setIsShowEditEmployeeRankManager(false)
         setIsShowEditEmployeeState(false)
         setIsShowEditEmployeeRank(false)
         setIsShowEditEmployeeManager(false)
@@ -332,6 +334,19 @@ const CompanyEmployeesList = (props) => {
         willEditEmployee.rank = value
         setWillEditEmployee(willEditEmployee)
         setEditEmployeeManagerOptionsByRank(value)
+    }
+
+    function selectEditEmployeesRankCheckManager(value){
+        selectEditEmployeesRank(value)
+        const managerRank = getEmployeeRankByUserId(editEmployee.managerId)
+        if(managerRank>=value){
+            setIsShowEditEmployeeRankManager(true)
+        }else{
+            setIsShowEditEmployeeRankManager(false)
+            willEditEmployee.managerId = editEmployee.managerId
+            setWillEditEmployee(willEditEmployee)
+        }
+        
     }
 
     function sendEditEmployee(){
@@ -592,14 +607,35 @@ const CompanyEmployeesList = (props) => {
         isShowEditEmployeeRank?(
         <div>
             目前等級 : {editEmployee.rank}
-            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesRank()}>
-                 編輯等級
-            </Button>
             <br/>
             <br/>
-            主管 : {showOrgEmployeeManager}
-            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesManager()}>
-                編輯主管
+            編輯等級 :&nbsp;
+            <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRankCheckManager} style={{
+                            width: '50%',
+                        }}>
+            </Select>
+            <br/>
+            <br/>
+            {
+            isShowEditEmployeeRankManager?(
+            <div>
+                目前主管 : {showOrgEmployeeManager}
+                <br/>
+                <br/>
+                編輯主管 :&nbsp;
+                <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+                            width: '50%',
+                        }}>
+                </Select>
+                <br/>
+                <br/>
+                <p style={{
+                            'color': '#ff0000',
+                        }}>溫馨提醒 : 員工等級相等,或小於主管,請選擇等級更小的主管</p>
+            </div>):null
+            }
+            <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
+                確定
             </Button>
             <br/>
             <br/>
@@ -644,7 +680,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <p style={{
                             'color': '#ff0000',
-                        }}>溫馨提醒 : 主管等級必須比員工小</p>
+                        }}>溫馨提醒 : 主管等級必須比員工小,因此只顯示可選擇主管</p>
             <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
                 確定
             </Button>
