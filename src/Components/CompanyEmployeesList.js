@@ -220,7 +220,7 @@ const CompanyEmployeesList = (props) => {
             setShowOrgEmployeeState('不詳')
         }
         setEditEmployee(editEmployees)
-        setWillEditEmployee(editEmployees)
+        setWillEditEmployee(JSON.parse(JSON.stringify(editEmployees)))
         setEditOpen(true)
     }
 
