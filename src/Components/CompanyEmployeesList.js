@@ -637,11 +637,14 @@ const CompanyEmployeesList = (props) => {
             <br/>
             編輯主管 :&nbsp;
             <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
-                            width: '50%',
+                            color: '50%',
                         }}>
             </Select>
             <br/>
             <br/>
+            <p style={{
+                            'color': '#ff0000',
+                        }}>溫馨提醒 : 主管等級必須比員工小</p>
             <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
                 確定
             </Button>
