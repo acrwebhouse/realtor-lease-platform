@@ -31,6 +31,8 @@ const CompanyEmployeesList = (props) => {
     const [isShowEditEmployeeManager, setIsShowEditEmployeeManager] = useState(false);
     const [isShowEditEmployeeManagerRank, setIsShowEditEmployeeManagerRank] = useState(false);
     let [editEmployeeRankOptions, setEditEmployeeRankOptions] = useState([]);
+    let [editEmployeeManagerOptions, setEditEmployeeManagerOptions] = useState([]);
+    let [editEmployeeManagerMapping, setEditEmployeeManagerMapping] = useState({});
 
     
 
@@ -60,7 +62,7 @@ const CompanyEmployeesList = (props) => {
         let result = ''
         for(let i = 0 ;i<employeesList.length; i++){
             if(employeesList[i].userId === userId){
-                result = employeesList[i].rank
+                result = employeesList[i].content[10]
                 i = employeesList.length
             }
         }
@@ -169,7 +171,6 @@ const CompanyEmployeesList = (props) => {
     }
 
     function resigning(){
-        console.log('====resigning==willResignEmployee===',willResignEmployee)
         let reqUrl = `${editEmployeesUrl}`
         const body = {
             'id': willResignEmployee._id,
@@ -262,12 +263,37 @@ const CompanyEmployeesList = (props) => {
         }
     }
 
+    function setEditEmployeeManagerOptionsByRank(rank){
+        console.log('====setEditEmployeeManagerOptionsByRank==rank==',rank)
+        console.log('====setEditEmployeeManagerOptionsByRank==employeesList==',employeesList)
+        const data = []
+        editEmployeeManagerMapping = {}
+        for(let i = 0 ;i<employeesList.length; i++){
+            if(rank > employeesList[i].content[10]){
+                const managerId = employeesList[i].content[12].userId
+                const managerName = employeesList[i].content[12].userData[0].name
+                const value = managerName + ' ( 等級 : '+employeesList[i].content[10]+ ' ) '
+                data.push({
+                    value,
+                })
+                editEmployeeManagerMapping[value] = {
+                    managerId ,
+                    managerName ,
+                    rank : employeesList[i].content[10]
+                }
+            }
+        }
+        setEditEmployeeManagerMapping(editEmployeeManagerMapping)
+        setEditEmployeeManagerOptions(data)
+    }
+
     function editEmployeesRank(){
         switchEditEmployeesUI(1)
     }
 
     function editEmployeesManager(){
         switchEditEmployeesUI(2)
+        setEditEmployeeManagerOptionsByRank(editEmployee.rank)
     }
 
     function editEmployeesState(){
@@ -277,6 +303,16 @@ const CompanyEmployeesList = (props) => {
     function cancelEditEmployeeManagerRank(){
         setIsShowEditEmployeeManagerRank(false)
         willEditEmployee.rank = editEmployee.rank
+        setWillEditEmployee(willEditEmployee)
+        setEditEmployeeManagerOptionsByRank(editEmployee.rank)
+    }
+
+    function selectEditEmployeesManager(value){
+        console.log('===selectEditEmployeesManager===value==',value)
+        console.log('===selectEditEmployeesManager===editEmployeeManagerMapping[value]==',editEmployeeManagerMapping[value])
+        const employee = willEditEmployee
+        employee.managerId = editEmployeeManagerMapping[value].managerId
+        setWillEditEmployee(employee)
     }
 
     function selectEditEmployeesState(value){
@@ -293,9 +329,9 @@ const CompanyEmployeesList = (props) => {
 
     function selectEditEmployeesRank(value){
         console.log('=====selectEditEmployeesRank===value====',value)
-        const employee = willEditEmployee
-        employee.state = value
-        setWillEditEmployee(employee)
+        willEditEmployee.rank = value
+        setWillEditEmployee(willEditEmployee)
+        setEditEmployeeManagerOptionsByRank(value)
     }
 
     function sendEditEmployee(){
@@ -600,7 +636,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯主管 :&nbsp;
-            <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
+            <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
                             width: '50%',
                         }}>
             </Select>
