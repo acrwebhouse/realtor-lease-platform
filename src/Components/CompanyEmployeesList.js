@@ -22,6 +22,11 @@ const CompanyEmployeesList = (props) => {
     const [editEmployee, setEditEmployee] = useState({});
     const [willEditEmployee, setWillEditEmployee] = useState({});
     const [editEmployeeTitle, setEditEmployeeTitle] = useState('');
+    // const [orgEmployeeRank, setOrgEmployeeRank] = useState('');
+    const [showOrgEmployeeManager, setShowOrgEmployeeManager] = useState({name : ''});
+    const [showOrgShowEmployeeState, setShowOrgEmployeeState] = useState('');
+    const [isShowMainEditEmployee, setIsShowMainEditEmployee] = useState(true);
+
     const editEmployeesUrl = 'employees/editEmployees'
 
     const [getCompanyEmployeesListArg] = useState({
@@ -41,6 +46,17 @@ const CompanyEmployeesList = (props) => {
         }
     }, )
 
+    function getEmployeeRankByUserId(userId){
+        let result = ''
+        for(let i = 0 ;i<employeesList.length; i++){
+            if(employeesList[i].userId === userId){
+                result = employeesList[i].rank
+                i = employeesList.length
+            }
+        }
+        return result
+    }
+
     function getCompanyEmployeesList(){
         const xToken = cookie.load('x-token')
         getCompanyEmployeesListArg.states = 2
@@ -53,7 +69,7 @@ const CompanyEmployeesList = (props) => {
                 })
             .then( (response) => {
                 if(response.data.status === true){
-                    resolveCompanyApplyList(response)
+                    resolveCompanyEmployeesList(response)
                 }else{
                     message.error('抓取員工列表失敗', 3)
                 }
@@ -61,7 +77,7 @@ const CompanyEmployeesList = (props) => {
             .catch( (error) => message.error(error, 3))
     }
 
-    function resolveCompanyApplyList(response){
+    function resolveCompanyEmployeesList(response){
         const employee = []
         const isResignEmployee = []
         if(response.data && response.data.data){
@@ -175,11 +191,25 @@ const CompanyEmployeesList = (props) => {
         
     }
 
-    function editEmployees(employee){
-        console.log('==editEmployees=====',employee)
-        setEditEmployeeTitle('員工 '+ employee.userData[0].name)
-        setEditEmployee(employee)
-        setWillEditEmployee(employee)
+    function editEmployees(editEmployees){
+        console.log('==employeesList=====',employeesList)
+        console.log('==editEmployees=====',editEmployees)
+        setIsShowMainEditEmployee(true)
+        setEditEmployeeTitle('員工 '+ editEmployees.userData[0].name)
+        if(editEmployees.managerData.length > 0){
+            setShowOrgEmployeeManager(editEmployees.managerData[0].name + '( 等級 : ' + getEmployeeRankByUserId(editEmployees.managerData[0]._id) +')')
+        }else{
+            setShowOrgEmployeeManager('無')
+        }
+        if(editEmployees.state === 2){
+            setShowOrgEmployeeState('正式員工')
+        }else if(editEmployees.state === 4){
+            setShowOrgEmployeeState('停權員工')
+        }else{
+            setShowOrgEmployeeState('不詳')
+        }
+        setEditEmployee(editEmployees)
+        setWillEditEmployee(editEmployees)
         setEditOpen(true)
     }
 
@@ -188,6 +218,18 @@ const CompanyEmployeesList = (props) => {
         setEditEmployee({})
         setWillEditEmployee({})
         setEditOpen(false)
+    }
+
+    function editEmployeesRank(){
+        setIsShowMainEditEmployee(false)
+    }
+
+    function editEmployeesManager(){
+        setIsShowMainEditEmployee(false)
+    }
+
+    function editEmployeesState(){
+        setIsShowMainEditEmployee(false)
     }
 
     const isResignemployeesColumns = [
@@ -386,49 +428,35 @@ const CompanyEmployeesList = (props) => {
 
         <Modal
         visible={editOpen}
-        // open={true}
-        // closable={() => cancelEditEmployees()}
         title={editEmployeeTitle}
-        // onOk={() => editEmployees(true)}
         onCancel={() => cancelEditEmployees()}
-        // onOk={handleOk}
         footer={null}
-        // onCancel={cancelEditEmployees}
-        // footer={[
-        //   <Button key="back" onClick={() => editEmployees(true)}>
-        //     Return
-        //   </Button>,
-        //   <Button key="submit" type="primary"  onClick={() => editEmployees(true)}>
-        //     Submit
-        //   </Button>,
-        //   <Button
-        //     key="link"
-        //     href="https://google.com"
-        //     type="primary"
-        //     onClick={() => editEmployees(true)}
-        //   >
-        //     Search on Google
-        //   </Button>,
-        // ]}
       >
-        等級
-        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
-             編輯等級
-        </Button>
-        <br/>
-        <br/>
-        管理者
-        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
-             編輯管理
-        </Button>
-        <br/>
-        <br/>
-        狀態
-        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
-             編輯狀態
-        </Button>
-        <br/>
-        <br/>
+        {
+        isShowMainEditEmployee?(
+        <div>
+            等級 : {editEmployee.rank}
+            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesRank()}>
+                 編輯等級
+            </Button>
+            <br/>
+            <br/>
+            主管 : {showOrgEmployeeManager}
+            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesManager()}>
+                編輯主管
+            </Button>
+            <br/>
+            <br/>
+            狀態 : {showOrgShowEmployeeState}
+            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesState()}>
+                編輯狀態
+            </Button>
+            <br/>
+            <br/>
+        </div>):null
+        }
+
+
       </Modal>
 
         </div>
