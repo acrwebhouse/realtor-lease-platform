@@ -33,7 +33,7 @@ const CompanyEmployeesList = (props) => {
     const editEmployeeStateOptions = [{ value: '正式員工' },{ value: '停權員工' }];
 
     const editEmployeesUrl = 'employees/editEmployees'
-
+    
     const [getCompanyEmployeesListArg] = useState({
         start : '0',
         count : '9999999',
@@ -186,7 +186,7 @@ const CompanyEmployeesList = (props) => {
         }).then((response) => {
             console.log(response)
             if(response.data.status === true){
-                // message.success('離職成功', 3)
+                message.success('離職成功', 3)
                 getCompanyEmployeesList()
             }else{
                 message.error('離職失敗', 3)
@@ -218,8 +218,7 @@ const CompanyEmployeesList = (props) => {
         setEditOpen(true)
     }
 
-    function cancelEditEmployees(){
-        console.log('=====cancelEditEmployees====')
+    function closeEditEmployees(){
         setEditEmployee({})
         setWillEditEmployee({})
         setEditOpen(false)
@@ -279,7 +278,32 @@ const CompanyEmployeesList = (props) => {
     }
 
     function sendEditEmployee(){
-        
+        const body = {
+            'id': willEditEmployee._id,
+            'companyId': willEditEmployee.companyId,
+            'userId': willEditEmployee.userId,
+            'rank': willEditEmployee.rank,
+            'managerId': willEditEmployee.managerId,
+            'state': willEditEmployee.state,
+            'isResign': willEditEmployee.isResign
+          }
+          const xToken = cookie.load('x-token')
+          let reqUrl = `${editEmployeesUrl}`
+          CompanyAxios.put(reqUrl, body, {
+              headers:{
+                  'x-Token':xToken
+              }
+          }).then((response) => {
+              console.log(response)
+              if(response.data.status === true){
+                  setEditEmployee(willEditEmployee)
+                  message.success('編輯成功', 3)
+                  closeEditEmployees()
+                  getCompanyEmployeesList()
+              }else{
+                  message.error('編輯失敗', 3)
+              }
+          }).catch( (error) => message.error(error, 3))
     }
 
     const isResignemployeesColumns = [
@@ -479,7 +503,7 @@ const CompanyEmployeesList = (props) => {
         <Modal
         visible={editOpen}
         title={editEmployeeTitle}
-        onCancel={() => cancelEditEmployees()}
+        onCancel={() => closeEditEmployees()}
         footer={null}
       >
         
@@ -556,7 +580,7 @@ const CompanyEmployeesList = (props) => {
             </Select>
             <br/>
             <br/>
-            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesState()}>
+            <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
                 確定
             </Button>
             <br/>
