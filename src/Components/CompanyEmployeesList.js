@@ -34,7 +34,7 @@ const CompanyEmployeesList = (props) => {
     let [editEmployeeRankOptions, setEditEmployeeRankOptions] = useState([]);
     let [editEmployeeManagerOptions, setEditEmployeeManagerOptions] = useState([]);
     let [editEmployeeManagerMapping, setEditEmployeeManagerMapping] = useState({});
-
+    const [cantEditEmployee, setCantEditEmployee] = useState(false);
     
 
     const [size] = useState("large");
@@ -271,7 +271,7 @@ const CompanyEmployeesList = (props) => {
         const data = []
         editEmployeeManagerMapping = {}
         for(let i = 0 ;i<employeesList.length; i++){
-            if(rank > employeesList[i].content[10]){
+            if(rank > employeesList[i].content[10] && employeesList[i].content[12]._id !== editEmployee._id){
                 const managerId = employeesList[i].content[12].userId
                 const managerName = employeesList[i].content[12].userData[0].name
                 const value = managerName + ' ( 等級 : '+employeesList[i].content[10]+ ' ) '
@@ -315,6 +315,7 @@ const CompanyEmployeesList = (props) => {
         const employee = willEditEmployee
         employee.managerId = editEmployeeManagerMapping[value].managerId
         setWillEditEmployee(employee)
+        setCantEditEmployee(false)
     }
 
     function selectEditEmployeesState(value){
@@ -340,8 +341,10 @@ const CompanyEmployeesList = (props) => {
         selectEditEmployeesRank(value)
         const managerRank = getEmployeeRankByUserId(editEmployee.managerId)
         if(managerRank>=value){
+            setCantEditEmployee(true)
             setIsShowEditEmployeeRankManager(true)
         }else{
+            setCantEditEmployee(false)
             setIsShowEditEmployeeRankManager(false)
             willEditEmployee.managerId = editEmployee.managerId
             setWillEditEmployee(willEditEmployee)
@@ -634,7 +637,7 @@ const CompanyEmployeesList = (props) => {
                         }}>溫馨提醒 : 員工等級相等,或小於主管,請選擇等級更小的主管</p>
             </div>):null
             }
-            <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
+            <Button type="primary" disabled={cantEditEmployee} style={{float : 'right'}} onClick={() => sendEditEmployee()}>
                 確定
             </Button>
             <br/>
