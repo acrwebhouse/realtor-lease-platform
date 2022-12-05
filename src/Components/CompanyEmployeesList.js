@@ -30,13 +30,12 @@ const CompanyEmployeesList = (props) => {
     const [isShowEditEmployeeRank, setIsShowEditEmployeeRank] = useState(false);
     const [isShowEditEmployeeManager, setIsShowEditEmployeeManager] = useState(false);
     const [isShowEditEmployeeManagerRank, setIsShowEditEmployeeManagerRank] = useState(false);
-
+    let [editEmployeeRankOptions, setEditEmployeeRankOptions] = useState([]);
 
     
 
     const [size] = useState("large");
     const editEmployeeStateOptions = [{ value: '正式員工' },{ value: '停權員工' }];
-
     const editEmployeesUrl = 'employees/editEmployees'
     
     const [getCompanyEmployeesListArg] = useState({
@@ -46,11 +45,12 @@ const CompanyEmployeesList = (props) => {
 
     useEffect(() => {
         if (init) {
-            // if(props.currentEmployeeData !==null && props.currentEmployeeData !==undefined && JSON.stringify(props.currentEmployeeData) !=='{}'){
-            //     setIsShowCompanyApplyState(true)
-            // }else{
-            //     setIsShowCompanyList(true)
-            // }
+            editEmployeeRankOptions = []
+            for(let i = 1 ;i<=100;i++){
+                editEmployeeRankOptions.push({ value: i })
+            }
+
+            setEditEmployeeRankOptions(editEmployeeRankOptions)
             getCompanyEmployeesList()
             setInit(false)
         }
@@ -275,7 +275,8 @@ const CompanyEmployeesList = (props) => {
     }
 
     function cancelEditEmployeeManagerRank(){
-
+        setIsShowEditEmployeeManagerRank(false)
+        willEditEmployee.rank = editEmployee.rank
     }
 
     function selectEditEmployeesState(value){
@@ -287,6 +288,13 @@ const CompanyEmployeesList = (props) => {
         }else{
             employee.state = editEmployee.state
         }
+        setWillEditEmployee(employee)
+    }
+
+    function selectEditEmployeesRank(value){
+        console.log('=====selectEditEmployeesRank===value====',value)
+        const employee = willEditEmployee
+        employee.state = value
         setWillEditEmployee(employee)
     }
 
@@ -567,7 +575,7 @@ const CompanyEmployeesList = (props) => {
         <div>
             目前等級 : {editEmployee.rank}
             {
-                isShowEditEmployeeManagerRank?<Button type="primary" danger onClick={() => setIsShowEditEmployeeManagerRank(false)} style={{float : 'right'}}>
+                isShowEditEmployeeManagerRank?<Button type="primary" danger onClick={() => cancelEditEmployeeManagerRank()} style={{float : 'right'}}>
                     取消編輯
                 </Button>:
                 <Button type="primary" onClick={() => setIsShowEditEmployeeManagerRank(true)} style={{float : 'right', backgroundColor:'#00cc00'}}>
@@ -580,7 +588,7 @@ const CompanyEmployeesList = (props) => {
             isShowEditEmployeeManagerRank?(
             <div>
                 編輯等級 :&nbsp;
-                <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
+                <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRank} style={{
                                 width: '50%',
                         }}>
                 </Select>
