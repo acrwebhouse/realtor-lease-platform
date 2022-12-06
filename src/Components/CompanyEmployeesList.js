@@ -95,12 +95,25 @@ const CompanyEmployeesList = (props) => {
         const isResignEmployee = []
         if(response.data && response.data.data){
             const items = response.data.data
+
+            const xToken = cookie.load('x-token')
+            const decodedToken = jwt_decode(xToken);
+            const id = decodedToken.id
+            let isShowEditButton = false
+            for(let i = 0 ;i<items.length; i++){
+                if(items[i].userId === id){
+                    if(items[i].rank === 0){
+                        isShowEditButton = true
+                    }
+                    i = items.length
+                }              
+            }
             for(let i = 0 ;i<items.length; i++){
                 console.log(items[i])
                 if(items[i].isResign === true){
-                    combineShowColumnContent(isResignEmployee,items,i)     
+                    combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
                 }else if(items[i].state === 2 || items[i].state === 4){
-                    combineShowColumnContent(employee,items,i)
+                    combineShowColumnContent(employee,items,i,isShowEditButton)
                 }
             }
         }
@@ -108,7 +121,7 @@ const CompanyEmployeesList = (props) => {
         setIsResignEmployeesList(isResignEmployee)
     }
 
-    function combineShowColumnContent(showArr,items,i){
+    function combineShowColumnContent(showArr,items,i,isShowEditButton){
         const item = {
             key: i,
             name: items[i]._id,
@@ -150,10 +163,10 @@ const CompanyEmployeesList = (props) => {
             item.content.push(items[i].rank)
             item.content.push(items[i].state)
             item.content.push(items[i])
-            if(items[i].rank === 0){
-                item.content.push(`none`)
-            }else{
+            if(isShowEditButton === true && items[i].rank > 0){
                 item.content.push(`flex`)
+            }else{
+                item.content.push(`none`)
             }
             showArr.push(item)
             
