@@ -139,7 +139,7 @@ const CompanyEmployeesList = (props) => {
             if(items[i].state === 2){
                 item.content.push(`狀態 : 正式員工`)
             }else{
-                item.content.push(`狀態 : 停權`)
+                item.content.push(`狀態 : 停權員工`)
             }
             
             if(items[i].managerData.length > 0){
@@ -204,8 +204,6 @@ const CompanyEmployeesList = (props) => {
     }
 
     function editEmployees(editEmployees){
-        console.log('==employeesList=====',employeesList)
-        console.log('==editEmployees=====',editEmployees)
         switchEditEmployeesUI(0)
         setEditEmployeeTitle('員工 '+ editEmployees.userData[0].name)
         if(editEmployees.managerData.length > 0){
@@ -266,8 +264,6 @@ const CompanyEmployeesList = (props) => {
     }
 
     function setEditEmployeeManagerOptionsByRank(rank){
-        console.log('====setEditEmployeeManagerOptionsByRank==rank==',rank)
-        console.log('====setEditEmployeeManagerOptionsByRank==employeesList==',employeesList)
         const data = []
         editEmployeeManagerMapping = {}
         for(let i = 0 ;i<employeesList.length; i++){
@@ -310,8 +306,6 @@ const CompanyEmployeesList = (props) => {
     }
 
     function selectEditEmployeesManager(value){
-        console.log('===selectEditEmployeesManager===value==',value)
-        console.log('===selectEditEmployeesManager===editEmployeeManagerMapping[value]==',editEmployeeManagerMapping[value])
         const employee = willEditEmployee
         employee.managerId = editEmployeeManagerMapping[value].managerId
         setWillEditEmployee(employee)
@@ -331,7 +325,6 @@ const CompanyEmployeesList = (props) => {
     }
 
     function selectEditEmployeesRank(value){
-        console.log('=====selectEditEmployeesRank===value====',value)
         willEditEmployee.rank = value
         setWillEditEmployee(willEditEmployee)
         setEditEmployeeManagerOptionsByRank(value)
@@ -638,7 +631,7 @@ const CompanyEmployeesList = (props) => {
             </div>):null
             }
             <Button type="primary" disabled={cantEditEmployee} style={{float : 'right'}} onClick={() => sendEditEmployee()}>
-                確定
+                確定編輯
             </Button>
             <br/>
             <br/>
@@ -685,7 +678,7 @@ const CompanyEmployeesList = (props) => {
                             'color': '#ff0000',
                         }}>溫馨提醒 : 主管等級必須比員工小,因此只顯示可選擇主管</p>
             <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
-                確定
+                確定編輯
             </Button>
             <br/>
             <br/>
@@ -706,7 +699,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
-                確定
+                確定編輯
             </Button>
             <br/>
             <br/>
