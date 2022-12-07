@@ -22,8 +22,25 @@ const CompanyEmployeesList = (props) => {
     const [editEmployee, setEditEmployee] = useState({});
     const [willEditEmployee, setWillEditEmployee] = useState({});
     const [editEmployeeTitle, setEditEmployeeTitle] = useState('');
-    const editEmployeesUrl = 'employees/editEmployees'
+    // const [orgEmployeeRank, setOrgEmployeeRank] = useState('');
+    const [showOrgEmployeeManager, setShowOrgEmployeeManager] = useState({name : ''});
+    const [showOrgShowEmployeeState, setShowOrgEmployeeState] = useState('');
+    const [isShowEditEmployeeMain, setIsShowEditEmployeeMain] = useState(true);
+    const [isShowEditEmployeeState, setIsShowEditEmployeeState] = useState(false);
+    const [isShowEditEmployeeRank, setIsShowEditEmployeeRank] = useState(false);
+    const [isShowEditEmployeeManager, setIsShowEditEmployeeManager] = useState(false);
+    const [isShowEditEmployeeManagerRank, setIsShowEditEmployeeManagerRank] = useState(false);
+    const [isShowEditEmployeeRankManager, setIsShowEditEmployeeRankManager] = useState(false);
+    let [editEmployeeRankOptions, setEditEmployeeRankOptions] = useState([]);
+    let [editEmployeeManagerOptions, setEditEmployeeManagerOptions] = useState([]);
+    let [editEmployeeManagerMapping, setEditEmployeeManagerMapping] = useState({});
+    const [cantEditEmployee, setCantEditEmployee] = useState(false);
+    
 
+    const [size] = useState("large");
+    const editEmployeeStateOptions = [{ value: '正式員工' },{ value: '停權員工' }];
+    const editEmployeesUrl = 'employees/editEmployees'
+    
     const [getCompanyEmployeesListArg] = useState({
         start : '0',
         count : '9999999',
@@ -31,15 +48,27 @@ const CompanyEmployeesList = (props) => {
 
     useEffect(() => {
         if (init) {
-            // if(props.currentEmployeeData !==null && props.currentEmployeeData !==undefined && JSON.stringify(props.currentEmployeeData) !=='{}'){
-            //     setIsShowCompanyApplyState(true)
-            // }else{
-            //     setIsShowCompanyList(true)
-            // }
+            editEmployeeRankOptions = []
+            for(let i = 1 ;i<=100;i++){
+                editEmployeeRankOptions.push({ value: i })
+            }
+
+            setEditEmployeeRankOptions(editEmployeeRankOptions)
             getCompanyEmployeesList()
             setInit(false)
         }
     }, )
+
+    function getEmployeeRankByUserId(userId){
+        let result = ''
+        for(let i = 0 ;i<employeesList.length; i++){
+            if(employeesList[i].content[12].userId === userId){
+                result = employeesList[i].content[10]
+                i = employeesList.length
+            }
+        }
+        return result
+    }
 
     function getCompanyEmployeesList(){
         const xToken = cookie.load('x-token')
@@ -53,7 +82,7 @@ const CompanyEmployeesList = (props) => {
                 })
             .then( (response) => {
                 if(response.data.status === true){
-                    resolveCompanyApplyList(response)
+                    resolveCompanyEmployeesList(response)
                 }else{
                     message.error('抓取員工列表失敗', 3)
                 }
@@ -61,17 +90,30 @@ const CompanyEmployeesList = (props) => {
             .catch( (error) => message.error(error, 3))
     }
 
-    function resolveCompanyApplyList(response){
+    function resolveCompanyEmployeesList(response){
         const employee = []
         const isResignEmployee = []
         if(response.data && response.data.data){
             const items = response.data.data
+
+            const xToken = cookie.load('x-token')
+            const decodedToken = jwt_decode(xToken);
+            const id = decodedToken.id
+            let isShowEditButton = false
+            for(let i = 0 ;i<items.length; i++){
+                if(items[i].userId === id){
+                    if(items[i].rank === 0){
+                        isShowEditButton = true
+                    }
+                    i = items.length
+                }              
+            }
             for(let i = 0 ;i<items.length; i++){
                 console.log(items[i])
                 if(items[i].isResign === true){
-                    combineShowColumnContent(isResignEmployee,items,i)     
+                    combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
                 }else if(items[i].state === 2 || items[i].state === 4){
-                    combineShowColumnContent(employee,items,i)
+                    combineShowColumnContent(employee,items,i,isShowEditButton)
                 }
             }
         }
@@ -79,7 +121,7 @@ const CompanyEmployeesList = (props) => {
         setIsResignEmployeesList(isResignEmployee)
     }
 
-    function combineShowColumnContent(showArr,items,i){
+    function combineShowColumnContent(showArr,items,i,isShowEditButton){
         const item = {
             key: i,
             name: items[i]._id,
@@ -110,7 +152,7 @@ const CompanyEmployeesList = (props) => {
             if(items[i].state === 2){
                 item.content.push(`狀態 : 正式員工`)
             }else{
-                item.content.push(`狀態 : 停權`)
+                item.content.push(`狀態 : 停權員工`)
             }
             
             if(items[i].managerData.length > 0){
@@ -121,10 +163,10 @@ const CompanyEmployeesList = (props) => {
             item.content.push(items[i].rank)
             item.content.push(items[i].state)
             item.content.push(items[i])
-            if(items[i].rank === 0){
-                item.content.push(`none`)
-            }else{
+            if(isShowEditButton === true && items[i].rank > 0){
                 item.content.push(`flex`)
+            }else{
+                item.content.push(`none`)
             }
             showArr.push(item)
             
@@ -143,7 +185,6 @@ const CompanyEmployeesList = (props) => {
     }
 
     function resigning(){
-        console.log('====resigning==willResignEmployee===',willResignEmployee)
         let reqUrl = `${editEmployeesUrl}`
         const body = {
             'id': willResignEmployee._id,
@@ -165,7 +206,7 @@ const CompanyEmployeesList = (props) => {
         }).then((response) => {
             console.log(response)
             if(response.data.status === true){
-                // message.success('離職成功', 3)
+                message.success('離職成功', 3)
                 getCompanyEmployeesList()
             }else{
                 message.error('離職失敗', 3)
@@ -175,19 +216,175 @@ const CompanyEmployeesList = (props) => {
         
     }
 
-    function editEmployees(employee){
-        console.log('==editEmployees=====',employee)
-        setEditEmployeeTitle('員工 '+ employee.userData[0].name)
-        setEditEmployee(employee)
-        setWillEditEmployee(employee)
+    function editEmployees(editEmployees){
+        switchEditEmployeesUI(0)
+        setEditEmployeeTitle('員工 '+ editEmployees.userData[0].name)
+        if(editEmployees.managerData.length > 0){
+            setShowOrgEmployeeManager(editEmployees.managerData[0].name + '( 等級 : ' + getEmployeeRankByUserId(editEmployees.managerId) +')')
+        }else{
+            setShowOrgEmployeeManager('無')
+        }
+        if(editEmployees.state === 2){
+            setShowOrgEmployeeState('正式員工')
+        }else if(editEmployees.state === 4){
+            setShowOrgEmployeeState('停權員工')
+        }else{
+            setShowOrgEmployeeState('不詳')
+        }
+        setEditEmployee(editEmployees)
+        setWillEditEmployee(JSON.parse(JSON.stringify(editEmployees)))
         setEditOpen(true)
     }
 
-    function cancelEditEmployees(){
-        console.log('=====cancelEditEmployees====')
+    function closeEditEmployees(){
         setEditEmployee({})
         setWillEditEmployee({})
+        setIsShowEditEmployeeManagerRank(false)
+        setIsShowEditEmployeeRankManager(false)
+        setIsShowEditEmployeeState(false)
+        setIsShowEditEmployeeRank(false)
+        setIsShowEditEmployeeManager(false)
         setEditOpen(false)
+    }
+
+    function switchEditEmployeesUI(type){
+        switch(type){
+            case 0 :
+                setIsShowEditEmployeeMain(true)
+                setIsShowEditEmployeeState(false)
+                setIsShowEditEmployeeRank(false)
+                break;
+            case 1 :
+                setIsShowEditEmployeeMain(false)
+                setIsShowEditEmployeeState(false)
+                setIsShowEditEmployeeRank(true)
+                setIsShowEditEmployeeManager(false)
+                break;
+            case 2 :
+                setIsShowEditEmployeeMain(false)
+                setIsShowEditEmployeeState(false)
+                setIsShowEditEmployeeRank(false)
+                setIsShowEditEmployeeManager(true)
+                break;
+            case 3 :
+                setIsShowEditEmployeeMain(false)
+                setIsShowEditEmployeeState(true)
+                setIsShowEditEmployeeRank(false)
+                setIsShowEditEmployeeManager(false)
+                break;
+            default:
+        }
+    }
+
+    function setEditEmployeeManagerOptionsByRank(rank){
+        const data = []
+        editEmployeeManagerMapping = {}
+        for(let i = 0 ;i<employeesList.length; i++){
+            if(rank > employeesList[i].content[10] && employeesList[i].content[12]._id !== editEmployee._id){
+                const managerId = employeesList[i].content[12].userId
+                const managerName = employeesList[i].content[12].userData[0].name
+                const value = managerName + ' ( 等級 : '+employeesList[i].content[10]+ ' ) '
+                data.push({
+                    value,
+                })
+                editEmployeeManagerMapping[value] = {
+                    managerId ,
+                    managerName ,
+                    rank : employeesList[i].content[10]
+                }
+            }
+        }
+        setEditEmployeeManagerMapping(editEmployeeManagerMapping)
+        setEditEmployeeManagerOptions(data)
+    }
+
+    function editEmployeesRank(){
+        switchEditEmployeesUI(1)
+    }
+
+    function editEmployeesManager(){
+        switchEditEmployeesUI(2)
+        setEditEmployeeManagerOptionsByRank(editEmployee.rank)
+    }
+
+    function editEmployeesState(){
+        switchEditEmployeesUI(3)
+    }
+
+    function cancelEditEmployeeManagerRank(){
+        setIsShowEditEmployeeManagerRank(false)
+        willEditEmployee.rank = editEmployee.rank
+        setWillEditEmployee(willEditEmployee)
+        setEditEmployeeManagerOptionsByRank(editEmployee.rank)
+    }
+
+    function selectEditEmployeesManager(value){
+        const employee = willEditEmployee
+        employee.managerId = editEmployeeManagerMapping[value].managerId
+        setWillEditEmployee(employee)
+        setCantEditEmployee(false)
+    }
+
+    function selectEditEmployeesState(value){
+        const employee = willEditEmployee
+        if(value === '正式員工'){
+            employee.state = 2
+        }else if(value === '停權員工'){
+            employee.state = 4
+        }else{
+            employee.state = editEmployee.state
+        }
+        setWillEditEmployee(employee)
+    }
+
+    function selectEditEmployeesRank(value){
+        willEditEmployee.rank = value
+        setWillEditEmployee(willEditEmployee)
+        setEditEmployeeManagerOptionsByRank(value)
+    }
+
+    function selectEditEmployeesRankCheckManager(value){
+        selectEditEmployeesRank(value)
+        const managerRank = getEmployeeRankByUserId(editEmployee.managerId)
+        if(managerRank>=value){
+            setCantEditEmployee(true)
+            setIsShowEditEmployeeRankManager(true)
+        }else{
+            setCantEditEmployee(false)
+            setIsShowEditEmployeeRankManager(false)
+            willEditEmployee.managerId = editEmployee.managerId
+            setWillEditEmployee(willEditEmployee)
+        }
+        
+    }
+
+    function sendEditEmployee(){
+        const body = {
+            'id': willEditEmployee._id,
+            'companyId': willEditEmployee.companyId,
+            'userId': willEditEmployee.userId,
+            'rank': willEditEmployee.rank,
+            'managerId': willEditEmployee.managerId,
+            'state': willEditEmployee.state,
+            'isResign': willEditEmployee.isResign
+          }
+          const xToken = cookie.load('x-token')
+          let reqUrl = `${editEmployeesUrl}`
+          CompanyAxios.put(reqUrl, body, {
+              headers:{
+                  'x-Token':xToken
+              }
+          }).then((response) => {
+              console.log(response)
+              if(response.data.status === true){
+                  setEditEmployee(willEditEmployee)
+                  message.success('編輯成功', 3)
+                  closeEditEmployees()
+                  getCompanyEmployeesList()
+              }else{
+                  message.error('編輯失敗', 3)
+              }
+          }).catch( (error) => message.error(error, 3))
     }
 
     const isResignemployeesColumns = [
@@ -386,49 +583,142 @@ const CompanyEmployeesList = (props) => {
 
         <Modal
         visible={editOpen}
-        // open={true}
-        // closable={() => cancelEditEmployees()}
         title={editEmployeeTitle}
-        // onOk={() => editEmployees(true)}
-        onCancel={() => cancelEditEmployees()}
-        // onOk={handleOk}
+        onCancel={() => closeEditEmployees()}
         footer={null}
-        // onCancel={cancelEditEmployees}
-        // footer={[
-        //   <Button key="back" onClick={() => editEmployees(true)}>
-        //     Return
-        //   </Button>,
-        //   <Button key="submit" type="primary"  onClick={() => editEmployees(true)}>
-        //     Submit
-        //   </Button>,
-        //   <Button
-        //     key="link"
-        //     href="https://google.com"
-        //     type="primary"
-        //     onClick={() => editEmployees(true)}
-        //   >
-        //     Search on Google
-        //   </Button>,
-        // ]}
       >
-        等級
-        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
-             編輯等級
-        </Button>
-        <br/>
-        <br/>
-        管理者
-        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
-             編輯管理
-        </Button>
-        <br/>
-        <br/>
-        狀態
-        <Button type="primary" style={{float : 'right'}} onClick={() => editEmployees(true)}>
-             編輯狀態
-        </Button>
-        <br/>
-        <br/>
+        
+        {
+        isShowEditEmployeeMain?(
+        <div>
+            等級 : {editEmployee.rank}
+            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesRank()}>
+                 編輯等級
+            </Button>
+            <br/>
+            <br/>
+            主管 : {showOrgEmployeeManager}
+            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesManager()}>
+                編輯主管
+            </Button>
+            <br/>
+            <br/>
+            狀態 : {showOrgShowEmployeeState}
+            <Button type="primary" style={{float : 'right'}} onClick={() => editEmployeesState()}>
+                編輯狀態
+            </Button>
+            <br/>
+            <br/>
+        </div>):null
+        }
+
+        {
+        isShowEditEmployeeRank?(
+        <div>
+            目前等級 : {editEmployee.rank}
+            <br/>
+            <br/>
+            編輯等級 :&nbsp;
+            <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRankCheckManager} style={{
+                            width: '50%',
+                        }}>
+            </Select>
+            <br/>
+            <br/>
+            {
+            isShowEditEmployeeRankManager?(
+            <div>
+                目前主管 : {showOrgEmployeeManager}
+                <br/>
+                <br/>
+                編輯主管 :&nbsp;
+                <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+                            width: '50%',
+                        }}>
+                </Select>
+                <br/>
+                <br/>
+                <p style={{
+                            'color': '#ff0000',
+                        }}>溫馨提醒 : 員工等級相等,或小於主管,請選擇等級更小的主管</p>
+            </div>):null
+            }
+            <Button type="primary" disabled={cantEditEmployee} style={{float : 'right'}} onClick={() => sendEditEmployee()}>
+                確定編輯
+            </Button>
+            <br/>
+            <br/>
+        </div>):null
+        }
+
+        {
+        isShowEditEmployeeManager?(
+        <div>
+            目前等級 : {editEmployee.rank}
+            {
+                isShowEditEmployeeManagerRank?<Button type="primary" danger onClick={() => cancelEditEmployeeManagerRank()} style={{float : 'right'}}>
+                    取消編輯
+                </Button>:
+                <Button type="primary" onClick={() => setIsShowEditEmployeeManagerRank(true)} style={{float : 'right', backgroundColor:'#00cc00'}}>
+                    編輯等級
+                </Button>
+            }
+            <br/>
+            <br/>
+            {
+            isShowEditEmployeeManagerRank?(
+            <div>
+                編輯等級 :&nbsp;
+                <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRank} style={{
+                                width: '50%',
+                        }}>
+                </Select>
+                <br/>
+                <br/>
+            </div>):null
+            }
+            目前主管 : {showOrgEmployeeManager}
+            <br/>
+            <br/>
+            編輯主管 :&nbsp;
+            <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+                            width: '50%',
+                        }}>
+            </Select>
+            <br/>
+            <br/>
+            <p style={{
+                            'color': '#ff0000',
+                        }}>溫馨提醒 : 主管等級必須比員工小,因此只顯示可選擇主管</p>
+            <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
+                確定編輯
+            </Button>
+            <br/>
+            <br/>
+        </div>):null
+        }
+
+        {
+        isShowEditEmployeeState?(
+        <div>
+            目前狀態 : {showOrgShowEmployeeState}
+            <br/>
+            <br/>
+            編輯狀態 :&nbsp;
+            <Select allowClear placeholder="請選擇狀態" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
+                            width: '50%',
+                        }}>
+            </Select>
+            <br/>
+            <br/>
+            <Button type="primary" style={{float : 'right'}} onClick={() => sendEditEmployee()}>
+                確定編輯
+            </Button>
+            <br/>
+            <br/>
+        </div>):null
+        }
+
       </Modal>
 
         </div>
