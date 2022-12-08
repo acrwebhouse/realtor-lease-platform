@@ -342,8 +342,15 @@ const HouseDetail = (prop) => {
              }else{
                 hostGender = hostGender + ' 先生'
             }
-            if(data.floor2 !== null && data.floor2 !== undefined && data.floor2 !== ''){
+            if(data.floor2 !== null && data.floor2 !== undefined && data.floor2 !== '' ){
                 setShowFloor2(' 之 '+data.floor2)
+            }
+            if(data.floor === -3){
+                data.floor = `地下 3`
+            }else if(data.floor === -2){
+                data.floor = `地下 2`
+            }else if(data.floor === -1){
+                data.floor = `地下 1`
             }
             setHostGender(hostGender)
         }

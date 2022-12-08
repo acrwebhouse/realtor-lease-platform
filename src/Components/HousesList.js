@@ -87,7 +87,7 @@ const HousesList = (props) => {
         maxPing : '999999',
         minRoom : '0',
         maxRoom : '999999',
-        minFloor : '0',
+        minFloor : '-10',
         maxFloor : '999999',
         city : '',
         area : '',
@@ -230,9 +230,17 @@ const HousesList = (props) => {
                     key: i,
                     price: items[i].price,
                     address: `地址 : ${items[i].address}`,
-                    content: [items[i].name,`租金 : ${items[i].price}`, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`, `樓層 : ${items[i].floor}`],
+                    content: [items[i].name,`租金 : ${items[i].price}`, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`],
                 }
-
+                if(items[i].floor === -3){
+                    item.content.push(`樓層 : 地下三樓`)
+                }else if(items[i].floor === -2){
+                    item.content.push(`樓層 : 地下二樓`)
+                }else if(items[i].floor === -1){
+                    item.content.push(`樓層 : 地下一樓`)
+                }else {
+                    item.content.push(`樓層 : ${items[i].floor}`)
+                }
                 if(items[i].photo && items[i].photo.length > 0){
                     item.image = `${houseService}/resource/${items[i]._id}/photo/${items[i].photo[0]}`
                 }else{
