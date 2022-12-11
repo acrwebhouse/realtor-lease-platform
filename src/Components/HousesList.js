@@ -976,7 +976,11 @@ const HousesList = (props) => {
                                             console.log('record',record)
                                             console.log('rowIndex',rowIndex)
                                             console.log(housesListDetail[record.key])
-                                            openInNewTab(`/HouseDetail/${housesListDetail[record.key]._id}`)
+                                            if(props.isCompanyList){
+                                                openInNewTab(`/CompanyHouseDetail/${housesListDetail[record.key]._id}`)
+                                            }else{
+                                                openInNewTab(`/HouseDetail/${housesListDetail[record.key]._id}`)
+                                            }
                                         }
                                     }, // click row
                                 };}}
