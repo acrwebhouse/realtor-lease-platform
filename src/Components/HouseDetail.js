@@ -702,7 +702,7 @@ console.log(showFloor2)
                         'fontSize':'20px'
                         }}>{`價格：${house.price}元 / 月`}</div>
                         {
-                            prop.isOwner?(
+                            (prop.isOwner || prop.isComapny)?(
                                 <div style={{'fontSize':'15px'}}>{`地址：${house.address}${addressDetail}`}</div>
                             ):<div style={{'fontSize':'15px'}}>{`地址：${house.address}`}</div>
                         }
@@ -728,7 +728,7 @@ console.log(showFloor2)
                         }
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         {
-                            prop.isOwner?(
+                            (prop.isOwner || prop.isComapny)?(
                                 <div style={{'fontSize':'10px',width: '200px'}}>{`備註：${remark}`}</div>
                             ):null   
                         }
