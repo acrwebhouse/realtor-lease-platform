@@ -9,6 +9,7 @@ const base_URL_User = config.base_URL_User
 const base_URL_House = config.base_URL_House
 const base_URL_Collect = config.base_URL_Collect
 const base_URL_Company = config.base_URL_Company
+const base_URL_Transaction = config.base_URL_Transaction
 
 const LoginRegisterAxios = axios.create({
     baseURL: base_URL_Auth,
@@ -54,5 +55,11 @@ const CompanyAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
-export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios}
+const TransactionAxios = axios.create({
+    baseURL: base_URL_Transaction,
+    // timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+})
+
+export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios, TransactionAxios}
 

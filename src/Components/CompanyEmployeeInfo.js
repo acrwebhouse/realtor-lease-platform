@@ -9,6 +9,7 @@ import {
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
 
+const employeeState = ['初始狀態', '審核中', '正式員工', '審核失敗', '停權中']
 const CompanyEmployeeInfo = (props) => {
     const [init, setInit] = useState(true);
     const [employeeData, setEmployeeData] = useState(
@@ -35,7 +36,7 @@ const CompanyEmployeeInfo = (props) => {
             getCompanyEmployeeInfo()
         }
     }, )
-
+    console.log(props)
     function getCompanyEmployeeInfo(){
         let reqUrl = `/employees/getPersonalEmployeesInfo`
         const xToken = cookie.load('x-token')
@@ -46,8 +47,10 @@ const CompanyEmployeeInfo = (props) => {
                 }
             })
             .then( (response) => {
+                console.log(response)
                 if(response.data.status === true){
-                    resolveCompanyEmployeet(response.data.data)
+                    console.log(response.data.data)
+                    resolveCompanyEmployee(response.data.data)
                 }else{
                     message.error('員工資訊取得失敗', 3)
                 }
@@ -55,7 +58,7 @@ const CompanyEmployeeInfo = (props) => {
             .catch( (error) => message.error(error, 3))
     }
 
-    function resolveCompanyEmployeet(list){
+    function resolveCompanyEmployee(list){
         for(let i = 0 ;i<list.length; i++){
             if(list[i]._id === props.employeeId){
                 const item = list[i]
@@ -68,6 +71,8 @@ const CompanyEmployeeInfo = (props) => {
                     phone : item.userData[0].phone,
                     address : item.userData[0].address,
                     mail : item.userData[0].mail,
+                    rank : item.rank,
+                    state : item.state,
                     scope : [{
                         city : '',
                         area : ''
@@ -103,6 +108,7 @@ const CompanyEmployeeInfo = (props) => {
                         <Divider>員工資訊</Divider>
                         <Descriptions bordered>
                             <Descriptions.Item label="名稱" span={3}>{employeeData.name}</Descriptions.Item>
+                            <Descriptions.Item label="等級" span={3}>{employeeData.rank > 0 ? employeeData.rank : '管理者'}</Descriptions.Item>
                             <Descriptions.Item label="性別" span={3}>
                                 {employeeData.gender ? '男' : '女'}
                             </Descriptions.Item>
@@ -115,6 +121,7 @@ const CompanyEmployeeInfo = (props) => {
                             <Descriptions.Item label="主管郵件" span={3}>
                                 {employeeData.managerData.length > 0 ? employeeData.managerData[0].mail : '-'}
                             </Descriptions.Item>
+                            <Descriptions.Item label="員工狀態" span={3}>{employeeState[employeeData.state]}</Descriptions.Item>
                             <Descriptions.Item label="生日" span={3}>{employeeData.bornDate}</Descriptions.Item>
                             <Descriptions.Item label="聯絡電話" span={3}>{employeeData.phone}</Descriptions.Item>
                             <Descriptions.Item label="聯絡地址" span={3}>{employeeData.address}</Descriptions.Item>
