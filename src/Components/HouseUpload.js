@@ -453,6 +453,7 @@ const HouseUpload = (prop) => {
                         : FloorOptions.findIndex(x => x.value === values['floorNo1']) - 3
                     : parseInt(values['totalFloor']),
                 'floor2' : values['floorNo2'] ? parseInt(values['floorNo2']) : '',
+                'isRoofAnnex' : !FloorOptions.findIndex(x => x.value === values['floorNo1']), // index 0 => '頂樓加蓋' => !0 == true
                 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
                 'price' : parseInt(values['lease-price']),
                 'hostName': values['hostName'],

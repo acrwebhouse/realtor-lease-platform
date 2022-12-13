@@ -109,7 +109,8 @@ const ReserveHouseDetail = (props) => {
                 if(response.data.status === true){
                     message.success('刪除成功', 3);
                     setTimeout(()=>{
-                        window.location.href = window.location.origin;
+                        // window.location.href = window.location.origin;
+                        props.showReserveHouseListUI()
                     },3000);
                 }else{
                     message.error(response.data.data, 3)
@@ -271,7 +272,7 @@ const ReserveHouseDetail = (props) => {
                                         <div>
                                             <Button type="primary"
                                                     onClick={() => {
-                                                        openInNewTab(window.location.origin + `/HouseDetailOwner/${tenantData['houseData'][0]['_id']}/${tenantData['houseData'][0]['belongId']}`)
+                                                        openInNewTab(window.location.origin + `/HouseDetail/${tenantData['houseData'][0]['_id']}/`)
                                                     }}
                                             >
                                                 詳細房屋資料
