@@ -740,11 +740,10 @@ const HousesList = (props) => {
                                     &nbsp;
                                     {content[12] === 2 ?
                                         <Button type="primary"
-                                             disabled={content[12] !== 2}
                                              onClick={() => {
                                                  dealData.houseId = content[10]
                                                  dealData.companyId = content[11]
-                                                 // dealData.companyId =
+                                                 setEnableDealForm(true)
                                              }}
                                              style={{width: '70px', backgroundColor: '#FF00FF'}}>
                                         成交
