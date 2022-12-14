@@ -102,13 +102,22 @@ const convertString = (word) =>{
 }
 
 const FloorCheck = (FloorValue, remark) => {
-    if (remark.indexOf('頂樓加蓋，') === 0){
-        return '0'
-    } else if(FloorValue < 0) {
-        return FloorValue + 4
+    if (remark === null) {
+        if(FloorValue < 0) {
+            return FloorValue + 4
+        } else {
+            return FloorValue + 3
+        }
     } else {
-        return FloorValue + 3
+        if (remark.indexOf('頂樓加蓋，') === 0){
+            return '0'
+        } else if(FloorValue < 0) {
+            return FloorValue + 4
+        } else {
+            return FloorValue + 3
+        }
     }
+
 }
 
 const PhonePrefixSelector = (
@@ -1073,7 +1082,7 @@ const HouseUpload = (prop) => {
                         "lease-price" : prop.defaultValue?prop.defaultValue.price:[],
                         "manageFee" : prop.defaultValue?prop.defaultValue.saleInfo.manager ? prop.defaultValue.saleInfo.managerPrice : [] : [],
                         "garbageFee" : prop.defaultValue?prop.defaultValue.saleInfo.garbage ? prop.defaultValue.saleInfo.garbagePrice : [] : [],
-                        "remark" : prop.defaultValue?prop.defaultValue.remark.indexOf('頂樓加蓋，') === 0 ? prop.defaultValue.remark.slice(5) : prop.defaultValue.remark : []
+                        "remark" : prop.defaultValue.remark?prop.defaultValue.remark.indexOf('頂樓加蓋，') === 0 ? prop.defaultValue.remark.slice(5) : prop.defaultValue.remark : []
                     }}
 
                 >
