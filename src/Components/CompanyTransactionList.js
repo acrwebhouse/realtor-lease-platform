@@ -52,14 +52,15 @@ const CompanyTransactionList = (props) => {
     }, )
 
     const getHousesTransactionList = () => {
-
+        const xToken = cookie.load('x-token')
         let reqUrl = `${Transaction_Auth}?start=${getTransactionArg.start}&&isDelete=${getTransactionArg.isDelete}&&minPrice=${getTransactionArg.minPrice}&&maxPrice=${getTransactionArg.maxPrice}&&userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
 
-        TransactionAxios.get(
+        UserAxios.get(
             reqUrl,{
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
+                    'x-Token':xToken
                 }
             }
         )

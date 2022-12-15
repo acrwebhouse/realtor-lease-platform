@@ -327,7 +327,7 @@ const HouseUpload = (prop) => {
 
         if (isRunPost) {
             prop.defaultValue ?
-                HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner}), {
+                HouseAxios.put(Edit_House_Auth, Object.assign(HouseData, {'id': prop.defaultValue._id, 'owner': prop.defaultValue.owner, 'belongType': prop.defaultValue.belongType, 'belongId': prop.defaultValue.belongId}), {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
@@ -475,7 +475,7 @@ const HouseUpload = (prop) => {
                     'bathroom' : parseInt(values['bathroom']),
                     "buildingType" : buildingType.indexOf(values['TypeOfBuild']) + 1
                 },
-                'ping' : parseInt(values['ping']),
+                'ping' : values['ping'],
                 'parking' : extraRequire.includes('parking'),
                 'traffic' : TrafficArr,
                 'life' : LifeArr,
@@ -1082,7 +1082,19 @@ const HouseUpload = (prop) => {
                         "lease-price" : prop.defaultValue?prop.defaultValue.price:[],
                         "manageFee" : prop.defaultValue?prop.defaultValue.saleInfo.manager ? prop.defaultValue.saleInfo.managerPrice : [] : [],
                         "garbageFee" : prop.defaultValue?prop.defaultValue.saleInfo.garbage ? prop.defaultValue.saleInfo.garbagePrice : [] : [],
-                        "remark" : prop.defaultValue.remark?prop.defaultValue.remark.indexOf('頂樓加蓋，') === 0 ? prop.defaultValue.remark.slice(5) : prop.defaultValue.remark : []
+                        "remark" : prop.defaultValue
+                            ?
+                            prop.defaultValue.remark !== null
+                                ?
+                                prop.defaultValue.remark.indexOf('頂樓加蓋，') === 0
+                                    ?
+                                    prop.defaultValue.remark.slice(5)
+                                    :
+                                    prop.defaultValue.remark
+                                :
+                                prop.defaultValue.remark
+                            :
+                            []
                     }}
 
                 >
@@ -1687,6 +1699,7 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
+                                                     step="0.01"
                                                      size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="坪"

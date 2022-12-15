@@ -25,7 +25,7 @@ const ReserveHouseList = (props, ref) => {
         start : '0',
         count : '999999',
         timeSort : '-1',
-        state : '0',
+        state : '',
         type : '',
     });
 

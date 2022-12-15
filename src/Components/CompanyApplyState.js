@@ -99,12 +99,7 @@ const CompanyApplyState = (props) => {
             if(response.data.status === true){
                 props.showCompanyListUI()
             }else{
-                {
-                    applyState[employeeApplyData.state] === '審核失敗' ?
-                        message.error('重新申請', 3)
-                        :
-                        message.error('取消失敗', 3)
-                }
+                message.error('取消失敗', 3)
             }
         }).catch( (error) => message.error(error, 3))
     }
