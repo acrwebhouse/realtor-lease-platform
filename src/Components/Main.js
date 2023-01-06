@@ -42,6 +42,7 @@ import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
 import CompanyEmployeesList from "./CompanyEmployeesList";
 import CompanyTransactionList from "./CompanyTransactionList";
+import {getCurrentEmployee} from './CompanyCommon'
 
 
 const collectAccessTimeUrl = 'collect/accessTime'
@@ -70,8 +71,8 @@ const Main = () => {
     
     const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
+    const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
 
-    
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
 
@@ -143,36 +144,50 @@ const Main = () => {
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
-                console.log(employeeData)
+                housesList()
             }
             
         })
         .catch( (error) => message.error(error, 3))
     }
 
+    function checkEmployeeStateAndChangeMenu(callback){
+        getCurrentEmployee((result,data)=>{
+            const currentCompanyId = data.companyId
+            const currentEmployeeState = data.state
+            const currentEmployeeRank = data.rank
+            const oldCompanyId = currentEmployeeData.companyId
+            const oldEmployeeState = currentEmployeeData.state
+            const oldEmployeeRank = currentEmployeeData.rank
+            if(result === true){
+                if(currentCompanyId === oldCompanyId && currentEmployeeState === oldEmployeeState && currentEmployeeRank === oldEmployeeRank){
+                    callback(true)
+                }else{
+                    const xToken = cookie.load('x-token')
+                    changeUserMenu(xToken)
+                    callback(false)
+                }
+            }else{
+                const xToken = cookie.load('x-token')
+                changeUserMenu(xToken)
+                callback(false)
+            }
+
+        })
+    }
+
     function changeEmployeeMenu(employee){
-        const relativeLinkMenu = document.getElementById('relativeLinkMenu');
+        const companyGroupMenu = document.getElementById('companyGroupMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
         if(employee.state === 2 || employee.state === 4){
-            const companyInfo = document.getElementById('companyInfo');
-            const companyHouseList = document.getElementById('companyHouseList');
-            const companyTransactionList = document.getElementById('companyTransactionList');
-            const companyApplyList = document.getElementById('companyApplyList');
-            const companyEmployeesList = document.getElementById('companyEmployeesList');
-            const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
-            companyApplyMenu.style.display = 'none'
-            relativeLinkMenu.style.display = null;
-            companyApplyList.style.display = 'none'
-            // relativeLinkMenu.style.display = 'flex'
-            companyInfo.style.display = 'flex'
-            companyHouseList.style.display = 'flex'
-            companyEmployeeInfo.style.display = 'flex'
-            companyTransactionList.style.display = 'flex'
+            companyGroupMenu.style.display = null;
             if(employee.rank === 0){
-                companyApplyList.style.display = 'flex'
-                companyEmployeesList.style.display = 'flex'
+                setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+            }else{
+                setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
             }
         }else{
+            companyGroupMenu.style.display = 'none'
             companyApplyMenu.style.display = 'flex'
         }
     }
@@ -401,9 +416,10 @@ const Main = () => {
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
-        const relativeLinkMenu = document.getElementById('relativeLinkMenu');
+        // const relativeLinkMenu = document.getElementById('relativeLinkMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
-
+        const companyGroupMenu = document.getElementById('companyGroupMenu');
+        
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
@@ -412,7 +428,8 @@ const Main = () => {
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
-        relativeLinkMenu.style.display = 'none'
+        // relativeLinkMenu.style.display = 'none'
+        companyGroupMenu.style.display = 'none'
         companyApplyMenu.style.display = 'none'
         // matchNeedMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
@@ -498,7 +515,7 @@ const Main = () => {
             uploadHousesMenu.style.display = 'none'
             memberListMenu.style.display = 'none'
             memberInfoMenu.style.display = 'flex'
-            relativeLinkMenu.style.display = 'flex'
+            // relativeLinkMenu.style.display = 'flex'
             logoutMenu.style.display = 'flex'
             loginSignInMenu.style.display = 'none'
             collectMenu.style.display = 'none'
@@ -566,27 +583,36 @@ const Main = () => {
             加入公司
           </Menu.Item>
           <Menu.SubMenu
-               id="relativeLinkMenu"
+               id="companyGroupMenu"
                key='14'
                title={"公司"}
                style={{'display':'none'}}
                icon={<PropertyIcon />} >
-              <Menu.Item key='18' id="companyInfo" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
+              <Menu.Item key='18' id="companyInfoMenu" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
                     公司簡介
               </Menu.Item>
-              <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+              <Menu.Item key='17' id="companyHouseListMenu" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     租屋列表
               </Menu.Item>
-              <Menu.Item key='22' id="companyTransactionList" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+              <Menu.Item key='22' id="companyTransactionListMenu" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     成交紀錄
               </Menu.Item>
-              <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
+
+              {/* <Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
                     審核列表
-              </Menu.Item>
-              <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
+              </Menu.Item> */}
+
+              {
+                isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
+                    審核列表
+                </Menu.Item>):null           
+              }
+
+
+              <Menu.Item key='20' id="companyEmployeesListMenu" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
                     員工列表
               </Menu.Item>
-              <Menu.Item key='16' id="companyEmployeeInfo" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>
+              <Menu.Item key='16' id="companyEmployeeInfoMenu" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>
                     員工中心
               </Menu.Item>
               
@@ -661,10 +687,10 @@ const Main = () => {
         isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo employeeId={currentEmployeeData._id}></CompanyEmployeeInfo>):null           
     }
     {
-        isShowCompanyHouseList?(<CompanyHouseList companyId={currentEmployeeData.companyData[0]._id}></CompanyHouseList>):null           
+        isShowCompanyHouseList?(<CompanyHouseList companyId={currentEmployeeData.companyId}></CompanyHouseList>):null           
     }
     {
-        isShowCompanyInfo?(<CompanyInfo companyId={currentEmployeeData.companyData[0]._id}></CompanyInfo>):null           
+        isShowCompanyInfo?(<CompanyInfo companyId={currentEmployeeData.companyId} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyInfo>):null           
     }
     {
         isShowCompanyEmployeesList?(<CompanyEmployeesList currentEmployeeData={currentEmployeeData}></CompanyEmployeesList>):null           
