@@ -10,6 +10,18 @@ import {
   } from "react-router-dom";
 
 const CompanyHouseList = (props) => {
+    const [init, setInit] = useState(true);
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+            props.checkEmployeeStateAndChangeMenu((result)=>{
+                if(result === true){
+                }else{
+                    message.warning('員工權限變動，請重新進入選單', 3)
+                }
+            })
+        }
+    }, )
     return (
         <div>
             <HousesList isCompanyList={true} companyId={props.companyId}></HousesList>

@@ -48,14 +48,19 @@ const CompanyEmployeesList = (props) => {
 
     useEffect(() => {
         if (init) {
-            editEmployeeRankOptions = []
-            for(let i = 1 ;i<=100;i++){
-                editEmployeeRankOptions.push({ value: i })
-            }
-
-            setEditEmployeeRankOptions(editEmployeeRankOptions)
-            getCompanyEmployeesList()
             setInit(false)
+            props.checkEmployeeStateAndChangeMenu((result)=>{
+                if(result === true){
+                    editEmployeeRankOptions = []
+                    for(let i = 1 ;i<=100;i++){
+                        editEmployeeRankOptions.push({ value: i })
+                    }
+                    setEditEmployeeRankOptions(editEmployeeRankOptions)
+                    getCompanyEmployeesList()
+                }else{
+                    message.warning('員工權限變動，請重新進入選單', 3)
+                }
+            })
         }
     }, )
 

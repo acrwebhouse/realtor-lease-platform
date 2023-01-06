@@ -38,7 +38,7 @@ const CompanyInfo = (props) => {
                 if(result === true){
                     getCompanyInfo()
                 }else{
-                    message.error('員工權限變動，請重新進入', 3)
+                    message.warning('員工權限變動，請重新進入選單', 3)
                 }
             })
         }

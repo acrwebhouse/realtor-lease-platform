@@ -681,22 +681,22 @@ const Main = () => {
         isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
     }
     {
-        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData}></CompanyApplyList>):null           
+        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApplyList>):null           
     }
     {
-        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo employeeId={currentEmployeeData._id}></CompanyEmployeeInfo>):null           
+        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo employeeId={currentEmployeeData._id} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyEmployeeInfo>):null           
     }
     {
-        isShowCompanyHouseList?(<CompanyHouseList companyId={currentEmployeeData.companyId}></CompanyHouseList>):null           
+        isShowCompanyHouseList?(<CompanyHouseList companyId={currentEmployeeData.companyId} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyHouseList>):null           
     }
     {
         isShowCompanyInfo?(<CompanyInfo companyId={currentEmployeeData.companyId} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyInfo>):null           
     }
     {
-        isShowCompanyEmployeesList?(<CompanyEmployeesList currentEmployeeData={currentEmployeeData}></CompanyEmployeesList>):null           
+        isShowCompanyEmployeesList?(<CompanyEmployeesList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyEmployeesList>):null           
     }
     {
-        isShowCompanyTransactionList?(<CompanyTransactionList currentEmployeeData={currentEmployeeData}></CompanyTransactionList>):null           
+        isShowCompanyTransactionList?(<CompanyTransactionList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyTransactionList>):null           
     }
 
 

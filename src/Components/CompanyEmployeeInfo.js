@@ -33,7 +33,13 @@ const CompanyEmployeeInfo = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            getCompanyEmployeeInfo()
+            props.checkEmployeeStateAndChangeMenu((result)=>{
+                if(result === true){
+                    getCompanyEmployeeInfo()
+                }else{
+                    message.warning('員工權限變動，請重新進入選單', 3)
+                }
+            })
         }
     }, )
     console.log(props)

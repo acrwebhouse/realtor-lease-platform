@@ -35,7 +35,13 @@ const CompanyApplyState = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            getCompanyApplyData()
+            props.checkEmployeeStateAndChangeMenu((result)=>{
+                if(result === true){
+                    getCompanyApplyData()
+                }else{
+                    message.warning('員工權限變動，請重新進入選單', 3)
+                }
+            })
         }
     }, )
     console.log(employeeApplyData)
