@@ -30,18 +30,24 @@ const CompanyHouseDetail = (props) => {
                 const companyId = response.data.data.companyId
                 const employeesData = response.data.data.employeesData
                 let employeePermissionsOk = false;
+                let employeeState = 0
                 for(let i = 0 ;i<employeesData.length;i++){
                     if(employeesData[i].companyId === companyId){
-                        if(employeesData[i].state === 2){
-                            employeePermissionsOk = true
-                            i = employeesData.length
-                        }
+                        employeeState = employeesData[i].state
+                        employeePermissionsOk = true
+                        i = employeesData.length
                     }
                 }
                 if(employeePermissionsOk === true){
-                    checkHousePermissions(companyId)
+                    if(employeeState === 2){
+                        checkHousePermissions(companyId)
+                    }else if(employeeState === 4){
+                        message.error('您目前為停權狀態，無法觀看公司相關物件。', 3)
+                    }else{
+                        message.error('您不是此公司員工，無法觀看此公司相關物件。', 3)
+                    }
                 }else{
-                    message.error('員工權限不足', 3)
+                    message.error('您不是此公司員工，無法觀看此公司相關物件。', 3)
                 }
             }
         })
@@ -70,7 +76,12 @@ const CompanyHouseDetail = (props) => {
 
     useEffect(() => {
         if (init) {
-            checkPermissions()
+            const xToken = cookie.load('x-token')
+            if(xToken === null || xToken === undefined || xToken === ''){
+                message.error('您未登入，無法看到此物件', 3)
+            }else{
+                checkPermissions()
+            }
             setInit(false)
         }
     }, )
