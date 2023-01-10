@@ -271,7 +271,9 @@ const HousesList = (props) => {
                 }else if(items[i].floor === -1){
                     item.content.push(`樓層 : 地下一樓`)
                 }else {
-                    item.content.push(`樓層 : ${items[i].floor}`)
+                    // item.content.push(`樓層 : ${items[i].floor}`)
+                    item.content.push(`${items[i].floor}`)
+
                 }
                 if(items[i].photo && items[i].photo.length > 0){
                     item.image = `${houseService}/resource/${items[i]._id}/photo/${items[i].photo[0]}`
@@ -281,35 +283,43 @@ const HousesList = (props) => {
                 if(items[i].config){
                     switch(items[i].config.buildingType){
                         case 1 :
-                            item.content.push('型態 : 公寓')
+                            item.content.push('公寓')
+                            // item.content.push('型態 : 公寓')
                             break;
                         case 2 :
-                            item.content.push('型態 : 電梯大樓')
+                            item.content.push('電梯大樓')
+                            // item.content.push('型態 : 電梯大樓')
                             break;
                         case 3 :
-                            item.content.push('型態 : 透天')
+                            item.content.push('透天')
+                            // item.content.push('型態 : 透天')
                             break;
                         default:
-                            item.content.push('型態 : 未知')
-
+                            item.content.push('未知')
+                            // item.content.push('型態 : 未知')
                     }
                 }
                 if(items[i].saleInfo){
                     switch(items[i].saleInfo.typeOfRental){
                         case 1 :
-                            item.content.push('類型 : 整層住家')
+                            item.content.push('整層住家')
+                            // item.content.push('類型 : 整層住家')
                             break;
                         case 2 :
-                            item.content.push('類型 : 獨立套房')
+                            item.content.push('獨立套房')
+                            // item.content.push('類型 : 獨立套房')
                             break;
                         case 3 :
-                            item.content.push('類型 : 分租套房')
+                            item.content.push('分租套房')
+                            // item.content.push('類型 : 分租套房')
                             break;
                         case 4 :
-                            item.content.push('類型 : 雅房')
+                            item.content.push('雅房')
+                            // item.content.push('類型 : 雅房')
                             break;
                         default:
-                            item.content.push('類型 : 未知')
+                            item.content.push('未知')
+                            // item.content.push('類型 : 未知')
 
                     }
                 }
@@ -715,8 +725,8 @@ const HousesList = (props) => {
                     //   'textAlign': 'center',
                 }}>
                     <Row>
-                        <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>
-                        <Col xs={24} sm={16} md={16} lg={16} xl={16}>
+                        <Col xs={0} sm={2} md={2} lg={2} xl={4}></Col>
+                        <Col xs={24} sm={22} md={22} lg={22} xl={20}>
                             <div style={{
                                 //   'display': 'inline-block',
                                 //   'textAlign': 'left',
@@ -733,20 +743,16 @@ const HousesList = (props) => {
 
                                 {content[2]}
                                 <br/>
-                                {content[3]}
+                                {content[3]+' 坪'}
                                 <br/>
-                                {content[4]}
+                                {content[5]}&nbsp;&nbsp;-&nbsp;&nbsp;{content[4] +' 樓'}&nbsp;&nbsp;-&nbsp;&nbsp;{content[6]}
                                 <br/>
-                                {content[5]}
+                                {'鄰近'+content[7]}
                                 <br/>
-                                {content[6]}
-                                <br/>
-                                {content[7]}
-                                <br/>
-                                {content[8]}
-                                <br/>
-                                {content[9]}
-                                <br/>
+                                {/*{content[8]}*/}
+                                {/*<br/>*/}
+                                {/*{content[9]}*/}
+                                {/*<br/>*/}
                                 {content[10]}
                                 <br/>
                                 <div style={{display: isShowEdit}}>
@@ -765,7 +771,7 @@ const HousesList = (props) => {
                                                  dealData.companyId = content[12]
                                                  setEnableDealForm(true)
                                              }}
-                                             style={{width: '70px', backgroundColor: '#FF00FF'}}>
+                                             style={{width: '70px', backgroundColor: '#FFA500', borderColor:'#FFA500'}}>
                                         成交
                                     </Button>
                                         :

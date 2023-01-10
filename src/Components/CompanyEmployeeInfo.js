@@ -118,14 +118,14 @@ const CompanyEmployeeInfo = (props) => {
                             <Descriptions.Item label="主管" span={3}>
                                 {employeeData.managerData.length > 0 ? employeeData.managerData[0].name : '-'}
                             </Descriptions.Item>
-                            <Descriptions.Item label="主管郵件" span={3}>
+                            <Descriptions.Item label="主管信箱" span={3}>
                                 {employeeData.managerData.length > 0 ? employeeData.managerData[0].mail : '-'}
                             </Descriptions.Item>
                             <Descriptions.Item label="員工狀態" span={3}>{employeeState[employeeData.state]}</Descriptions.Item>
                             <Descriptions.Item label="生日" span={3}>{employeeData.bornDate}</Descriptions.Item>
                             <Descriptions.Item label="聯絡電話" span={3}>{employeeData.phone}</Descriptions.Item>
                             <Descriptions.Item label="聯絡地址" span={3}>{employeeData.address}</Descriptions.Item>
-                            <Descriptions.Item label="電子郵件" span={3}>{employeeData.mail}</Descriptions.Item>
+                            <Descriptions.Item label="信箱" span={3}>{employeeData.mail}</Descriptions.Item>
                             <Descriptions.Item label="負責城市" span={3}>
                                 {employeeData.scope.city}
                             </Descriptions.Item>

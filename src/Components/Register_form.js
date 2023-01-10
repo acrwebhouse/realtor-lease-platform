@@ -1080,7 +1080,7 @@ const Register = (props) => {
                                 }}>
                                     重新發送 {enableCount ? count : []}
                                 </Button>
-                            </>) : failMessage.includes('acc') ? <h2>註冊失敗，帳號已註冊過</h2> :<h2>註冊失敗，電子郵件已註冊過</h2> }
+                            </>) : failMessage.includes('acc') ? <h2>註冊失敗，帳號已註冊過</h2> :<h2>註冊失敗，電子信箱已註冊過</h2> }
                     </Modal>
                 </Form>}
             <Divider/>

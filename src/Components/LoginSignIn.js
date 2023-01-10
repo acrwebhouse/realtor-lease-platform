@@ -237,6 +237,7 @@ const LoginRegister = (props) => {
                         <Modal title="會員註冊系統"
                                visible={isRegisterModalVisible}
                                className="ModalRegister"
+                               bodyStyle={{height: '700px', overflowY: 'auto'}}
                                width={700}
                                okText="Submit"
                                cancelText="Return"

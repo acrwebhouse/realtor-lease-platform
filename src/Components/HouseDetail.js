@@ -713,7 +713,7 @@ console.log(showFloor2)
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`}</div>
                         {
                             prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
-                                <div style={{'fontSize':'15px'}}>{`房間${house.room} ${hostGender}`}</div>
+                                <div style={{'fontSize':'15px'}}>{`房間 ${house.room} `}</div>
                             ):null   
                         }
                         {
