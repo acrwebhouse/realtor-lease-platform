@@ -201,6 +201,20 @@ const ReserveHouseDetail = (props) => {
                     </div>
                 ):null
             }
+            <div Style='float:right'>
+                <Button type="primary"
+                        onClick={() => {
+                            props.showReserveHouseListUI()
+                        }}>
+                    返回
+                </Button>
+                &nbsp;
+                <Button type="primary"
+                        danger
+                        onClick={enableRemoveReserveHouse}>
+                    刪除
+                </Button>
+            </div>
             <Row>
                 <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}>
@@ -209,19 +223,7 @@ const ReserveHouseDetail = (props) => {
                             <div>
                                 {/*{id}*/}
                                 {/*ReserveHouseDetail page*/}
-                                <div Style='float:right'>
-                                    <Button type="primary"
-                                            onClick={() => {
-                                                props.showReserveHouseListUI()
-                                            }}>
-                                        返回
-                                    </Button>
-                                    <Button type="primary"
-                                            danger
-                                            onClick={enableRemoveReserveHouse}>
-                                        刪除
-                                    </Button>
-                                </div>
+
                                 <Divider>租客資訊</Divider>
                                 <Descriptions bordered>
                                     <Descriptions.Item label="名稱" span={3}>{tenantData['clientName']}</Descriptions.Item>
