@@ -121,7 +121,6 @@ const Main = () => {
     );
     
     const changeUserMenu = (xToken) => {
-        console.log('===changeUserMenu=====')
         const userListUrl = 'user/getPersonalInfo'
         let reqUrl = `${userListUrl}`
         UserAxios.get(
@@ -160,6 +159,12 @@ const Main = () => {
             const oldEmployeeState = currentEmployeeData.state
             const oldEmployeeRank = currentEmployeeData.rank
             if(result === true){
+                // console.log('=====currentCompanyId====',currentCompanyId)
+                // console.log('=====oldCompanyId====',oldCompanyId)
+                // console.log('====currentEmployeeState=====',currentEmployeeState)
+                // console.log('=====oldEmployeeState====',oldEmployeeState)
+                // console.log('====currentEmployeeRank=====',currentEmployeeRank)
+                // console.log('====oldEmployeeRank=====',oldEmployeeRank)
                 if(currentCompanyId === oldCompanyId && currentEmployeeState === oldEmployeeState && currentEmployeeRank === oldEmployeeRank){
                     callback(true)
                 }else{
@@ -452,7 +457,6 @@ const Main = () => {
     }
 
     function changeRolesMenu(roles,toHouseList){
-        console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const reserveHouseMenu = document.getElementById('reserveHouseMenu');

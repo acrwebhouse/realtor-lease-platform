@@ -68,9 +68,6 @@ const HousesList = (props) => {
         endRentDate : ''
     })
 
-    console.log(houses)
-    console.log(dealData)
-
     useEffect(() => {
         if (init) {
             setInit(false)
