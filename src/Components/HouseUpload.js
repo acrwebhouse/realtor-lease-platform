@@ -11,7 +11,6 @@ import {
     Col,
     Checkbox,
     Upload,
-    message,
     List,
     Image
 } from "antd";
@@ -21,6 +20,9 @@ import { DeleteOutlined } from '@ant-design/icons';
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const houseService = config.base_URL_House
 const { Option } = Select;
@@ -250,7 +252,6 @@ const HouseUpload = (prop) => {
 
         if(prop.defaultValue && prop.defaultValue.traffic) {
             prop.defaultValue.traffic.map(x => TrafficArr.push(x))
-            // console.log(TrafficArr)
         }
         if(prop.defaultValue && prop.defaultValue.life) {
             prop.defaultValue.life.map(x => LifeArr.push(x))
@@ -337,22 +338,13 @@ const HouseUpload = (prop) => {
                     .then((response) => {
                         console.log(response)
                         if (response.data.status === true) {
-                            message.success({
-                                content: '房屋資料更新成功',
-                                style: {
-                                    fontSize: '40px',
-                                    marginTop: '20vh',
-                                },
-                                duration: 3,
-                            }).then(() => {
-                            })
+                            toast.success(`房屋資料更新成功`);
                             setTimeout(() => {
                                 window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
                             }, 2000)
 
                         } else {
-                            message.error(response.data.data, 3).then(() => {
-                            })
+                            toast.error(`房屋資料更新失敗`);
                         }
 
                         // if(!response.data.status && response.data.data.includes('house address is exist')) {
@@ -378,8 +370,7 @@ const HouseUpload = (prop) => {
                         // }
 
                     })
-                    .catch((error) => message.error(`${error}`, 2))
-
+                    .catch((error) => toast.error(`${error}`))       
                 :
                 HouseAxios.post(House_Auth, HouseData, {
                     headers: {
@@ -392,14 +383,7 @@ const HouseUpload = (prop) => {
                     .then((response) => {
                         console.log(response.data)
                         if(response.data.status) {
-                            message.success({
-                                content: '房屋資料上傳成功',
-                                style: {
-                                    fontSize: '40px',
-                                    marginTop: '20vh',
-                                },
-                                duration: 2,
-                            }).then()
+                            toast.success(`房屋資料上傳成功`);
                         }
                         // if(!response.data.status && response.data.data.includes('house address is exist')) {
                         //     message.error({
@@ -424,8 +408,7 @@ const HouseUpload = (prop) => {
                         // }
 
                     })
-
-                    .catch( (error) => message.error(`${error}`, 2))
+                    .catch((error) =>toast.success(`${error}`));
 
             setIsRunPost(false)
             PicTemp.splice(0, PicTemp.length)
@@ -503,24 +486,10 @@ const HouseUpload = (prop) => {
             errorPhoneFormat();
         } else {
             if (showPic.length+PictureList.length < 1) {
-                message.warning({
-                    content: '照片至少上傳一張',
-                    style: {
-                        fontSize: '40px',
-                        marginTop: '20vh',
-                    },
-                    duration: 2,
-                }).then()
+                toast.warning(`照片至少上傳一張`)
             }else {
                 if(!PicUploadCheck && !prop.defaultValue) {
-                    message.warning({
-                        content: '請記得按下提交照片',
-                        style: {
-                            fontSize: '40px',
-                            marginTop: '20vh',
-                        },
-                        duration: 2,
-                    }).then()
+                    toast.warning(`請記得按下提交照片`)
                 } else {
                     setIsRunPost(true)
 
@@ -586,8 +555,7 @@ const HouseUpload = (prop) => {
 
 
     const errorPhoneFormat = () => {
-        message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)', 3));
+            toast.error(`請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)`)
     }
 
 
@@ -735,10 +703,10 @@ const HouseUpload = (prop) => {
             .then(() => {
                 // setPictureList([])
                 setPicUploadCheck(true)
-                message.success('照片上傳成功').then();
+                toast.success('照片上傳成功');
             })
             .catch(() => {
-                message.error('upload failed.').then();
+                toast.error('照片上傳失敗');
             })
             .finally(() => {
                 setPicUploading(false)
@@ -780,10 +748,10 @@ const HouseUpload = (prop) => {
             })
             .then(() => {
                 // setAnnexList([])
-                message.success('附件上傳成功').then();
+                toast.success('附件上傳成功');
             })
             .catch(() => {
-                message.error('upload failed.').then();
+                toast.error('附件上傳失敗');
             })
             .finally(() => {
                 setAnnexUploading(false)
@@ -802,16 +770,12 @@ const HouseUpload = (prop) => {
             <div style={{ marginTop: 8 }}>Upload (Max:10)</div>
         </div>
     );
-    console.log(PictureList)
-
-    console.log(prop.defaultValue)
-    console.log('===companyId====',prop.companyId)
-    console.log('===companyState====',prop.companyState)
 
     // console.log(typeof(prop.defaultValue.floor))
     return (
 
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Form
 
                 form={form_photo}
@@ -883,9 +847,7 @@ const HouseUpload = (prop) => {
                                                 PicTemp.push(file)
                                                 console.log(PicTemp)
                                                 if (!isImage) {
-                                                    message.error(`${file.name} 不是圖片檔`).then(() => {
-                                                        // Do something after login is successful.
-                                                    });
+                                                    toast.error('不是圖片檔')
                                                 }else {
                                                     // setPictureList(
                                                     //     [...PictureList, file]
@@ -996,9 +958,7 @@ const HouseUpload = (prop) => {
                                             AnnexTemp.push(file)
                                             console.log(AnnexTemp)
                                             if (!isFile) {
-                                                message.error(`${file.name} is not a pdf file`).then(() => {
-                                                    // Do something after login is successful.
-                                                });
+                                                toast.error(`${file.name} 不是 pdf 檔`);
                                             }else {
                                                 setAnnexList(AnnexTemp);
                                                 return false;
