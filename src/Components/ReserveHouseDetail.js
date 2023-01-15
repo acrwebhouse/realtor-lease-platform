@@ -11,7 +11,6 @@ import {
     Row,
     Col,
     DatePicker,
-    message,
     Alert,
     Checkbox,
     Result,
@@ -26,6 +25,8 @@ import {
   } from "react-router-dom";
 import {log} from "@craco/craco/lib/logger";
 import {config} from "../Setting/config";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { Option } = Select
 
@@ -72,7 +73,7 @@ const ReserveHouseDetail = (props) => {
                 // console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => message.error(error, 3))
+        }).catch( (error) => toast.error(error))
     }, [] )
 
     const getReserveData = () => {
@@ -86,7 +87,7 @@ const ReserveHouseDetail = (props) => {
             // console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => message.error(error, 3))
+        }).catch( (error) => toast.error(error))
     }
 
     //delete
@@ -107,16 +108,16 @@ const ReserveHouseDetail = (props) => {
             }).then((response) => {
                     console.log(response)
                 if(response.data.status === true){
-                    message.success('刪除成功', 3);
+                    toast.success('刪除成功');
                     setTimeout(()=>{
                         // window.location.href = window.location.origin;
                         props.showReserveHouseListUI()
                     },3000);
                 }else{
-                    message.error(response.data.data, 3)
+                    toast.error(response.data.data)
                 }
             })
-                .catch( (error) => message.error(error, 3))
+                .catch( (error) => toast.error(error))
         }
     }, [enableDel])
 
@@ -145,7 +146,7 @@ const ReserveHouseDetail = (props) => {
                     getReserveData()
                     setEnableSetup(true)
                 }
-            }).catch( (error) => message.error(error, 3))
+            }).catch( (error) => toast.error(error))
 
             console.log(temp)
     }
@@ -179,6 +180,7 @@ const ReserveHouseDetail = (props) => {
 
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             {
                 isShowDeleteAlert?(
                     <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

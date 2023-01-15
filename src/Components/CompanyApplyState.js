@@ -11,7 +11,6 @@ import {
     Row,
     Col,
     DatePicker,
-    message,
     Alert,
     Checkbox,
     Result,
@@ -24,6 +23,9 @@ import {CompanyAxios} from './axiosApi'
 import {
     useParams
   } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const applyState = ['初始狀態', '審核中', '正式員工', '審核失敗', '取消審核']
 
 const CompanyApplyState = (props) => {
@@ -54,10 +56,10 @@ const CompanyApplyState = (props) => {
                     console.log(response.data.data)
                     resolveCompanyApply(response.data.data)
                 }else{
-                    message.error('員工資訊取得失敗', 3)
+                    toast.error('員工資訊取得失敗')
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     function resolveCompanyApply(list){
@@ -99,15 +101,14 @@ const CompanyApplyState = (props) => {
             if(response.data.status === true){
                 props.showCompanyListUI()
             }else{
-                message.error('取消失敗', 3)
+                toast.error('取消失敗')
             }
-        }).catch( (error) => message.error(error, 3))
+        }).catch( (error) => toast.error(error))
     }
 
     return (
         <div>
-            {/*/!*{'CompanyApplyState page'}*!/*/}
-            {/*{JSON.stringify(props.currentEmployeeData)}*/}
+            <ToastContainer autoClose={2000} position="top-center"/>
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>

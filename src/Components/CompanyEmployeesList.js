@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Space, Modal, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
+import {Table, Space, Modal, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
@@ -7,7 +7,8 @@ import moment from 'moment';
 import {
     useParams
   } from "react-router-dom";
-
+  import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
 
 const CompanyEmployeesList = (props) => {
@@ -58,7 +59,7 @@ const CompanyEmployeesList = (props) => {
                     setEditEmployeeRankOptions(editEmployeeRankOptions)
                     getCompanyEmployeesList()
                 }else{
-                    message.warning('員工權限變動，請重新進入選單', 3)
+                    toast.warning('員工權限變動，請重新進入選單')
                 }
             })
         }
@@ -89,10 +90,10 @@ const CompanyEmployeesList = (props) => {
                 if(response.data.status === true){
                     resolveCompanyEmployeesList(response)
                 }else{
-                    message.error('抓取員工列表失敗', 3)
+                    toast.error('抓取員工列表失敗')
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     function resolveCompanyEmployeesList(response){
@@ -211,12 +212,12 @@ const CompanyEmployeesList = (props) => {
         }).then((response) => {
             console.log(response)
             if(response.data.status === true){
-                message.success('離職成功', 3)
+                toast.success('離職成功')
                 getCompanyEmployeesList()
             }else{
-                message.error('離職失敗', 3)
+                toast.error('離職失敗')
             }
-        }).catch( (error) => message.error(error, 3))
+        }).catch( (error) => toast.error(error))
         cancelResign()
         
     }
@@ -383,13 +384,13 @@ const CompanyEmployeesList = (props) => {
               console.log(response)
               if(response.data.status === true){
                   setEditEmployee(willEditEmployee)
-                  message.success('編輯成功', 3)
+                  toast.success('編輯成功')
                   closeEditEmployees()
                   getCompanyEmployeesList()
               }else{
-                  message.error('編輯失敗', 3)
+                toast.error('編輯失敗')
               }
-          }).catch( (error) => message.error(error, 3))
+          }).catch( (error) => toast.error(error))
     }
 
     const isResignemployeesColumns = [
@@ -528,6 +529,7 @@ const CompanyEmployeesList = (props) => {
 
     return (
         <div>
+        <ToastContainer autoClose={2000} position="top-center"/>
         {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

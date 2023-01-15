@@ -4,9 +4,11 @@ import {
     Row,
     Col,
     Descriptions,
-    message
 } from "antd";
 import {CompanyAxios} from './axiosApi'
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const companyState = ['初始狀態', '審核中', '通過審核', '審核失敗', '停權中']
 // 初始狀態
@@ -38,7 +40,7 @@ const CompanyInfo = (props) => {
                 if(result === true){
                     getCompanyInfo()
                 }else{
-                    message.warning('員工權限變動，請重新進入選單', 3)
+                    toast.warning('員工權限變動，請重新進入選單')
                 }
             })
         }
@@ -53,15 +55,16 @@ const CompanyInfo = (props) => {
                 if(response.data.status === true){
                     setCompanyData(response.data.data)
                 }else{
-                    message.error('公司資訊取得失敗', 3)
+                    toast.error('公司資訊取得失敗')
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     console.log(companyData)
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>

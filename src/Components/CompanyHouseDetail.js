@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import { message} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios,HouseAxios} from './axiosApi'
 import {
     useParams
   } from "react-router-dom";
-  import HouseDetail from "./HouseDetail";
+import HouseDetail from "./HouseDetail";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const CompanyHouseDetail = (props) => {
     const { id } = useParams();
     const [init, setInit] = useState(true);
@@ -25,7 +27,7 @@ const CompanyHouseDetail = (props) => {
         )
         .then( (response) => {
             if(response.data.status === false){
-                message.error('使用者資料獲取失敗', 3)
+                toast.error('使用者資料獲取失敗')
             }else{
                 const companyId = response.data.data.companyId
                 const employeesData = response.data.data.employeesData
@@ -42,16 +44,16 @@ const CompanyHouseDetail = (props) => {
                     if(employeeState === 2){
                         checkHousePermissions(companyId)
                     }else if(employeeState === 4){
-                        message.error('您目前為停權狀態，無法觀看公司相關物件。', 3)
+                        toast.error('您目前為停權狀態，無法觀看公司相關物件。')
                     }else{
-                        message.error('您不是此公司員工，無法觀看此公司相關物件。', 3)
+                        toast.error('您不是此公司員工，無法觀看此公司相關物件。')
                     }
                 }else{
-                    message.error('您不是此公司員工，無法觀看此公司相關物件。', 3)
+                    toast.error('您不是此公司員工，無法觀看此公司相關物件。')
                 }
             }
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     const checkHousePermissions = (companyId) => {
@@ -61,24 +63,24 @@ const CompanyHouseDetail = (props) => {
         )
         .then( (response) => {
             if(response.data.status === false){
-                message.error('房屋資料獲取失敗', 3)
+                toast.error('房屋資料獲取失敗')
             }else{
                 if(response.data.data.belongType === 2 && response.data.data.belongId === companyId){
                     setIsShow(true)
                 }else{
-                    message.error('房屋資料不屬於使用者公司', 3)
+                    toast.error('房屋資料不屬於使用者公司')
                 }
                 
             }
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     useEffect(() => {
         if (init) {
             const xToken = cookie.load('x-token')
             if(xToken === null || xToken === undefined || xToken === ''){
-                message.error('您未登入，無法看到此物件', 3)
+                toast.error('您未登入，無法看到此物件')
             }else{
                 checkPermissions()
             }
@@ -87,6 +89,7 @@ const CompanyHouseDetail = (props) => {
     }, )
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
            {
                isShow?(<HouseDetail isComapny = {true} setId = {id}></HouseDetail>):null
            } 

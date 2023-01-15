@@ -1,10 +1,12 @@
 import React, {useEffect, useState,forwardRef,useImperativeHandle} from 'react';
-import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result, Switch} from "antd";
+import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker,  Alert, Checkbox, Result, Switch} from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {config} from "../Setting/config";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const houseService = config.base_URL_House
 const ReserveHouseList_Auth = 'reserveHouse/getReserveHousesOnlyHost'
@@ -42,7 +44,7 @@ const ReserveHouseList = (props, ref) => {
             console.log(response)
             resolveHousesList(response)
             // setReserveHouseData(response.data.data)
-        }).catch( (error) => message.error(error, 3))
+        }).catch( (error) => toast.error(error))
     }, [] )
 
     console.log(reserveHouseData)
@@ -67,7 +69,7 @@ const ReserveHouseList = (props, ref) => {
             .then( (response) => {
                 resolveHousesList(response)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     const resolveHousesList = (response) => {
@@ -256,17 +258,17 @@ const ReserveHouseList = (props, ref) => {
             }).then((response) => {
                 console.log(response)
                 if(response.data.status === true){
-                    message.success('刪除成功', 3);
+                    toast.success('刪除成功');
                     // setTimeout(()=>{
                     //     window.location.href = window.location.origin;
                     // },3000);
                     SetIsShowDeleteAlert(false)
                     getHousesList()
                 }else{
-                    message.error(response.data.data, 3)
+                    toast.error(response.data.data)
                 }
             })
-                .catch( (error) => message.error(error, 3))
+                .catch( (error) => toast.error(error))
         }
     }, [enableDel])
 
@@ -323,6 +325,7 @@ const ReserveHouseList = (props, ref) => {
     console.log(reserveHouseData)
     return (
         <div style={{width: '100%' }}>
+            <ToastContainer autoClose={2000} position="top-center"/>
             {
                 isShowDeleteAlert?(
                     <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

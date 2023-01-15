@@ -1,4 +1,4 @@
-import { Form, Input, message, Button, Checkbox, Modal } from 'antd';
+import { Form, Input,  Button, Checkbox, Modal } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css'
 import React, {useState, useEffect} from "react";
@@ -6,6 +6,8 @@ import Register from "./Register_form";
 // import axios from "./axiosApi";
 import cookie from "react-cookies"
 import {LoginRegisterAxios} from "./axiosApi"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,8 +41,7 @@ const LoginRegister = () => {
     };
 
     const errorAccountOrMailFormat = () => {
-         message.loading('loading...', 0.5)
-             .then(() => message.error('請輸入正確的帳號或電子郵件格式', 3));
+        toast.error('請輸入正確的帳號或電子郵件格式')
     }
 
     const onFinish =  (values) => {
@@ -75,8 +76,8 @@ const LoginRegister = () => {
                     setAccountID(response['data']['data']['_id'])
                     setAccountXToken(response['data']['data']['token'])
                 })
-                .then(() => message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2))
-                .catch( (error) => message.error(`${error}`, 2))
+                .then(() => toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`))
+                .catch( (error) => toast.error(`${error}`))
 
             setIsRunPost(false)
             setIsTokenInCookie(true)
@@ -105,6 +106,7 @@ const LoginRegister = () => {
 
     return (
         <>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Button type="primary" onClick={showLoginModal}>
             Login/Register
             </Button>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, Menu, message} from "antd";
+import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {CollectAxios} from './axiosApi'
@@ -43,7 +43,8 @@ import CompanyInfo from "./CompanyInfo";
 import CompanyEmployeesList from "./CompanyEmployeesList";
 import CompanyTransactionList from "./CompanyTransactionList";
 import {getCurrentEmployee} from './CompanyCommon'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -147,7 +148,7 @@ const Main = () => {
             }
             
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     function checkEmployeeStateAndChangeMenu(callback){
@@ -530,6 +531,7 @@ const Main = () => {
 
     return (
         <div>
+        <ToastContainer autoClose={2000} position="top-center"/>
         <div style={{ width: 51,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>

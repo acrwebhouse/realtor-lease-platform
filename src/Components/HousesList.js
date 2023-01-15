@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, Table, Button, Image, Input, Select, Row, Col, message, Alert, Space, Form, DatePicker} from "antd";
+import {Modal, Table, Button, Image, Input, Select, Row, Col, Alert, Space, Form, DatePicker} from "antd";
 import {HouseAxios, TransactionAxios} from './axiosApi'
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { Option } = Select;
 const houseService = config.base_URL_House
@@ -94,7 +96,7 @@ const HousesList = (props) => {
                     setEnableDealForm(false)
                     getHousesList()
                 }
-            }).catch( (error) => message.error(`${error}`, 2))
+            }).catch( (error) => toast.error(`${error}`))
         }
     }, [isPostDeal])
 
@@ -242,7 +244,7 @@ const HousesList = (props) => {
                 // dealData.id = response.data.data[0].owner
                 resolveHousesList(response)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     function resolveHousesList(response){
@@ -816,12 +818,12 @@ const HousesList = (props) => {
             .then( (response) => {
                 if(response.data.status === true){
                     getHousesList()
-                    message.success('刪除成功', 3);
+                    toast.success('刪除成功');
                 }else{
-                    message.error(response.data.data, 3)
+                    toast.error(response.data.data)
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
         cancelRemoveHouse()
     }
 
@@ -849,6 +851,7 @@ const HousesList = (props) => {
 
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             {
                 isShowDeleteAlert?(
                     <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

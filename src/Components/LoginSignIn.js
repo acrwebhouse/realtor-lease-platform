@@ -1,4 +1,4 @@
-import { Form, Input, message, Button, Checkbox, Modal } from 'antd';
+import { Form, Input,  Button, Checkbox, Modal } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './Login.css'
 import React, {useState, useEffect} from "react";
@@ -7,6 +7,8 @@ import Register from "./Register_form";
 import {LoginRegisterAxios} from "./axiosApi"
 import cookie from 'react-cookies'
 import ForgotPassword from "./ForgotPassword";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
@@ -61,8 +63,7 @@ const LoginRegister = (props) => {
     };
 
     const errorAccountOrMailFormat = () => {
-        message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的帳號或電子郵件格式', 3));
+        toast.error('請輸入正確的帳號或電子郵件格式')
     }
 
     const onFinish =  (values) => {
@@ -99,7 +100,7 @@ const LoginRegister = (props) => {
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then((response) => {
                     if(response.data.data === null ||response.data.data === undefined){
-                        message.error(`帳號或密碼錯誤`, 2)
+                        toast.error(`帳號或密碼錯誤`)
                     }else{
                         const userId = response.data.data._id;
                         if(typeof(appJsInterface) !== 'undefined'){
@@ -108,11 +109,11 @@ const LoginRegister = (props) => {
                         }
                         props.changeUserMenu(response.data.data.token,true)
                         cookie.save('x-token',response.data.data.token,{path:'/'})
-                        message.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`, 2)
+                        toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
                     }
 
                 })
-                .catch( (error) => message.error(`${error}`, 2))
+                .catch( (error) => toast.error(`${error}`))
 
             setIsRunPost(false)
         }else{
@@ -132,6 +133,7 @@ const LoginRegister = (props) => {
 
     return (
         <>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Modal title="會員登入系統"
                    className="ModalLogin"
                    visible={props.isShow}

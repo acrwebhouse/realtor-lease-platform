@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import 'antd/dist/antd.min.css';
 import {
     Form, Input, Radio, Select, Checkbox, Divider, DatePicker, Space,
-    Button, Col, Row, message, Modal,
+    Button, Col, Row,  Modal,
     // Upload
 } from "antd";
 // import { UploadOutlined } from '@ant-design/icons';
@@ -10,7 +10,8 @@ import './Register_form.css'
 // import CityAreaData from '../Datas/CityArea.json'
 // import axios from "./axiosApi";
 import {LoginRegisterAxios} from "./axiosApi"
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { Option } = Select;
 
@@ -112,10 +113,10 @@ const Register = (props) => {
                 .then( (response) =>  {
                     console.log(typeof(response['data']['data']))
                     setRegisterCheck(response['data']['status'])
-                    response['data']['status'] ? message.success(`註冊成功`, 2) : message.error(`註冊失敗`, 2)
+                    response['data']['status'] ? toast.success(`註冊成功`) : toast.error(`註冊失敗`)
                     setFailMessage(response['data']['data'])
                 })
-                .catch( (error) => message.error(`${error}`, 2))
+                .catch( (error) => toast.error(`${error}`))
 
             setIsRunPost(false)
             setCityValid(false)
@@ -132,7 +133,7 @@ const Register = (props) => {
                 .then( (response) =>  {
                     console.log(response)
                 })
-                .catch( (error) => message.error(`${error}`, 2))
+                .catch( (error) => toast.error(`${error}`))
 
             setVerifyUserEnable(false)
         }
@@ -209,8 +210,7 @@ const Register = (props) => {
                             setIsRunPost(true)
                         }else {
                             setIsSubmitModalVisible(false)
-                            message.loading('loading...', 0.5)
-                                .then(() => message.error('經營地區需填兩項', 3));
+                            toast.error('經營地區需填兩項')
                         }
                     }else {
                         setIsSubmitModalVisible(false)
@@ -255,18 +255,15 @@ const Register = (props) => {
     console.log(ownerPhone)
 
     const errorLicenseFormat = () => {
-        message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的營業員證號格式', 3));
+        toast.error('請輸入正確的營業員證號格式')
     }
 
     const errorPhoneFormat = () => {
-        message.loading('loading...', 0.5)
-            .then(() => message.error('請輸入正確的手機號格式或長度(09xx-xxx-xxx)', 3));
+        toast.error('請輸入正確的手機號格式或長度(09xx-xxx-xxx)')
     }
 
     const errorAccoutFormat = () => {
-        message.loading('loading...', 0.5)
-            .then(() => message.error('帳戶只能輸入大小寫英文與數字', 3));
+        toast.error('帳戶只能輸入大小寫英文與數字')
     }
 
     const onCityInCharge = (City) => {
@@ -566,6 +563,7 @@ const Register = (props) => {
 
     return (
         <>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <h2>請選擇預想申請的使用者(可重複選)</h2>
             <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
                 <Row>

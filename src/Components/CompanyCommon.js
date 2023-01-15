@@ -20,10 +20,11 @@ const getCurrentEmployee = function(callback){
                     callback(true,response.data.data)
                     
                 }else{
-                    message.error('員工資訊取得失敗', 3)
+                    // message.error('員工資訊取得失敗', 3)
+                    console.log('員工資訊取得失敗')
                     callback(false)
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => console.log(error))
 }
 export {getCurrentEmployee}

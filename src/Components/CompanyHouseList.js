@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
+import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
@@ -8,6 +8,8 @@ import HousesList from "./HousesList";
 import {
     useParams
   } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CompanyHouseList = (props) => {
     const [init, setInit] = useState(true);
@@ -17,13 +19,14 @@ const CompanyHouseList = (props) => {
             props.checkEmployeeStateAndChangeMenu((result)=>{
                 if(result === true){
                 }else{
-                    message.warning('員工權限變動，請重新進入選單', 3)
+                    toast.warning('員工權限變動，請重新進入選單')
                 }
             })
         }
     }, )
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <HousesList isCompanyList={true} companyId={props.companyId}></HousesList>
         </div>
     );

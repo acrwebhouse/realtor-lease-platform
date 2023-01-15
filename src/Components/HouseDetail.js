@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, message, Alert, Space, Form, Input, } from "antd";
+import {Table, Button, Image, Divider, Row, Col, Alert, Space, Form, Input, } from "antd";
 import {
     useParams
   } from "react-router-dom";
@@ -13,6 +13,9 @@ import {
   } from '@ant-design/icons';
 
 import GoogleMapHouse from "./GoogleMapHouse";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
@@ -130,7 +133,7 @@ const HouseDetail = (prop) => {
             setHouse(response)
             resolveHouse(response)
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     function changeBuildType(house){
@@ -458,7 +461,7 @@ console.log(showFloor2)
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
-        message.success('連結已複製到剪貼簿', 3);
+        toast.success('連結已複製到剪貼簿');
     }
 
 
@@ -512,16 +515,7 @@ console.log(showFloor2)
                 })
                 setIsRunPost(true)
             }else {
-                message.error({
-                    content: '如未登入，姓名與聯絡電話都需要填寫。',
-                    style: {
-                        fontSize: '40px',
-                        marginTop: '20vh',
-                        color: 'darkred'
-                    },
-                    duration: 3,
-                }).then(() => {
-                })
+                toast.error('如未登入，姓名與聯絡電話都需要填寫。')
             }
     }
 
@@ -541,18 +535,9 @@ console.log(showFloor2)
                     }})
                     // .then( (response) => console.log(response.data.status))
                     .then((response) => {
-                        console.log(response.data)
-                        message.success({
-                            content: '已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。',
-                            style: {
-                                fontSize: '40px',
-                                marginTop: '20vh',
-                            },
-                            duration: 2,
-                        }).then()
-
+                        toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
                     })
-                    .catch((error) => message.error(`${error}`, 2))
+                    .catch((error) => toast.error(`${error}`))
 
                 :
                 HouseAxios.post(reserve_Auth, reserveClientData, {
@@ -563,18 +548,10 @@ console.log(showFloor2)
                 })
                     // .then( (response) => console.log(response.data.status))
                     .then((response) => {
-                        console.log(response.data)
-                        message.success({
-                            content: '已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。',
-                            style: {
-                                fontSize: '40px',
-                                marginTop: '20vh',
-                            },
-                            duration: 2,
-                        }).then()
+                        toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
                     })
 
-                    .catch( (error) => message.error(`${error}`, 2))
+                    .catch( (error) => toast.error(`${error}`))
 
             setIsRunPost(false)
         }
@@ -599,15 +576,15 @@ console.log(showFloor2)
         )
         .then( (response) => {
             if(response.data.status === true){
-                message.success('刪除成功', 3);
+                toast.success('刪除成功');
                 setTimeout(()=>{
                     window.location.href = window.location.origin;
                 },3000);
             }else{
-                message.error(response.data.data, 3)
+                toast.error(response.data.data, 3)
             }
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
         cancelRemoveHouse()
     }
 
@@ -624,6 +601,7 @@ console.log(showFloor2)
     }, )
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

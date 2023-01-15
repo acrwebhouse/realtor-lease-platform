@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Table,  Button, Input, Select, Row, Col, message} from "antd";
+import {Table,  Button, Input, Select, Row, Col} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const userListUrl = 'user/getUserList'
 const removeUserUrl = 'user/removeUser'
 
@@ -110,7 +111,7 @@ const MemberList = () => {
             // console.log(response)
             resolveMemberList(response)
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     function resolveMemberList(response){
@@ -329,12 +330,12 @@ function removeUser(userId){
     .then( (response) => {
         if(response.data.status === true){
             getUserList()
-            message.success('刪除成功', 3);
+            toast.success('刪除成功');
         }else{
-            message.error(response.data.data, 3)
+            toast.error(response.data.data)
         }
     })
-    .catch( (error) => message.error(error, 3))
+    .catch( (error) => toast.error(error))
 
 }
 
@@ -402,6 +403,7 @@ function removeUser(userId){
     return (
 
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox, Result} from "antd";
+import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
@@ -9,7 +9,8 @@ import {
     useParams
   } from "react-router-dom";
 
-  
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CompanyList = (props) => {
     let { id } = useParams();
@@ -74,7 +75,7 @@ const CompanyList = (props) => {
                 resolveCompantList(response)
                 // resolveMemberList(response)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     function resolveCompantList(response){
@@ -106,12 +107,12 @@ const CompanyList = (props) => {
             }
         }).then( (response) => {
             if(response.data.status === true){
-                message.success('申請中', 3);
+                toast.success('申請中');
                 props.showApplyingUI();
             }else{
-                message.error('申請失敗', 3)
+                toast.error('申請失敗')
             }
-        }).catch( (error) => message.error(error, 3))
+        }).catch( (error) => toast.error(error))
     }
 
     const columns = [
@@ -188,6 +189,7 @@ const CompanyList = (props) => {
 
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>
