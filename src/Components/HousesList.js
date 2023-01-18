@@ -828,8 +828,8 @@ const HousesList = (props) => {
     }
 
     const handleDealData = (value) => {
-        dealData.actualPrice = value.dealPrice
-        dealData.serviceCharge = value.servePrice
+        dealData.actualPrice =  parseInt(value.dealPrice)
+        dealData.serviceCharge = parseInt(value.servePrice)
         dealData.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
         dealData.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
         console.log(dealData)

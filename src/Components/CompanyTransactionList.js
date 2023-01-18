@@ -17,7 +17,7 @@ import {
     Result,
     Descriptions,
     Collapse,
-    Statistic, Card
+    Statistic, Card, Form, Modal
 } from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
@@ -28,9 +28,10 @@ import {
   } from "react-router-dom";
 import {TableSkeleton} from "@ant-design/pro-skeleton";
 const Transaction_Auth = 'transaction/getTransactionList'
+const editTransaction_Auth = 'transaction/editTransactionNoIncludeCompany'
 const { Panel } = Collapse;
 const dealYearMonth = {
-    year: ['2022'],
+    year: [],
     month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月',  ]
 };
 
@@ -59,11 +60,14 @@ const CompanyTransactionList = (props) => {
     const penghuAreaOptions = [{ value: '區域不限' },{ value: '馬公市'},{ value: '湖西鄉'},{ value: '白沙鄉'},{ value: '西嶼鄉'},{ value: '望安鄉'},{ value: '七美鄉'}]
     const kinmenAreaOptions = [{ value: '區域不限' },{ value: '金城鎮'},{ value: '金湖鎮'},{ value: '金沙鎮'},{ value: '金寧鄉'},{ value: '烈嶼鄉'},{ value: '烏坵鄉'}]
     const lianjiangAreaOptions = [{ value: '區域不限' },{ value: '南竿鄉'},{ value: '北竿鄉'},{ value: '莒光鄉'},{ value: '東引鄉'}]
+    const [form_deal] = Form.useForm();
     const [areaOptions, setAreaOptions] = useState([]);
     const [selectArea, setSelectArea] = useState(null);
     const [init, setInit] = useState(true);
     const [transactionsListDetail, setTransactionsListDetail] = useState([]);
     const [transactions, setTransactions] = useState([]);
+    const [enableEdit, setEnableEdit] = useState(false)
+    const [enableEditModal, setEnableEditModal] = useState(false)
     const [size] = useState("large");
     const [minValue, setMinValue] = useState('')
     const [maxValue, setMaxValue] = useState('')
@@ -72,8 +76,12 @@ const CompanyTransactionList = (props) => {
         city : '',
         limit : '',
         isDelete : 'false',
-        minPrice : '0',
-        maxPrice : '9999999',
+        minPrice : 0,
+        maxPrice : '9999999999',
+        minServiceCharge : '',
+        maxServiceCharge : '',
+        minActualPrice : 0,
+        maxActualPrice : '999999999',
         startTransactionDate : '',
         endTransactionDate : '',
         area : '',
@@ -86,6 +94,17 @@ const CompanyTransactionList = (props) => {
     const [enableCheckYearMonth, setEnableCheckYearMonth] = useState(false)
     const [caseCount, setCaseCount] = useState();
     const [totalPrice, setTotalPrice] = useState();
+    const [editTransactionArg] = useState({
+        id:'',
+        houseId: '',
+        userId: '',
+        actualPrice: '',
+        serviceCharge: '',
+        transactionDate: '',
+        startRentDate: '',
+        endRentDate: '',
+        companyId: ''
+    });
 
     useEffect(() => {
         if (init) {
@@ -102,13 +121,22 @@ const CompanyTransactionList = (props) => {
             checkYearMonth()
         }
     }, )
-    // console.log(years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/1')
+    // edit TransactionList
+    useEffect(() => {
+        if (enableEdit) {
+            setEnableEdit(false)
+            editHousesTransactionList()
+        }
+    }, )
+
     const getHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
-        const startDate = years+'%2F'+`${dealYearMonth.month.indexOf(months)+1}`+'%2F1'
-        const endDate = years+'%2F'+`${dealYearMonth.month.indexOf(months)+1}`+'%2F31'
+        const startDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/1'
+        const endDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/31'
+        // const startDate = '2022/12/1'
+        // const endDate = '2022/12/31'
         console.log(startDate, endDate)
-        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&isDelete=${getTransactionArg.isDelete}&&minPrice=${getTransactionArg.minPrice}&&maxPrice=${getTransactionArg.maxPrice}&&userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
+        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
         console.log(reqUrl)
         UserAxios.get(
             reqUrl,{
@@ -127,42 +155,44 @@ const CompanyTransactionList = (props) => {
     }
 
     function resolveTransactionsList(response){
+        console.log(response.data, response.data.data)
         console.log(moment(response.data.data[0].startRentDate).format('YYYY/MM/DD'))
         let data = []
         let countTemp = 0;
         let priceTemp = 0;
         console.log(data)
         if(response.data && response.data.data){
-
             const items = response.data.data
             setTransactionsListDetail([])
             setTransactionsListDetail(items)
             for(let i = 0 ;i<items.length; i++){
-                countTemp += 1;
-                priceTemp += parseInt(items[i].serviceCharge);
-                const item = {
-                    key: i,
-                    actualPrice: `${items[i].actualPrice}`,
-                    serviceCharge: `${items[i].serviceCharge}`,
-                    content: [`${moment(items[i].transactionDate).format('YYYY/MM/DD')}`, `${moment(items[i].startRentDate).format('YYYY/MM/DD')}`, `${moment(items[i].endRentDate).format('YYYY/MM/DD')}`],
-                    houseData: items[i].houseData[0]
-                }
+                if(items[i].houseData.length > 0 ) {
+                    countTemp += 1;
+                    priceTemp += parseInt(items[i].serviceCharge);
+                    console.log(items[i])
+                    const item = {
+                        key: i,
+                        transactionId : `${items[i]._id}`,
+                        actualPrice: parseInt(`${items[i].actualPrice}`),
+                        serviceCharge: parseInt(`${items[i].serviceCharge}`),
+                        content: [`${moment(items[i].transactionDate).format('YYYY/MM/DD')}`, `${moment(items[i].startRentDate).format('YYYY/MM/DD')}`, `${moment(items[i].endRentDate).format('YYYY/MM/DD')}`],
+                        houseData: items[i].houseData[0]
+                        // houseData: [items[i].houseData[0].name, items[i].houseData[0].price, items[i].houseData[0].hostName, items[i].houseData[0].hostGender, items[i].houseData[0].totalFloor, items[i].houseData[0].area]
+                    }
 
-                data.push(item)
+                    data.push(item)
+                }
             }
             setTransactions(data)
             setCaseCount(countTemp)
             setTotalPrice(priceTemp)
         }
     }
-
-    console.log(transactions.map((data, index) => console.log(data)))
-    console.log(dealYearMonth.year)
-    const checkYearMonth = () => {
+    const editHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
-        let reqUrl = `${Transaction_Auth}?userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
-        UserAxios.get(
-            reqUrl,{
+
+        UserAxios.put(
+            editTransaction_Auth, editTransactionArg,{
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
@@ -172,18 +202,24 @@ const CompanyTransactionList = (props) => {
         )
             .then( (response) => {
                 console.log(response)
-                // resolveTransactionsList(response)
-                const temp = response.data.data
-                for(let i=0; i<temp.length;i++) {
-                    if(dealYearMonth.year.indexOf(`${moment(temp[i].transactionDate).format('YYYY')}`) < 0) {
-                        dealYearMonth.year.push(`${moment(temp[i].transactionDate).format('YYYY')}`)
-                    }
+                if(response.data.status) {
+                    setEnableCheckYearMonth(true)
                 }
-                dealYearMonth.year.sort((a, b)=> b - a)
-            })
+            }).then(()=> setTimeout(() => {setEnableCheckYearMonth(true)}, 1000))
             .catch( (error) => message.error(error, 3))
     }
+    console.log(transactions.map((data, index) => console.log(data, index)))
+    console.log(dealYearMonth.year)
 
+    const checkYearMonth = () => {
+        let year = new Date().getFullYear()
+        for (let i=year; i >= 2022; i--) {
+            console.log(i)
+            if(dealYearMonth.year.indexOf(i) < 0) {
+                dealYearMonth.year.push(i)
+            }
+        }
+    }
     const handleYearChange = (value) => {
         setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
         setEnableCheckYearMonth(true)
@@ -298,9 +334,9 @@ const CompanyTransactionList = (props) => {
     const setMinPrice = (e) => {
         setMinValue(e.target.value)
         if(e.target.value) {
-            getTransactionArg.minPrice = e.target.value
+            getTransactionArg.minServiceCharge = parseInt(e.target.value)
         }else {
-            getTransactionArg.minPrice = '0'
+            getTransactionArg.minServiceCharge = 0
         }
     }
 
@@ -308,9 +344,9 @@ const CompanyTransactionList = (props) => {
         console.log(e.target.value)
         setMaxValue(e.target.value)
         if(e.target.value) {
-            getTransactionArg.maxPrice = e.target.value
+            getTransactionArg.maxServiceCharge = parseInt(e.target.value)
         }else {
-            getTransactionArg.maxPrice = '999999999'
+            getTransactionArg.maxServiceCharge = 999999999
         }
     }
     const showSortResult = () => {
@@ -320,6 +356,32 @@ const CompanyTransactionList = (props) => {
         setTotalPrice(0)
     }
     console.log(getTransactionArg)
+
+    const editTransactionData = (index) => {
+        setEnableEditModal(true)
+        console.log(transactions[index])
+        editTransactionArg.id = transactions[index].transactionId
+        editTransactionArg.houseId = transactions[index].houseData._id
+        editTransactionArg.userId = transactions[index].houseData.owner
+        editTransactionArg.actualPrice = parseInt(transactions[index].actualPrice)
+        editTransactionArg.serviceCharge = parseInt(transactions[index].serviceCharge)
+        editTransactionArg.transactionDate = transactions[index].content[0]
+        editTransactionArg.startRentDate = transactions[index].content[1]
+        editTransactionArg.endRentDate = transactions[index].content[2]
+        editTransactionArg.companyId = transactions[index].houseData.belongId
+
+    }
+    console.log(editTransactionArg)
+    const handleDealData = (value) => {
+        console.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
+        editTransactionArg.transactionDate = value.dealDate.format("YYYY/MM/DD")
+        editTransactionArg.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
+        editTransactionArg.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
+        setEnableEditModal(false)
+        setEnableEdit(true)
+        form_deal.resetFields()
+    }
+
     return (
         <div>
             {/*{JSON.stringify(props.currentEmployeeData)}*/}
@@ -331,13 +393,13 @@ const CompanyTransactionList = (props) => {
                         defaultValue={years}
                         value={years}
                         size={size}
-                        style={{ width: '45%' }}
+                        style={{ width: '50%' }}
                         onChange={handleYearChange}
                         options={dealYearMonth.year.map((year) => ({ label: year, value: year }))}
                     />
-                    &nbsp;&nbsp;
+                    {/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/}
                     <Select
-                        style={{ width: '45%' }}
+                        style={{ width: '50%' }}
                         value={months}
                         size={size}
                         onChange={handleMonthChange}
@@ -423,13 +485,77 @@ const CompanyTransactionList = (props) => {
                                         <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
                                         <Descriptions.Item label="區域" span={3}>{data.houseData.area}</Descriptions.Item>
                                     </Descriptions>
+                                    <br/>
+                                    <Button type="primary" onClick={() => editTransactionData(index)}>時間更改</Button>
                                 </Panel>
                             ))}
                         </Collapse>
                     </Col>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             </Row>
+            <Modal  title=""
+                    visible={enableEditModal}
+                // onCancel={() => setEnableDealForm(false)}
+                    closable={false}
+                    footer={[]}
+            >
+                <Form form={form_deal}
+                      className="deal_form"
+                      name="dealForm"
+                      onFinish={handleDealData}
+                      scrollToFirstError
+                >
+                    <Form.Item
+                        // name="TrafficType"
+                        name="dealDate"
+                        label="成交日："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <DatePicker/>
+                    </Form.Item>
+                    <Form.Item
+                        // name="TrafficType"
+                        name="rentDate"
+                        label="租期："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <DatePicker.RangePicker/>
+                    </Form.Item>
+                    <div style={{display: 'flex'}}>
+                        <Button type="primary"
+                                className='login-form-button'
+                                shape="round"
+                                key="submit"
+                                htmlType="submit"
+                                style={{width: '50%'}}
+                        >
+                            {/*Submit*/}
+                            送出
+                        </Button>
+                        &nbsp;
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    form_deal.resetFields()
+                                    setEnableEditModal(false)
+                                }}
+                                style={{width: '50%', backgroundColor:'red'}}
+                        >
+                            取消
+                        </Button>
+                    </div>
 
+                </Form>
+
+            </Modal>
         </div>
     );
 };
