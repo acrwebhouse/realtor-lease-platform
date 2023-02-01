@@ -27,6 +27,8 @@ import {
     useParams
   } from "react-router-dom";
 import {TableSkeleton} from "@ant-design/pro-skeleton";
+import 'react-toastify/dist/ReactToastify.css';
+import {toast, ToastContainer} from "react-toastify";
 const Transaction_Auth = 'transaction/getTransactionList'
 const editTransaction_Auth = 'transaction/editTransactionNoIncludeCompany'
 const { Panel } = Collapse;
@@ -105,15 +107,29 @@ const CompanyTransactionList = (props) => {
         endRentDate: '',
         companyId: ''
     });
-
     useEffect(() => {
         if (init) {
             setInit(false)
-            setYears(() => new Date().getFullYear())
-            setMonths(() => dealYearMonth.month[new Date().getMonth()])
-            setEnableCheckYearMonth(true)
+            props.checkEmployeeStateAndChangeMenu((result)=>{
+                if(result === true){
+                    setInit(false)
+                    setYears(() => new Date().getFullYear())
+                    setMonths(() => dealYearMonth.month[new Date().getMonth()])
+                    setEnableCheckYearMonth(true)
+                }else{
+                    toast.warning('員工權限變動，請重新進入選單')
+                }
+            })
         }
     }, )
+    // useEffect(() => {
+    //     if (init) {
+    //         setInit(false)
+    //         setYears(() => new Date().getFullYear())
+    //         setMonths(() => dealYearMonth.month[new Date().getMonth()])
+    //         setEnableCheckYearMonth(true)
+    //     }
+    // }, )
     useEffect(() => {
         if (enableCheckYearMonth) {
             setEnableCheckYearMonth(false)
@@ -136,7 +152,7 @@ const CompanyTransactionList = (props) => {
         // const startDate = '2022/12/1'
         // const endDate = '2022/12/31'
         console.log(startDate, endDate)
-        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
+        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
         console.log(reqUrl)
         UserAxios.get(
             reqUrl,{
@@ -203,9 +219,10 @@ const CompanyTransactionList = (props) => {
             .then( (response) => {
                 console.log(response)
                 if(response.data.status) {
+                    toast.success('資料更新成功')
                     setEnableCheckYearMonth(true)
                 }
-            }).then(()=> setTimeout(() => {setEnableCheckYearMonth(true)}, 1000))
+            })
             .catch( (error) => message.error(error, 3))
     }
     console.log(transactions.map((data, index) => console.log(data, index)))
@@ -316,6 +333,8 @@ const CompanyTransactionList = (props) => {
                     setAreaOptions(lianjiangAreaOptions)
                     break;
                 default:
+                    getTransactionArg.city = ''
+                    break;
             }
         }else{
             getTransactionArg.city = ''
@@ -386,6 +405,7 @@ const CompanyTransactionList = (props) => {
         <div>
             {/*{JSON.stringify(props.currentEmployeeData)}*/}
             {/* CompanyTransactionList page */}
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Row>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
@@ -473,7 +493,7 @@ const CompanyTransactionList = (props) => {
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                         <Collapse defaultActiveKey={['0']}>
                             {transactions.map((data, index) => (
-                                <Panel header={data.houseData.name} key={index}>
+                                <Panel header={'【'+(index+1)+'】'+data.houseData.name} key={index}>
                                     <Descriptions title="詳細資料" bordered>
                                         <Descriptions.Item label="原始價" span={1}>{data.houseData.price + ' 元'}</Descriptions.Item>
                                         <Descriptions.Item label="成交價" span={1}>{data.actualPrice + ' 元'}</Descriptions.Item>
@@ -481,9 +501,11 @@ const CompanyTransactionList = (props) => {
                                         <Descriptions.Item label="成交日" span={1}>{data.content[0]}</Descriptions.Item>
                                         <Descriptions.Item label="起租日" span={1}>{data.content[1]}</Descriptions.Item>
                                         <Descriptions.Item label="結租日" span={1}>{data.content[2]}</Descriptions.Item>
+                                        <Descriptions.Item label="城市" span={1.5}>{data.houseData.city}</Descriptions.Item>
+                                        <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
                                         <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
                                         <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
-                                        <Descriptions.Item label="區域" span={3}>{data.houseData.area}</Descriptions.Item>
+
                                     </Descriptions>
                                     <br/>
                                     <Button type="primary" onClick={() => editTransactionData(index)}>時間更改</Button>
