@@ -144,7 +144,7 @@ const CompanyTransactionList = (props) => {
             editHousesTransactionList()
         }
     }, )
-
+    console.log(props.currentEmployeeData.rank)
     const getHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
         const startDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/1'
@@ -152,7 +152,10 @@ const CompanyTransactionList = (props) => {
         // const startDate = '2022/12/1'
         // const endDate = '2022/12/31'
         console.log(startDate, endDate)
-        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&userId=${getTransactionArg.userId}&&companyId=${getTransactionArg.companyId}`
+        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&companyId=${getTransactionArg.companyId}`
+        if(props.currentEmployeeData.rank > 0) {
+            reqUrl += `&&userId=${getTransactionArg.userId}`
+        }
         console.log(reqUrl)
         UserAxios.get(
             reqUrl,{
@@ -192,7 +195,9 @@ const CompanyTransactionList = (props) => {
                         actualPrice: parseInt(`${items[i].actualPrice}`),
                         serviceCharge: parseInt(`${items[i].serviceCharge}`),
                         content: [`${moment(items[i].transactionDate).format('YYYY/MM/DD')}`, `${moment(items[i].startRentDate).format('YYYY/MM/DD')}`, `${moment(items[i].endRentDate).format('YYYY/MM/DD')}`],
-                        houseData: items[i].houseData[0]
+                        houseData: items[i].houseData[0],
+                        userData: items[i].userData[0]
+
                         // houseData: [items[i].houseData[0].name, items[i].houseData[0].price, items[i].houseData[0].hostName, items[i].houseData[0].hostGender, items[i].houseData[0].totalFloor, items[i].houseData[0].area]
                     }
 
@@ -505,7 +510,7 @@ const CompanyTransactionList = (props) => {
                                         <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
                                         <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
                                         <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
-
+                                        <Descriptions.Item label="負責房仲" span={3}>{'姓名: '+data.userData.name + '， 信箱：' + data.userData.mail + '， 電話：' + data.userData.phone}</Descriptions.Item>
                                     </Descriptions>
                                     <br/>
                                     <Button type="primary" onClick={() => editTransactionData(index)}>時間更改</Button>
