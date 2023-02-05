@@ -108,7 +108,9 @@ const LoginRegister = (props) => {
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
                         props.changeUserMenu(response.data.data.token,true)
-                        cookie.save('x-token',response.data.data.token,{path:'/'})
+                        let d = new Date();
+                        d.setTime(d.getTime() + (86400*30*1000)); //one month
+                        cookie.save('x-token',response.data.data.token,{path:'/', expires: d})
                         toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
                     }
 

@@ -283,6 +283,9 @@ const Main = () => {
                 // changeRolesMenu(roles)
 
                 changeUserMenu(xToken)
+                let d = new Date();
+                d.setTime(d.getTime() + (86400*30*1000)); //one month
+                cookie.save('x-token',xToken,{path:'/', expires: d})
             }
             
         }
