@@ -68,7 +68,7 @@ let showPic = [];
 let AnnexData = [];
 let showAnnex = []
 const TrafficArr = [];
-const buildingType = ['公寓', '電梯大樓', '透天']
+const buildingType = ['公寓', '電梯大樓', '透天', '辦公室', '店面']
 const RentalType = ['整層住家', '獨立套房', '分租套房', '雅房']
 const Traffic_Type = ['捷運站', '公車/客運', '火車站', '高鐵站', '機場'];
 const LifeArr = [];
@@ -307,21 +307,6 @@ const HouseUpload = (prop) => {
 
     },[prop.defaultValue])
 
-
-    // console.log(typeof(cookie.load('x-token')))
-    // useEffect(() => {
-    //     // console.log(RegisterData)
-    //     // console.log(CityAreaScope)
-    //     if (isRunPicPost) {
-    //         HouseAxios.post(House_Auth, PictureList)
-    //             .then( (response) => console.log(response))
-    //             .then(() => message.success(`成功`, 2))
-    //             .catch( (error) => message.error(`${error}`, 2))
-    //
-    //         setIsRunPicPost(false)
-    //     }
-    // }, [isRunPicPost, PictureList])
-
     useEffect(() => {
         // console.log(RegisterData)
         // console.log(CityAreaScope)
@@ -343,7 +328,9 @@ const HouseUpload = (prop) => {
                                 window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
                             }, 2000)
 
-                        } else {
+                        } else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
+                            toast.error(`房屋地址重複，房屋資料更新失敗。`);
+                        }else {
                             toast.error(`房屋資料更新失敗`);
                         }
 
@@ -384,6 +371,12 @@ const HouseUpload = (prop) => {
                         console.log(response.data)
                         if(response.data.status) {
                             toast.success(`房屋資料上傳成功`);
+                            form_photo.resetFields()
+                            form_annex.resetFields()
+                            form.resetFields()
+                            setHostPhone('')
+                        }else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
+                            toast.error(`房屋地址重複，請更正正確房屋地址。`);
                         }
                         // if(!response.data.status && response.data.data.includes('house address is exist')) {
                         //     message.error({
@@ -418,7 +411,7 @@ const HouseUpload = (prop) => {
             EducationArr.splice(0, EducationArr.length)
             PicData.splice(0, PicData.length)
             AnnexData.splice(0, AnnexData.length)
-            setHostPhone('')
+
 
         }
     }, [isRunPost, HouseData, prop.defaultValue, xToken])
@@ -497,10 +490,7 @@ const HouseUpload = (prop) => {
                         setAnnexEnable(false)
                         setFormDataEnable(false)
                         setPictureList([])
-                        form_photo.resetFields()
                         setAnnexList([])
-                        form_annex.resetFields()
-                        form.resetFields()
                         setExtraRequire([])
                         setShowHideManageFee(false)
                         setShowHideGarbageFee(false)
@@ -1105,6 +1095,8 @@ const HouseUpload = (prop) => {
                                                 <Option value="公寓">公寓</Option>
                                                 <Option value="電梯大樓">電梯大樓</Option>
                                                 <Option value="透天">透天</Option>
+                                                <Option value="辦公室">辦公室</Option>
+                                                <Option value="店面">店面</Option>
                                                 {/*<Option value="1">公寓</Option>*/}
                                                 {/*<Option value="2">電梯大樓</Option>*/}
                                                 {/*<Option value="3">透天</Option>*/}

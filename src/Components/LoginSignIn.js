@@ -99,7 +99,8 @@ const LoginRegister = (props) => {
         if (isRunPost) {
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then((response) => {
-                    if(response.data.data === null ||response.data.data === undefined){
+                    console.log(response.data.status)
+                    if(response.data.status === false ||response.data.status === null){
                         toast.error(`帳號或密碼錯誤`)
                     }else{
                         const userId = response.data.data._id;
