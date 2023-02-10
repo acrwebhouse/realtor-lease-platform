@@ -705,6 +705,7 @@ const HousesList = (props) => {
             render: (image) => (
                 <div style={{
                     height:'250px',
+                    'line-height': '250px',
                     overflow:'hidden',
                 }}>
                     <Image
