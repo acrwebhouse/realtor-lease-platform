@@ -63,13 +63,16 @@ const GoogleMapHouse = (props) => {
             console.log(MapSource)
             console.log(house.address)
             console.log(houseExtraData)
+            const main = document.getElementById('main')
+            const mainWidth = main.offsetWidth
+            main.style.height = mainWidth + 'px'
         }
     }, [init, house])
 
     return (
                 <iframe
-                    width="440"
-                    height="440"
+                    id="main"
+                    width="100%"
                     style={{border: "0"}}
                     loading="lazy"
                     allowFullScreen
