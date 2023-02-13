@@ -436,7 +436,7 @@ const CompanyTransactionList = (props) => {
             <br/>
             <Row>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={12} sm={9} md={9} lg={8} xl={6}>
+                <Col  xs={24} sm={9} md={9} lg={8} xl={6}>
                     服務費：
                     <Input id="minPrice" size={size} defaultValue={minValue} onChange={setMinPrice} placeholder="最低"  style={{
                         width: '37%',
@@ -448,14 +448,14 @@ const CompanyTransactionList = (props) => {
                     }}>
                     </Input>
                 </Col>
-                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
+                <Col  xs={11} sm={5} md={5} lg={4} xl={3}>
                     <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
                         width: '100%',
                     }}>
                     </Select>
                 </Col>
                 &nbsp;&nbsp;
-                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
+                <Col  xs={12} sm={5} md={5} lg={4} xl={3}>
                     <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
                         width: '100%',
                     }}>
@@ -510,7 +510,14 @@ const CompanyTransactionList = (props) => {
                                         <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
                                         <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
                                         <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
-                                        <Descriptions.Item label="負責房仲" span={3}>{'姓名: '+data.userData.name + '， 信箱：' + data.userData.mail + '， 電話：' + data.userData.phone}</Descriptions.Item>
+                                        <Descriptions.Item label="負責房仲" span={3}>
+                                            {'姓名 : ' + data.userData.name}
+                                            <br />
+                                            {'信箱 : ' + data.userData.mail}
+                                            <br />
+                                            {'電話 : ' + data.userData.phone}
+
+                                        </Descriptions.Item>
                                     </Descriptions>
                                     <br/>
                                     <Button type="primary" onClick={() => editTransactionData(index)}>時間更改</Button>

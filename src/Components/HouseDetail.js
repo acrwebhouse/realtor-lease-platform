@@ -46,7 +46,7 @@ const HouseDetail = (prop) => {
     const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [hostGender, setHostGender] = useState('');
-
+    const [customerPhone, setCustomerPhone ]= useState('')
     const [reserveVisible, setReserveVisible] = useState(false);
     const [reserveClientData, setReserveClientData] = useState([])
     const [isRunPost, setIsRunPost] = useState(false)
@@ -504,14 +504,14 @@ console.log(showFloor2)
 
     const UploadReserveData = (values) => {
         console.log(values)
-            if(values['reserveName'] && values['reservePhone']) {
+            if(values['reserveName'] && customerPhone) {
                 setReserveClientData({
                     "host": house['owner'],
                     "houseId": house['_id'],
                     "state": 0,
                     "type": 1,
                     "clientName": values['reserveName'],
-                    "clientPhone": values['reservePhone']
+                    "clientPhone": customerPhone
                 })
                 setIsRunPost(true)
             }else {
@@ -548,7 +548,12 @@ console.log(showFloor2)
                 })
                     // .then( (response) => console.log(response.data.status))
                     .then((response) => {
-                        toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
+                        console.log(response)
+                        if(response.data.status) {
+                            toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
+                            form_reserve.resetFields()
+                            setCustomerPhone('')
+                        }
                     })
 
                     .catch( (error) => toast.error(`${error}`))
@@ -599,6 +604,21 @@ console.log(showFloor2)
             
         }
     }, )
+
+    const normalizeInput = (value, previousValue) => {
+        console.log(value)
+        if (!value) return value;
+        const currentValue = value.replace(/[^\d]/g, "");
+        const cvLength = currentValue.length;
+
+        if (!previousValue || value.length > previousValue.length) {
+            if (cvLength < 5) return currentValue;
+            if (cvLength < 8)
+                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+        }
+    };
+
     return (
         <div>
             <ToastContainer autoClose={2000} position="top-center"/>
@@ -724,7 +744,6 @@ console.log(showFloor2)
                             </div>
                             {reserveVisible?<div>
                                 <br/>
-
                                     <div style={{display:'flex', borderRadius: '15px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
                                         <Form form={form_reserve} layout="vertical" name="ReserveForm" onFinish={UploadReserveData}>
                                             <Form.Item
@@ -749,9 +768,19 @@ console.log(showFloor2)
                                                     },
                                                 ]}
                                             >
-                                                <Input size="large" placeholder="範例 : 0912345678" style={{width: '270px'}}/>
+                                                <>
+                                                    <Input size="large"
+                                                         placeholder="範例 : 0912-345-678"
+                                                         style={{width: '270px'}}
+                                                         value={customerPhone}
+                                                         onChange={(e) => {
+                                                             console.log(e.target.value)
+                                                             setCustomerPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                                         }
+                                                         }
+                                                    />
+                                                </>
                                             </Form.Item>
-                                            <p style={{color:'darkorange'}}>如果已登入帳戶，可直接按送出。</p>
                                             <Button type="primary"
                                                     shape="round"
                                                     htmlType="submit"
@@ -766,19 +795,20 @@ console.log(showFloor2)
                         <br/>
 
                         <div style={{display:'flex', 'fontSize':'15px', 'padding' : '10px' ,'borderRadius': '5px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
-                            <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
-                            <br/>
-                            &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
+                            <div >{`聯絡人：${owner}`}</div>
+                            <> &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
                                 電話聯絡
                             </Button>
-                            {
-                                lineId !== null && lineId !== undefined && lineId !== ''?(
-                                    <Button type="primary" onClick={() => lineClick(lineId)} style={{marginLeft: '20px', width: '135px',backgroundColor : '#00cc00' }}>
-                                        line 加好友
-                                    </Button>
-                                ):null           
-                            }
-                            <br/>
+                                {
+                                    lineId !== null && lineId !== undefined && lineId !== ''?(
+                                        <Button type="primary" onClick={() => lineClick(lineId)} style={{marginLeft: '20px', width: '135px',backgroundColor : '#00cc00' }}>
+                                            line 加好友
+                                        </Button>
+                                    ):null
+                                }
+                                <br/>
+                            </>
+
                         </div>
                         <br/>
                         
