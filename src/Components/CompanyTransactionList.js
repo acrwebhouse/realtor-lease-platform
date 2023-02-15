@@ -31,6 +31,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
 const Transaction_Auth = 'transaction/getTransactionList'
 const editTransaction_Auth = 'transaction/editTransactionNoIncludeCompany'
+const removeTransaction_Auth = 'transaction/removeTransaction'
 const { Panel } = Collapse;
 const dealYearMonth = {
     year: [],
@@ -107,6 +108,11 @@ const CompanyTransactionList = (props) => {
         endRentDate: '',
         companyId: ''
     });
+    const [enableDel, setEnableDel] = useState(false);
+    const [isShowDeleteAlert, SetIsShowDeleteAlert] = useState(false);
+    const [delId, setDelId] = useState('');
+
+
     useEffect(() => {
         if (init) {
             setInit(false)
@@ -230,7 +236,7 @@ const CompanyTransactionList = (props) => {
             })
             .catch( (error) => message.error(error, 3))
     }
-    console.log(transactions.map((data, index) => console.log(data, index)))
+    console.log(transactions)
     console.log(dealYearMonth.year)
 
     const checkYearMonth = () => {
@@ -397,20 +403,84 @@ const CompanyTransactionList = (props) => {
     }
     console.log(editTransactionArg)
     const handleDealData = (value) => {
+        console.log(value)
         console.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
         editTransactionArg.transactionDate = value.dealDate.format("YYYY/MM/DD")
         editTransactionArg.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
         editTransactionArg.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
+        {editTransactionArg.actualPrice = props.currentEmployeeData.rank === 0 ?parseInt(value.dealPrice) : editTransactionArg.actualPrice }
+        {editTransactionArg.serviceCharge = props.currentEmployeeData.rank === 0 ? parseInt(value.servicePrice) : editTransactionArg.serviceCharge}
         setEnableEditModal(false)
         setEnableEdit(true)
         form_deal.resetFields()
     }
 
+    const deleteTransaction = () => {
+        setEnableDel(true)
+    }
+
+    const cancelRemoveTransaction = () => {
+        SetIsShowDeleteAlert(false)
+    }
+
+    //delete
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        let reqUrl = `${removeTransaction_Auth}?companyId=${props.currentEmployeeData.companyId}`
+        if(enableDel) {
+            UserAxios.delete(reqUrl, {
+                headers: {
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    "x-token" : xToken,
+                },
+                data: {"ids" : [delId]}
+            }).then((response) => {
+                console.log(response)
+                if(response.data.status === true){
+                    toast.success('刪除成功');
+                    // setTimeout(()=>{
+                    //     window.location.href = window.location.origin;
+                    // },3000);
+                    SetIsShowDeleteAlert(false)
+                    setEnableCheckYearMonth(true)
+                }else{
+                    toast.error(response.data.data)
+                }
+            })
+                .catch( (error) => toast.error(error))
+        }
+    }, [enableDel])
+    console.log(delId)
     return (
         <div>
             {/*{JSON.stringify(props.currentEmployeeData)}*/}
             {/* CompanyTransactionList page */}
+            {
+                isShowDeleteAlert?(
+                    <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
+                        <Alert
+                            afterClose={cancelRemoveTransaction}
+                            type="error"
+                            action={
+                                <Space>
+                                    <Button size="small" type="ghost" onClick={deleteTransaction}>
+                                        確定刪除
+                                    </Button>
+                                    <Button size="small" type="ghost" onClick={cancelRemoveTransaction}>
+                                        取消刪除
+                                    </Button>
+                                </Space>
+
+                            }
+                            closable
+                        />
+                    </div>
+                ):null
+            }
+            <br/>
             <ToastContainer autoClose={2000} position="top-center"/>
+            <Divider>成交紀錄</Divider>
             <Row>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
@@ -520,7 +590,19 @@ const CompanyTransactionList = (props) => {
                                         </Descriptions.Item>
                                     </Descriptions>
                                     <br/>
-                                    <Button type="primary" onClick={() => editTransactionData(index)}>時間更改</Button>
+                                    <Button type="primary" onClick={() => editTransactionData(index)}>{props.currentEmployeeData.rank > 0? `時間更改` : `編輯`}</Button>
+                                    &nbsp;
+                                    <Button type="primary"
+                                            disabled={isShowDeleteAlert}
+                                            onClick={() =>{
+                                                SetIsShowDeleteAlert(true)
+                                                setDelId(transactions[index].transactionId)
+                                            }}
+                                            danger
+                                            style={{width: '70px'}}
+                                    >
+                                        刪除
+                                    </Button>
                                 </Panel>
                             ))}
                         </Collapse>
@@ -539,6 +621,43 @@ const CompanyTransactionList = (props) => {
                       onFinish={handleDealData}
                       scrollToFirstError
                 >
+                    {props.currentEmployeeData.rank === 0?
+                        <div>
+                            <Form.Item
+                                // name="TrafficType"
+                                name="dealPrice"
+                                label="成交價："
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <Input id="dealPrice" size={size} style={{
+                                    width: '100%',
+                                }}>
+                                </Input>
+                            </Form.Item>
+                            <Form.Item
+                                // name="TrafficType"
+                                name="servicePrice"
+                                label="服務費："
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <Input id="servicePrice" size={size} style={{
+                                    width: '100%',
+                                }}>
+                                </Input>
+                            </Form.Item>
+                        </div>
+
+                        :
+                        []
+                    }
                     <Form.Item
                         // name="TrafficType"
                         name="dealDate"
@@ -549,7 +668,9 @@ const CompanyTransactionList = (props) => {
                             },
                         ]}
                     >
-                        <DatePicker/>
+                        <DatePicker style={{
+                            width: '100%',
+                        }}/>
                     </Form.Item>
                     <Form.Item
                         // name="TrafficType"
@@ -561,7 +682,9 @@ const CompanyTransactionList = (props) => {
                             },
                         ]}
                     >
-                        <DatePicker.RangePicker/>
+                        <DatePicker.RangePicker style={{
+                            width: '100%',
+                        }}/>
                     </Form.Item>
                     <div style={{display: 'flex'}}>
                         <Button type="primary"
