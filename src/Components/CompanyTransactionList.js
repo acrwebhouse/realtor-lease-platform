@@ -590,9 +590,9 @@ const CompanyTransactionList = (props) => {
                                         </Descriptions.Item>
                                     </Descriptions>
                                     <br/>
-                                    <Button type="primary" onClick={() => editTransactionData(index)}>{props.currentEmployeeData.rank > 0? `時間更改` : `編輯`}</Button>
+                                    <Button type="primary" style={{width: '70px', backgroundColor: '#00cc00'}} onClick={() => editTransactionData(index)}>編輯</Button>
                                     &nbsp;
-                                    <Button type="primary"
+                                    {props.currentEmployeeData.rank === 0?<Button type="primary"
                                             disabled={isShowDeleteAlert}
                                             onClick={() =>{
                                                 SetIsShowDeleteAlert(true)
@@ -602,7 +602,7 @@ const CompanyTransactionList = (props) => {
                                             style={{width: '70px'}}
                                     >
                                         刪除
-                                    </Button>
+                                    </Button> : []}
                                 </Panel>
                             ))}
                         </Collapse>
@@ -633,7 +633,7 @@ const CompanyTransactionList = (props) => {
                                     },
                                 ]}
                             >
-                                <Input id="dealPrice" size={size} style={{
+                                <Input id="dealPrice" style={{
                                     width: '100%',
                                 }}>
                                 </Input>
@@ -648,7 +648,7 @@ const CompanyTransactionList = (props) => {
                                     },
                                 ]}
                             >
-                                <Input id="servicePrice" size={size} style={{
+                                <Input id="servicePrice" style={{
                                     width: '100%',
                                 }}>
                                 </Input>
