@@ -1,10 +1,10 @@
-import {Form, Input, Button, message} from 'antd';
+import {Form, Input, Button} from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import React, {useEffect, useState} from "react";
 import {LoginRegisterAxios} from "./axiosApi";
-// import axios from "./axiosApi";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// const LOGIN_Auth = "/auth/login/"
 const SendResetPassword_Auth = '/auth/sendResetPasswordMail'
 const accountOrEmail = []
 
@@ -57,14 +57,13 @@ const ForgotPassword = (props) => {
                 .then( (response) =>  {
                     console.log(response)
                     if(response.data.status) {
-                        message.success('請至郵件信箱進行重置密碼的設定', 2)
+                        toast.success('請至郵件信箱進行重置密碼的設定')
                     }else {
-                        message.error(`${response.data.data}`, 2)
+                        toast.error(`${response.data.data}`)
                     }
                 })
                 .catch( (error) => {
-                    message.error('查無此帳戶或電子郵件，請輸入正確的帳戶或電子郵件', 2)
-                    // message.error(`${error}`, 2)
+                    toast.error('查無此帳戶或電子郵件，請輸入正確的帳戶或電子郵件')
                 })
 
             setEnableResetPW(false)
@@ -74,7 +73,7 @@ const ForgotPassword = (props) => {
 
     return (
         <>
-
+            <ToastContainer autoClose={2000} position="top-center"/>
             <Form
                 form={form}
                 name="normal_login"

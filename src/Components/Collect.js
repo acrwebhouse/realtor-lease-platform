@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import { Divider, Row, Col, message} from "antd";
+import { Divider, Row, Col} from "antd";
 import {config} from '../Setting/config'
 import {CollectAxios} from './axiosApi'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const collectGetDataUrl = 'collect/getData'
 
@@ -17,7 +19,7 @@ const Collect = (props) => {
             .then( (response) => {
                 setData(response.data.data)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }
 
     useEffect(() => {
@@ -31,6 +33,7 @@ const Collect = (props) => {
     return (
 
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <br/><br/>
             <Divider>資料採集</Divider>
             <Row>

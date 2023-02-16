@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, message, Alert, Space} from "antd";
+import {Table, Button, Image, Divider, Row, Col, Alert, Space} from "antd";
 import {
     useParams
   } from "react-router-dom";

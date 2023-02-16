@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, message, Space } from 'antd';
+import { Button, Space } from 'antd';
 import ProForm, {
     ModalForm,
     DrawerForm,
@@ -20,6 +20,8 @@ import {
     UserOutlined,
     WeiboCircleOutlined,
 } from '@ant-design/icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const iconStyles = {
     marginLeft: '16px',
@@ -75,7 +77,7 @@ const MDForm = () => {
                     onFinish={async (values) => {
                         await waitTime(2000);
                         console.log(values);
-                        message.success('提交成功');
+                        toast.success('提交成功');
                     }}
                 >
                     <StepsForm.StepForm title="第一步">
@@ -229,6 +231,7 @@ const MDForm = () => {
 
     return (
         <>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <ProFormRadio.Group
                 style={{
                     margin: 16,
@@ -264,7 +267,7 @@ const MDForm = () => {
                     onFinish={async (values) => {
                         await waitTime(2000);
                         console.log(values);
-                        message.success('提交成功');
+                        toast.success('提交成功');
                     }}
                     initialValues={{
                         name: '蚂蚁设计有限公司',

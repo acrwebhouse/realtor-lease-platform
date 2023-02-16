@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox} from "antd";
+import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
 import {LoginRegisterAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
@@ -188,7 +190,7 @@ const getPersonalInfo = () => {
         setUser(response.data.data)
         setData(response.data.data)
     })
-    .catch( (error) => message.error(error, 3))
+    .catch( (error) => toast.error(error))
 }
 
 function setData(data){
@@ -368,7 +370,7 @@ function sendEdit(){
             // props.changeRolesMenu(roles)
             props.changeUserMenu(xToken)
             cookie.save('x-token',token,{path:'/'})
-            message.success('編輯成功', 3);
+            toast.success('編輯成功');
             const baseDiv = document.getElementById('baseDiv')
             baseDiv.style.width = null
             if(isShowExtraData){
@@ -376,21 +378,21 @@ function sendEdit(){
                 extraDiv.style.width = null
             }
         }else{
-            message.error(response.data.data, 3)
+            toast.error(response.data.data)
         }
     })
-    .catch( (error) => message.error(error, 3))
+    .catch( (error) => toast.error(error))
     }
     if(isOkLicense === false){
-        message.error('請輸入正確的營業員證號格式', 3);
+        toast.error('請輸入正確的營業員證號格式');
     }
 
     if(isOkPassword === false){
-        message.error('密碼不能為空', 3);
+        toast.error('密碼不能為空');
     }
 
     if(isOkSalesScopeCount === false){
-        message.error('經營地區必須2個', 3);
+        toast.error('經營地區必須2個');
     }
 }
 
@@ -453,12 +455,12 @@ function changeDate(e, dateString){
             .then( (response) =>  {
                 console.log(response)
                 if(response.data.status) {
-                    message.success('請至郵件信箱進行重置密碼的設定', 2)
+                    toast.success('請至郵件信箱進行重置密碼的設定')
                 }else {
-                    message.error(`${response.data.data}`, 2)
+                    toast.error(`${response.data.data}`)
                 }
             })
-            .catch( (error) => {message.error(`${error}`, 2)})
+            .catch( (error) => {toast.error(`${error}`)})
 
             setEnableResetPW(false)
         }
@@ -468,6 +470,7 @@ function changeDate(e, dateString){
     return (
 
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             <div Style='float:right'>
             {isEdit?(
                     <div>

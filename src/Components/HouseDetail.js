@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, message, Alert, Space, Form, Input, } from "antd";
+import {Table, Button, Image, Divider, Row, Col, Alert, Space, Form, Input, } from "antd";
 import {
     useParams
   } from "react-router-dom";
@@ -13,6 +13,9 @@ import {
   } from '@ant-design/icons';
 
 import GoogleMapHouse from "./GoogleMapHouse";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
@@ -43,7 +46,7 @@ const HouseDetail = (prop) => {
     const [addressDetail, setAddressDetail] = useState('');
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [hostGender, setHostGender] = useState('');
-
+    const [customerPhone, setCustomerPhone ]= useState('')
     const [reserveVisible, setReserveVisible] = useState(false);
     const [reserveClientData, setReserveClientData] = useState([])
     const [isRunPost, setIsRunPost] = useState(false)
@@ -130,7 +133,7 @@ const HouseDetail = (prop) => {
             setHouse(response)
             resolveHouse(response)
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     function changeBuildType(house){
@@ -342,8 +345,15 @@ const HouseDetail = (prop) => {
              }else{
                 hostGender = hostGender + ' 先生'
             }
-            if(data.floor2 !== null && data.floor2 !== undefined && data.floor2 !== ''){
+            if(data.floor2 !== null && data.floor2 !== undefined && data.floor2 !== '' ){
                 setShowFloor2(' 之 '+data.floor2)
+            }
+            if(data.floor === -3){
+                data.floor = `地下 3`
+            }else if(data.floor === -2){
+                data.floor = `地下 2`
+            }else if(data.floor === -1){
+                data.floor = `地下 1`
             }
             setHostGender(hostGender)
         }
@@ -451,7 +461,7 @@ console.log(showFloor2)
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
-        message.success('連結已複製到剪貼簿', 3);
+        toast.success('連結已複製到剪貼簿');
     }
 
 
@@ -494,27 +504,18 @@ console.log(showFloor2)
 
     const UploadReserveData = (values) => {
         console.log(values)
-            if(values['reserveName'] && values['reservePhone']) {
+            if(values['reserveName'] && customerPhone) {
                 setReserveClientData({
                     "host": house['owner'],
                     "houseId": house['_id'],
                     "state": 0,
                     "type": 1,
                     "clientName": values['reserveName'],
-                    "clientPhone": values['reservePhone']
+                    "clientPhone": customerPhone
                 })
                 setIsRunPost(true)
             }else {
-                message.error({
-                    content: '如未登入，姓名與聯絡電話都需要填寫。',
-                    style: {
-                        fontSize: '40px',
-                        marginTop: '20vh',
-                        color: 'darkred'
-                    },
-                    duration: 3,
-                }).then(() => {
-                })
+                toast.error('如未登入，姓名與聯絡電話都需要填寫。')
             }
     }
 
@@ -534,18 +535,9 @@ console.log(showFloor2)
                     }})
                     // .then( (response) => console.log(response.data.status))
                     .then((response) => {
-                        console.log(response.data)
-                        message.success({
-                            content: '已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。',
-                            style: {
-                                fontSize: '40px',
-                                marginTop: '20vh',
-                            },
-                            duration: 2,
-                        }).then()
-
+                        toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
                     })
-                    .catch((error) => message.error(`${error}`, 2))
+                    .catch((error) => toast.error(`${error}`))
 
                 :
                 HouseAxios.post(reserve_Auth, reserveClientData, {
@@ -556,18 +548,15 @@ console.log(showFloor2)
                 })
                     // .then( (response) => console.log(response.data.status))
                     .then((response) => {
-                        console.log(response.data)
-                        message.success({
-                            content: '已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。',
-                            style: {
-                                fontSize: '40px',
-                                marginTop: '20vh',
-                            },
-                            duration: 2,
-                        }).then()
+                        console.log(response)
+                        if(response.data.status) {
+                            toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
+                            form_reserve.resetFields()
+                            setCustomerPhone('')
+                        }
                     })
 
-                    .catch( (error) => message.error(`${error}`, 2))
+                    .catch( (error) => toast.error(`${error}`))
 
             setIsRunPost(false)
         }
@@ -592,15 +581,15 @@ console.log(showFloor2)
         )
         .then( (response) => {
             if(response.data.status === true){
-                message.success('刪除成功', 3);
+                toast.success('刪除成功');
                 setTimeout(()=>{
                     window.location.href = window.location.origin;
                 },3000);
             }else{
-                message.error(response.data.data, 3)
+                toast.error(response.data.data, 3)
             }
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
         cancelRemoveHouse()
     }
 
@@ -615,8 +604,24 @@ console.log(showFloor2)
             
         }
     }, )
+
+    const normalizeInput = (value, previousValue) => {
+        console.log(value)
+        if (!value) return value;
+        const currentValue = value.replace(/[^\d]/g, "");
+        const cvLength = currentValue.length;
+
+        if (!previousValue || value.length > previousValue.length) {
+            if (cvLength < 5) return currentValue;
+            if (cvLength < 8)
+                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+        }
+    };
+
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
@@ -695,7 +700,7 @@ console.log(showFloor2)
                         'fontSize':'20px'
                         }}>{`價格：${house.price}元 / 月`}</div>
                         {
-                            prop.isOwner?(
+                            (prop.isOwner || prop.isComapny)?(
                                 <div style={{'fontSize':'15px'}}>{`地址：${house.address}${addressDetail}`}</div>
                             ):<div style={{'fontSize':'15px'}}>{`地址：${house.address}`}</div>
                         }
@@ -706,7 +711,7 @@ console.log(showFloor2)
                         <div style={{'fontSize':'15px'}}>{`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`}</div>
                         {
                             prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
-                                <div style={{'fontSize':'15px'}}>{`房間${house.room} ${hostGender}`}</div>
+                                <div style={{'fontSize':'15px'}}>{`房間 ${house.room} `}</div>
                             ):null   
                         }
                         {
@@ -721,7 +726,7 @@ console.log(showFloor2)
                         }
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         {
-                            prop.isOwner?(
+                            (prop.isOwner || prop.isComapny)?(
                                 <div style={{'fontSize':'10px',width: '200px'}}>{`備註：${remark}`}</div>
                             ):null   
                         }
@@ -739,7 +744,6 @@ console.log(showFloor2)
                             </div>
                             {reserveVisible?<div>
                                 <br/>
-
                                     <div style={{display:'flex', borderRadius: '15px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
                                         <Form form={form_reserve} layout="vertical" name="ReserveForm" onFinish={UploadReserveData}>
                                             <Form.Item
@@ -764,9 +768,19 @@ console.log(showFloor2)
                                                     },
                                                 ]}
                                             >
-                                                <Input size="large" placeholder="範例 : 0912345678" style={{width: '270px'}}/>
+                                                <>
+                                                    <Input size="large"
+                                                         placeholder="範例 : 0912-345-678"
+                                                         style={{width: '270px'}}
+                                                         value={customerPhone}
+                                                         onChange={(e) => {
+                                                             console.log(e.target.value)
+                                                             setCustomerPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                                         }
+                                                         }
+                                                    />
+                                                </>
                                             </Form.Item>
-                                            <p style={{color:'darkorange'}}>如果已登入帳戶，可直接按送出。</p>
                                             <Button type="primary"
                                                     shape="round"
                                                     htmlType="submit"
@@ -781,19 +795,20 @@ console.log(showFloor2)
                         <br/>
 
                         <div style={{display:'flex', 'fontSize':'15px', 'padding' : '10px' ,'borderRadius': '5px', justifyContent:'center', alignItems:'center', backgroundColor:'#e0f0ff' }}>
-                            <div >&nbsp;&nbsp;{`聯絡人：${owner}`}</div>
-                            <br/>
-                            &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
+                            <div >{`聯絡人：${owner}`}</div>
+                            <> &nbsp;&nbsp;<Button type="primary" onClick={() => phoneClick(phone)} style={{width: '135px' }}>
                                 電話聯絡
                             </Button>
-                            {
-                                lineId !== null && lineId !== undefined && lineId !== ''?(
-                                    <Button type="primary" onClick={() => lineClick(lineId)} style={{marginLeft: '20px', width: '135px',backgroundColor : '#00cc00' }}>
-                                        line 加好友
-                                    </Button>
-                                ):null           
-                            }
-                            <br/>
+                                {
+                                    lineId !== null && lineId !== undefined && lineId !== ''?(
+                                        <Button type="primary" onClick={() => lineClick(lineId)} style={{marginLeft: '20px', width: '135px',backgroundColor : '#00cc00' }}>
+                                            line 加好友
+                                        </Button>
+                                    ):null
+                                }
+                                <br/>
+                            </>
+
                         </div>
                         <br/>
                         

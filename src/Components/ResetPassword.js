@@ -4,7 +4,6 @@ import {
     Input,
     Row,
     Col,
-    message,
     Form, Result
 } from "antd";
 // import cookie from 'react-cookies'
@@ -14,7 +13,8 @@ import {UserAxios} from './axiosApi'
 import Captcha from "demos-react-captcha";
 import cookie from "react-cookies";
 import {config} from '../Setting/config'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const userData_Auth = '/user/getPersonalInfo'
 const editUser_Auth = 'user/editUser'
 const User_verify_xToken = window.location.href.split('key=')[1]
@@ -43,7 +43,7 @@ const ResetPassword = (props) => {
                 }
                 setUserData(response.data.data)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => toast.error(error))
     }, [])
 
     useEffect(() => {
@@ -64,12 +64,12 @@ const ResetPassword = (props) => {
                         setVerify(true)
                         cookie.save('x-token',response.data.data.token,{path:'/'})
                     }else{
-                        message.error(response.data.data, 3).then()
+                        toast.error(response.data.data).then()
                         setVerify(false)
                     }
                 })
                 .catch( (error) => {
-                    message.error(error, 3)
+                    toast.error(error)
                     setVerify(false)
                 })
 
@@ -119,6 +119,7 @@ const ResetPassword = (props) => {
 
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             { ChangingVerify ?
                 <div>
 

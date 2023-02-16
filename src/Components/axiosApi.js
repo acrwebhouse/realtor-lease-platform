@@ -54,5 +54,6 @@ const CompanyAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
+
 export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios}
 

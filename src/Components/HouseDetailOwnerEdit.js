@@ -6,8 +6,10 @@ import {
   } from "react-router-dom";
 import HouseUpload from "./HouseUpload";
 import {HouseAxios} from './axiosApi'
-import {message} from "antd";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const houseListUrl = 'house/getHouse'
+
 
 const HouseDetailOwnerEdit = (prop) => {
     const { id,owner } = useParams();
@@ -26,10 +28,10 @@ const HouseDetailOwnerEdit = (prop) => {
                 setHouse(response.data.data)
                 setIsShow(true);
             }else{
-                message.error("取得資料錯誤", 3)
+                toast.error("取得資料錯誤")
             }
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
     }
 
     useEffect(() => {
@@ -58,6 +60,7 @@ const HouseDetailOwnerEdit = (prop) => {
     }, )
     return (
        <div>
+        <ToastContainer autoClose={2000} position="top-center"/>
            {
                isShow?(<HouseUpload defaultValue = {house} setId = {id}></HouseUpload>):null
            } 

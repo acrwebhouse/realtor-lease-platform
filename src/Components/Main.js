@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, Menu, message} from "antd";
+import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {CollectAxios} from './axiosApi'
@@ -33,15 +33,18 @@ import Contact from "./Contact";
 import Collect from "./Collect";
 import MatchNeed from "./MatchNeed";
 import Link from "./Link";
-import ReserveHouseList from "./ReserveHouseList";
+import ReserveHouse from "./ReserveHouse";
 
 import CompanyApply from "./CompanyApply";
 import CompanyApplyList from "./CompanyApplyList";
 import CompanyEmployeeInfo from "./CompanyEmployeeInfo";
 import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
-import CompanyMyHouseList from "./CompanyMyHouseList";
 import CompanyEmployeesList from "./CompanyEmployeesList";
+import CompanyTransactionList from "./CompanyTransactionList";
+import {getCurrentEmployee} from './CompanyCommon'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -65,10 +68,11 @@ const Main = () => {
     const [isShowCompanyEmployeeInfo, setIsShowCompanyEmployeeInfo] = useState(false);
     const [isShowCompanyHouseList, setIsShowCompanyHouseList] = useState(false);
     const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
-    const [isShowCompanyMyHouseList, setIsShowCompanyMyHouseList] = useState(false);
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
     
-    const [isShowReserveHouseList, setIsShowReserveHouseList] = useState(false);
+    const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
+    const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
+    const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
 
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
@@ -118,7 +122,6 @@ const Main = () => {
     );
     
     const changeUserMenu = (xToken) => {
-        console.log('===changeUserMenu=====')
         const userListUrl = 'user/getPersonalInfo'
         let reqUrl = `${userListUrl}`
         UserAxios.get(
@@ -141,35 +144,56 @@ const Main = () => {
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
-                console.log(employeeData)
+                housesList()
             }
             
         })
-        .catch( (error) => message.error(error, 3))
+        .catch( (error) => toast.error(error))
+    }
+
+    function checkEmployeeStateAndChangeMenu(callback){
+        getCurrentEmployee((result,data)=>{
+            const currentCompanyId = data.companyId
+            const currentEmployeeState = data.state
+            const currentEmployeeRank = data.rank
+            const oldCompanyId = currentEmployeeData.companyId
+            const oldEmployeeState = currentEmployeeData.state
+            const oldEmployeeRank = currentEmployeeData.rank
+            if(result === true){
+                // console.log('=====currentCompanyId====',currentCompanyId)
+                // console.log('=====oldCompanyId====',oldCompanyId)
+                // console.log('====currentEmployeeState=====',currentEmployeeState)
+                // console.log('=====oldEmployeeState====',oldEmployeeState)
+                // console.log('====currentEmployeeRank=====',currentEmployeeRank)
+                // console.log('====oldEmployeeRank=====',oldEmployeeRank)
+                if(currentCompanyId === oldCompanyId && currentEmployeeState === oldEmployeeState && currentEmployeeRank === oldEmployeeRank){
+                    callback(true)
+                }else{
+                    const xToken = cookie.load('x-token')
+                    changeUserMenu(xToken)
+                    callback(false)
+                }
+            }else{
+                const xToken = cookie.load('x-token')
+                changeUserMenu(xToken)
+                callback(false)
+            }
+
+        })
     }
 
     function changeEmployeeMenu(employee){
-        const relativeLinkMenu = document.getElementById('relativeLinkMenu');
+        const companyGroupMenu = document.getElementById('companyGroupMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
         if(employee.state === 2 || employee.state === 4){
-            const companyInfo = document.getElementById('companyInfo');
-            const companyHouseList = document.getElementById('companyHouseList');
-            const companyMyHouseList = document.getElementById('companyMyHouseList');
-            const companyApplyList = document.getElementById('companyApplyList');
-            const companyEmployeesList = document.getElementById('companyEmployeesList');
-            const companyEmployeeInfo = document.getElementById('companyEmployeeInfo');
-            companyApplyMenu.style.display = 'none'
-            relativeLinkMenu.style.display = null;
-            // relativeLinkMenu.style.display = 'flex'
-            companyInfo.style.display = 'flex'
-            companyHouseList.style.display = 'flex'
-            companyMyHouseList.style.display = 'flex'
-            companyEmployeeInfo.style.display = 'flex'
+            companyGroupMenu.style.display = null;
             if(employee.rank === 0){
-                companyApplyList.style.display = 'flex'
-                companyEmployeesList.style.display = 'flex'
+                setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+            }else{
+                setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
             }
         }else{
+            companyGroupMenu.style.display = 'none'
             companyApplyMenu.style.display = 'flex'
         }
     }
@@ -190,7 +214,7 @@ const Main = () => {
         setIsShowHousesList(false)
         setIsShowMyHousesList(false)
         setIsShowUploadHouse(false)
-        setIsShowReserveHouseList(false)
+        setIsShowReserveHouse(false)
         setIsShowMemberList(false)
         setIsShowMemberInfo(false)
         setIsShowContact(false)
@@ -202,8 +226,8 @@ const Main = () => {
         setIsShowCompanyEmployeeInfo(false);
         setIsShowCompanyHouseList(false);
         setIsShowCompanyInfo(false);
-        setIsShowCompanyMyHouseList(false);
         setIsShowCompanyEmployeesList(false)
+        setIsShowCompanyTransactionList(false)
     }
 
     function toggleCollapsed() {
@@ -259,6 +283,9 @@ const Main = () => {
                 // changeRolesMenu(roles)
 
                 changeUserMenu(xToken)
+                let d = new Date();
+                d.setTime(d.getTime() + (86400*30*1000)); //one month
+                cookie.save('x-token',xToken,{path:'/', expires: d})
             }
             
         }
@@ -366,13 +393,6 @@ const Main = () => {
         setIsShowCompanyInfo(true)
     }
 
-    const companyMyHouseList = () =>{
-        console.log('companyMyHouseList')
-        turnOffPage()
-        setSelectMenu(['19'])
-        setIsShowCompanyMyHouseList(true)
-    }
-
     const companyEmployeesList = () =>{
         console.log('companyEmployeesList')
         turnOffPage()
@@ -380,36 +400,45 @@ const Main = () => {
         setIsShowCompanyEmployeesList(true)
     }
 
-    function reserveHouseList(){
-        console.log('reserveHouseList')
+    function reserveHouse(){
+        console.log('reserveHouse')
         turnOffPage()
         setSelectMenu(['21'])
-        setIsShowReserveHouseList(true)
+        setIsShowReserveHouse(true)
     }
     
+    function companyTransactionList(){
+        console.log('companyTransactionList')
+        turnOffPage()
+        setSelectMenu(['22'])
+        setIsShowCompanyTransactionList(true)
+    }
+
     function logout(){
         console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
-        // const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
+        const reserveHouseMenu = document.getElementById('reserveHouseMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
         const loginSignInMenu = document.getElementById('loginSignInMenu');
         const collectMenu = document.getElementById('collectMenu');
         const matchNeedMenu = document.getElementById('matchNeedMenu');
-        const relativeLinkMenu = document.getElementById('relativeLinkMenu');
+        // const relativeLinkMenu = document.getElementById('relativeLinkMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
-
+        const companyGroupMenu = document.getElementById('companyGroupMenu');
+        
         loginSignInMenu.style.display = 'flex'
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
-        // reserveHouseListMenu.style.display = 'none'
+        reserveHouseMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
-        relativeLinkMenu.style.display = 'none'
+        // relativeLinkMenu.style.display = 'none'
+        companyGroupMenu.style.display = 'none'
         companyApplyMenu.style.display = 'none'
         // matchNeedMenu.style.display = 'flex'
         if( isShowHousesList === false && isShowContact !== true){
@@ -432,10 +461,9 @@ const Main = () => {
     }
 
     function changeRolesMenu(roles,toHouseList){
-        console.log('==roles===',roles)
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
-        // const reserveHouseListMenu = document.getElementById('reserveHouseListMenu');
+        const reserveHouseMenu = document.getElementById('reserveHouseMenu');
         const memberListMenu = document.getElementById('memberListMenu');
         const memberInfoMenu = document.getElementById('memberInfoMenu');
         const logoutMenu = document.getElementById('logoutMenu');
@@ -446,7 +474,7 @@ const Main = () => {
         const relativeLinkContent = document.getElementById('relativeLinkContent')
         myHousesListMenu.style.display = 'none'
         uploadHousesMenu.style.display = 'none'
-        // reserveHouseListMenu.style.display = 'none'
+        reserveHouseMenu.style.display = 'none'
         memberListMenu.style.display = 'none'
         memberInfoMenu.style.display = 'none'
         logoutMenu.style.display = 'none'
@@ -479,7 +507,7 @@ const Main = () => {
             if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
-                // reserveHouseListMenu.style.display = 'flex'
+                reserveHouseMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
@@ -495,7 +523,7 @@ const Main = () => {
             uploadHousesMenu.style.display = 'none'
             memberListMenu.style.display = 'none'
             memberInfoMenu.style.display = 'flex'
-            relativeLinkMenu.style.display = 'flex'
+            // relativeLinkMenu.style.display = 'flex'
             logoutMenu.style.display = 'flex'
             loginSignInMenu.style.display = 'none'
             collectMenu.style.display = 'none'
@@ -506,6 +534,7 @@ const Main = () => {
 
     return (
         <div>
+        <ToastContainer autoClose={2000} position="top-center"/>
         <div style={{ width: 51,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
@@ -530,9 +559,9 @@ const Main = () => {
           <Menu.Item key='3' id="uploadHousesMenu" style={{'height':'50px','display':'none'}} icon={<CloudUploadOutlined />} onClick={uploadHouse}>
             上傳租屋
           </Menu.Item>
-          {/*<Menu.Item key='21' id="reserveHouseListMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouseList}>*/}
-          {/*  預約列表*/}
-          {/*</Menu.Item>*/}
+          <Menu.Item key='21' id="reserveHouseMenu" style={{'height':'50px','display':'none'}} icon={<MailOutlined />} onClick={reserveHouse}>
+            預約列表
+          </Menu.Item>
           <Menu.Item key='4' id="memberListMenu" style={{'height':'50px','display':'none'}} icon={<TeamOutlined />} onClick={memberList}>
             會員列表
           </Menu.Item>
@@ -559,38 +588,47 @@ const Main = () => {
                     相關連結
               </Menu.Item> */} {/*no use*/}
 
-         {/* <Menu.Item key='13' id="companyApplyMenu" style={{'height':'50px','display':'none'}} icon={<SearchCompanyIcon />} onClick={companyApply}>*/}
-         {/*   加入公司*/}
-         {/* </Menu.Item>*/}
-         {/* <Menu.SubMenu*/}
-         {/*      id="relativeLinkMenu"*/}
-         {/*      key='14'*/}
-         {/*      title={"公司"}*/}
-         {/*      style={{'display':'none'}}*/}
-         {/*      icon={<PropertyIcon />} >*/}
-         {/*     <Menu.Item key='18' id="companyInfo" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>*/}
-         {/*           公司簡介*/}
-         {/*     </Menu.Item>*/}
-         {/*     <Menu.Item key='17' id="companyHouseList" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>*/}
-         {/*           租屋列表*/}
-         {/*     </Menu.Item>*/}
-         {/*     <Menu.Item key='19' id="companyMyHouseList" onClick={companyMyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeFilled />}>*/}
-         {/*           我的租屋*/}
-         {/*     </Menu.Item>*/}
-         {/*     <Menu.Item key='15' id="companyApplyList" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>*/}
-         {/*           審核申請*/}
-         {/*     </Menu.Item>*/}
-         {/*     <Menu.Item key='20' id="companyEmployeesList" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>*/}
-         {/*           員工列表*/}
-         {/*     </Menu.Item>*/}
-         {/*     <Menu.Item key='16' id="companyEmployeeInfo" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>*/}
-         {/*           員工中心*/}
-         {/*     </Menu.Item>*/}
-         {/*     */}
-         {/*     */}
-         {/*     */}
+          <Menu.Item key='13' id="companyApplyMenu" style={{'height':'50px','display':'none'}} icon={<SearchCompanyIcon />} onClick={companyApply}>
+            加入公司
+          </Menu.Item>
+          <Menu.SubMenu
+               id="companyGroupMenu"
+               key='14'
+               title={"公司"}
+               style={{'display':'none'}}
+               icon={<PropertyIcon />} >
+              <Menu.Item key='18' id="companyInfoMenu" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
+                    公司簡介
+              </Menu.Item>
+              <Menu.Item key='17' id="companyHouseListMenu" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+                    租屋列表
+              </Menu.Item>
+              <Menu.Item key='22' id="companyTransactionListMenu" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+                    成交紀錄
+              </Menu.Item>
 
-         {/*</Menu.SubMenu>*/}
+              {/* <Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
+                    審核列表
+              </Menu.Item> */}
+
+              {
+                isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
+                    審核列表
+                </Menu.Item>):null           
+              }
+
+
+              <Menu.Item key='20' id="companyEmployeesListMenu" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
+                    員工列表
+              </Menu.Item>
+              <Menu.Item key='16' id="companyEmployeeInfoMenu" onClick={companyEmployeeInfo} style={{'height':'50px','display':'flex'}} icon={<UserOutlined />}>
+                    員工中心
+              </Menu.Item>
+              
+              
+              
+
+         </Menu.SubMenu>
 
           <Menu.Item key='8' id="contactMenu" style={{'height':'50px'}} icon={<PhoneOutlined />} onClick={contact}>
             聯絡客服
@@ -618,9 +656,9 @@ const Main = () => {
         isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null           
     }
 
-    {/*{*/}
-    {/*    isShowReserveHouseList?(<ReserveHouseList></ReserveHouseList>):null           */}
-    {/*}*/}
+    {
+        isShowReserveHouse?(<ReserveHouse></ReserveHouse>):null           
+    }
 
 
     {
@@ -648,27 +686,29 @@ const Main = () => {
     }
 
 
-    {/*{*/}
-    {/*    isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           */}
-    {/*}*/}
-    {/*{*/}
-    {/*    isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData}></CompanyApplyList>):null           */}
-    {/*}*/}
-    {/*{*/}
-    {/*    isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo info={currentEmployeeData}></CompanyEmployeeInfo>):null           */}
-    {/*}*/}
-    {/*{*/}
-    {/*    isShowCompanyHouseList?(<CompanyHouseList></CompanyHouseList>):null           */}
-    {/*}*/}
-    {/*{*/}
-    {/*    isShowCompanyInfo?(<CompanyInfo info={currentEmployeeData.companyData[0]}></CompanyInfo>):null           */}
-    {/*}*/}
-    {/*{*/}
-    {/*    isShowCompanyMyHouseList?(<CompanyMyHouseList></CompanyMyHouseList>):null           */}
-    {/*}*/}
-    {/*{*/}
-    {/*    isShowCompanyEmployeesList?(<CompanyEmployeesList></CompanyEmployeesList>):null           */}
-    {/*}*/}
+    {
+        isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
+    }
+    {
+        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApplyList>):null           
+    }
+    {
+        isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo employeeId={currentEmployeeData._id} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyEmployeeInfo>):null           
+    }
+    {
+        isShowCompanyHouseList?(<CompanyHouseList companyId={currentEmployeeData.companyId} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyHouseList>):null           
+    }
+    {
+        isShowCompanyInfo?(<CompanyInfo companyId={currentEmployeeData.companyId} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyInfo>):null           
+    }
+    {
+        isShowCompanyEmployeesList?(<CompanyEmployeesList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyEmployeesList>):null           
+    }
+    {
+        isShowCompanyTransactionList?(<CompanyTransactionList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyTransactionList>):null           
+    }
+
+
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
             <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeUserMenu={changeUserMenu} ></LoginSignIn>
         </div>

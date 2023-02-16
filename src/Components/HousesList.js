@@ -1,18 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Input, Select, Row, Col, message, Alert, Space} from "antd";
-import {HouseAxios} from './axiosApi'
+import {Modal, Table, Button, Image, Input, Select, Row, Col, Alert, Space, Form, DatePicker} from "antd";
+import {HouseAxios, TransactionAxios} from './axiosApi'
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { Option } = Select;
 const houseService = config.base_URL_House
 const housesListUrl = 'house/getHouses'
 const removeHouseUrl = 'house/removeHouse'
+const Transaction_Auth = 'house/dealHouse'
 const houseDefaultImage = 'data:image/png;base64,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'
 
 const HousesList = (props) => {
     const xToken = cookie.load('x-token')
+    const [form_deal] = Form.useForm();
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
     const taipeiAreaOptions = [{ value: '區域不限' },{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
     const newTaipeiAreaOptions = [{ value: '區域不限' },{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
@@ -55,7 +59,16 @@ const HousesList = (props) => {
     const [housesListDetail, setHousesListDetail] = useState([]);
     const [isShowDeleteAlert, setIsShowDeleteAlert] = useState(false);
     const [removeHouseId, setRemoveHouseId] = useState('');
+    const [enableDealForm, setEnableDealForm] = useState(false);
     const [size] = useState("large");
+    const [isPostDeal, setIsPostDeal] = useState(false)
+    const [dealData] = useState({
+        id: '',
+        actualPrice : '',
+        serviceCharge : '',
+        startRentDate : '',
+        endRentDate : ''
+    })
 
     useEffect(() => {
         if (init) {
@@ -63,6 +76,29 @@ const HousesList = (props) => {
             getHousesList()
         }
     }, )
+
+    //transaction function
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        console.log(xToken)
+        if (isPostDeal) {
+            HouseAxios.post(Transaction_Auth, dealData, {
+                headers: {
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    'x-Token':xToken
+                }
+            }).then((response) => {
+                console.log(response)
+                if(response.data.status) {
+                    setIsPostDeal(false)
+                    form_deal.resetFields()
+                    setEnableDealForm(false)
+                    getHousesList()
+                }
+            }).catch( (error) => toast.error(`${error}`))
+        }
+    }, [isPostDeal])
 
     const [getHousesArg] = useState({
         start : '0',
@@ -77,7 +113,7 @@ const HousesList = (props) => {
         maxPing : '999999',
         minRoom : '0',
         maxRoom : '999999',
-        minFloor : '0',
+        minFloor : '-10',
         maxFloor : '999999',
         city : '',
         area : '',
@@ -94,7 +130,7 @@ const HousesList = (props) => {
     const openInNewTab = (url) => {
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
         if (newWindow) newWindow.opener = null
-      }
+    }
 
     const getHousesList = () => {
         if(isCustomPrice){
@@ -181,6 +217,10 @@ const HousesList = (props) => {
             reqUrl = `${reqUrl}&&priceSort=${getHousesArg.priceSort}`
         }
 
+        if(props.isCompanyList === true){
+            reqUrl = `${reqUrl}&&belongType=2&&belongId=${props.companyId}`
+        }
+
         if(props.owner!==''&&props.owner!==undefined&&props.owner!==null){
             let sendOwner = true
             for(let i = 0 ;i<props.roles.length;i++){
@@ -200,10 +240,11 @@ const HousesList = (props) => {
                 }
             }
         )
-        .then( (response) => {
-            resolveHousesList(response)
-        })
-        .catch( (error) => message.error(error, 3))
+            .then( (response) => {
+                // dealData.id = response.data.data[0].owner
+                resolveHousesList(response)
+            })
+            .catch( (error) => toast.error(error))
     }
 
     function resolveHousesList(response){
@@ -220,31 +261,64 @@ const HousesList = (props) => {
                     key: i,
                     price: items[i].price,
                     address: `地址 : ${items[i].address}`,
-                    content: [items[i].name,`租金 : ${items[i].price}`, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`, `樓層 : ${items[i].floor}`],
-                    }
+                    content: [items[i].name,`租金 : ${items[i].price}`, `地址 : ${items[i].address}`, `坪數 : ${items[i].ping}`],
+                }
+                if(items[i].floor === -3){
+                    item.content.push(`樓層 : 地下三樓`)
+                }else if(items[i].floor === -2){
+                    item.content.push(`樓層 : 地下二樓`)
+                }else if(items[i].floor === -1){
+                    item.content.push(`樓層 : 地下一樓`)
+                }else {
+                    // item.content.push(`樓層 : ${items[i].floor}`)
+                    item.content.push(`${items[i].floor}`)
 
+                }
                 if(items[i].photo && items[i].photo.length > 0){
                     item.image = `${houseService}/resource/${items[i]._id}/photo/${items[i].photo[0]}`
                 }else{
                     item.image = houseDefaultImage
                 }
-
+                if(items[i].config){
+                    switch(items[i].config.buildingType){
+                        case 1 :
+                            item.content.push('公寓')
+                            // item.content.push('型態 : 公寓')
+                            break;
+                        case 2 :
+                            item.content.push('電梯大樓')
+                            // item.content.push('型態 : 電梯大樓')
+                            break;
+                        case 3 :
+                            item.content.push('透天')
+                            // item.content.push('型態 : 透天')
+                            break;
+                        default:
+                            item.content.push('未知')
+                            // item.content.push('型態 : 未知')
+                    }
+                }
                 if(items[i].saleInfo){
                     switch(items[i].saleInfo.typeOfRental){
                         case 1 :
-                            item.content.push('類型 : 整層住家')
+                            item.content.push('整層住家')
+                            // item.content.push('類型 : 整層住家')
                             break;
                         case 2 :
-                            item.content.push('類型 : 獨立套房')
+                            item.content.push('獨立套房')
+                            // item.content.push('類型 : 獨立套房')
                             break;
                         case 3 :
-                            item.content.push('類型 : 分租套房')
+                            item.content.push('分租套房')
+                            // item.content.push('類型 : 分租套房')
                             break;
                         case 4 :
-                            item.content.push('類型 : 雅房')
+                            item.content.push('雅房')
+                            // item.content.push('類型 : 雅房')
                             break;
                         default:
-                            item.content.push('類型 : 未知')
+                            item.content.push('未知')
+                            // item.content.push('類型 : 未知')
 
                     }
                 }
@@ -277,6 +351,8 @@ const HousesList = (props) => {
                     setIsShowEdit('flex')
                 }
 
+                item.content.push(items[i].belongId)
+                item.content.push(items[i].belongType)
                 data.push(item)
             }
             setHouses(data)
@@ -580,13 +656,13 @@ const HousesList = (props) => {
     }
 
     function changeFeature(feature) {
-       if(feature.indexOf(featureOptions[0].value)>=0){
-           getHousesArg.pet = 'true'
-       }else{
+        if(feature.indexOf(featureOptions[0].value)>=0){
+            getHousesArg.pet = 'true'
+        }else{
             getHousesArg.pet = ''
-       }
+        }
 
-       if(feature.indexOf(featureOptions[1].value)>=0){
+        if(feature.indexOf(featureOptions[1].value)>=0){
             getHousesArg.smoke = 'true'
         }else{
             getHousesArg.smoke = ''
@@ -619,22 +695,23 @@ const HousesList = (props) => {
 
 
 
-      const columns = [
+    const columns = [
         {
-          title: '房屋照片',
-          dataIndex: 'image',
-          key: 'image',
-        //   width:'250px',
-        width:'40%',
-        render: (image) => (
+            title: '房屋照片',
+            dataIndex: 'image',
+            key: 'image',
+            //   width:'250px',
+            width:'40%',
+            render: (image) => (
                 <div style={{
                     height:'250px',
+                    'line-height': '250px',
                     overflow:'hidden',
                 }}>
                     <Image
-                    src = {image}
-                    preview = {false}
-                    fallback ="data:image/png;base64,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"
+                        src = {image}
+                        preview = {false}
+                        fallback ="data:image/png;base64,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"
                     />
                 </div>
             )
@@ -644,59 +721,70 @@ const HousesList = (props) => {
             key: 'content',
             dataIndex: 'content',
             render: (content) => (
-              <div style={{
-                //   'textAlign': 'center',
-              }}>
-                <Row>
-                <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={16} md={16} lg={16} xl={16}>
                 <div style={{
-                //   'display': 'inline-block',
-                //   'textAlign': 'left',
-                  }}>
-                  <div style={{
-                  'color': '#0000ff',
-                  'fontSize':'20px'
-                  }}>{content[0]}</div>
+                    //   'textAlign': 'center',
+                }}>
+                    <Row>
+                        <Col xs={0} sm={2} md={2} lg={2} xl={4}></Col>
+                        <Col xs={24} sm={22} md={22} lg={22} xl={20}>
+                            <div style={{
+                                //   'display': 'inline-block',
+                                //   'textAlign': 'left',
+                            }}>
+                                <div style={{
+                                    'color': '#0000ff',
+                                    'fontSize':'20px'
+                                }}>{content[0]}</div>
 
-                    <div style={{
-                    'color':'#FF0000',
-                     'fontSize':'20px'
-                    }}>{content[1]}元 / 月</div>
+                                <div style={{
+                                    'color':'#FF0000',
+                                    'fontSize':'20px'
+                                }}>{content[1]}元 / 月</div>
 
-                    {content[2]}
-                    <br/>
-                    {content[3]}
-                    <br/>
-                    {content[4]}
-                    <br/>
-                    {content[5]}
-                    <br/>
-                    {content[6]}
-                    <br/>
-                    {content[7]}
-                    <br/>
-                    {content[8]}
-                    <br/>
-                    {content[9]}
-                    <br/>
-                    <div style={{display: isShowEdit}}>
-                    <Button type="primary" onClick={() => queryHouse(content[10])} style={{width: '70px' }}>
-                        查看
-                    </Button>
-                    &nbsp;
-                    <Button type="primary" onClick={() => removeHouse(content[10])} danger style={{width: '70px'}}>
-                        刪除
-                    </Button>
-                    </div>
-
+                                {content[2]}
+                                <br/>
+                                {content[3]+' 坪'}
+                                <br/>
+                                {content[5]}&nbsp;&nbsp;-&nbsp;&nbsp;{content[4] +' 樓'}&nbsp;&nbsp;-&nbsp;&nbsp;{content[6]}
+                                <br/>
+                                {'鄰近'+content[7]}
+                                <br/>
+                                {/*{content[8]}*/}
+                                {/*<br/>*/}
+                                {/*{content[9]}*/}
+                                {/*<br/>*/}
+                                {content[10]}
+                                <br/>
+                                <div style={{display: isShowEdit}}>
+                                    <Button type="primary" onClick={() => queryHouse(content[11])} style={{width: '70px' }}>
+                                        查看
+                                    </Button>
+                                    &nbsp;
+                                    <Button type="primary" onClick={() => removeHouse(content[11])} danger style={{width: '70px'}}>
+                                        刪除
+                                    </Button>
+                                    &nbsp;
+                                    {content[13] === 2 ?
+                                        <Button type="primary"
+                                             onClick={() => {
+                                                 dealData.id = content[11]
+                                                 dealData.companyId = content[12]
+                                                 setEnableDealForm(true)
+                                             }}
+                                             style={{width: '70px', backgroundColor: '#FFA500', borderColor:'#FFA500'}}>
+                                        成交
+                                    </Button>
+                                        :
+                                        []
+                                    }
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
                 </div>
-                </Col>
-                </Row>
-              </div>
             ),
-          },
-      ];
+        },
+    ];
 
 
     function queryHouse(houseId){
@@ -728,238 +816,327 @@ const HousesList = (props) => {
                 }
             }
         )
-        .then( (response) => {
-            if(response.data.status === true){
-                getHousesList()
-                message.success('刪除成功', 3);
-            }else{
-                message.error(response.data.data, 3)
-            }
-        })
-        .catch( (error) => message.error(error, 3))
+            .then( (response) => {
+                if(response.data.status === true){
+                    getHousesList()
+                    toast.success('刪除成功');
+                }else{
+                    toast.error(response.data.data)
+                }
+            })
+            .catch( (error) => toast.error(error))
         cancelRemoveHouse()
     }
 
-      let data = [
+    const handleDealData = (value) => {
+        dealData.actualPrice =  parseInt(value.dealPrice)
+        dealData.serviceCharge = parseInt(value.servePrice)
+        dealData.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
+        dealData.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
+        console.log(dealData)
+        setIsPostDeal(true)
+
+    }
+
+    let data = [
         {
-          key: '1',
-          image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
-          price: 10000,
-          address: 'New York No. 1 Lake Park',
-          content: ['文山區好房子', '台北市文山區興隆路二段', '獨立套房','萬芳醫院站200公尺'],
+            key: '1',
+            image: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/25-%E5%8F%B0%E5%8C%97101-%E4%BD%B3%E4%BD%9C12-%E5%88%A9%E5%8B%9D%E7%AB%A0-%E5%94%AF%E6%88%91%E7%8D%A8%E5%B0%8A-101%E4%BF%A1%E7%BE%A9%E8%B7%AF-1590736305.jpg?crop=0.752xw:1.00xh;0.118xw,0&resize=640:*',
+            price: 10000,
+            address: 'New York No. 1 Lake Park',
+            content: ['文山區好房子', '台北市文山區興隆路二段', '獨立套房','萬芳醫院站200公尺'],
         }
-      ];
+    ];
 
 
 
     return (
         <div>
+            <ToastContainer autoClose={2000} position="top-center"/>
             {
-            isShowDeleteAlert?(
-            <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
-            <Alert
-                afterClose={cancelRemoveHouse}
-                type="error"
-                action={
-                <Space>
-                    <Button size="small" type="ghost" onClick={removeHouseAction}>
-                        確定刪除
-                    </Button>
-                    <Button size="small" type="ghost" onClick={cancelRemoveHouse}>
-                        取消刪除
-                    </Button>
-                </Space>
+                isShowDeleteAlert?(
+                    <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
+                        <Alert
+                            afterClose={cancelRemoveHouse}
+                            type="error"
+                            action={
+                                <Space>
+                                    <Button size="small" type="ghost" onClick={removeHouseAction}>
+                                        確定刪除
+                                    </Button>
+                                    <Button size="small" type="ghost" onClick={cancelRemoveHouse}>
+                                        取消刪除
+                                    </Button>
+                                </Space>
 
-                }
-            closable
-            />
-            </div>
-            ):null
+                            }
+                            closable
+                        />
+                    </div>
+                ):null
             }
-        <div>
+            <div>
 
-            <Row>
-                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Button type="primary" onClick={getHousesList} style={{
+                <Row>
+                    <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
                             height: '40px',
                             backgroundColor:'#008000'
                         }}>
-                        搜尋
-                    </Button>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="排序:默認時間近到遠" size={size} options={sortOptions} onChange={changeSort} style={{
+                            搜尋
+                        </Button>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear placeholder="排序:默認時間近到遠" size={size} options={sortOptions} onChange={changeSort} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Input id="textQuery" placeholder="文字搜尋 : 捷運,夜市,路段,學校..."  style={{
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Input id="textQuery" placeholder="文字搜尋 : 捷運,夜市,路段,學校..."  style={{
                             width: '100%',
                             height: '40px',
                         }}>
-                    </Input>
-                </Col>
-                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-            </Row>
+                        </Input>
+                    </Col>
+                    <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                </Row>
 
-            <Row>
-                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
+                <Row>
+                    <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="類型" size={size}  options={typeOfRentalOptions} onChange={changeTypeOfRental} style={{
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear placeholder="類型" size={size}  options={typeOfRentalOptions} onChange={changeTypeOfRental} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-            </Row>
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                </Row>
 
-            <Row>
-                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear mode="multiple" size={size}  placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
+                <Row>
+                    <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear mode="multiple" size={size}  placeholder="特色"  options={featureOptions} onChange={changeFeature} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear  placeholder="格局" size={size} options={roomOptions} onChange={changeRoom} style={{
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear  placeholder="格局" size={size} options={roomOptions} onChange={changeRoom} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="型態" size={size}  options={buildingTypeOptions} onChange={changeBuildingType} style={{
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear placeholder="型態" size={size}  options={buildingTypeOptions} onChange={changeBuildingType} style={{
                             width: '100%',
                         }}>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-            </Row>
+                        </Select>
+                    </Col>
+                    <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                </Row>
 
-            <Row>
-                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="租金" size={size} options={priceOptions} onChange={changePrice} style={{
+                <Row>
+                    <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear placeholder="租金" size={size} options={priceOptions} onChange={changePrice} style={{
                             width: '100%',
                         }}>
-                    </Select>
+                        </Select>
 
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="坪數" size={size} options={pingOptions} onChange={changePing} style={{
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear placeholder="坪數" size={size} options={pingOptions} onChange={changePing} style={{
                             width: '100%',
                         }}>
-                    </Select>
+                        </Select>
 
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
-                    <Select allowClear placeholder="樓層" size={size} options={floorOptions} onChange={changeFloor} style={{
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                        <Select allowClear placeholder="樓層" size={size} options={floorOptions} onChange={changeFloor} style={{
                             width: '100%',
                         }}>
-                    </Select>
+                        </Select>
 
-                </Col>
-                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-            </Row>
+                    </Col>
+                    <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                </Row>
 
-            <Row style={{
+                <Row style={{
                     'lineHeight':'30px',
                     'height': '30px'
-                    }}>
-                <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                }}>
+                    <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <span id="customPrice" style={{
-                            width: '100%',
-                            display: 'none'
-                            }}>
+                        width: '100%',
+                        display: 'none'
+                    }}>
                         租金：
                         <Input id="minCustomPrice" placeholder="最低"  style={{
-                                width: '37%',
-                            }}>
+                            width: '37%',
+                        }}>
                         </Input>
                         &nbsp;&nbsp;-&nbsp;&nbsp;
                         <Input id="maxCustomPrice" placeholder="最高"  style={{
-                                width: '37%',
-                            }}>
+                            width: '37%',
+                        }}>
                         </Input>
                     </span>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <span id="customPing" style={{
-                            width: '100%',
-                            display: 'none'
-                            }}>
+                        width: '100%',
+                        display: 'none'
+                    }}>
                         坪數：
                         <Input id="minCustomPing" placeholder="最低"  style={{
-                                width: '37%',
-                            }}>
+                            width: '37%',
+                        }}>
                         </Input>
                         &nbsp;&nbsp;-&nbsp;&nbsp;
                         <Input id="maxCustomPing" placeholder="最高"  style={{
-                                width: '37%',
-                            }}>
+                            width: '37%',
+                        }}>
                         </Input>
                     </span>
-                </Col>
-                <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                    </Col>
+                    <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                     <span id="customFloor" style={{
-                            width: '100%',
-                            display: 'none'
-                            }}>
+                        width: '100%',
+                        display: 'none'
+                    }}>
                         樓層：
                         <Input id="minCustomFloor" placeholder="最低"  style={{
-                                width: '37%',
-                            }}>
+                            width: '37%',
+                        }}>
                         </Input>
                         &nbsp;&nbsp;-&nbsp;&nbsp;
                         <Input id="maxCustomFloor" placeholder="最高"  style={{
-                                width: '37%',
-                            }}>
+                            width: '37%',
+                        }}>
                         </Input>
                     </span>
-                </Col>
-                <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-            </Row>
-            <br></br><br></br><br></br>
-        <Row>
-            <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-            <Table
-                columns={columns}
-                pagination={{ position: ['topLeft', 'bottomRight'] }}
-                dataSource={houses}
-                onRow={(record, rowIndex) => {
-                    return {
-                        onClick: event => {
-                        if(isShowEdit === 'none'){
-                            console.log('event',event)
-                            console.log('record',record)
-                            console.log('rowIndex',rowIndex)
-                            console.log(housesListDetail[record.key])
-                            openInNewTab(`/HouseDetail/${housesListDetail[record.key]._id}`)
-                        }
-                    }, // click row
-                };}}
-            />
-            </Col>
-            <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-        </Row>
-        </div>
+                    </Col>
+                    <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                </Row>
+                <br></br><br></br><br></br>
+                <Row>
+                    <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                        <Table
+                            columns={columns}
+                            pagination={{ position: ['topLeft', 'bottomRight'] }}
+                            dataSource={houses}
+                            onRow={(record, rowIndex) => {
+                                return {
+                                    onClick: event => {
+                                        if(isShowEdit === 'none'){
+                                            console.log('event',event)
+                                            console.log('record',record)
+                                            console.log('rowIndex',rowIndex)
+                                            console.log(housesListDetail[record.key])
+                                            if(props.isCompanyList){
+                                                openInNewTab(`/CompanyHouseDetail/${housesListDetail[record.key]._id}`)
+                                            }else{
+                                                openInNewTab(`/HouseDetail/${housesListDetail[record.key]._id}`)
+                                            }
+                                        }
+                                    }, // click row
+                                };}}
+                        />
+                    </Col>
+                    <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                </Row>
+            </div>
+            <Modal  title=""
+                    visible={enableDealForm}
+                // onCancel={() => setEnableDealForm(false)}
+                    closable={false}
+                    footer={[]}
+            >
+                <Form form={form_deal}
+                      className="deal_form"
+                      name="dealForm"
+                      onFinish={handleDealData}
+                      scrollToFirstError
+                >
+                    <Form.Item
+                        name="dealPrice"
+                        label="實際租金："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <Input size="large" placeholder="" style={{width: '100%'}}/>
+                    </Form.Item>
+                    <Form.Item
+                        // name="TrafficType"
+                        name="servePrice"
+                        label="服務收入："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <Input size="large" placeholder="" style={{width: '100%'}}/>
+                    </Form.Item>
+                    <Form.Item
+                        // name="TrafficType"
+                        name="rentDate"
+                        label="租期："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <DatePicker.RangePicker/>
+                    </Form.Item>
+                    <div style={{display: 'flex'}}>
+                        <Button type="primary"
+                                className='login-form-button'
+                                shape="round"
+                                key="submit"
+                                htmlType="submit"
+                                style={{width: '50%'}}
+                        >
+                            {/*Submit*/}
+                            送出
+                        </Button>
+                        &nbsp;
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    form_deal.resetFields()
+                                    setEnableDealForm(false)
+                                }}
+                                style={{width: '50%', backgroundColor:'red'}}
+                        >
+                            取消
+                        </Button>
+                    </div>
+
+                </Form>
+
+            </Modal>
         </div>
     );
 };

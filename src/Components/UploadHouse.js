@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span, message, Alert, Space} from "antd";
+import {Table, Tag, Radio, Button, Image, Input, Select, Divider, Row, Col, Span,  Alert, Space} from "antd";
 
 
 const MemberInfo = () => {

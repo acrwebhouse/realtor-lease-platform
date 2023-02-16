@@ -17,8 +17,7 @@ import ResetPassword from "./Components/ResetPassword";
 import VerifyUser from "./Components/VerifyUser";
 import Main from "./Components/Main";
 import Link from "./Components/Link";
-import ReserveHouseDetail from "./Components/ReserveHouseDetail";
-import ReserveHouseList from "./Components/ReserveHouseList";
+import CompanyHouseDetail from "./Components/CompanyHouseDetail";
 
 // ReactDOM.render(
 //     <App />,
@@ -38,12 +37,11 @@ ReactDOM.render(
           <Route path="/HouseDetail/:id" element={<HouseDetail/>}/>
           <Route path="/HouseDetailOwner/:id/:owner" element={<HouseDetailOwner/>}/>
           <Route path="/HouseDetailOwnerEdit/:id/:owner" element={<HouseDetailOwnerEdit/>}/>
+          <Route path="/CompanyHouseDetail/:id" element={<CompanyHouseDetail/>}/>
           <Route path="/Collect" element={<Collect/>}/>
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/verifyUser" element={<VerifyUser/>}/>
           <Route path="/link" element={<Link/>}/>
-          <Route path="/ReserveHouseDetail/:id" element={<ReserveHouseDetail/>}/>
-          <Route path="/ReserveHouseList" element={<ReserveHouseList/>}/>
       </Routes>
 
   </BrowserRouter>
