@@ -50,7 +50,7 @@ const HouseDetail = (prop) => {
     const [reserveVisible, setReserveVisible] = useState(false);
     const [reserveClientData, setReserveClientData] = useState([])
     const [isRunPost, setIsRunPost] = useState(false)
-
+    const [isShowBackBtn, setIsShowBackBtn] = useState(false)
     const [showFloor2, setShowFloor2] = useState('');
 
 
@@ -599,6 +599,9 @@ console.log(showFloor2)
             if(prop.setId !== null && prop.setId !== undefined){
                 id = prop.setId
             }
+            if(typeof(appJsInterface) !== 'undefined'){
+                setIsShowBackBtn(true)
+            }
             setInit(false)
             getHouse()
             
@@ -618,6 +621,13 @@ console.log(showFloor2)
             return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
         }
     };
+
+    function backPage(){    
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.backPage();
+        }
+    }
 
     return (
         <div>
@@ -669,7 +679,9 @@ console.log(showFloor2)
                 <Button   onClick={() => closePage()} style={{ 'backgroundColor': 'transparent','borderColor':'transparent', 'textAlign': 'center',width: '50px'}}>
                         <CloseSquareTwoTone style={{ fontSize: '25px' }} />
                     </Button></div> */}
-
+            {
+                isShowBackBtn?(<Button type="primary" onClick={() => backPage()} style={{width: '70px' }}>返回</Button>):null    
+            }
             <Divider>基本資料</Divider>
             <Row>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col>
