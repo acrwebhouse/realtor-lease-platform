@@ -14,9 +14,11 @@ const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+window.defaultAccount = ''
+window.defaultPassword = ''
 window.setDefaultAccountPassword = function(account,password){
-    console.log('==window==setDefaultAccountPassword==account==',account)
-    console.log('==window==setDefaultAccountPassword==password==',password)
+    window.defaultAccount = account
+    window.defaultPassword = password
 }
 
 const LoginRegister = (props) => {
@@ -183,6 +185,7 @@ const LoginRegister = (props) => {
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
                                placeholder="Account/Email"
                                size="large"
+                               defaultValue={ window.defaultAccount}
                             // ref={onBlur}
                         />
                     </Form.Item>
@@ -200,6 +203,7 @@ const LoginRegister = (props) => {
                         <Input.Password prefix={<LockOutlined className="site-form-item-icon" />}
                                         placeholder="password"
                                         size="large"
+                                        defaultValue={ window.defaultPassword}
                         />
                     </Form.Item>
                     <Form.Item>
