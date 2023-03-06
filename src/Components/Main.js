@@ -80,6 +80,7 @@ const Main = () => {
     const [user, setUser] = useState({});
 
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
+    let isSales = false
 
     const surveysAuditSvg = () => (
         <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 386 511.9">
@@ -185,16 +186,21 @@ const Main = () => {
     function changeEmployeeMenu(employee){
         const companyGroupMenu = document.getElementById('companyGroupMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
-        if(employee.state === 2 || employee.state === 4){
-            companyGroupMenu.style.display = null;
-            if(employee.rank === 0){
-                setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+        if(employee.rank === 0 || isSales === true){
+            if(employee.state === 2 || employee.state === 4){
+                companyGroupMenu.style.display = null;
+                if(employee.rank === 0){
+                    setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+                }else{
+                    setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                }
             }else{
-                setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                companyGroupMenu.style.display = 'none'
+                companyApplyMenu.style.display = 'flex'
             }
-        }else{
+        }else {
             companyGroupMenu.style.display = 'none'
-            companyApplyMenu.style.display = 'flex'
+            companyApplyMenu.style.display = 'none'
         }
     }
 
@@ -279,9 +285,6 @@ const Main = () => {
             if(xToken!== null && xToken!== undefined){
                 const decodedToken = jwt_decode(xToken);
                 console.log(decodedToken)
-                // const roles = decodedToken.roles
-                // changeRolesMenu(roles)
-
                 changeUserMenu(xToken)
                 let d = new Date();
                 d.setTime(d.getTime() + (86400*30*1000)); //one month
@@ -481,30 +484,35 @@ const Main = () => {
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         // matchNeedMenu.style.display = 'flex'
-
+        isSales = false
         for(let i =0;i<roles.length;i++){
+            // admin
             if(roles[i]===1){
-                myHousesListMenu.style.display = 'flex'
-                uploadHousesMenu.style.display = 'flex'
                 memberListMenu.style.display = 'flex'
                 memberInfoMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 collectMenu.style.display = 'flex'
             }
+            // user
             if(roles[i]===3){
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
+                reserveHouseMenu.style.display = 'flex'
             }
+            // host
             if(roles[i]===2){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
+                reserveHouseMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
             }
+            // sales
             if(roles[i]===4){
+                isSales = true
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 reserveHouseMenu.style.display = 'flex'
