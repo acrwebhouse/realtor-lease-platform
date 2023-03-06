@@ -73,6 +73,7 @@ const Main = () => {
     const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
     const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
+    const [isShowCompanyHouseListMenu, setIsShowCompanyHouseListMenu] = useState(false);
 
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
@@ -193,6 +194,11 @@ const Main = () => {
                     setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
                 }else{
                     setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                }
+                if(employee.state === 4){
+                    setIsShowCompanyHouseListMenu(false)
+                }else{
+                    setIsShowCompanyHouseListMenu(true)
                 }
             }else{
                 companyGroupMenu.style.display = 'none'
@@ -608,17 +614,14 @@ const Main = () => {
               <Menu.Item key='18' id="companyInfoMenu" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
                     公司簡介
               </Menu.Item>
-              <Menu.Item key='17' id="companyHouseListMenu" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+              {
+                isShowCompanyHouseListMenu?(<Menu.Item key='17' id="companyHouseListMenu" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     租屋列表
-              </Menu.Item>
+                </Menu.Item>):null           
+              }
               <Menu.Item key='22' id="companyTransactionListMenu" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     成交紀錄
               </Menu.Item>
-
-              {/* <Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
-                    審核列表
-              </Menu.Item> */}
-
               {
                 isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
                     審核列表
