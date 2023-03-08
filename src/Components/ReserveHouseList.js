@@ -32,6 +32,7 @@ const ReserveHouseList = (props, ref) => {
         state : '',
         type : '',
     });
+    const [showPage, setShowPage] = useState(false)
 
     useEffect(() => {
         if (init) {
@@ -54,6 +55,7 @@ const ReserveHouseList = (props, ref) => {
                 if(response.data.status) {
                     console.log(response)
                     setUser(response.data.data)
+                    setShowPage(true)
                 }
             })
             .catch( (error) => toast.error(error))
@@ -205,7 +207,7 @@ const ReserveHouseList = (props, ref) => {
         //         </div>
         //     ),
         // },
-        {
+        showPage?{
             title: user.roles.length === 1 && user.roles.includes(3) ? '房屋資訊' : '租客資訊',
             key: 'clientContent',
             dataIndex: 'clientContent',
@@ -262,7 +264,7 @@ const ReserveHouseList = (props, ref) => {
                     </Row>
                 </div>
             ),
-        },
+        }:[],
 
     ];
 

@@ -23,9 +23,9 @@ import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const AddressPattern = /^[\u4e00-\u9fa5]+$/
-const DoorNumberPattern = /^[0-9]*$/
-const SecondRoomNumberPattern = /^[A-Za-z0-9]+$/
+// const AddressPattern = /^[\u4e00-\u9fa5]+$/
+// const DoorNumberPattern = /^[0-9]*$/
+// const SecondRoomNumberPattern = /^[A-Za-z0-9]+$/
 
 const houseService = config.base_URL_House
 const { Option } = Select;
@@ -183,8 +183,6 @@ const HouseUpload = (prop) => {
     const [previewTitle, setPreviewTitle] = useState('');
     const [PicUploadCheck, setPicUploadCheck] = useState(false)
     const [hostPhone, setHostPhone] = useState(prop.defaultValue?prop.defaultValue.hostPhone:'')
-
-
     const showTrafficModal = () => {
         setTrafficVisible(true);
     };
@@ -765,24 +763,6 @@ const HouseUpload = (prop) => {
         </div>
     );
 
-
-    const CheckAddressReg = (value) => {
-        if(!AddressPattern.test(value)) {
-            toast.error('地址只能填寫中文')
-        }
-    }
-
-    const CheckDoorNumberReg = (value) => {
-        if(!DoorNumberPattern.test(value)) {
-            toast.error('門牌只能填寫數字')
-        }
-    }
-
-    const CheckSecondRomNumberReg = (value) => {
-        if(!SecondRoomNumberPattern.test(value)) {
-            toast.error('房間號碼只能填寫英文與數字')
-        }
-    }
     // console.log(typeof(prop.defaultValue.floor))
     return (
 
@@ -1206,13 +1186,17 @@ const HouseUpload = (prop) => {
                                                            required: true,
                                                            message: '此欄位不能為空白',
                                                        },
+                                                       {
+                                                           pattern: /^[\u4e00-\u9fa5]+$/,
+                                                           message: '地址只能填寫中文'
+                                                       }
                                                    ]}
                                         >
                                             <Input size="large"
                                                    style={{
                                                        width: '100%',
                                                    }}
-                                                   onChange={(e) => CheckAddressReg(e.target.value)}
+                                                   // onChange={(e) => CheckAddressReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1243,13 +1227,18 @@ const HouseUpload = (prop) => {
                                         <Form.Item name="lane"
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   rules={[
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '地址只能填寫數字'
+                                                       }
+                                                   ]}
                                         >
 
                                             <Input size="large"
                                                    placeholder="非必填"
                                                    style={{width: '100%'}}
                                                    suffix='巷'
-                                                   onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1257,12 +1246,17 @@ const HouseUpload = (prop) => {
                                         <Form.Item name="alley"
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   rules={[
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '地址只能填寫數字'
+                                                       }
+                                                   ]}
                                         >
                                             <Input size="large"
                                                    placeholder="非必填"
                                                    style={{width: '100%'}}
                                                    suffix='弄'
-                                                   onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1274,6 +1268,10 @@ const HouseUpload = (prop) => {
                                                            required: true,
                                                            message: '此欄位不能為空白',
                                                        },
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '地址只能填寫數字'
+                                                       }
                                                    ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
@@ -1281,7 +1279,6 @@ const HouseUpload = (prop) => {
                                                    placeholder=""
                                                    style={{width: '100%'}}
                                                    suffix='號'
-                                                   onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1289,12 +1286,17 @@ const HouseUpload = (prop) => {
                                         <Form.Item name="NO2"
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   rules={[
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '地址只能填寫數字'
+                                                       }
+                                                   ]}
                                         >
                                             <Input  size="large"
                                                     placeholder="   非必填"
                                                     style={{width: '100%'}}
                                                     prefix='之'
-                                                    onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1479,13 +1481,16 @@ const HouseUpload = (prop) => {
                                                     required: false,
                                                     message: 'Please input your Name!',
                                                 },
+                                                {
+                                                    pattern: /^[A-Za-z0-9]+$/,
+                                                    message: '房間號碼只能填寫英文與數字',
+                                                },
                                             ]}
                                         >
                                             <Input size="large"
                                                    placeholder="非必填"
                                                    style={{width: '100%'}}
                                                    // suffix='巷'
-                                                   onChange={(e) => CheckSecondRomNumberReg(e.target.value)}
                                             />
                                             {/*<InputNumber placeholder=""*/}
                                             {/*             style={{width: '100%'}}*/}
