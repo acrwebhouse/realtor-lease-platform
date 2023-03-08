@@ -18,6 +18,8 @@ const reserveStateArr = ['未接洽', '接洽中', '完成看房']
 console.log(sortOptions[2].value)
 const ReserveHouseList = (props, ref) => {
     console.log(props)
+    const [init, setInit] = useState(true);
+    const [user, setUser] = useState({})
     const [reserveHouseData, setReserveHouseData] = useState([])
     const [enableDel, setEnableDel] = useState(false);
     const [isShowDeleteAlert, SetIsShowDeleteAlert] = useState(false);
@@ -31,6 +33,32 @@ const ReserveHouseList = (props, ref) => {
         type : '',
     });
 
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+            const xToken = cookie.load('x-token')
+            checkUser(xToken)
+        }
+    }, )
+    const checkUser = (xToken) => {
+        const userListUrl = 'user/getPersonalInfo'
+        let reqUrl = `${userListUrl}`
+        UserAxios.get(
+            reqUrl,{
+                headers:{
+                    'x-Token':xToken
+                }
+            }
+        )
+            .then( (response) => {
+                if(response.data.status) {
+                    console.log(response)
+                    setUser(response.data.data)
+                }
+            })
+            .catch( (error) => toast.error(error))
+    }
+    console.log(user)
     let reqUrl = `${ReserveHouseList_Auth}?start=${getHousesArg.start}&&state=${getHousesArg.state}&&count=${getHousesArg.count}&&timeSort=${getHousesArg.timeSort}`
 
     useEffect(() => {
@@ -178,7 +206,7 @@ const ReserveHouseList = (props, ref) => {
         //     ),
         // },
         {
-            title: '租客資訊',
+            title: user.roles.length === 1 && user.roles.includes(3) ? '房屋資訊' : '租客資訊',
             key: 'clientContent',
             dataIndex: 'clientContent',
             render: (clientContent) => (

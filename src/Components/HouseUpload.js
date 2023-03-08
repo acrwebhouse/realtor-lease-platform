@@ -23,6 +23,9 @@ import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const AddressPattern = /^[\u4e00-\u9fa5]+$/
+const DoorNumberPattern = /^[0-9]*$/
+const SecondRoomNumberPattern = /^[A-Za-z0-9]+$/
 
 const houseService = config.base_URL_House
 const { Option } = Select;
@@ -439,7 +442,8 @@ const HouseUpload = (prop) => {
                     : parseInt(values['totalFloor']),
                 'floor2' : values['floorNo2'] ? parseInt(values['floorNo2']) : '',
                 'isRoofAnnex' : !FloorOptions.findIndex(x => x.value === values['floorNo1']), // index 0 => '頂樓加蓋' => !0 == true
-                'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
+                // 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
+                'room' :  values['room-number'] ,
                 'price' : parseInt(values['lease-price']),
                 'hostName': values['hostName'],
                 'hostGender': convertString(String(hostGenderArr.indexOf(values['hostGender']))),
@@ -761,6 +765,24 @@ const HouseUpload = (prop) => {
         </div>
     );
 
+
+    const CheckAddressReg = (value) => {
+        if(!AddressPattern.test(value)) {
+            toast.error('地址只能填寫中文')
+        }
+    }
+
+    const CheckDoorNumberReg = (value) => {
+        if(!DoorNumberPattern.test(value)) {
+            toast.error('門牌只能填寫數字')
+        }
+    }
+
+    const CheckSecondRomNumberReg = (value) => {
+        if(!SecondRoomNumberPattern.test(value)) {
+            toast.error('房間號碼只能填寫英文與數字')
+        }
+    }
     // console.log(typeof(prop.defaultValue.floor))
     return (
 
@@ -1190,6 +1212,7 @@ const HouseUpload = (prop) => {
                                                    style={{
                                                        width: '100%',
                                                    }}
+                                                   onChange={(e) => CheckAddressReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1226,6 +1249,7 @@ const HouseUpload = (prop) => {
                                                    placeholder="非必填"
                                                    style={{width: '100%'}}
                                                    suffix='巷'
+                                                   onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1238,6 +1262,7 @@ const HouseUpload = (prop) => {
                                                    placeholder="非必填"
                                                    style={{width: '100%'}}
                                                    suffix='弄'
+                                                   onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1256,6 +1281,7 @@ const HouseUpload = (prop) => {
                                                    placeholder=""
                                                    style={{width: '100%'}}
                                                    suffix='號'
+                                                   onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1268,6 +1294,7 @@ const HouseUpload = (prop) => {
                                                     placeholder="   非必填"
                                                     style={{width: '100%'}}
                                                     prefix='之'
+                                                    onChange={(e) => CheckDoorNumberReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1349,39 +1376,7 @@ const HouseUpload = (prop) => {
                             </Form.Item>
                         </Col>
                     </Row>
-                    {/*<Row>*/}
-                    {/*    <Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                    {/*    </Col>*/}
-                    {/*    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>*/}
-
-                    {/*        <Row>*/}
-                    {/*            /!*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*!/*/}
-
-                    {/*            /!*</Col>*!/*/}
-                    {/*            <Col  xs={24} sm={24} md={24} lg={24} xl={24}>*/}
-                    {/*                <Form.Item*/}
-                    {/*                    name="floor"*/}
-                    {/*                    label="樓層"*/}
-                    {/*                    tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓層'*/}
-                    {/*                    rules={[*/}
-                    {/*                        {*/}
-                    {/*                            required: true,*/}
-                    {/*                            message: '此欄位不能為空白',*/}
-                    {/*                        },*/}
-                    {/*                    ]}*/}
-                    {/*                >*/}
-                    {/*                    <Select*/}
-                    {/*                        size={"large"}*/}
-                    {/*                        style={{ width: '100%' }}*/}
-                    {/*                        placeholder="樓層"*/}
-                    {/*                        options={FloorOptions}*/}
-                    {/*                    />*/}
-                    {/*                </Form.Item>*/}
-                    {/*            </Col>*/}
-                    {/*        </Row>*/}
-                    {/*    </Col>*/}
-                    {/*</Row>*/}
                     <Row>
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
@@ -1486,13 +1481,19 @@ const HouseUpload = (prop) => {
                                                 },
                                             ]}
                                         >
-                                            <InputNumber placeholder=""
-                                                         style={{width: '100%'}}
-                                                         min={0}
-                                                         size="large"
-                                                // formatter={value => `${value} 公尺`}
-                                                         addonAfter=""
+                                            <Input size="large"
+                                                   placeholder="非必填"
+                                                   style={{width: '100%'}}
+                                                   // suffix='巷'
+                                                   onChange={(e) => CheckSecondRomNumberReg(e.target.value)}
                                             />
+                                            {/*<InputNumber placeholder=""*/}
+                                            {/*             style={{width: '100%'}}*/}
+                                            {/*             min={0}*/}
+                                            {/*             size="large"*/}
+                                            {/*    // formatter={value => `${value} 公尺`}*/}
+                                            {/*             addonAfter=""*/}
+                                            {/*/>*/}
                                         </Form.Item>
                                     </Col>
                                 </Row>
