@@ -38,6 +38,17 @@ const dealYearMonth = {
     month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月',  ]
 };
 
+const formItemLayout = {
+    labelCol: {
+        xs: {span: 4},
+        sm: {span: 4}
+    },
+    wrapperCol: {
+        xs: {span: 20},
+        sm: {span: 20}
+    },
+}
+
 const CompanyTransactionList = (props) => {
     console.log(props)
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
@@ -620,6 +631,7 @@ const CompanyTransactionList = (props) => {
                       name="dealForm"
                       onFinish={handleDealData}
                       scrollToFirstError
+                      {...formItemLayout}
                 >
                     {props.currentEmployeeData.rank === 0?
                         <div>

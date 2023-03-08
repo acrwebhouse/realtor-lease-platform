@@ -48,7 +48,7 @@ const ReserveHouseDetail = (props) => {
     const [tempStateObj, setTempStateObj] = useState({})
     const [stateSelected, setStateSelected] = useState()
     const [enableSetup, setEnableSetup] = useState(true)
-
+    console.log(props)
     const deleteReserve = () => {
         setEnableDel(true)
     }
