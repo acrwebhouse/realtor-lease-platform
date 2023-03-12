@@ -45,7 +45,9 @@ import CompanyTransactionList from "./CompanyTransactionList";
 import {getCurrentEmployee} from './CompanyCommon'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {
+    useParams
+  } from "react-router-dom";
 const collectAccessTimeUrl = 'collect/accessTime'
 
 const Main = () => {
@@ -74,11 +76,11 @@ const Main = () => {
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
     const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
     const [isShowCompanyHouseListMenu, setIsShowCompanyHouseListMenu] = useState(false);
-
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
-
     const [user, setUser] = useState({});
+    const { page } = useParams();
+
 
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
     let isSales = false
@@ -146,7 +148,7 @@ const Main = () => {
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
-                housesList()
+                quickToPage()
             }
             
         })
@@ -296,9 +298,18 @@ const Main = () => {
                 d.setTime(d.getTime() + (86400*30*1000)); //one month
                 cookie.save('x-token',xToken,{path:'/', expires: d})
             }
-            
         }
     }, )
+
+    function quickToPage(){
+        switch(page){
+            case '21' :
+                reserveHouse()
+                break;
+            default:
+                housesList()
+        }
+    }
 
     function housesList(){
         console.log('housesList')

@@ -29,6 +29,7 @@ ReactDOM.render(
 
       <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/:page" element={<Main />} />
           <Route path="/HousesList" element={<HousesList/>}/>
           <Route path="/HouseUpload" element={<HouseUpload/>}/>
           <Route path="/MyHousesList" element={<MyHousesList/>}/>
