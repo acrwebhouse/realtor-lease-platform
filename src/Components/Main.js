@@ -79,8 +79,9 @@ const Main = () => {
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
     const [user, setUser] = useState({});
-    const { page } = useParams();
-
+    const { page ,info} = useParams();
+    const [isShowReserveHouseDetail, setIsShowReserveHouseDetail] = useState(false);
+    const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
 
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
     let isSales = false
@@ -224,6 +225,11 @@ const Main = () => {
         return result
     }
 
+    function cleanReserveHouseParam(){
+        setIsShowReserveHouseDetail(false)
+        setReserveHouseDetailId('')
+    }
+
     function turnOffPage(){
         setIsShowHousesList(false)
         setIsShowMyHousesList(false)
@@ -264,16 +270,6 @@ const Main = () => {
       };
 
     function collectAccessTime(){
-        // setTimeout(() => {
-        //     const reqUrl = `${collectAccessTimeUrl}`
-        //     CollectAxios.get(
-        //         reqUrl
-        //     )
-        //     .then( (response) => {
-        //         console.log('collectAccessTime success')
-        //     })
-        //     .catch( (error) => console.log('collectAccessTime error'))
-        //   }, 5000)
         const reqUrl = `${collectAccessTimeUrl}`
             CollectAxios.get(
                 reqUrl
@@ -304,6 +300,10 @@ const Main = () => {
     function quickToPage(){
         switch(page){
             case '21' :
+                if(info !== '' && info !== undefined){
+                    setIsShowReserveHouseDetail(true)
+                    setReserveHouseDetailId(info)
+                }
                 reserveHouse()
                 break;
             default:
@@ -679,9 +679,8 @@ const Main = () => {
     }
 
     {
-        isShowReserveHouse?(<ReserveHouse></ReserveHouse>):null           
+        isShowReserveHouse?(<ReserveHouse isShowReserveHouseDetail={isShowReserveHouseDetail} reserveHouseDetailId={reserveHouseDetailId} cleanReserveHouseParam={cleanReserveHouseParam}></ReserveHouse>):null           
     }
-
 
     {
         isShowMatchNeed?(<MatchNeed></MatchNeed>):null           

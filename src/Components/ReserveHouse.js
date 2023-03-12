@@ -25,7 +25,13 @@ const ReserveHouse = (props) => {
 
     useEffect(() => {
         if (init) {
-            setIsShowReserveHouseDetail(false)
+            if(props.isShowReserveHouseDetail === true && props.reserveHouseDetailId !== '' && props.reserveHouseDetailId !== undefined){
+                showReserveHouseDetailUI(props.reserveHouseDetailId)
+                props.cleanReserveHouseParam()
+
+            }else{
+                setIsShowReserveHouseDetail(false)
+            }
             setInit(false)
         }
     }, )
