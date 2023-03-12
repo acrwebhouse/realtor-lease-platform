@@ -84,6 +84,8 @@ const Main = () => {
     const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
 
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
+    const [isQuickToPage, setIsQuickToPage] = useState(false);
+
     let isSales = false
 
     const surveysAuditSvg = () => (
@@ -149,7 +151,12 @@ const Main = () => {
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
-                quickToPage()
+                if(isQuickToPage === false){
+                    quickToPage()
+                }else{
+                    housesList()
+                }
+                
             }
             
         })
@@ -298,6 +305,7 @@ const Main = () => {
     }, )
 
     function quickToPage(){
+        setIsQuickToPage(true)
         switch(page){
             case '21' :
                 if(info !== '' && info !== undefined){
@@ -307,7 +315,6 @@ const Main = () => {
                 reserveHouse()
                 break;
             default:
-                housesList()
         }
     }
 
