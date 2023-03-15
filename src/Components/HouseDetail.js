@@ -491,7 +491,7 @@ console.log(showFloor2)
                 "host": house['owner'],
                 "houseId": house['_id'],
                 "state": 0,
-                "type": 1,
+                "type": 0,
                 "clientName": '',
                 "clientPhone": ''
             })

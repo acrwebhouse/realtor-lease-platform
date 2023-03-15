@@ -466,7 +466,17 @@ function changeDate(e, dateString){
         }
     }, [EnableResetPW])
 
-
+const checkRoleInCompany = () => {
+        let temp = roles
+    if(user.employeesData.length > 0 && user.roles.includes(4)) {
+        console.log('Hello')
+        toast.error('此帳戶已有加入公司，無法更改房仲身分。')
+        temp.push('4')
+        setRoles(temp)
+        cancelEdit()
+    }
+}
+    console.log(roles)
     return (
 
         <div>
@@ -505,7 +515,7 @@ function changeDate(e, dateString){
                     }
                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     {
-                        isEdit?( <Checkbox value='4'>房仲</Checkbox>): <Checkbox disabled value='4'>房仲</Checkbox>
+                        isEdit?( <Checkbox value='4' onChange={checkRoleInCompany}>房仲</Checkbox>): <Checkbox disabled value='4'>房仲</Checkbox>
                     }
                     </Checkbox.Group>
                     
