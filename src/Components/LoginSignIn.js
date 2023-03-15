@@ -166,6 +166,8 @@ const LoginRegister = (props) => {
                     className="login-form"
                     initialValues={{
                         remember: true,
+                        accountOrMail: window.defaultAccount,
+                        password: window.defaultPassword
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -185,7 +187,7 @@ const LoginRegister = (props) => {
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
                                placeholder="Account/Email"
                                size="large"
-                               defaultValue={ window.defaultAccount}
+                               // defaultValue={ window.defaultAccount}
                             // ref={onBlur}
                         />
                     </Form.Item>
@@ -203,7 +205,7 @@ const LoginRegister = (props) => {
                         <Input.Password prefix={<LockOutlined className="site-form-item-icon" />}
                                         placeholder="password"
                                         size="large"
-                                        defaultValue={ window.defaultPassword}
+                                        // defaultValue={ window.defaultPassword}
                         />
                     </Form.Item>
                     <Form.Item>
