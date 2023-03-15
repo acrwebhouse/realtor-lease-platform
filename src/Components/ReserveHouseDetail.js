@@ -32,7 +32,7 @@ const { Option } = Select
 
 const get_reserve_Auth = 'reserveHouse/getReserveHouseOnlyHost'
 const remove_reserve_Auth = 'reserveHouse/removeReserveHouse'
-const update_reserve_Auth = 'reserveHouse/editReserveHouseOnlyHost'
+const update_reserve_Auth = 'reserveHouse/editReserveHouse'
 const houseService = config.base_URL_House
 const reserveStateArr = [{ value: '未接洽' },{ value: '接洽中' }, { value: '完成看房' }];
 console.log(reserveStateArr[0].value)
@@ -84,7 +84,7 @@ const ReserveHouseDetail = (props) => {
                 "accept": "application/json",
                 "x-token" : xToken,
             }}).then((response) => {
-            // console.log(response)
+            console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
         }).catch( (error) => toast.error(error))

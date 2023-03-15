@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const houseService = config.base_URL_House
 const ReserveHouseList_Auth = 'reserveHouse/getReserveHousesOnlyHost'
+const ReserveHouseListForClient_Auth = 'reserveHouse/getReserveHousesOnlyClient'
 const houseDefaultImage = 'data:image/png;base64,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'
 const remove_reserve_Auth = 'reserveHouse/removeReserveHouse'
 const sortOptions = [{ value: '時間近到遠' }, { value: '時間遠到近' }, { value: '接洽狀態' }];
@@ -21,7 +22,9 @@ const ReserveHouseList = (props, ref) => {
     const [init, setInit] = useState(true);
     const [user, setUser] = useState({})
     const [reserveHouseData, setReserveHouseData] = useState([])
+    const [reserveHouseDataForClient, setReserveHouseDataForClient] = useState([])
     const [enableDel, setEnableDel] = useState(false);
+    const [enableCancel, setEnableCancel] = useState(false);
     const [isShowDeleteAlert, SetIsShowDeleteAlert] = useState(false);
     const [delId, setDelId] = useState('');
     const [showStartOrCountOrState, setShowStartOrCountOrState] = useState(0)
@@ -60,10 +63,11 @@ const ReserveHouseList = (props, ref) => {
             })
             .catch( (error) => toast.error(error))
     }
-    console.log(user)
-    let reqUrl = `${ReserveHouseList_Auth}?start=${getHousesArg.start}&&state=${getHousesArg.state}&&count=${getHousesArg.count}&&timeSort=${getHousesArg.timeSort}`
 
+    console.log(user.roles)
+    // sales
     useEffect(() => {
+        let reqUrl = `${ReserveHouseList_Auth}?start=${getHousesArg.start}&&state=${getHousesArg.state}&&count=${getHousesArg.count}&&timeSort=${getHousesArg.timeSort}`
         const xToken = cookie.load('x-token')
         HouseAxios.get(reqUrl, {
             headers: {
@@ -75,20 +79,37 @@ const ReserveHouseList = (props, ref) => {
             resolveHousesList(response)
             // setReserveHouseData(response.data.data)
         }).catch( (error) => toast.error(error))
+
     }, [] )
 
+    // client
+    useEffect(() => {
+        let reqUrlClient = `${ReserveHouseListForClient_Auth}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&state=${getHousesArg.state}&&timeSort=${getHousesArg.timeSort}`
+        const xToken = cookie.load('x-token')
+
+        HouseAxios.get(reqUrlClient, {
+            headers: {
+                "content-type": "application/json",
+                "accept": "application/json",
+                "x-token" : xToken,
+            }}).then((response) => {
+            console.log(response)
+            resolveHousesListForClient(response)
+            // setReserveHouseData(response.data.data)
+        }).catch( (error) => toast.error(error))
+    }, [] )
     console.log(reserveHouseData)
 
     useImperativeHandle(ref, () => ({
         refreshList() {
             getHousesList()
+            getHousesListForClient()
         }
     }))
-
+    //sales
     const getHousesList = () => {
         const xToken = cookie.load('x-token')
         let reqUrl = `${ReserveHouseList_Auth}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&state=${getHousesArg.state}&&timeSort=${getHousesArg.timeSort}`
-
         HouseAxios.get(
             reqUrl,{
                 headers:{
@@ -101,7 +122,23 @@ const ReserveHouseList = (props, ref) => {
             })
             .catch( (error) => toast.error(error))
     }
-
+    //Client
+    const getHousesListForClient = () => {
+        const xToken = cookie.load('x-token')
+        let reqUrlClient = `${ReserveHouseListForClient_Auth}?start=${getHousesArg.start}&&count=${getHousesArg.count}&&state=${getHousesArg.state}&&timeSort=${getHousesArg.timeSort}`
+        HouseAxios.get(
+            reqUrlClient,{
+                headers:{
+                    'x-Token':xToken
+                }
+            }
+        )
+            .then( (response) => {
+                resolveHousesListForClient(response)
+            })
+            .catch( (error) => toast.error(error))
+    }
+    //sales
     const resolveHousesList = (response) => {
         console.log(response)
         let data = []
@@ -140,6 +177,46 @@ const ReserveHouseList = (props, ref) => {
             setReserveHouseData(data)
         }
     }
+    //client
+    const resolveHousesListForClient = (response) => {
+        console.log(response)
+        let data = []
+        if(response.data && response.data.data){
+
+            const items = response.data.data
+            for(let i = 0 ;i<items.length; i++){
+
+                const item = {
+                    key: i,
+                    id: items[i]._id,
+                    clientContent: [`租客:${items[i].clientName}`, `租客電話:${items[i].clientPhone}`, `價格：${items[i].houseData[0].price}`, `${items[i]._id}`, reserveStateArr[items[i].state]],
+                    client: items[i].client,
+                    clientName: items[i].clientName,
+                    clientPhone: items[i].clientPhone,
+                    host: items[i].host,
+                    houseId: items[i].houseId,
+                    state: items[i].state,
+                    // time: items[i].updateTime,
+                    content: [`${items[i].houseData[0].name}`,`地址:${items[i].houseData[0].address}`, `屋主：${items[i].houseData[0].hostName}`, `價格：${items[i].houseData[0].price} `,
+                        `坪數：${items[i].houseData[0].ping}`,
+                        `格局：${items[i].houseData[0]['config']['room']}房${items[i].houseData[0]['config']['livingRoom']}廳${items[i].houseData[0]['config']['bathroom']}衛${items[i].houseData[0]['config']['balcony']}陽台`]
+                }
+                if(items[i].houseData[0].photo && items[i].houseData[0].photo.length > 0){
+                    item.image = `${houseService}/resource/${items[i].houseData[0]._id}/photo/${items[i].houseData[0].photo[0]}`
+                }else{
+                    item.image = houseDefaultImage
+                }
+
+                let date = ''+new Date(items[i].updateTime).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})
+                date= date.substring(0,date.indexOf(' '))
+                item.time = `更新時間 : ${date}`
+
+                data.push(item)
+            }
+            setReserveHouseDataForClient(data)
+        }
+    }
+
     const queryHouse = (houseId) => {
         console.log(houseId)
         const xToken = cookie.load('x-token')
@@ -270,7 +347,7 @@ const ReserveHouseList = (props, ref) => {
 
     console.log(columns)
 
-    //delete
+    //delete for sales
     useEffect(() => {
         const xToken = cookie.load('x-token')
         if(enableDel) {
@@ -303,6 +380,38 @@ const ReserveHouseList = (props, ref) => {
     }, [enableDel])
 
     console.log(delId)
+
+    //cancel for Client
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        if(enableCancel) {
+            // const clientId = {
+            //     "ids" : [id]
+            // }
+            // console.log(clientId)
+            HouseAxios.delete(remove_reserve_Auth, {
+                headers: {
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    "x-token" : xToken,
+                },
+                data: {"ids" : [delId]}
+            }).then((response) => {
+                console.log(response)
+                if(response.data.status === true){
+                    toast.success('已取消預約');
+                    // setTimeout(()=>{
+                    //     window.location.href = window.location.origin;
+                    // },3000);
+                    SetIsShowDeleteAlert(false)
+                    getHousesListForClient()
+                }else{
+                    toast.error(response.data.data)
+                }
+            })
+                .catch( (error) => toast.error(error))
+        }
+    }, [enableDel])
 
     const deleteReserve = () => {
         setEnableDel(true)
