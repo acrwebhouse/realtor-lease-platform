@@ -55,7 +55,7 @@ const Main = () => {
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('none');
     const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('flex');
     const [isShowLoginSignIn, setIsShowLoginSignIn] = useState(false);
-    const [isShowHousesList, setIsShowHousesList] = useState(true);
+    const [isShowHousesList, setIsShowHousesList] = useState(false);
     const [isShowMyHousesList, setIsShowMyHousesList] = useState(false);
     const [isShowUploadHouse, setIsShowUploadHouse] = useState(false);
     const [isShowMemberList, setIsShowMemberList] = useState(false);
@@ -291,6 +291,9 @@ const Main = () => {
         if (init) {
             setInit(false)
             console.log('init')
+            if(page === undefined || page === null){
+                setIsShowHousesList(true)
+            }
             collectAccessTime()
             const xToken = cookie.load('x-token')
             if(xToken!== null && xToken!== undefined){
