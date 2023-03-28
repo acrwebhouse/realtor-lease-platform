@@ -287,7 +287,7 @@ const ReserveHouseDetail = (props) => {
                                         <div>
                                             <Button type="primary"
                                                     onClick={() => {
-                                                        openInNewTab(window.location.origin + `/HouseDetail/${tenantData['houseData'][0]['_id']}/`)
+                                                        openInNewTab(window.location.origin + `/HouseDetail/${tenantData['houseData'][0]['_id']}`)
                                                     }}
                                             >
                                                 詳細房屋資料
