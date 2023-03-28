@@ -6,6 +6,8 @@ import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {openInNewTab} from './CommonUtil'
+
 
 const { Option } = Select;
 const houseService = config.base_URL_House
@@ -126,16 +128,6 @@ const HousesList = (props) => {
         typeOfRental : '',
         buildingType : '',
     });
-
-    const openInNewTab = (url) => {
-        if(typeof(appJsInterface) !== 'undefined'){
-            // eslint-disable-next-line no-undef
-            appJsInterface.loadUrl(url);
-        }else{
-            const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-            if (newWindow) newWindow.opener = null
-        } 
-    }
 
     const getHousesList = () => {
         if(isCustomPrice){

@@ -27,6 +27,7 @@ import {log} from "@craco/craco/lib/logger";
 import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {openInNewTab} from './CommonUtil'
 
 const { Option } = Select
 
@@ -171,11 +172,6 @@ const ReserveHouseDetail = (props) => {
                 break;
         }
         setTempStateObj(reserveHouse)
-    }
-
-    const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-        if (newWindow) newWindow.opener = null
     }
 
     return (
