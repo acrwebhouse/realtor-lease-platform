@@ -6,7 +6,7 @@ import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {openInNewTab} from './CommonUtil'
+import {openInNewTab,showInternelErrorPageForMobile} from './CommonUtil'
 
 
 const { Option } = Select;
@@ -98,7 +98,10 @@ const HousesList = (props) => {
                     setEnableDealForm(false)
                     getHousesList()
                 }
-            }).catch( (error) => toast.error(`${error}`))
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
         }
     }, [isPostDeal])
 
@@ -241,7 +244,9 @@ const HousesList = (props) => {
                 // dealData.id = response.data.data[0].owner
                 resolveHousesList(response)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)})
     }
 
     function resolveHousesList(response){
@@ -821,7 +826,10 @@ const HousesList = (props) => {
                     toast.error(response.data.data)
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         cancelRemoveHouse()
     }
 

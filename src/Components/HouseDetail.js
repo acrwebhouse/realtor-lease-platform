@@ -16,6 +16,7 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
@@ -133,7 +134,10 @@ const HouseDetail = (prop) => {
             setHouse(response)
             resolveHouse(response)
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     function changeBuildType(house){
@@ -537,8 +541,10 @@ console.log(showFloor2)
                     .then((response) => {
                         toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
                     })
-                    .catch((error) => toast.error(`${error}`))
-
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
                 :
                 HouseAxios.post(reserve_Auth, reserveClientData, {
                     headers: {
@@ -556,7 +562,10 @@ console.log(showFloor2)
                         }
                     })
 
-                    .catch( (error) => toast.error(`${error}`))
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
 
             setIsRunPost(false)
         }
@@ -589,7 +598,10 @@ console.log(showFloor2)
                 toast.error(response.data.data, 3)
             }
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
         cancelRemoveHouse()
     }
 

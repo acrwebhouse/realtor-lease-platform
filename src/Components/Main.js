@@ -48,6 +48,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
     useParams
   } from "react-router-dom";
+import {showInternelErrorPageForMobile} from './CommonUtil'
+
 const collectAccessTimeUrl = 'collect/accessTime'
 
 const Main = () => {
@@ -160,7 +162,10 @@ const Main = () => {
             }
             
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     function checkEmployeeStateAndChangeMenu(callback){
@@ -284,7 +289,10 @@ const Main = () => {
             .then( (response) => {
                 console.log('collectAccessTime success')
             })
-            .catch( (error) => console.log('collectAccessTime error'))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     useEffect(() => {

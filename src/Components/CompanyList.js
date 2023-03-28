@@ -11,6 +11,7 @@ import {
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const CompanyList = (props) => {
     let { id } = useParams();
@@ -75,7 +76,10 @@ const CompanyList = (props) => {
                 resolveCompantList(response)
                 // resolveMemberList(response)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompantList(response){
@@ -112,7 +116,10 @@ const CompanyList = (props) => {
             }else{
                 toast.error('申請失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     const columns = [

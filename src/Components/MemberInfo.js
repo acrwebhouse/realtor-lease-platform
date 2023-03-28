@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
@@ -190,7 +191,10 @@ const getPersonalInfo = () => {
         setUser(response.data.data)
         setData(response.data.data)
     })
-    .catch( (error) => toast.error(error))
+    .catch( (error) => {
+        showInternelErrorPageForMobile()
+        toast.error(error)
+    })
 }
 
 function setData(data){
@@ -381,7 +385,10 @@ function sendEdit(){
             toast.error(response.data.data)
         }
     })
-    .catch( (error) => toast.error(error))
+    .catch( (error) => {
+        showInternelErrorPageForMobile()
+        toast.error(error)
+    })
     }
     if(isOkLicense === false){
         toast.error('請輸入正確的營業員證號格式');
@@ -460,7 +467,10 @@ function changeDate(e, dateString){
                     toast.error(`${response.data.data}`)
                 }
             })
-            .catch( (error) => {toast.error(`${error}`)})
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
 
             setEnableResetPW(false)
         }

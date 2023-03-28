@@ -12,7 +12,7 @@ import './Register_form.css'
 import {LoginRegisterAxios} from "./axiosApi"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {showInternelErrorPageForMobile} from './CommonUtil'
 const { Option } = Select;
 
 const dateFormat = 'YYYY/MM/DD';
@@ -116,7 +116,10 @@ const Register = (props) => {
                     response['data']['status'] ? toast.success(`註冊成功`) : toast.error(`註冊失敗`)
                     setFailMessage(response['data']['data'])
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setIsRunPost(false)
             setCityValid(false)
@@ -133,7 +136,10 @@ const Register = (props) => {
                 .then( (response) =>  {
                     console.log(response)
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setVerifyUserEnable(false)
         }

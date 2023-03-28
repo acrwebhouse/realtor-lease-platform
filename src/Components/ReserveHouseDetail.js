@@ -28,6 +28,7 @@ import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {openInNewTab} from './CommonUtil'
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const { Option } = Select
 
@@ -74,7 +75,10 @@ const ReserveHouseDetail = (props) => {
                 // console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }, [] )
 
     const getReserveData = () => {
@@ -88,7 +92,10 @@ const ReserveHouseDetail = (props) => {
             console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     //delete
@@ -118,7 +125,10 @@ const ReserveHouseDetail = (props) => {
                     toast.error(response.data.data)
                 }
             })
-                .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         }
     }, [enableDel])
 
@@ -147,7 +157,10 @@ const ReserveHouseDetail = (props) => {
                     getReserveData()
                     setEnableSetup(true)
                 }
-            }).catch( (error) => toast.error(error))
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
 
             console.log(temp)
     }

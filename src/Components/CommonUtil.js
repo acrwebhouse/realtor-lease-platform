@@ -8,4 +8,12 @@ const openInNewTab = (url) => {
     } 
 }
 
-export {openInNewTab}
+const showInternelErrorPageForMobile = () => {
+    if(typeof(appJsInterface) !== 'undefined'){
+        // eslint-disable-next-line no-undef
+        appJsInterface.showInternelErrorPage();
+    }
+}
+
+
+export {openInNewTab,showInternelErrorPageForMobile}

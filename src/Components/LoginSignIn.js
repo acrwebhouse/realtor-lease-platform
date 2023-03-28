@@ -9,6 +9,7 @@ import cookie from 'react-cookies'
 import ForgotPassword from "./ForgotPassword";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
@@ -118,7 +119,10 @@ const LoginRegister = (props) => {
                     }
 
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setIsRunPost(false)
         }else{

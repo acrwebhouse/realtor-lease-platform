@@ -5,6 +5,7 @@ import {CompanyAxios} from './axiosApi'
 import {
     message,
 } from "antd";
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const getCurrentEmployee = function(callback){
     let reqUrl = `/employees/getCurrentPersonalEmployeeInfo`
@@ -25,6 +26,9 @@ const getCurrentEmployee = function(callback){
                     callback(false)
                 }
             })
-            .catch( (error) => console.log(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                console.log(error)
+            })
 }
 export {getCurrentEmployee}

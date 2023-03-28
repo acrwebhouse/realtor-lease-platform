@@ -9,6 +9,7 @@ import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const employeeState = ['初始狀態', '審核中', '正式員工', '審核失敗', '停權中']
 const CompanyEmployeeInfo = (props) => {
@@ -62,7 +63,10 @@ const CompanyEmployeeInfo = (props) => {
                     toast.error('員工資訊取得失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompanyEmployee(list){
