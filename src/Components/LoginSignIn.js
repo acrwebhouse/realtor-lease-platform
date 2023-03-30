@@ -102,9 +102,11 @@ const LoginRegister = (props) => {
         if (isRunPost) {
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then((response) => {
-                    console.log(response.data.status)
-                    if(response.data.status === false ||response.data.status === null){
+                    console.log(response.data)
+                    if((response.data.status === false || response.data.status === null) && response.data.data.includes('accout , mail or password invalid')) {
                         toast.error(`帳號或密碼錯誤`)
+                    }else if(response.data.status === false && response.data.data.includes("user not verify")) {
+                        toast.error(`此帳號尚未驗證完畢，請先完成帳號驗證程序。`)
                     }else{
                         const userId = response.data.data._id;
                         if(typeof(appJsInterface) !== 'undefined'){
