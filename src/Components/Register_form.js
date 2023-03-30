@@ -111,10 +111,13 @@ const Register = (props) => {
         if (isRunPost) {
             LoginRegisterAxios.post(SighUp_Auth, RegisterData)
                 .then( (response) =>  {
-                    console.log(typeof(response['data']['data']))
+                    console.log(response)
                     setRegisterCheck(response['data']['status'])
                     response['data']['status'] ? toast.success(`註冊成功`) : toast.error(`註冊失敗`)
                     setFailMessage(response['data']['data'])
+                    if(response['data']['status']) {
+                        setOwnerPhone('')
+                    }
                 })
                 .catch( (error) => {
                     showInternelErrorPageForMobile()
@@ -124,7 +127,7 @@ const Register = (props) => {
             setIsRunPost(false)
             setCityValid(false)
             setAreaValid(false)
-            setOwnerPhone('')
+
         }
     }, [isRunPost, RegisterData])
 

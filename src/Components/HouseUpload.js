@@ -381,7 +381,7 @@ const HouseUpload = (prop) => {
                             form.resetFields()
                             setHostPhone('')
                         }else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
-                            toast.error(`房屋地址重複，請更正正確房屋地址。`);
+                            toast.error(`此房屋物件已存在，如有疑慮請聯繫該房仲。 ${response.data.data.errorInfo.name}  ${response.data.data.errorInfo.phone}。`);
                         }
                         // if(!response.data.status && response.data.data.includes('house address is exist')) {
                         //     message.error({
@@ -773,6 +773,22 @@ const HouseUpload = (prop) => {
     );
 
     // console.log(typeof(prop.defaultValue.floor))
+
+    const clearForm = () => {
+        PicTemp.splice(0, PicTemp.length)
+        AnnexTemp.splice(0, AnnexTemp.length)
+        TrafficArr.splice(0,  TrafficArr.length)
+        LifeArr.splice(0,  LifeArr.length)
+        EducationArr.splice(0, EducationArr.length)
+        PicData.splice(0, PicData.length)
+        AnnexData.splice(0, AnnexData.length)
+        form_photo.resetFields()
+        form_annex.resetFields()
+        form.resetFields()
+        setHostPhone('')
+    }
+
+
     return (
 
         <div>
@@ -1491,7 +1507,7 @@ const HouseUpload = (prop) => {
                                                     message: 'Please input your Name!',
                                                 },
                                                 {
-                                                    pattern: /^[A-Za-z0-9]+$/,
+                                                    pattern: /^[A-Za-z0-9]+$/ || /s/,
                                                     message: '房間號碼只能填寫英文與數字',
                                                 },
                                             ]}
@@ -2314,6 +2330,14 @@ const HouseUpload = (prop) => {
                                                 shape="round"
                                         >
                                             資料提交
+                                        </Button>
+                                        &nbsp;&nbsp;
+                                        <Button type="primary"
+                                                className='HouseData-button'
+                                                shape="round"
+                                                onClick={clearForm}
+                                        >
+                                            重新填寫
                                         </Button>
                                     </Col>
                                 </Row>
