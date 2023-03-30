@@ -1497,15 +1497,16 @@ const HouseUpload = (prop) => {
                                                     required: false,
                                                     message: 'Please input your Name!',
                                                 },
-                                                {
-                                                    pattern: /^[A-Za-z0-9]+$/ || /s/,
-                                                    message: '房間號碼只能填寫英文與數字',
-                                                },
+                                                // {
+                                                //     pattern: /^[A-Za-z0-9]+$/ || /s/,
+                                                //     message: '房間號碼只能填寫英文與數字',
+                                                // },
                                             ]}
                                         >
                                             <Input size="large"
                                                    placeholder="非必填"
                                                    style={{width: '100%'}}
+                                                   maxLength={10}
                                                    // suffix='巷'
                                             />
                                             {/*<InputNumber placeholder=""*/}
