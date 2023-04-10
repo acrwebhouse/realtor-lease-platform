@@ -325,11 +325,6 @@ const Main = () => {
                     }else if(response.data.status === false && response.data.data.includes("user not verify")) {
                         toast.error(`此帳號尚未驗證完畢，請先完成帳號驗證程序。`)
                     }else{
-                        const userId = response.data.data._id;
-                        if(typeof(appJsInterface) !== 'undefined'){
-                            // eslint-disable-next-line no-undef
-                            appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
-                        }
                         changeUserMenu(response.data.data.token,true)
                         let d = new Date();
                         d.setTime(d.getTime() + (86400*30*1000)); //one month
@@ -364,7 +359,8 @@ const Main = () => {
                 let d = new Date();
                 d.setTime(d.getTime() + (86400*30*1000)); //one month
                 cookie.save('x-token',xToken,{path:'/', expires: d})
-            }else if(accountOrMail !== undefined &&password !== undefined ){
+            }
+            else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
                 autoLogin(accountOrMail , password)
             }
         }
