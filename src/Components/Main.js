@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
-import {CollectAxios} from './axiosApi'
+import {LoginRegisterAxios,CollectAxios} from './axiosApi'
 import { UserAxios} from './axiosApi'
 import Icon,{
   CloudUploadOutlined,
@@ -47,7 +47,8 @@ import {getCurrentEmployee} from './CompanyCommon'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    useParams
+    useParams,
+    useLocation
   } from "react-router-dom";
 import {showInternelErrorPageForMobile} from './CommonUtil'
 
@@ -90,7 +91,7 @@ const Main = () => {
 
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
     const [isQuickToPage, setIsQuickToPage] = useState(false);
-
+    const { search } = useLocation();
     let isSales = false
 
     const surveysAuditSvg = () => (
@@ -310,15 +311,52 @@ const Main = () => {
             })
     }
 
+    function autoLogin(accountOrMail , password){
+        const LOGIN_Auth = "/auth/login/"
+        const LoginData = {
+            accountOrMail,
+            password
+        }
+        LoginRegisterAxios.post(LOGIN_Auth, LoginData)
+                .then((response) => {
+                    console.log(response.data)
+                    if((response.data.status === false || response.data.status === null) && response.data.data.includes('accout , mail or password invalid')) {
+                        toast.error(`帳號或密碼錯誤`)
+                    }else if(response.data.status === false && response.data.data.includes("user not verify")) {
+                        toast.error(`此帳號尚未驗證完畢，請先完成帳號驗證程序。`)
+                    }else{
+                        const userId = response.data.data._id;
+                        if(typeof(appJsInterface) !== 'undefined'){
+                            // eslint-disable-next-line no-undef
+                            appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
+                        }
+                        changeUserMenu(response.data.data.token,true)
+                        let d = new Date();
+                        d.setTime(d.getTime() + (86400*30*1000)); //one month
+                        cookie.save('x-token',response.data.data.token,{path:'/', expires: d})
+                        toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
+                    }
+
+                })
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
+    }
+
     useEffect(() => {
         if (init) {
             setInit(false)
-            console.log('init')
+            const params = new URLSearchParams(search);
+            const accountOrMail = params.get('accountOrMail');
+            const password = params.get('password');
             if(page === undefined || page === null){
                 setIsShowHousesList(true)
             }
             collectAccessTime()
             const xToken = cookie.load('x-token')
+
+
             if(xToken!== null && xToken!== undefined){
                 const decodedToken = jwt_decode(xToken);
                 console.log(decodedToken)
@@ -326,6 +364,8 @@ const Main = () => {
                 let d = new Date();
                 d.setTime(d.getTime() + (86400*30*1000)); //one month
                 cookie.save('x-token',xToken,{path:'/', expires: d})
+            }else if(accountOrMail !== undefined &&password !== undefined ){
+                autoLogin(accountOrMail , password)
             }
         }
     }, )
