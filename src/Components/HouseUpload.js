@@ -31,6 +31,7 @@ import {
     TelevisionIcon, TvProgramIcon,
     WashMachineIcon, WaterHeaterIcon
 } from "./Equipment";
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 // const AddressPattern = /^[\u4e00-\u9fa5]+$/
 // const DoorNumberPattern = /^[0-9]*$/
@@ -378,7 +379,10 @@ const HouseUpload = (prop) => {
                         // }
 
                     })
-                    .catch((error) => toast.error(`${error}`))       
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })     
                 :
                 HouseAxios.post(House_Auth, HouseData, {
                     headers: {
@@ -429,7 +433,10 @@ const HouseUpload = (prop) => {
                         // }
 
                     })
-                    .catch((error) =>toast.success(`${error}`));
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
 
             setIsRunPost(false)
 
@@ -738,8 +745,9 @@ const HouseUpload = (prop) => {
                 setPicUploadCheck(true)
                 toast.success('照片上傳成功');
             })
-            .catch(() => {
-                toast.error('照片上傳失敗');
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error('照片上傳失敗')
             })
             .finally(() => {
                 setPicUploading(false)
@@ -783,8 +791,9 @@ const HouseUpload = (prop) => {
                 // setAnnexList([])
                 toast.success('附件上傳成功');
             })
-            .catch(() => {
-                toast.error('附件上傳失敗');
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error('附件上傳失敗')
             })
             .finally(() => {
                 setAnnexUploading(false)
@@ -1856,9 +1865,11 @@ const HouseUpload = (prop) => {
                                                        form_traffic.resetFields();
                                                        onTrafficCreate(values);
                                                    })
-                                                   .catch((info) => {
-                                                       console.log('Validate Failed:', info);
-                                                   });
+                                                   .catch( (error) => {
+                                                    showInternelErrorPageForMobile()
+                                                    // eslint-disable-next-line no-useless-concat
+                                                    toast.error('Validate Failed:' + 'info')
+                                                })
                                            }
                                            }
                                            onCancel={hideTrafficModal}>
@@ -2003,9 +2014,11 @@ const HouseUpload = (prop) => {
                                                        form_life.resetFields();
                                                        onLifeCreate(values);
                                                    })
-                                                   .catch((info) => {
-                                                       console.log('Validate Failed:', info);
-                                                   });
+                                                   .catch( (error) => {
+                                                    showInternelErrorPageForMobile()
+                                                    // eslint-disable-next-line no-useless-concat
+                                                    toast.error(error)
+                                                })
                                            }
                                            }
                                            onCancel={hideLifeModal}>

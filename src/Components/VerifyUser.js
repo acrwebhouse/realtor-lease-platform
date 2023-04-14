@@ -7,6 +7,7 @@ import moment from 'moment';
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 // console.log(typeof(window.location.href))
 const SighUp_Auth = "/auth/verifyUser"
 const User_verify_xToken = window.location.href.split('key=')[1]
@@ -41,7 +42,10 @@ const VerifyUser = (props) => {
                         toast.error(`${response.data.data}`)
                     }
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             // setVerifyUserEnable(false)
         // }

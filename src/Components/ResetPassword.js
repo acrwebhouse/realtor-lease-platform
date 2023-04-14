@@ -15,6 +15,8 @@ import cookie from "react-cookies";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
+
 const userData_Auth = '/user/getPersonalInfo'
 const editUser_Auth = 'user/editUser'
 const User_verify_xToken = window.location.href.split('key=')[1]
@@ -43,7 +45,10 @@ const ResetPassword = (props) => {
                 }
                 setUserData(response.data.data)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }, [])
 
     useEffect(() => {
@@ -69,6 +74,7 @@ const ResetPassword = (props) => {
                     }
                 })
                 .catch( (error) => {
+                    showInternelErrorPageForMobile()
                     toast.error(error)
                     setVerify(false)
                 })

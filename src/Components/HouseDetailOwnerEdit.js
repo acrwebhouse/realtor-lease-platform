@@ -8,6 +8,7 @@ import HouseUpload from "./HouseUpload";
 import {HouseAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 const houseListUrl = 'house/getHouse'
 
 
@@ -31,7 +32,10 @@ const HouseDetailOwnerEdit = (prop) => {
                 toast.error("取得資料錯誤")
             }
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     useEffect(() => {

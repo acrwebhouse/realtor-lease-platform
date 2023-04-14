@@ -9,7 +9,7 @@ import {
   } from "react-router-dom";
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
-
+  import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const CompanyEmployeesList = (props) => {
     let { id } = useParams();
@@ -93,7 +93,10 @@ const CompanyEmployeesList = (props) => {
                     toast.error('抓取員工列表失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompanyEmployeesList(response){
@@ -217,7 +220,10 @@ const CompanyEmployeesList = (props) => {
             }else{
                 toast.error('離職失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
         cancelResign()
         
     }
@@ -390,7 +396,10 @@ const CompanyEmployeesList = (props) => {
               }else{
                 toast.error('編輯失敗')
               }
-          }).catch( (error) => toast.error(error))
+          }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     const isResignemployeesColumns = [

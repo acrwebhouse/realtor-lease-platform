@@ -12,7 +12,7 @@ import './Register_form.css'
 import {LoginRegisterAxios} from "./axiosApi"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {showInternelErrorPageForMobile} from './CommonUtil'
 const { Option } = Select;
 
 const dateFormat = 'YYYY/MM/DD';
@@ -119,7 +119,10 @@ const Register = (props) => {
                         setOwnerPhone('')
                     }
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setIsRunPost(false)
             setCityValid(false)
@@ -136,7 +139,10 @@ const Register = (props) => {
                 .then( (response) =>  {
                     console.log(response)
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setVerifyUserEnable(false)
         }

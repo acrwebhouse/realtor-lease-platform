@@ -10,7 +10,7 @@ import {
   } from "react-router-dom";
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
-
+  import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const CompanyApplyList = (props) => {
     let { id } = useParams();
@@ -66,7 +66,10 @@ const CompanyApplyList = (props) => {
                     toast.error('抓取公司審核列表失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile();
+                toast.error(error)
+            })
     }
 
     function resolveCompanyApplyList(response){
@@ -133,7 +136,10 @@ const CompanyApplyList = (props) => {
             }else{
                 toast.error('審核失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile();
+            toast.error(error)
+        })
 
     }
 

@@ -25,6 +25,7 @@ import {
   } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const applyState = ['初始狀態', '審核中', '正式員工', '審核失敗', '取消審核']
 
@@ -59,7 +60,10 @@ const CompanyApplyState = (props) => {
                     toast.error('員工資訊取得失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompanyApply(list){
@@ -103,7 +107,10 @@ const CompanyApplyState = (props) => {
             }else{
                 toast.error('取消失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     return (

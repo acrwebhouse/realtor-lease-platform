@@ -6,6 +6,8 @@ import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {openInNewTab,showInternelErrorPageForMobile} from './CommonUtil'
+
 
 const { Option } = Select;
 const houseService = config.base_URL_House
@@ -96,7 +98,10 @@ const HousesList = (props) => {
                     setEnableDealForm(false)
                     getHousesList()
                 }
-            }).catch( (error) => toast.error(`${error}`))
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
         }
     }, [isPostDeal])
 
@@ -126,11 +131,6 @@ const HousesList = (props) => {
         typeOfRental : '',
         buildingType : '',
     });
-
-    const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-        if (newWindow) newWindow.opener = null
-    }
 
     const getHousesList = () => {
         if(isCustomPrice){
@@ -244,7 +244,9 @@ const HousesList = (props) => {
                 // dealData.id = response.data.data[0].owner
                 resolveHousesList(response)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)})
     }
 
     function resolveHousesList(response){
@@ -824,7 +826,10 @@ const HousesList = (props) => {
                     toast.error(response.data.data)
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         cancelRemoveHouse()
     }
 

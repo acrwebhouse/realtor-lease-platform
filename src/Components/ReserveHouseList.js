@@ -7,6 +7,7 @@ import moment from 'moment';
 import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const houseService = config.base_URL_House
 const ReserveHouseList_Auth = 'reserveHouse/getReserveHousesOnlyHost'
@@ -61,7 +62,10 @@ const ReserveHouseList = (props, ref) => {
                     setShowPage(true)
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     console.log(user.roles)
@@ -78,7 +82,10 @@ const ReserveHouseList = (props, ref) => {
             console.log(response)
             resolveHousesList(response)
             // setReserveHouseData(response.data.data)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
 
     }, [] )
 
@@ -96,7 +103,10 @@ const ReserveHouseList = (props, ref) => {
             console.log(response)
             resolveHousesListForClient(response)
             // setReserveHouseData(response.data.data)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }, [] )
     console.log(reserveHouseData)
 
@@ -120,7 +130,10 @@ const ReserveHouseList = (props, ref) => {
             .then( (response) => {
                 resolveHousesList(response)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
     //Client
     const getHousesListForClient = () => {
@@ -136,7 +149,10 @@ const ReserveHouseList = (props, ref) => {
             .then( (response) => {
                 resolveHousesListForClient(response)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
     //sales
     const resolveHousesList = (response) => {
@@ -375,7 +391,10 @@ const ReserveHouseList = (props, ref) => {
                     toast.error(response.data.data)
                 }
             })
-                .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         }
     }, [enableDel])
 
@@ -409,7 +428,10 @@ const ReserveHouseList = (props, ref) => {
                     toast.error(response.data.data)
                 }
             })
-                .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         }
     }, [enableDel])
 

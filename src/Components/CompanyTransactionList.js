@@ -29,6 +29,8 @@ import {
 import {TableSkeleton} from "@ant-design/pro-skeleton";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
+import {showInternelErrorPageForMobile} from './CommonUtil'
+
 const Transaction_Auth = 'transaction/getTransactionList'
 const editTransaction_Auth = 'transaction/editTransactionNoIncludeCompany'
 const removeTransaction_Auth = 'transaction/removeTransaction'
@@ -187,7 +189,10 @@ const CompanyTransactionList = (props) => {
                 console.log(response)
                 resolveTransactionsList(response)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveTransactionsList(response){
@@ -245,7 +250,10 @@ const CompanyTransactionList = (props) => {
                     setEnableCheckYearMonth(true)
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
     console.log(transactions)
     console.log(dealYearMonth.year)
@@ -459,7 +467,10 @@ const CompanyTransactionList = (props) => {
                     toast.error(response.data.data)
                 }
             })
-                .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         }
     }, [enableDel])
     console.log(delId)

@@ -4,6 +4,7 @@ import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 const userListUrl = 'user/getUserList'
 const removeUserUrl = 'user/removeUser'
 
@@ -111,7 +112,10 @@ const MemberList = () => {
             // console.log(response)
             resolveMemberList(response)
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     function resolveMemberList(response){
@@ -335,7 +339,10 @@ function removeUser(userId){
             toast.error(response.data.data)
         }
     })
-    .catch( (error) => toast.error(error))
+    .catch( (error) => {
+        showInternelErrorPageForMobile()
+        toast.error(error)
+    })
 
 }
 

@@ -27,6 +27,8 @@ import {log} from "@craco/craco/lib/logger";
 import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {openInNewTab} from './CommonUtil'
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const { Option } = Select
 
@@ -73,7 +75,10 @@ const ReserveHouseDetail = (props) => {
                 // console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }, [] )
 
     const getReserveData = () => {
@@ -87,7 +92,10 @@ const ReserveHouseDetail = (props) => {
             console.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     //delete
@@ -117,7 +125,10 @@ const ReserveHouseDetail = (props) => {
                     toast.error(response.data.data)
                 }
             })
-                .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         }
     }, [enableDel])
 
@@ -146,7 +157,10 @@ const ReserveHouseDetail = (props) => {
                     getReserveData()
                     setEnableSetup(true)
                 }
-            }).catch( (error) => toast.error(error))
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
 
             console.log(temp)
     }
@@ -171,11 +185,6 @@ const ReserveHouseDetail = (props) => {
                 break;
         }
         setTempStateObj(reserveHouse)
-    }
-
-    const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-        if (newWindow) newWindow.opener = null
     }
 
     return (
@@ -278,7 +287,7 @@ const ReserveHouseDetail = (props) => {
                                         <div>
                                             <Button type="primary"
                                                     onClick={() => {
-                                                        openInNewTab(window.location.origin + `/HouseDetail/${tenantData['houseData'][0]['_id']}/`)
+                                                        openInNewTab(`/HouseDetail/${tenantData['houseData'][0]['_id']}`)
                                                     }}
                                             >
                                                 詳細房屋資料
