@@ -22,6 +22,15 @@ import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+    AirConditionerIcon,
+    BedIcon, CigaretteIcon,
+    ClosetIcon, CookIcon, DeskAndChairIcon, ElevatorIcon, GarbageFeeIcon, ManageFeeIcon, NaturalGasIcon,
+    NetworkIcon, ParkingIcon, PetsIcon,
+    RefrigeratorIcon, SofaIcon,
+    TelevisionIcon, TvProgramIcon,
+    WashMachineIcon, WaterHeaterIcon
+} from "./Equipment";
 
 // const AddressPattern = /^[\u4e00-\u9fa5]+$/
 // const DoorNumberPattern = /^[0-9]*$/
@@ -66,6 +75,7 @@ for (let i = 1; i < 100; i++) {
 console.log(FloorOptions[0])
 
 const defaultExtraRequire = [];
+const defaultEquipment = [];
 let PicData = [];
 let showPic = [];
 let AnnexData = [];
@@ -87,7 +97,8 @@ const annexType = ['application/pdf', 'image/png', 'image/svg+xml', 'image/jpeg'
 const PicTemp = []
 const AnnexTemp = []
 const hostGenderArr=['小姐', '先生']
-
+const equipData = {0: 'airConditioner', 1: 'refrigerator', 2: 'television', 3: 'washMachine', 4: 'bed', 5: 'closet', 6: 'tvProgram', 7: 'network', 8: 'waterHeater', 9: 'naturalGas', 10: 'sofa', 11: 'deskAndChair', 12: 'elevator'}
+let equipArr = [false, false, false, false, false, false, false, false, false, false, false, false, false]
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -155,6 +166,7 @@ const HouseUpload = (prop) => {
     const [form_life] = Form.useForm();
     const [form_edu] = Form.useForm();
     const [extraRequire, setExtraRequire] = useState(defaultExtraRequire);
+    const [equipment, setEquipment] = useState(defaultEquipment)
     const [ShowHideManageFee, setShowHideManageFee] = useState(false );
     const [ShowHideGarbageFee, setShowHideGarbageFee] = useState(false );
     const [areaOptions, setAreaOptions] = useState([]);
@@ -250,7 +262,7 @@ const HouseUpload = (prop) => {
     console.log(TrafficArr)
     useEffect(()=>{
         const temp = [];
-
+        const equipTemp = [];
         if(prop.defaultValue && prop.defaultValue.traffic) {
             prop.defaultValue.traffic.map(x => TrafficArr.push(x))
         }
@@ -302,10 +314,18 @@ const HouseUpload = (prop) => {
                 temp.push('parking')
                 // console.log(temp)
             }
+            if(prop.defaultValue.saleInfo.devices) {
+                for (let i = 0; i < prop.defaultValue.saleInfo.devices.length; i++) {
+                    if (prop.defaultValue.saleInfo.devices[i]) {
+                        equipTemp.push(equipData[i])
+                    }
+                }
+            }
         }
+
         console.log(temp)
         setExtraRequire(temp)
-
+        setEquipment(equipTemp)
     },[prop.defaultValue])
 
     useEffect(() => {
@@ -376,6 +396,13 @@ const HouseUpload = (prop) => {
                             form_annex.resetFields()
                             form.resetFields()
                             setHostPhone('')
+                            PicTemp.splice(0, PicTemp.length)
+                            AnnexTemp.splice(0, AnnexTemp.length)
+                            TrafficArr.splice(0,  TrafficArr.length)
+                            LifeArr.splice(0,  LifeArr.length)
+                            EducationArr.splice(0, EducationArr.length)
+                            PicData.splice(0, PicData.length)
+                            AnnexData.splice(0, AnnexData.length)
                         }else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
                             toast.error(`此房屋物件已存在，如有疑慮請聯繫該房仲。 ${response.data.data.errorInfo.name}  ${response.data.data.errorInfo.phone}。`);
                         }
@@ -405,13 +432,7 @@ const HouseUpload = (prop) => {
                     .catch((error) =>toast.success(`${error}`));
 
             setIsRunPost(false)
-            PicTemp.splice(0, PicTemp.length)
-            AnnexTemp.splice(0, AnnexTemp.length)
-            TrafficArr.splice(0,  TrafficArr.length)
-            LifeArr.splice(0,  LifeArr.length)
-            EducationArr.splice(0, EducationArr.length)
-            PicData.splice(0, PicData.length)
-            AnnexData.splice(0, AnnexData.length)
+
 
 
         }
@@ -467,7 +488,8 @@ const HouseUpload = (prop) => {
                     "garbagePrice": extraRequire.includes('garbage') ? parseInt(values['garbageFee']) : 0,
                     "smoke": extraRequire.includes('smoke'),
                     "cook": extraRequire.includes('cook'),
-                    "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1
+                    "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1,
+                    "devices": prop.defaultValue ? prop.defaultValue.saleInfo.devices : equipArr
                 },
                 'photo' : prop.defaultValue ? PicData : photoData, // PicData have defaultData, photoData new Upload
                 'annex' : prop.defaultValue ? AnnexData : annexData, // AnnexData have defaultData, annexData new Upload
@@ -496,6 +518,7 @@ const HouseUpload = (prop) => {
                         setExtraRequire([])
                         setShowHideManageFee(false)
                         setShowHideGarbageFee(false)
+                        setEquipment([])
                     }
                 }
             }
@@ -650,8 +673,26 @@ const HouseUpload = (prop) => {
         //
         // setRoles(list.map(i => Number(i)))
     };
-
-
+    console.log(equipment)
+    console.log(equipArr)
+    const onEquipmentChange = list => {
+        // console.log(`selected ${list}` )
+        console.log(list)
+        setEquipment(list);
+        equipArr[0] = list.includes('airConditioner');
+        equipArr[1] = list.includes('refrigerator');
+        equipArr[2] = list.includes('television');
+        equipArr[3] = list.includes('washMachine');
+        equipArr[4] = list.includes('bed');
+        equipArr[5] = list.includes('closet');
+        equipArr[6] = list.includes('tvProgram');
+        equipArr[7] = list.includes('network');
+        equipArr[8] = list.includes('waterHeater');
+        equipArr[9] = list.includes('naturalGas');
+        equipArr[10] = list.includes('sofa');
+        equipArr[11] = list.includes('deskAndChair');
+        equipArr[12] = list.includes('elevator');
+    };
     // console.log(PictureList)
 
     const PicRemove = (file) => {
@@ -2185,7 +2226,7 @@ const HouseUpload = (prop) => {
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                             <Form.Item
                                 // name="extraRequire"
-                                label="需求與許可"
+                                label="需求許可"
                                 rules={[
                                     {
                                         required: false,
@@ -2197,29 +2238,30 @@ const HouseUpload = (prop) => {
                                                 value={extraRequire}
                                                 onChange={onExtraRequireChange}
                                 >
-                                    <Row>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='pet'>養寵物</Checkbox>
+                                    <Row gutter={[16, 16]}>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='pet'><PetsIcon/><br/>養寵物</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='manager'>管理費</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='manager'><ManageFeeIcon/><br/>管理費</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='garbage'>垃圾費</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='garbage'><GarbageFeeIcon/><br/>垃圾費</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='smoke'>可抽菸</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='smoke'><CigaretteIcon/><br/>可抽菸</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='cook'>可開伙</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='cook'><CookIcon/><br/>可開火</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='parking'>停車位</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='parking'><ParkingIcon/><br/>停車位</Checkbox>
                                         </Col>
                                     </Row>
                                 </Checkbox.Group>
 
-                                <Form.Item>
+                                {(ShowHideManageFee || ShowHideGarbageFee) &&
+                                    <Form.Item>
                                     <Row justify="start">
                                         {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
@@ -2273,7 +2315,65 @@ const HouseUpload = (prop) => {
                                             }
                                         </Col>
                                     </Row>
-                                </Form.Item>
+                                </Form.Item>}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                // name="equip"
+                                       label="提供設備"
+                            >
+                                <Checkbox.Group style={{ fontSize: '100%' ,width: '100%' }}
+                                                value={equipment}
+                                                onChange={onEquipmentChange}
+                                >
+                                    <Row gutter={[16, 16]}>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='airConditioner'><AirConditionerIcon/><br/>冷氣機</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='refrigerator'><RefrigeratorIcon/><br/>電冰箱</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='television'><TelevisionIcon/><br/>電視機</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='washMachine'><WashMachineIcon/><br/>洗衣機</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='bed'><BedIcon/><br/>床</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='closet'><ClosetIcon/><br/>衣櫥</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='tvProgram'><TvProgramIcon/><br/>第四台</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='network'><NetworkIcon/><br/>網路</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='waterHeater'><WaterHeaterIcon/><br/>熱水器</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='naturalGas'><NaturalGasIcon/><br/>天然氣</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='sofa'><SofaIcon/><br/>沙發</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='deskAndChair'><DeskAndChairIcon/><br/>桌椅</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='elevator'><ElevatorIcon/><br/>電梯</Checkbox>
+                                        </Col>
+                                    </Row>
+                                </Checkbox.Group>
                             </Form.Item>
                         </Col>
                     </Row>
