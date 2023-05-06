@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, Alert, Space, Form, Input, } from "antd";
+import {Table, Button, Image, Divider, Row, Col, Alert, Space, Form, Input, Checkbox,} from "antd";
 import {
     useParams
   } from "react-router-dom";
@@ -17,6 +17,15 @@ import GoogleMapHouse from "./GoogleMapHouse";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
+import {
+    AirConditionerIcon,
+    BedIcon,
+    ClosetIcon, DeskAndChairIcon, ElevatorIcon, NaturalGasIcon, NetworkIcon,
+    RefrigeratorIcon, SofaIcon,
+    TelevisionIcon,
+    TvProgramIcon,
+    WashMachineIcon, WaterHeaterIcon
+} from "./Equipment";
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
@@ -53,6 +62,7 @@ const HouseDetail = (prop) => {
     const [isRunPost, setIsRunPost] = useState(false)
     const [isShowBackBtn, setIsShowBackBtn] = useState(false)
     const [showFloor2, setShowFloor2] = useState('');
+    const [isShowEquip, setIsShowEquip] = useState(false)
 
 
     console.log(house['owner'])
@@ -615,6 +625,7 @@ console.log(showFloor2)
                 setIsShowBackBtn(true)
             }
             setInit(false)
+            setIsShowEquip(true)
             getHouse()
             
         }
@@ -641,6 +652,7 @@ console.log(showFloor2)
         }
     }
 
+    // console.log(house.saleInfo.devices)
     return (
         <div>
             <ToastContainer autoClose={2000} position="top-center"/>
@@ -977,31 +989,80 @@ console.log(showFloor2)
                 </Col>
             <Col xs={24} sm={2} md={2} lg={2} xl={2}></Col>   
             </Row>
-            
+            <Divider> 提供設備 </Divider>
+            {house.saleInfo?
+                <Row>
+                    <Col xs={24} sm={1} md={2} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={22} md={20} lg={16} xl={12}>
+                        <Row gutter={[16, 16]}>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[0] ? 1 : 0.2}`}}><AirConditionerIcon/><br/>冷氣機</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[1] ? 1 : 0.2}`}}><RefrigeratorIcon/><br/>電冰箱</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[2] ? 1 : 0.2}`}}><TelevisionIcon/><br/>電視機</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[3] ? 1 : 0.2}`}}><WashMachineIcon/><br/>洗衣機</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[4] ? 1 : 0.2}`}}><BedIcon/><br/>&emsp;床</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[5] ? 1 : 0.2}`}}><ClosetIcon/><br/>&ensp;衣櫥</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[6] ? 1 : 0.2}`}}><TvProgramIcon/><br/>第四台</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[7] ? 1 : 0.2}`}}><NetworkIcon/><br/>&ensp;網路</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[8] ? 1 : 0.2}`}}><WaterHeaterIcon/><br/>熱水器</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[9] ? 1 : 0.2}`}}><NaturalGasIcon/><br/>天然氣</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[10] ? 1 : 0.2}`}}><SofaIcon/><br/>&ensp;沙發</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[11] ? 1 : 0.2}`}}><DeskAndChairIcon/><br/>&ensp;桌椅</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[12] ? 1 : 0.2}`}}><ElevatorIcon/><br/>&ensp;電梯</span>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col xs={24} sm={1} md={2} lg={4} xl={6}></Col>
+                </Row> : []
+            }
             {
             prop.isOwner?(
             <div>
             <Divider>附件</Divider>
             <Row>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
+                <Col xs={24} sm={8} md={8} lg={8} xl={8} style={{
                             textAlign: 'center',
                         }}>
-                            
+
                     <Table
                         columns={annexColumns}
                         dataSource={annex}
                         onRow={(record, rowIndex) => {
                         return {
                         onClick: event => {
-                        
+
                         }, // click row
                     };}}
-            />        
+            />
                 </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
-            </Row> 
-            </div>):null    
+            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
+            </Row>
+            </div>):null
             }
 
             <Divider>交通資訊</Divider>

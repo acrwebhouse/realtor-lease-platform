@@ -386,6 +386,7 @@ const ReserveHouseList = (props, ref) => {
                     //     window.location.href = window.location.origin;
                     // },3000);
                     SetIsShowDeleteAlert(false)
+                    setEnableDel(false)
                     getHousesList()
                 }else{
                     toast.error(response.data.data)
@@ -433,7 +434,7 @@ const ReserveHouseList = (props, ref) => {
                 toast.error(error)
             })
         }
-    }, [enableDel])
+    }, [enableCancel])
 
     const deleteReserve = () => {
         setEnableDel(true)

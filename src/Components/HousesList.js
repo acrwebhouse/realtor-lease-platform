@@ -1,5 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, Table, Button, Image, Input, Select, Row, Col, Alert, Space, Form, DatePicker} from "antd";
+import {
+    Modal,
+    Table,
+    Button,
+    Image,
+    Input,
+    Select,
+    Row,
+    Col,
+    Alert,
+    Space,
+    Form,
+    DatePicker,
+    Descriptions,
+    Divider
+} from "antd";
 import {HouseAxios, TransactionAxios} from './axiosApi'
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
@@ -14,11 +29,13 @@ const houseService = config.base_URL_House
 const housesListUrl = 'house/getHouses'
 const removeHouseUrl = 'house/removeHouse'
 const Transaction_Auth = 'house/dealHouse'
+const transferHouse_Auth = 'house/editHouse'
 const houseDefaultImage = 'data:image/png;base64,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'
 
 const HousesList = (props) => {
     const xToken = cookie.load('x-token')
     const [form_deal] = Form.useForm();
+    const [form_transfer] = Form.useForm();
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
     const taipeiAreaOptions = [{ value: '區域不限' },{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
     const newTaipeiAreaOptions = [{ value: '區域不限' },{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
@@ -64,6 +81,12 @@ const HousesList = (props) => {
     const [enableDealForm, setEnableDealForm] = useState(false);
     const [size] = useState("large");
     const [isPostDeal, setIsPostDeal] = useState(false)
+    const [isPutTransfer, setIsPutTransfer] = useState(false)
+    const [transferModalEnable, setTransferModalEnable] = useState(false)
+    const [enableShowEmployeeInfo, setEnableShowEmployeeInfo] = useState(false)
+    const [employeeName, setEmployeeName] = useState([])
+    const [houseData, setHouseData] = useState([])
+    const [houseKey, setHouseKey] = useState()
     const [dealData] = useState({
         id: '',
         actualPrice : '',
@@ -71,11 +94,14 @@ const HousesList = (props) => {
         startRentDate : '',
         endRentDate : ''
     })
-
+    const [transferOwnerId, setTransferOwnerId] = useState([])
+    console.log(houseData[houseKey], houseKey, props.companyEmployees)
+    // console.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
     useEffect(() => {
         if (init) {
             setInit(false)
             getHousesList()
+            console.log(init)
         }
     }, )
 
@@ -104,6 +130,34 @@ const HousesList = (props) => {
             })
         }
     }, [isPostDeal])
+
+    //transfer function
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        console.log(xToken)
+        if (isPutTransfer) {
+            HouseAxios.put(transferHouse_Auth, Object.assign(houseData[houseKey], {'id': houseData[houseKey]._id ,'owner': transferOwnerId, 'annex':houseData[houseKey].annex ? houseData[houseKey]:[]}), {
+                headers: {
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    'x-Token':xToken
+                }
+            }).then((response) => {
+                console.log(response)
+                if(response.data.status===true) {
+                    setIsPutTransfer(false)
+                    form_transfer.resetFields()
+                    setEnableShowEmployeeInfo(false)
+                    setTransferModalEnable(false)
+                    getHousesList()
+                    toast.success(`物件轉移成功`)
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [isPutTransfer])
 
     const [getHousesArg] = useState({
         start : '0',
@@ -243,6 +297,7 @@ const HousesList = (props) => {
             .then( (response) => {
                 // dealData.id = response.data.data[0].owner
                 resolveHousesList(response)
+                setHouseData(response.data.data)
             })
             .catch( (error) => {
                 showInternelErrorPageForMobile()
@@ -360,6 +415,7 @@ const HousesList = (props) => {
             setHouses(data)
         }
     }
+
 
     const children = [];
     for (let i = 10; i < 36; i++) {
@@ -757,12 +813,23 @@ const HousesList = (props) => {
                                 {/*<br/>*/}
                                 {content[10]}
                                 <br/>
+                                {props.enableTranfer ?
+                                    <div style={{display: "flex"}}>
+                                        <Button onClick={() => onTransfer()} style={{width: '70px', backgroundColor:'green', color:'white' }}>
+                                            轉移
+                                        </Button>
+                                        &nbsp;
+                                        <Button type="primary" disabled={isShowDeleteAlert} onClick={() => removeHouse(content[11])} danger style={{width: '70px'}}>
+                                            刪除
+                                        </Button>
+                                    </div>
+                                    :
                                 <div style={{display: isShowEdit}}>
                                     <Button type="primary" onClick={() => queryHouse(content[11])} style={{width: '70px' }}>
                                         查看
                                     </Button>
                                     &nbsp;
-                                    <Button type="primary" onClick={() => removeHouse(content[11])} danger style={{width: '70px'}}>
+                                    <Button type="primary" disabled={isShowDeleteAlert} onClick={() => removeHouse(content[11])} danger style={{width: '70px'}}>
                                         刪除
                                     </Button>
                                     &nbsp;
@@ -779,7 +846,7 @@ const HousesList = (props) => {
                                         :
                                         []
                                     }
-                                </div>
+                                </div>}
                             </div>
                         </Col>
                     </Row>
@@ -842,6 +909,23 @@ const HousesList = (props) => {
         setIsPostDeal(true)
 
     }
+    const handleTransferData = (value) => {
+        console.log(value, value.transferName, props.companyEmployees)
+        for(let i = 0; i< props.companyEmployees.length; i++) {
+            if(props.companyEmployees[i].userData[0].name === value.transferName) {
+                console.log("Hello World", props.companyEmployees[i].userId)
+                setTransferOwnerId(props.companyEmployees[i].userId)
+            }
+        }
+        setIsPutTransfer(true)
+    }
+    console.log(transferOwnerId)
+    const showEmployeeInfo = (value) => {
+        console.log(value)
+        setEnableShowEmployeeInfo(true)
+        setEmployeeName(value)
+        // setIsPostDeal(true)
+    }
 
     let data = [
         {
@@ -853,7 +937,9 @@ const HousesList = (props) => {
         }
     ];
 
-
+    const onTransfer = () => {
+        setTransferModalEnable(true)
+    }
 
     return (
         <div>
@@ -881,7 +967,16 @@ const HousesList = (props) => {
                 ):null
             }
             <div>
+                {props.enableTranfer ?
+                <Row>
+                    <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
+                    <Col xs={24} sm={8} md={8} lg={8} xl={12}>
+                        <Divider>物件轉移</Divider>
 
+                    </Col>
+                    <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
+                </Row>:[]
+                }
                 <Row>
                     <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                     <Col xs={24} sm={6} md={6} lg={5} xl={4}>
@@ -1047,9 +1142,14 @@ const HousesList = (props) => {
                             columns={columns}
                             pagination={{ position: ['topLeft', 'bottomRight'] }}
                             dataSource={houses}
+                            // scroll={{
+                            //     y: 540,
+                            // }}
                             onRow={(record, rowIndex) => {
                                 return {
                                     onClick: event => {
+                                        console.log('record',record)
+                                        setHouseKey(record.key)
                                         if(isShowEdit === 'none'){
                                             console.log('event',event)
                                             console.log('record',record)
@@ -1141,6 +1241,69 @@ const HousesList = (props) => {
 
                 </Form>
 
+            </Modal>
+            <Modal  title=""
+                    visible={transferModalEnable}
+                // onCancel={() => setEnableDealForm(false)}
+                    closable={false}
+                    footer={[]}
+            >
+                <Form form={form_transfer}
+                      className="transferForm"
+                      name="transferForm"
+                      onFinish={handleTransferData}
+                      scrollToFirstError
+                >
+                    <Form.Item
+                        name="transferName"
+                        label="轉移人員："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                        <Select options={props.transferOptions} onSelect={showEmployeeInfo}/>
+
+                    </Form.Item>
+                    {enableShowEmployeeInfo ? <Descriptions title="員工資料" layout="horizontal" bordered column={{
+                        xxl: 4,
+                        xl: 4,
+                        lg: 3,
+                        md: 3,
+                        sm: 2,
+                        xs: 1,
+                    }}>
+                        <Descriptions.Item label="姓名" span={4}>{props.companyEmployees[props.transferOptions.map(item => item.value).indexOf(employeeName)].userData[0].name}</Descriptions.Item>
+                        <Descriptions.Item label="電話" span={4}>{props.companyEmployees[props.transferOptions.map(item => item.value).indexOf(employeeName)].userData[0].phone}</Descriptions.Item>
+                        <Descriptions.Item label="信箱" span={4}>{props.companyEmployees[props.transferOptions.map(item => item.value).indexOf(employeeName)].userData[0].mail}</Descriptions.Item>
+                    </Descriptions>:[]}
+                    <br/>
+                    <div style={{display: 'flex'}}>
+                        <Button type="primary"
+                                className='login-form-button'
+                                shape="round"
+                                key="submit"
+                                htmlType="submit"
+                                style={{width: '50%'}}
+                        >
+                            {/*Submit*/}
+                            送出
+                        </Button>
+                        &nbsp;
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    form_transfer.resetFields()
+                                    setTransferModalEnable(false)
+                                    setEnableShowEmployeeInfo(false)
+                                }}
+                                style={{width: '50%', backgroundColor:'red'}}
+                        >
+                            取消
+                        </Button>
+                    </div>
+                </Form>
             </Modal>
         </div>
     );
