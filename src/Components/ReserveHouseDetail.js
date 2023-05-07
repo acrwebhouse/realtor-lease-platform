@@ -229,8 +229,8 @@ const ReserveHouseDetail = (props) => {
             <br/>
             <br/>
             <Row>
-                <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={0} sm={4} md={6} lg={6} xl={8}></Col>
+                <Col xs={24} sm={16} md={12} lg={12} xl={8}>
                     <div>
                         {enableShowInfo ?
                             <div>
@@ -245,10 +245,7 @@ const ReserveHouseDetail = (props) => {
                                 <span style={{'fontSize':'20px'}}>
                                     {reserveStateArr[tenantData['state']].value}
                                 </span>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <br/>
                                             <Select placeholder="狀態選擇"
                                                     showArrow={false}
                                                     size='large'

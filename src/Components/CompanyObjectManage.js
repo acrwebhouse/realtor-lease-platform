@@ -5,7 +5,7 @@ import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {CompanyAxios} from "./axiosApi";
 import {showInternelErrorPageForMobile} from "./CommonUtil";
-import {Col, Row, Divider, Table, Select} from "antd";
+import {Col, Row, Divider, Table, Select, Button} from "antd";
 
 let transferOptions = []
 const priceMin1 = 0;
@@ -169,10 +169,15 @@ const CompanyObjectManage = (props) => {
             .then( (response) => {
                 console.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data[0].companyId)
-                    getCompanyEmployeesList(response.data.data[0].companyId, response.data.data[0].userData[0].name)
-                    getTeamUploadHouseCounts(response.data.data[0].companyId)
-                    // resolveCompanyEmployee(response.data.data)
+                    console.log(response.data.data[0])
+                    for (let i = 0; i< response.data.data.length; i++) {
+                        if((!response.data.data[i].isResign) && response.data.data[i].state ===2 ) {
+                            getCompanyEmployeesList(response.data.data[i].companyId, response.data.data[i].userData[0].name)
+                            getTeamUploadHouseCounts(response.data.data[i].companyId)
+                            // resolveCompanyEmployee(response.data.data)
+                        }
+
+                    }
                 }else{
                     toast.error('員工資訊取得失敗')
                 }
@@ -278,6 +283,12 @@ const CompanyObjectManage = (props) => {
         defaultDate.endDate = years+`/`+ `${dealYearMonth.month.indexOf(value) + 1}`+`/31`
     };
 
+    const showLastWeekData = () => {
+        console.log(todayDate)
+        checkDate(todayDate)
+        getCompanyEmployeeInfo()
+    }
+
     return (
         <div>
            {/*CompanyObjectManage*/}
@@ -310,6 +321,18 @@ const CompanyObjectManage = (props) => {
                            onChange={handleMonthChange}
                            options={dealYearMonth.month.map((month) => ({ label: month, value: month }))}
                         />
+                        <br/>
+                        <br/>
+                        <Button
+                                className='login-form-button'
+                                shape="round"
+                                key="submit"
+                                onClick={showLastWeekData}
+                                style={{width: '25%', backgroundColor: '#4B0082', color: '#ffffff'}}
+                        >
+                            {/*Submit*/}
+                            預設時間(上週)
+                        </Button>
                         <br/>
                         <br/>
                         <Table columns={columns} dataSource={teamHouseCount} size="small"/>
