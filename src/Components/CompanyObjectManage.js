@@ -64,7 +64,7 @@ const columns = [
 ];
 const todayDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getDay()
 const dealYearMonth = {
-    year: [],
+    year: ['前一週', '前兩週'],
     month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月',  ]
 };
 
@@ -77,6 +77,7 @@ const CompanyObjectManage = (props) => {
     const [companyEmployees, setCompanyEmployees] = useState({})
     const [teamHouseCount, setTeamHouseCount] = useState([])
     const [years, setYears] = useState();
+    const [enableMonth, setEnableMonth] = useState(true)
     const [months, setMonths] = useState();
     const [enableCheckYearMonth, setEnableCheckYearMonth] = useState(false)
     const [defaultDate] = useState({
@@ -88,11 +89,13 @@ const CompanyObjectManage = (props) => {
             if (init) {
                 setInit(false)
                 setEnableTransfer(true)
-                setYears(() => new Date().getFullYear())
-                setMonths(() => dealYearMonth.month[new Date().getMonth()])
+                // setYears(() => new Date().getFullYear())
+                // setMonths(() => dealYearMonth.month[new Date().getMonth()])
+                setYears(dealYearMonth.year[0])
+                setMonths('-')
                 getCompanyEmployeeInfo()
                 checkYearMonth()
-                checkDate(todayDate)
+                checkLastWeek(todayDate)
             }
         }, )
 
@@ -115,7 +118,7 @@ const CompanyObjectManage = (props) => {
     }
     console.log(todayDate)
     console.log(defaultDate.firstDate, defaultDate.endDate)
-    const checkDate = (todayDate) => {
+    const checkLastWeek = (todayDate) => {
         console.log(typeof(todayDate))
         switch (todayDate) {
             case 0 :
@@ -155,7 +158,46 @@ const CompanyObjectManage = (props) => {
 
 
     }
+    const checkLastTwoWeek = (todayDate) => {
+        console.log(typeof(todayDate))
+        switch (todayDate) {
+            case 0 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-20).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-14).toLocaleDateString()
+                break;
+            case 1 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-14).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-8).toLocaleDateString()
+                break;
+            case 2 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-15).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-9).toLocaleDateString()
+                break;
+            case 3 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-16).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-10).toLocaleDateString()
+                break;
+            case 4 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-17).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-11).toLocaleDateString()
+                break;
+            case 5 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-18).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-12).toLocaleDateString()
+                break;
+            case 6 :
+                defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-19).toLocaleDateString()
+                defaultDate.endDate =  new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-13).toLocaleDateString()
+                break;
+            default:
+                break;
 
+
+                console.log(defaultDate.firstDate, defaultDate.endDate)
+        }
+
+
+    }
     console.log(props)
     function getCompanyEmployeeInfo(){
         let reqUrl = `/employees/getPersonalEmployeesInfo`
@@ -268,26 +310,47 @@ const CompanyObjectManage = (props) => {
     }
 
     const handleYearChange = (value) => {
-        setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
-        setEnableCheckYearMonth(true)
-        defaultDate.firstDate = value+`/`+ `${dealYearMonth.month.indexOf(months) + 1}`+`/1`
-        defaultDate.endDate = value+`/`+ `${dealYearMonth.month.indexOf(months) + 1}`+`/31`
-        // console.log(value+`/`+ `${dealYearMonth.month.indexOf(months) + 1}`+`/1`)
-        // console.log(dealYearMonth.month.indexOf(months))
-    }
+        switch (value) {
+            case '前一週' :
+                console.log('123')
+                setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
+                checkLastWeek(todayDate)
+                setEnableMonth(true)
+                setMonths('-')
+                getCompanyEmployeeInfo()
+                break;
+            case '前兩週' :
+                setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
+                checkLastTwoWeek(todayDate)
+                setEnableMonth(true)
+                setMonths('-')
+                getCompanyEmployeeInfo()
+                break;
+            default :
+                setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
+                setEnableCheckYearMonth(true)
+                console.log(value)
+                if(value === new Date().getFullYear()) {
+                    setMonths(dealYearMonth.month[new Date().getMonth()])
+                    defaultDate.firstDate = new Date(value, new Date().getMonth(), 1).toLocaleDateString()
+                    defaultDate.endDate = new Date(value,new Date().getMonth() + 1, 0).toLocaleDateString()
+                }else {
+                    setMonths(dealYearMonth.month[0])
+                    defaultDate.firstDate = new Date(value, dealYearMonth.month.indexOf(dealYearMonth.month[0]), 1).toLocaleDateString()
+                    defaultDate.endDate = new Date(value, dealYearMonth.month.indexOf(dealYearMonth.month[0]) + 1, 0).toLocaleDateString()
+                }
 
+                setEnableMonth(false)
+                break;
+        }
+    }
     const handleMonthChange = (value) => {
         setMonths(dealYearMonth.month[dealYearMonth.month.indexOf(value)]);
         setEnableCheckYearMonth(true)
-        defaultDate.firstDate = years+`/`+ `${dealYearMonth.month.indexOf(value) + 1}`+`/1`
-        defaultDate.endDate = years+`/`+ `${dealYearMonth.month.indexOf(value) + 1}`+`/31`
+        defaultDate.firstDate = new Date(years, `${dealYearMonth.month.indexOf(value)}`, 1).toLocaleDateString()
+        defaultDate.endDate = new Date(years, `${dealYearMonth.month.indexOf(value) + 1}`, 0).toLocaleDateString()
     };
 
-    const showLastWeekData = () => {
-        console.log(todayDate)
-        checkDate(todayDate)
-        getCompanyEmployeeInfo()
-    }
 
     return (
         <div>
@@ -318,23 +381,13 @@ const CompanyObjectManage = (props) => {
                            style={{ width: '49%' }}
                            value={months}
                            size={size}
+                           disabled={enableMonth}
                            onChange={handleMonthChange}
                            options={dealYearMonth.month.map((month) => ({ label: month, value: month }))}
                         />
                         <br/>
                         <br/>
-                        <Button
-                                className='login-form-button'
-                                shape="round"
-                                key="submit"
-                                onClick={showLastWeekData}
-                                style={{width: '25%', backgroundColor: '#4B0082', color: '#ffffff'}}
-                        >
-                            {/*Submit*/}
-                            預設時間(上週)
-                        </Button>
-                        <br/>
-                        <br/>
+                        <h1>{defaultDate.firstDate} ~ {defaultDate.endDate}</h1>
                         <Table columns={columns} dataSource={teamHouseCount} size="small"/>
                     </Col>
                     <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
