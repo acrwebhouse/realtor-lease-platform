@@ -143,6 +143,10 @@ const HouseDetail = (prop) => {
         .then( (response) => {
             setHouse(response)
             resolveHouse(response)
+            console.log(response.data.data.saleInfo.devices)
+            if(response.data.data.saleInfo.devices !== undefined) {
+                setIsShowEquip(true)
+            }
         })
         .catch( (error) => {
             showInternelErrorPageForMobile()
@@ -625,7 +629,6 @@ console.log(showFloor2)
                 setIsShowBackBtn(true)
             }
             setInit(false)
-            setIsShowEquip(true)
             getHouse()
             
         }
@@ -990,7 +993,7 @@ console.log(showFloor2)
             <Col xs={24} sm={2} md={2} lg={2} xl={2}></Col>   
             </Row>
             <Divider> 提供設備 </Divider>
-            {house.saleInfo?
+            {isShowEquip ?
                 <Row>
                     <Col xs={24} sm={1} md={2} lg={4} xl={6}></Col>
                     <Col xs={24} sm={22} md={20} lg={16} xl={12}>
