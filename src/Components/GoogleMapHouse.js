@@ -24,7 +24,6 @@ const GoogleMapHouse = (props) => {
             lon : ""
         }
     )
-    console.log(house, address.lat.length)
 
     const getHouse = () => {
         let reqUrl = `${houseListUrl}?id=${id}&&isDelete=false`
@@ -56,7 +55,7 @@ const GoogleMapHouse = (props) => {
 
     useEffect(()=>{
         if(!init && house) {
-            if(address.lat.length > 0) {
+            if(address.lat && address.lat.length > 0) {
                 setMapSource(defaultMapSource+address.lat+", "+address.lon)
             } else {
                 setMapSource(defaultMapSource+house.address)
