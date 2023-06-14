@@ -65,7 +65,7 @@ const HousesList = (props) => {
     const typeOfRentalOptions = [{ value: '類型不限' },{ value: '整層住家' }, { value: '獨立套房' }, { value: '分租套房' }, { value: '雅房' }];
     const priceOptions = [{ value: '租金不限' },{ value: '0 - 5000 元' }, { value: '5000 - 10000 元' }, { value: '10000 - 20000 元' }, { value: '20000 - 30000 元' }, { value: '30000 - 40000 元' }, { value: '40000 以上元' }, { value: '自訂租金範圍' }];
     const roomOptions = [{ value: '格局不限' },{ value: '1 房' }, { value: '2 房' }, { value: '3 房' }, { value: '4 房以上' }];
-    const buildingTypeOptions = [{ value: '型態不限' },{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }];
+    const buildingTypeOptions = [{ value: '型態不限' },{ value: '公寓' }, { value: '電梯大樓' }, { value: '透天' }, { value: '店面' }, { value: '辦公室' }];
     const pingOptions = [{ value: '坪數不限' },{ value: '10 坪以下' }, { value: '10 - 20 坪' }, { value: '20 - 30 坪' }, { value: '30 - 40 坪' }, { value: '40 - 50 坪' }, { value: '自訂坪數範圍' }];
     const floorOptions = [{ value: '樓層不限' },{ value: '1 層' }, { value: '2 - 6 層' }, { value: '6 - 12 層' }, { value: '12 層以上' }, { value: '自訂樓層範圍' }];
     const featureOptions = [{ value: '可養寵物' }, { value: '可吸菸' }, { value: '可開伙' }, { value: '有管理員' }, { value: '有車位' }, { value: '倒垃圾服務' }];
@@ -84,7 +84,7 @@ const HousesList = (props) => {
     const [enableDealForm, setEnableDealForm] = useState(false);
     const [size] = useState("large");
     const [isPostDeal, setIsPostDeal] = useState(false)
-    const [isEditDeal, setIsEditDeal] = useState(false)
+    const [isCancelDeal, setIsCancelDeal] = useState(false)
     const [isPutTransfer, setIsPutTransfer] = useState(false)
     const [transferModalEnable, setTransferModalEnable] = useState(false)
     const [enableShowEmployeeInfo, setEnableShowEmployeeInfo] = useState(false)
@@ -99,7 +99,6 @@ const HousesList = (props) => {
         endRentDate : ''
     })
     const [transferOwnerId, setTransferOwnerId] = useState([])
-    const [dealCheck, setDealCheck] = useState(true)
     console.log(houseData[houseKey], houseKey, props.companyEmployees)
     // console.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
     useEffect(() => {
@@ -140,8 +139,33 @@ const HousesList = (props) => {
     useEffect(() => {
         const xToken = cookie.load('x-token')
         console.log(xToken)
-        if (isEditDeal) {
-            CompanyAxios.put(cancelTransaction_Auth, dealData, {
+        if (isCancelDeal) {
+            // console.log(Object.assign(houseData[houseKey].transactionData[0],
+            //     {
+            //         'id': houseData[houseKey].transactionData[0]._id,
+            //         'state': 0,
+            //         'transactionDate' : new Date(Date.parse(houseData[houseKey].transactionData[0].transactionDate)).toLocaleDateString(),
+            //         'startRentDate': new Date(Date.parse(houseData[houseKey].transactionData[0].startRentDate)).toLocaleDateString(),
+            //         'endRentDate': new Date(Date.parse(houseData[houseKey].transactionData[0].endRentDate)).toLocaleDateString(),
+            //     }))
+            // console.log(new Date(Date.parse(houseData[houseKey].transactionData[0].startRentDate)).toLocaleDateString(), new Date(Date.parse(houseData[houseKey].transactionData[0].transactionDate)).toLocaleDateString(),new Date(Date.parse(houseData[houseKey].transactionData[0].endRentDate)).toLocaleDateString())
+            CompanyAxios.put(cancelTransaction_Auth,
+                    {
+                        'id': houseData[houseKey].transactionData[0]._id,
+                        'houseId' : houseData[houseKey].transactionData[0].houseId,
+                        'userId' : houseData[houseKey].transactionData[0].userId,
+                        'actualPrice': houseData[houseKey].transactionData[0].actualPrice,
+                        'serviceCharge': houseData[houseKey].transactionData[0].serviceCharge,
+                        'transactionDate' : new Date(Date.parse(houseData[houseKey].transactionData[0].transactionDate)).toLocaleDateString(),
+                        'startRentDate': new Date(Date.parse(houseData[houseKey].transactionData[0].startRentDate)).toLocaleDateString(),
+                        'endRentDate': new Date(Date.parse(houseData[houseKey].transactionData[0].endRentDate)).toLocaleDateString(),
+                        'companyId': houseData[houseKey].transactionData[0].companyId,
+                        'edit': {
+
+                        },
+                        'state': 0,
+                    }
+                    , {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
@@ -153,6 +177,7 @@ const HousesList = (props) => {
                     setIsPostDeal(false)
                     form_deal.resetFields()
                     setEnableDealForm(false)
+                    setIsCancelDeal(false)
                     getHousesList()
                 }
             }).catch( (error) => {
@@ -160,7 +185,7 @@ const HousesList = (props) => {
                 toast.error(`${error}`)
             })
         }
-    }, [isEditDeal])
+    }, [isCancelDeal])
 
     //transfer function
     useEffect(() => {
@@ -381,6 +406,14 @@ const HousesList = (props) => {
                             item.content.push('透天')
                             // item.content.push('型態 : 透天')
                             break;
+                        case 4 :
+                            item.content.push('辦公室')
+                            // item.content.push('型態 : 透天')
+                            break;
+                        case 5 :
+                            item.content.push('店面')
+                            // item.content.push('型態 : 透天')
+                            break;
                         default:
                             item.content.push('未知')
                             // item.content.push('型態 : 未知')
@@ -441,6 +474,14 @@ const HousesList = (props) => {
 
                 item.content.push(items[i].belongId)
                 item.content.push(items[i].belongType)
+
+                if(items[i].transactionData.length>0 && items[i].transactionData[0].state === 1) {
+                    item.content.push(true)
+                }else {
+                    item.content.push(false)
+                }
+
+                console.log(item.content[14])
                 data.push(item)
             }
             setHouses(data)
@@ -856,7 +897,7 @@ const HousesList = (props) => {
                                     </div>
                                     :
                                 <div style={{display: isShowEdit}}>
-                                    {dealCheck?
+                                    {!content[14]?
                                         <span>
                                             <Button type="primary" onClick={() => queryHouse(content[11])} style={{width: '70px' }}>
                                         查看
@@ -871,25 +912,24 @@ const HousesList = (props) => {
 
                                     {content[13] === 2 ?
                                         <Button type="primary"
-                                                disabled={!dealCheck}
+                                                disabled={content[14]}
                                                 onClick={() => {
                                                      dealData.houseId = content[11]
                                                      dealData.companyId = content[12]
                                                      setEnableDealForm(true)
                                                 }}
-                                                style={{width: '70px', backgroundColor: dealCheck?'#FFA500':'', borderColor: dealCheck?'#FFA500':''}}>
-                                            {dealCheck?'成交':'成交中'}
+                                                style={{width: '70px', backgroundColor: !content[14]?'#FFA500':'', borderColor: !content[14]?'#FFA500':''}}>
+                                            {!content[14]?'成交':'成交中'}
                                         </Button>
                                         :
                                         []
                                     }
-                                    {dealCheck? []:
+                                    {!content[14]? []:
                                         <span>
                                         &nbsp;
                                             <Button type="primary"
                                                     onClick={() => {
-                                                        setDealCheck(true)
-                                                        setIsEditDeal(true)
+                                                        setIsCancelDeal(true)
                                                     }}
                                                     style={{width: '90px', backgroundColor: '#FF0000', borderColor: '#FF0000'}}>
                                             取消成交
@@ -957,8 +997,6 @@ const HousesList = (props) => {
         dealData.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
         console.log(dealData)
         setIsPostDeal(true)
-        setDealCheck(false)
-
     }
     const handleTransferData = (value) => {
         console.log(value, value.transferName, props.companyEmployees)

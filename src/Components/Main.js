@@ -37,6 +37,7 @@ import ReserveHouse from "./ReserveHouse";
 
 import CompanyApply from "./CompanyApply";
 import CompanyApplyList from "./CompanyApplyList";
+import CompanyApprovalList from "./CompanyApprovalList";
 import CompanyEmployeeInfo from "./CompanyEmployeeInfo";
 import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
@@ -70,7 +71,8 @@ const Main = () => {
     const [isShowRelativeLink, setIsShowRelativeLink] = useState(false);
 
     const [isShowCompanyApply, setIsShowCompanyApply] = useState(false);
-    const [isShowCompanyApplyList, setIsShowCompanyApplyList] = useState(false);
+    // const [isShowCompanyApplyList, setIsShowCompanyApplyList] = useState(false);
+    const [isShowCompanyApprovalList, setIsShowCompanyApprovalList] = useState(false);
     const [isShowCompanyEmployeeInfo, setIsShowCompanyEmployeeInfo] = useState(false);
     const [isShowCompanyHouseList, setIsShowCompanyHouseList] = useState(false);
     const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
@@ -79,7 +81,8 @@ const Main = () => {
     
     const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
-    const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
+    // const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
+    const [isShowCompanyApprovalListMenu, setIsShowCompanyApprovalListMenu] = useState(false);
     const [isShowCompanyHouseListMenu, setIsShowCompanyHouseListMenu] = useState(false);
     const [isShowCompanyObjectManageMenu, setIsShowCompanyObjectManageMenu] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
@@ -219,10 +222,15 @@ const Main = () => {
         if(employee.rank === 0 || isSales === true){
             if(employee.state === 2 || employee.state === 4){
                 companyGroupMenu.style.display = null;
+                // if(employee.rank === 0){
+                //     setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+                // }else{
+                //     setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                // }
                 if(employee.rank === 0){
-                    setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+                    setIsShowCompanyApprovalListMenu(true)//beacuse cant get menu id
                 }else{
-                    setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                    setIsShowCompanyApprovalListMenu(false)//beacuse cant get menu id
                 }
                 if(employee.state === 4){
                     setIsShowCompanyHouseListMenu(false)
@@ -269,7 +277,8 @@ const Main = () => {
         setIsShowMatchNeed(false)
         setIsShowRelativeLink(false)
         setIsShowCompanyApply(false);
-        setIsShowCompanyApplyList(false);
+        // setIsShowCompanyApplyList(false);
+        setIsShowCompanyApprovalList(false)
         setIsShowCompanyEmployeeInfo(false);
         setIsShowCompanyHouseList(false);
         setIsShowCompanyInfo(false);
@@ -459,13 +468,19 @@ const Main = () => {
         setIsShowCompanyApply(true)
     }
 
-    const companyApplyList = () =>{
-        console.log('companyApplyList')
+    // const companyApplyList = () =>{
+    //     console.log('companyApplyList')
+    //     turnOffPage()
+    //     setSelectMenu(['15'])
+    //     setIsShowCompanyApplyList(true)
+    // }
+
+    const companyApprovalList = () =>{
+        console.log('companyApprovalList')
         turnOffPage()
         setSelectMenu(['15'])
-        setIsShowCompanyApplyList(true)
+        setIsShowCompanyApprovalList(true)
     }
-
     const companyEmployeeInfo = () =>{
         console.log('companyEmployeeInfo')
         turnOffPage()
@@ -721,13 +736,16 @@ const Main = () => {
               <Menu.Item key='22' id="companyTransactionListMenu" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
                     成交紀錄
               </Menu.Item>
+              {/*{*/}
+              {/*  isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>*/}
+              {/*      審核列表*/}
+              {/*  </Menu.Item>):null           */}
+              {/*}*/}
               {
-                isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
-                    審核列表
-                </Menu.Item>):null           
+                  isShowCompanyApprovalListMenu?(<Menu.Item key='15' id="approvalListMenu" onClick={companyApprovalList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
+                      審核列表
+                  </Menu.Item>):null
               }
-
-
               <Menu.Item key='20' id="companyEmployeesListMenu" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
                     員工列表
               </Menu.Item>
@@ -798,8 +816,11 @@ const Main = () => {
     {
         isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
     }
+    {/*{*/}
+    {/*    isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApplyList>):null           */}
+    {/*}*/}
     {
-        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApplyList>):null           
+        isShowCompanyApprovalList?(<CompanyApprovalList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApprovalList>):null
     }
     {
         isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo employeeId={currentEmployeeData._id} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyEmployeeInfo>):null           

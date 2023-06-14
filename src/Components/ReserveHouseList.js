@@ -174,10 +174,14 @@ const ReserveHouseList = (props, ref) => {
                     houseId: items[i].houseId,
                     state: items[i].state,
                     // time: items[i].updateTime,
-                    content: [`${items[i].houseData[0].name}`,`地址:${items[i].houseData[0].address}`, `屋主：${items[i].houseData[0].hostName}`, `價格：${items[i].houseData[0].price} `,
+
+                }
+                if(items[i].houseData[0]['config']) {
+                    item.content = [`${items[i].houseData[0].name}`,`地址:${items[i].houseData[0].address}`, `屋主：${items[i].houseData[0].hostName}`, `價格：${items[i].houseData[0].price} `,
                         `坪數：${items[i].houseData[0].ping}`,
                         `格局：${items[i].houseData[0]['config']['room']}房${items[i].houseData[0]['config']['livingRoom']}廳${items[i].houseData[0]['config']['bathroom']}衛${items[i].houseData[0]['config']['balcony']}陽台`]
                 }
+
                 if(items[i].houseData[0].photo && items[i].houseData[0].photo.length > 0){
                     item.image = `${houseService}/resource/${items[i].houseData[0]._id}/photo/${items[i].houseData[0].photo[0]}`
                 }else{
