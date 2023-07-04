@@ -20,7 +20,7 @@ import {
     Statistic, Card, Form, Modal
 } from "antd";
 import cookie from 'react-cookies'
-import {HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
+import {CompanyAxios, HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
@@ -30,10 +30,12 @@ import {TableSkeleton} from "@ant-design/pro-skeleton";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
 import {showInternelErrorPageForMobile} from './CommonUtil'
+import {log} from "@craco/craco/lib/logger";
 
 const Transaction_Auth = 'transaction/getTransactionList'
 const editTransaction_Auth = 'transaction/editTransactionNoIncludeCompany'
-const removeTransaction_Auth = 'transaction/removeTransaction'
+const removeTransaction_Auth = '/transaction/editTransactionNoIncludeCompany'
+const cancelEditTransaction_Auth = '/transaction/editTransactionNoIncludeCompany'
 const { Panel } = Collapse;
 const dealYearMonth = {
     year: [],
@@ -50,6 +52,8 @@ const formItemLayout = {
         sm: {span: 20}
     },
 }
+
+const transactionArray = []
 
 const CompanyTransactionList = (props) => {
     console.log(props)
@@ -119,12 +123,24 @@ const CompanyTransactionList = (props) => {
         transactionDate: '',
         startRentDate: '',
         endRentDate: '',
-        companyId: ''
+        companyId: '',
+        state: '',
+        edit: {
+            actualPrice: '',
+            serviceCharge: '',
+            transactionDate: '',
+            startRentDate: '',
+            endRentDate: '',
+        },
     });
     const [enableDel, setEnableDel] = useState(false);
     const [isShowDeleteAlert, SetIsShowDeleteAlert] = useState(false);
+    const [isCancelEdit, setIsCancelEdit] = useState(false)
+    const [isCancelDel, setIsCancelDel] = useState(false)
     const [delId, setDelId] = useState('');
-
+    const [transactionData, setTransactionData] = useState([])
+    const [transactionKey, setTransactionKey] = useState(null)
+    const [updateInitialValue, setUpdateInitialValue] = useState(false)
 
     useEffect(() => {
         if (init) {
@@ -141,6 +157,24 @@ const CompanyTransactionList = (props) => {
             })
         }
     }, )
+    console.log(transactionArray)
+    useEffect(() => {
+        console.log(transactionKey, typeof(transactionKey) ==='number')
+        if(updateInitialValue && typeof(transactionKey) === 'number' ){
+
+            form_deal.resetFields()
+            form_deal.setFieldsValue({
+                "dealPrice": (transactionArray && transactionArray.length > 0) ? transactionArray[transactionKey].actualPrice : null,
+                "servicePrice": (transactionArray && transactionArray.length>0) ? transactionArray[transactionKey].serviceCharge:null,
+                'dealDate': (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[0]):null,
+                'rentDate': [
+                    (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[1]):null,
+                    (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[2]):null
+                ]
+            })
+            setTransactionKey(null)
+        }
+    }, [updateInitialValue, transactionKey]);
     // useEffect(() => {
     //     if (init) {
     //         setInit(false)
@@ -176,7 +210,7 @@ const CompanyTransactionList = (props) => {
             reqUrl += `&&userId=${getTransactionArg.userId}`
         }
         console.log(reqUrl)
-        UserAxios.get(
+        CompanyAxios.get(
             reqUrl,{
                 headers:{
                     "content-type": "application/json",
@@ -187,6 +221,8 @@ const CompanyTransactionList = (props) => {
         )
             .then( (response) => {
                 console.log(response)
+                setTransactionData(response.data.data)
+                transactionArray.splice(0, transactionArray.length)
                 resolveTransactionsList(response)
             })
             .catch( (error) => {
@@ -218,14 +254,32 @@ const CompanyTransactionList = (props) => {
                         serviceCharge: parseInt(`${items[i].serviceCharge}`),
                         content: [`${moment(items[i].transactionDate).format('YYYY/MM/DD')}`, `${moment(items[i].startRentDate).format('YYYY/MM/DD')}`, `${moment(items[i].endRentDate).format('YYYY/MM/DD')}`],
                         houseData: items[i].houseData[0],
-                        userData: items[i].userData[0]
-
+                        userData: items[i].userData[0],
+                        state: items[i].state,
+                        edit: items[i].edit,
                         // houseData: [items[i].houseData[0].name, items[i].houseData[0].price, items[i].houseData[0].hostName, items[i].houseData[0].hostGender, items[i].houseData[0].totalFloor, items[i].houseData[0].area]
+                    }
+                    if(items[i].state === 2) {
+                        item.submitEdit = false
+                    } else {
+                        item.submitEdit = true
+                    }
+                    if(items[i].state === 3) {
+                        item.submitDel = false
+                    } else {
+                        item.submitDel = true
+                    }
+                    if(items[i].state === 6 || items[i].state === 7) {
+                        item.applyRetry = true
+                    } else {
+                        item.applyRetry = false
                     }
 
                     data.push(item)
+                    transactionArray.push(item)
                 }
             }
+            console.log(data)
             setTransactions(data)
             setCaseCount(countTemp)
             setTotalPrice(priceTemp)
@@ -234,7 +288,7 @@ const CompanyTransactionList = (props) => {
     const editHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
 
-        UserAxios.put(
+        CompanyAxios.put(
             editTransaction_Auth, editTransactionArg,{
                 headers:{
                     "content-type": "application/json",
@@ -246,7 +300,7 @@ const CompanyTransactionList = (props) => {
             .then( (response) => {
                 console.log(response)
                 if(response.data.status) {
-                    toast.success('資料更新成功')
+                    toast.success('編輯審核已提交')
                     setEnableCheckYearMonth(true)
                 }
             })
@@ -257,6 +311,128 @@ const CompanyTransactionList = (props) => {
     }
     console.log(transactions)
     console.log(dealYearMonth.year)
+
+    //cancel edit
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        console.log(xToken)
+        if (isCancelEdit) {
+             CompanyAxios.put(cancelEditTransaction_Auth,
+                {
+                    'id': transactionData[transactionKey]._id,
+                    'houseId' : transactionData[transactionKey].houseId,
+                    'userId' : transactionData[transactionKey].userId,
+                    'actualPrice': transactionData[transactionKey].actualPrice,
+                    'serviceCharge': transactionData[transactionKey].serviceCharge,
+                    'transactionDate' : new Date(Date.parse(transactionData[transactionKey].transactionDate)).toLocaleDateString(),
+                    'startRentDate': new Date(Date.parse(transactionData[transactionKey].startRentDate)).toLocaleDateString(),
+                    'endRentDate': new Date(Date.parse(transactionData[transactionKey].endRentDate)).toLocaleDateString(),
+                    'companyId': transactionData[transactionKey].companyId,
+                    'edit': {
+
+                    },
+                    'state': 4,
+                }
+                , {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        'x-Token':xToken
+                    }
+                }).then((response) => {
+                console.log(response)
+                if(response.data.status) {
+                    setIsCancelEdit(false)
+                    getHousesTransactionList()
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [isCancelEdit])
+
+    //remove transaction
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        console.log(xToken)
+        if (enableDel) {
+            CompanyAxios.put(removeTransaction_Auth,
+                {
+                    'id': transactionData[transactionKey]._id,
+                    'houseId' : transactionData[transactionKey].houseId,
+                    'userId' : transactionData[transactionKey].userId,
+                    'actualPrice': transactionData[transactionKey].actualPrice,
+                    'serviceCharge': transactionData[transactionKey].serviceCharge,
+                    'transactionDate' : new Date(Date.parse(transactionData[transactionKey].transactionDate)).toLocaleDateString(),
+                    'startRentDate': new Date(Date.parse(transactionData[transactionKey].startRentDate)).toLocaleDateString(),
+                    'endRentDate': new Date(Date.parse(transactionData[transactionKey].endRentDate)).toLocaleDateString(),
+                    'companyId': transactionData[transactionKey].companyId,
+                    'edit': {
+
+                    },
+                    'state': 3,
+                }
+                , {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        'x-Token':xToken
+                    }
+                }).then((response) => {
+                console.log(response)
+                if(response.data.status) {
+                    setEnableDel(false)
+                    SetIsShowDeleteAlert(false)
+                    getHousesTransactionList()
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [enableDel])
+
+    //cancel Del
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        console.log(xToken)
+        if (isCancelDel) {
+            CompanyAxios.put(cancelEditTransaction_Auth,
+                {
+                    'id': transactionData[transactionKey]._id,
+                    'houseId' : transactionData[transactionKey].houseId,
+                    'userId' : transactionData[transactionKey].userId,
+                    'actualPrice': transactionData[transactionKey].actualPrice,
+                    'serviceCharge': transactionData[transactionKey].serviceCharge,
+                    'transactionDate' : new Date(Date.parse(transactionData[transactionKey].transactionDate)).toLocaleDateString(),
+                    'startRentDate': new Date(Date.parse(transactionData[transactionKey].startRentDate)).toLocaleDateString(),
+                    'endRentDate': new Date(Date.parse(transactionData[transactionKey].endRentDate)).toLocaleDateString(),
+                    'companyId': transactionData[transactionKey].companyId,
+                    'edit': {
+
+                    },
+                    'state': 4,
+                }
+                , {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        'x-Token':xToken
+                    }
+                }).then((response) => {
+                console.log(response)
+                if(response.data.status) {
+                    setIsCancelDel(false)
+                    SetIsShowDeleteAlert(false)
+                    getHousesTransactionList()
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [isCancelDel])
 
     const checkYearMonth = () => {
         let year = new Date().getFullYear()
@@ -418,17 +594,20 @@ const CompanyTransactionList = (props) => {
         editTransactionArg.startRentDate = transactions[index].content[1]
         editTransactionArg.endRentDate = transactions[index].content[2]
         editTransactionArg.companyId = transactions[index].houseData.belongId
-
+        editTransactionArg.state = transactions[index].state
     }
     console.log(editTransactionArg)
     const handleDealData = (value) => {
         console.log(value)
         console.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
-        editTransactionArg.transactionDate = value.dealDate.format("YYYY/MM/DD")
-        editTransactionArg.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
-        editTransactionArg.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
-        {editTransactionArg.actualPrice = props.currentEmployeeData.rank === 0 ?parseInt(value.dealPrice) : editTransactionArg.actualPrice }
-        {editTransactionArg.serviceCharge = props.currentEmployeeData.rank === 0 ? parseInt(value.servicePrice) : editTransactionArg.serviceCharge}
+        editTransactionArg.edit.transactionDate = value.dealDate.format("YYYY/MM/DD")
+        editTransactionArg.edit.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
+        editTransactionArg.edit.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
+        // {editTransactionArg.actualPrice = props.currentEmployeeData.rank === 0 ?parseInt(value.dealPrice) : editTransactionArg.actualPrice }
+        // {editTransactionArg.serviceCharge = props.currentEmployeeData.rank === 0 ? parseInt(value.servicePrice) : editTransactionArg.serviceCharge}
+        editTransactionArg.edit.actualPrice = parseInt(value.dealPrice)
+        editTransactionArg.edit.serviceCharge = parseInt(value.servicePrice)
+        editTransactionArg.state = 2
         setEnableEditModal(false)
         setEnableEdit(true)
         form_deal.resetFields()
@@ -442,38 +621,73 @@ const CompanyTransactionList = (props) => {
         SetIsShowDeleteAlert(false)
     }
 
-    //delete
-    useEffect(() => {
-        const xToken = cookie.load('x-token')
-        let reqUrl = `${removeTransaction_Auth}?companyId=${props.currentEmployeeData.companyId}`
-        if(enableDel) {
-            UserAxios.delete(reqUrl, {
-                headers: {
-                    "content-type": "application/json",
-                    "accept": "application/json",
-                    "x-token" : xToken,
-                },
-                data: {"ids" : [delId]}
-            }).then((response) => {
-                console.log(response)
-                if(response.data.status === true){
-                    toast.success('刪除成功');
-                    // setTimeout(()=>{
-                    //     window.location.href = window.location.origin;
-                    // },3000);
-                    SetIsShowDeleteAlert(false)
-                    setEnableCheckYearMonth(true)
-                }else{
-                    toast.error(response.data.data)
-                }
-            })
-            .catch( (error) => {
-                showInternelErrorPageForMobile()
-                toast.error(error)
-            })
+    const stateCheck = (state) => {
+        switch (state) {
+            case 2 :
+                return '編輯審核中'
+            case 3 :
+                return '刪除審核中'
+            case 4 :
+                return '正式資料'
+            case 6 :
+                return '編輯審核失敗'
+            case 7 :
+                return '刪除審核失敗'
+            default :
+                return null
         }
-    }, [enableDel])
-    console.log(delId)
+    }
+
+    const stateColorCheck = (state) => {
+        switch (state) {
+            case 2 :
+                return '#FF8E16'
+            case 3 :
+                return '#FF8E16'
+            case 4 :
+                return '#000000'
+            case 6 :
+                return '#FF0000'
+            case 7 :
+                return '#FF0000'
+            default :
+                return null
+        }
+    }
+
+    // //delete
+    // useEffect(() => {
+    //     const xToken = cookie.load('x-token')
+    //     let reqUrl = `${removeTransaction_Auth}?companyId=${props.currentEmployeeData.companyId}`
+    //     if(enableDel) {
+    //         UserAxios.delete(reqUrl, {
+    //             headers: {
+    //                 "content-type": "application/json",
+    //                 "accept": "application/json",
+    //                 "x-token" : xToken,
+    //             },
+    //             data: {"ids" : [delId]}
+    //         }).then((response) => {
+    //             console.log(response)
+    //             if(response.data.status === true){
+    //                 toast.success('刪除成功');
+    //                 // setTimeout(()=>{
+    //                 //     window.location.href = window.location.origin;
+    //                 // },3000);
+    //                 SetIsShowDeleteAlert(false)
+    //                 setEnableCheckYearMonth(true)
+    //             }else{
+    //                 toast.error(response.data.data)
+    //             }
+    //         })
+    //         .catch( (error) => {
+    //             showInternelErrorPageForMobile()
+    //             toast.error(error)
+    //         })
+    //     }
+    // }, [enableDel])
+    // console.log(delId)
+
     return (
         <div>
             {/*{JSON.stringify(props.currentEmployeeData)}*/}
@@ -590,41 +804,185 @@ const CompanyTransactionList = (props) => {
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                         <Collapse defaultActiveKey={['0']}>
                             {transactions.map((data, index) => (
-                                <Panel header={'【'+(index+1)+'】'+data.houseData.name} key={index}>
-                                    <Descriptions title="詳細資料" bordered>
-                                        <Descriptions.Item label="原始價" span={1}>{data.houseData.price + ' 元'}</Descriptions.Item>
-                                        <Descriptions.Item label="成交價" span={1}>{data.actualPrice + ' 元'}</Descriptions.Item>
-                                        <Descriptions.Item label="服務費" span={1}>{data.serviceCharge + ' 元'}</Descriptions.Item>
-                                        <Descriptions.Item label="成交日" span={1}>{data.content[0]}</Descriptions.Item>
-                                        <Descriptions.Item label="起租日" span={1}>{data.content[1]}</Descriptions.Item>
-                                        <Descriptions.Item label="結租日" span={1}>{data.content[2]}</Descriptions.Item>
-                                        <Descriptions.Item label="城市" span={1.5}>{data.houseData.city}</Descriptions.Item>
-                                        <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
-                                        <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
-                                        <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
-                                        <Descriptions.Item label="負責房仲" span={3}>
-                                            {'姓名 : ' + data.userData.name}
-                                            <br />
-                                            {'信箱 : ' + data.userData.mail}
-                                            <br />
-                                            {'電話 : ' + data.userData.phone}
+                                <Panel header={'【'+(index+1)+'】- '+data.houseData.name}
+                                       key={index}
+                                       extra={data.state === 2?
+                                        <div>
+                                            <a onClick={(event) => {
 
-                                        </Descriptions.Item>
-                                    </Descriptions>
-                                    <br/>
-                                    <Button type="primary" style={{width: '70px', backgroundColor: '#00cc00'}} onClick={() => editTransactionData(index)}>編輯</Button>
-                                    &nbsp;
-                                    {props.currentEmployeeData.rank === 0?<Button type="primary"
-                                            disabled={isShowDeleteAlert}
-                                            onClick={() =>{
-                                                SetIsShowDeleteAlert(true)
-                                                setDelId(transactions[index].transactionId)
-                                            }}
-                                            danger
-                                            style={{width: '70px'}}
-                                    >
-                                        刪除
-                                    </Button> : []}
+                                                Modal.info({
+                                                    // title: '編輯結果',
+                                                    content:
+                                                        <div>
+                                                            <Descriptions title="變更資料" bordered>
+                                                                <Descriptions.Item label="成交價" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.actualPrice} 元</div>
+                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.actualPrice} 元</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="服務費" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.serviceCharge} 元</div>
+                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.serviceCharge} 元</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="成交日" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[0]}</div>
+                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.transactionDate}</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="起租日" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[1]}</div>
+                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.startRentDate}</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="結租日" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[2]}</div>
+                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.endRentDate}</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                            </Descriptions>
+                                                        </div>,
+                                                    icon: [] ,
+                                                    okText: '確定',
+                                                    width: '1000px',
+                                                    centered: 'true'
+                                                });
+                                                // setShowEditResultModal(true)
+                                                console.log("Hello")
+                                                // If you don't want click extra trigger collapse, you can prevent this:
+                                                event.stopPropagation();
+                                            }}>
+                                                變更資料
+                                            </a>
+                                        </div>
+                                           :
+                                           null
+                                       }
+                                >
+                                        <div>
+                                            <Descriptions title="詳細資料" bordered>
+
+                                                <Descriptions.Item label="原始價" span={1}>{data.houseData.price + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="成交價" span={1}>{data.actualPrice + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="服務費" span={1}>{data.serviceCharge + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="成交日" span={1}>{data.content[0]}</Descriptions.Item>
+                                                <Descriptions.Item label="起租日" span={1}>{data.content[1]}</Descriptions.Item>
+                                                <Descriptions.Item label="結租日" span={1}>{data.content[2]}</Descriptions.Item>
+                                                <Descriptions.Item label="城市" span={1.5}>{data.houseData.city}</Descriptions.Item>
+                                                <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
+                                                <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
+                                                <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
+                                                <Descriptions.Item label="負責房仲" span={3}>
+                                                    {'姓名 : ' + data.userData.name}
+                                                    <br />
+                                                    {'信箱 : ' + data.userData.mail}
+                                                    <br />
+                                                    {'電話 : ' + data.userData.phone}
+
+                                                </Descriptions.Item>
+                                                <Descriptions.Item label="狀態" span={3}><div style={{color: stateColorCheck(data.state)}}>{stateCheck(data.state)}</div></Descriptions.Item>
+                                            </Descriptions>
+                                            <br/>
+                                            <Button
+                                                style={{width: '90px',
+                                                    color:'#FFFFFF',
+                                                    backgroundColor:'#FF9A16',
+                                                    borderColor:'#FF9A16',
+                                                    display: data.applyRetry ?  null : 'none'
+                                                }}
+                                                onClick={() => {
+                                                    console.log(index)
+                                                    setTransactionKey(index)
+                                                    setIsCancelEdit(true)
+                                                }}
+                                            >
+                                                重新申請
+                                            </Button>
+                                            <Button disabled={!data.submitEdit}
+                                                    style={{width: '70px',
+                                                        backgroundColor: data.submitEdit?'#00CC00':'',
+                                                        borderColor: data.submitEdit?'#00CC00':'',
+                                                        color:data.submitEdit?'#FFFFFF':'',
+                                                        display: data.applyRetry? 'none' : (data.submitDel? null : 'none')
+                                                    }}
+                                                    onClick={() => {
+                                                        editTransactionData(index)
+                                                        setTransactionKey(index)
+                                                        setUpdateInitialValue(true)
+                                                        console.log(index)
+                                                    }}>
+                                                { data.submitEdit ? '編輯' : '申請中'}
+                                            </Button>
+                                            &nbsp;
+                                            {data.submitEdit
+                                                ?
+                                               []
+                                                :
+                                                <span>
+                                                &nbsp;
+                                                    <Button type="primary"
+                                                            onClick={() => {
+                                                                console.log(index)
+                                                                setTransactionKey(index)
+                                                                setIsCancelEdit(true)
+                                                            }}
+                                                            style={{
+                                                                width: '90px',
+                                                                backgroundColor: '#FF0000',
+                                                                borderColor: '#FF0000'
+                                                            }}>
+                                                        取消申請
+                                                    </Button>
+                                                </span>
+                                            }
+                                            <Button disabled={isShowDeleteAlert? isShowDeleteAlert : !data.submitDel}
+                                                    onClick={() => {
+                                                        setTransactionKey(index)
+                                                        SetIsShowDeleteAlert(true)
+                                                        setDelId(transactions[index].transactionId)
+                                                    }}
+                                                    style={{width: '70px',
+                                                        backgroundColor: isShowDeleteAlert?'':data.submitDel?'#FF0000':'',
+                                                        borderColor: isShowDeleteAlert?'':data.submitDel?'#FF0000':'',
+                                                        color:isShowDeleteAlert?'':data.submitDel?'#FFFFFF':'',
+                                                        display: data.applyRetry? 'none' : (data.submitEdit? null : 'none')
+                                                    }}
+                                            >
+                                                { data.submitDel ? '刪除' : '申請中'}
+                                            </Button>
+                                            {data.submitDel
+                                                ?
+                                                []
+                                                :
+                                                <span>
+                                                &nbsp;
+                                                    <Button type="primary"
+                                                            onClick={() => {
+                                                                console.log(index)
+                                                                setTransactionKey(index)
+                                                                setIsCancelDel(true)
+                                                            }}
+                                                            style={{
+                                                                width: '90px',
+                                                                backgroundColor: '#FF0000',
+                                                                borderColor: '#FF0000'
+                                                            }}>
+                                                        取消申請
+                                                    </Button>
+                                                </span>
+                                            }
+
+                                        </div>
                                 </Panel>
                             ))}
                         </Collapse>
@@ -633,7 +991,6 @@ const CompanyTransactionList = (props) => {
             </Row>
             <Modal  title=""
                     visible={enableEditModal}
-                // onCancel={() => setEnableDealForm(false)}
                     closable={false}
                     footer={[]}
             >
@@ -642,45 +999,46 @@ const CompanyTransactionList = (props) => {
                       name="dealForm"
                       onFinish={handleDealData}
                       scrollToFirstError
+                      initialValues={{
+                          "dealPrice":  null,
+                          // "servicePrice": transactionArray && transactionArray.length>0 ? transactionArray[transactionKey].serviceCharge:null,
+                          // 'dealDate': moment(data.content[0]),
+                          // 'rentDate': [moment(data.content[1]), moment(data.content[2])]
+                          }}
                       {...formItemLayout}
                 >
-                    {props.currentEmployeeData.rank === 0?
-                        <div>
-                            <Form.Item
-                                // name="TrafficType"
-                                name="dealPrice"
-                                label="成交價："
-                                rules={[
-                                    {
-                                        required: true,
-                                    },
-                                ]}
-                            >
-                                <Input id="dealPrice" style={{
-                                    width: '100%',
-                                }}>
-                                </Input>
-                            </Form.Item>
-                            <Form.Item
-                                // name="TrafficType"
-                                name="servicePrice"
-                                label="服務費："
-                                rules={[
-                                    {
-                                        required: true,
-                                    },
-                                ]}
-                            >
-                                <Input id="servicePrice" style={{
-                                    width: '100%',
-                                }}>
-                                </Input>
-                            </Form.Item>
-                        </div>
-
-                        :
-                        []
-                    }
+                    <div>
+                        <Form.Item
+                            // name="TrafficType"
+                            name="dealPrice"
+                            label="成交價："
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                        >
+                            <Input id="dealPrice" style={{
+                                width: '100%',
+                            }}>
+                            </Input>
+                        </Form.Item>
+                        <Form.Item
+                            // name="TrafficType"
+                            name="servicePrice"
+                            label="服務費："
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                        >
+                            <Input id="servicePrice" style={{
+                                width: '100%',
+                            }}>
+                            </Input>
+                        </Form.Item>
+                    </div>
                     <Form.Item
                         // name="TrafficType"
                         name="dealDate"
@@ -716,6 +1074,7 @@ const CompanyTransactionList = (props) => {
                                 key="submit"
                                 htmlType="submit"
                                 style={{width: '50%'}}
+                            // onClick={(x) => console.log(x)}
                         >
                             {/*Submit*/}
                             送出
@@ -727,14 +1086,12 @@ const CompanyTransactionList = (props) => {
                                     form_deal.resetFields()
                                     setEnableEditModal(false)
                                 }}
-                                style={{width: '50%', backgroundColor:'red'}}
+                                style={{width: '50%', backgroundColor:'red', borderColor: 'red'}}
                         >
                             取消
                         </Button>
                     </div>
-
                 </Form>
-
             </Modal>
         </div>
     );

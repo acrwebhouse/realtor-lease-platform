@@ -919,7 +919,7 @@ const HousesList = (props) => {
                                                      setEnableDealForm(true)
                                                 }}
                                                 style={{width: '70px', backgroundColor: !content[14]?'#FFA500':'', borderColor: !content[14]?'#FFA500':''}}>
-                                            {!content[14]?'成交':'成交中'}
+                                            {!content[14]?'成交':'申請中'}
                                         </Button>
                                         :
                                         []
@@ -932,7 +932,7 @@ const HousesList = (props) => {
                                                         setIsCancelDeal(true)
                                                     }}
                                                     style={{width: '90px', backgroundColor: '#FF0000', borderColor: '#FF0000'}}>
-                                            取消成交
+                                            取消申請
                                         </Button>
                                         </span>
                                     }

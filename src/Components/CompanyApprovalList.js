@@ -16,13 +16,15 @@ const getCompanyApplyListUrl = '/employees/getEmployeesListByCompanyId'
 const editEmployees = '/employees/editEmployees'
 const getTransactionListAuth = 'transaction/getTransactionList'
 const editTransactionAuth = '/transaction/editTransactionNoIncludeCompany'
+const removeTransactionAuth = '/transaction/removeTransaction'
 const CompanyApprovalList = (props) => {
     let { id } = useParams();
     const [init, setInit] = useState(true);
     const [companyApplyList , setCompanyApplyList] = useState([]);
-    const [transactionApplyList, setTransactionApplyList] = useState([])
+    const [transactionCreateApplyList, setTransactionCreateApplyList] = useState([])
+    const [transactionEditApplyList, setTransactionEditApplyList] = useState([])
+    const [transactionDelApplyList, setTransactionDelApplyList] = useState([])
     const [switchPage, setSwitchPage] = useState(0)
-
     const [getCompanyApplyListArg] = useState({
         start : '0',
         count : '9999999',
@@ -59,54 +61,167 @@ const CompanyApprovalList = (props) => {
 
     function resolveCompanyHousesList(response){
         console.log(response)
-        const data = []
+        const dataCreate = []
+        const dataEdit = []
+        const dataDel = []
 
         if(response.data && response.data.data){
-            const temp = []
+            const tempCreate = []
+            const tempEdit = []
+            const tempDel = []
             const items = response.data.data
-
+            console.log(items)
             for(let i = 0 ;i<items.length; i++){
                 if(items[i] && items[i].state === 1) {
                     console.log(items[i], (items[i].createTime))
-                    temp.push(items[i])
+                    tempCreate.push(items[i])
                 }
             }
-            let transactionApplyData = removeDuplicates(temp, 'houseId')
-            for (let i = 0; i< transactionApplyData.length; i++) {
+            for(let i = 0 ;i<items.length; i++){
+                if(items[i] && items[i].state === 2) {
+                    console.log(items[i], (items[i].createTime))
+                    tempEdit.push(items[i])
+                }
+            }
+            for(let i = 0 ;i<items.length; i++){
+                if(items[i] && items[i].state === 3) {
+                    console.log(items[i], (items[i].createTime))
+                    tempDel.push(items[i])
+                }
+            }
+            console.log(tempCreate, tempEdit, tempDel)
+            let transactionCreateApply = removeDuplicates(tempCreate, 'houseId')
+            let transactionEditApply = removeDuplicates(tempEdit, 'houseId')
+            let transactionDelApply = removeDuplicates(tempDel, 'houseId')
+            console.log(transactionEditApply)
+            for (let i = 0; i< transactionCreateApply.length; i++) {
                 const item = {
                         key: i,
-                        id : transactionApplyData[i]._id,
-                        houseId : transactionApplyData[i].houseId,
-                        userId : transactionApplyData[i].userId,
-                        companyId : transactionApplyData[i].companyId,
-                        actualPrice : transactionApplyData[i].actualPrice,
-                        serviceCharge : transactionApplyData[i].serviceCharge,
-                        transactionDate : `${new Date(Date.parse(transactionApplyData[i].transactionDate)).toLocaleDateString()}`,
-                        startRentDate : `${new Date(Date.parse(transactionApplyData[i].startRentDate)).toLocaleDateString()}`,
-                        endRentDate : `${new Date(Date.parse(transactionApplyData[i].endRentDate)).toLocaleDateString()}`,
-                        applyName: transactionApplyData[i].userData[0].name,
+                        id : transactionCreateApply[i]._id,
+                        houseId : transactionCreateApply[i].houseId,
+                        userId : transactionCreateApply[i].userId,
+                        companyId : transactionCreateApply[i].companyId,
+                        actualPrice : transactionCreateApply[i].actualPrice,
+                        serviceCharge : transactionCreateApply[i].serviceCharge,
+                        transactionDate : `${new Date(Date.parse(transactionCreateApply[i].transactionDate)).toLocaleDateString()}`,
+                        startRentDate : `${new Date(Date.parse(transactionCreateApply[i].startRentDate)).toLocaleDateString()}`,
+                        endRentDate : `${new Date(Date.parse(transactionCreateApply[i].endRentDate)).toLocaleDateString()}`,
+                        applyName: transactionCreateApply[i].userData[0].name,
                         content : [
-                            `姓 名 : ${transactionApplyData[i].userData[0].name}`,
-                            `房屋名 : ${transactionApplyData[i].houseData[0].name}`,
-                            `原始價 : ${transactionApplyData[i].actualPrice} 元/月`,
-                            `服務費 : ${transactionApplyData[i].serviceCharge} 元`,
-                            `起租日 : ${new Date(Date.parse(transactionApplyData[i].startRentDate)).toLocaleDateString()}`,
-                            `結租日 : ${new Date(Date.parse(transactionApplyData[i].endRentDate)).toLocaleDateString()}`,
-                            `申請日 : ${new Date(Date.parse(transactionApplyData[i].createTime)).toLocaleDateString()}`,
+                            `物\u3000件 : ${transactionCreateApply[i].houseData[0].name}`,
+                            `申請人 : ${transactionCreateApply[i].userData[0].name}`,
+                            `成交價 : ${transactionCreateApply[i].actualPrice} 元/月 `,
+                            `服務費 : ${transactionCreateApply[i].serviceCharge} 元`,
+                            `成交日 : ${new Date(Date.parse(transactionCreateApply[i].transactionDate)).toLocaleDateString()}`,
+                            `起租日 : ${new Date(Date.parse(transactionCreateApply[i].startRentDate)).toLocaleDateString()}`,
+                            `結租日 : ${new Date(Date.parse(transactionCreateApply[i].endRentDate)).toLocaleDateString()}`,
+                            `申請日 : ${new Date(Date.parse(transactionCreateApply[i].createTime)).toLocaleDateString()}`,
                         ],
                     }
-                item.content.push(transactionApplyData[i])
+                item.content.push(transactionCreateApply[i])
                 console.log(item)
-                data.push(item)
+                dataCreate.push(item)
             }
 
-            setTransactionApplyList(data)
+            for (let i = 0; i< transactionEditApply.length; i++) {
+                const item1 = {
+                    key: i,
+                    id : transactionEditApply[i]._id,
+                    houseId : transactionEditApply[i].houseId,
+                    userId : transactionEditApply[i].userId,
+                    companyId : transactionEditApply[i].companyId,
+                    actualPrice : transactionEditApply[i].actualPrice,
+                    serviceCharge : transactionEditApply[i].serviceCharge,
+                    transactionDate : `${new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}`,
+                    startRentDate : `${new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}`,
+                    endRentDate : `${new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}`,
+                    applyName: transactionEditApply[i].userData[0].name,
+                    content : [
+                        `物\u3000件 : ${transactionEditApply[i].houseData[0].name}`,
+                        `申請人 : ${transactionEditApply[i].userData[0].name}`,
+                        <div style={{height:'0px'}}>
+                            成交價 :
+                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{transactionEditApply[i].actualPrice} 元</div>
+                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{transactionEditApply[i].edit.actualPrice} 元</div>
+                        </div>,
+                        <div style={{height:'0px'}}>
+                            服務費 :
+                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{transactionEditApply[i].serviceCharge} 元</div>
+                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{transactionEditApply[i].edit.serviceCharge} 元</div>
+                        </div>,
+                        <div style={{height:'0px'}}>
+                            成交日 :
+                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}</div>
+                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].edit.transactionDate)).toLocaleDateString()}</div>
+                        </div>,
+                        <div style={{height:'0px'}}>
+                            起租日 :
+                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}</div>
+                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].edit.startRentDate)).toLocaleDateString()}</div>
+                        </div>,
+                        <div style={{height:'0px'}}>
+                            結租日 :
+                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}</div>
+                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].edit.endRentDate)).toLocaleDateString()}</div>
+                        </div>,
+                        <div style={{height:'0px'}}>
+                            申請日 :
+                            <div style={{width:'100px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].createTime)).toLocaleDateString()}</div>
+                        </div>,
+                        // `服務費 : ${transactionEditApply[i].serviceCharge}元\u3000\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${transactionEditApply[i].edit.serviceCharge}元`,
+                        // `成交日 : ${new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}  ⇨   ${new Date(Date.parse(transactionEditApply[i].edit.transactionDate)).toLocaleDateString()}`,
+                        // `起租日 : ${new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}\u3000\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${new Date(Date.parse(transactionEditApply[i].edit.startRentDate)).toLocaleDateString()}`,
+                        // `結租日 : ${new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${new Date(Date.parse(transactionEditApply[i].edit.endRentDate)).toLocaleDateString()}`,
+                        // `申請日 : ${new Date(Date.parse(transactionEditApply[i].createTime)).toLocaleDateString()}`,
+                    ],
+                }
+                item1.content.push(transactionEditApply[i])
+                console.log(item1)
+                dataEdit.push(item1)
+            }
+            
+            for (let i = 0; i< transactionDelApply.length; i++) {
+                const item2 = {
+                    key: i,
+                    id : transactionDelApply[i]._id,
+                    houseId : transactionDelApply[i].houseId,
+                    userId : transactionDelApply[i].userId,
+                    companyId : transactionDelApply[i].companyId,
+                    actualPrice : transactionDelApply[i].actualPrice,
+                    serviceCharge : transactionDelApply[i].serviceCharge,
+                    transactionDate : `${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
+                    startRentDate : `${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
+                    endRentDate : `${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
+                    applyName: transactionDelApply[i].userData[0].name,
+                    content : [
+                        `物\u3000件 : ${transactionDelApply[i].houseData[0].name}`,
+                        `申請人 : ${transactionDelApply[i].userData[0].name}`,
+                        `成交價 : ${transactionDelApply[i].actualPrice} 元/月`,
+                        `服務費 : ${transactionDelApply[i].serviceCharge} 元`,
+                        `成交日 : ${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
+                        `起租日 : ${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
+                        `結租日 : ${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
+                        `申請日 : ${new Date(Date.parse(transactionDelApply[i].createTime)).toLocaleDateString()}`,
+                    ],
+                }
+                item2.content.push(transactionDelApply[i])
+                console.log(item2)
+                dataDel.push(item2)
+            }
+            setTransactionCreateApplyList(dataCreate)
+            setTransactionEditApplyList(dataEdit)
+            setTransactionDelApplyList(dataDel)
             // console.log(temp, temp.sort())
             // console.log(removeDuplicates(temp, 'houseId'))
         }
     }
 
-    console.log(transactionApplyList)
+    console.log(transactionCreateApplyList)
 
     const removeDuplicates = (originalArray, prop) => {
         let newArray = [];
@@ -121,7 +236,7 @@ const CompanyApprovalList = (props) => {
         }
         return newArray;
     }
-    // console.log(transactionApplyList)
+    // console.log(transactionCreateApplyList)
 
     function getCompanyApplyList(){
         const xToken = cookie.load('x-token')
@@ -180,7 +295,7 @@ const CompanyApprovalList = (props) => {
         }
     }
 
-    function transactionApplyResult(isPass,transaction){
+    function transactionCreateApplyResult(isPass,transaction){
         const body = {
             'id': transaction._id,
             'companyId': transaction.companyId,
@@ -211,7 +326,7 @@ const CompanyApprovalList = (props) => {
         }).then((response) => {
             console.log(response)
             if(response.data.status === true){
-                // getCompanyApplyList()
+                getCompanyHouseList()
             }else{
                 toast.error('審核失敗')
             }
@@ -221,7 +336,127 @@ const CompanyApprovalList = (props) => {
         })
 
     }
-    function applyResult(isPass,employee){
+
+    function transactionEditApplyResult(isPass,transaction){
+        const body = {
+            'id': transaction._id,
+            'companyId': transaction.companyId,
+            'houseId' : transaction.houseId,
+            'userId': transaction.userId,
+            'actualPrice': transaction.actualPrice,
+            'serviceCharge': transaction.serviceCharge,
+            'transactionDate': new Date(Date.parse(transaction.transactionDate)).toLocaleDateString(),
+            'startRentDate': new Date(Date.parse(transaction.startRentDate)).toLocaleDateString(),
+            'endRentDate': new Date(Date.parse(transaction.endRentDate)).toLocaleDateString(),
+            "edit": {
+                'actualPrice' : transaction.edit.actualPrice,
+                'serviceCharge' : transaction.edit.serviceCharge,
+                'transactionDate': new Date(Date.parse(transaction.edit.transactionDate)).toLocaleDateString(),
+                'startRentDate': new Date(Date.parse(transaction.edit.startRentDate)).toLocaleDateString(),
+                'endRentDate': new Date(Date.parse(transaction.edit.endRentDate)).toLocaleDateString(),
+            },
+            "state": transaction.state
+        }
+        if(isPass === true){
+            body.actualPrice = body.edit.actualPrice
+            body.serviceCharge = body.edit.serviceCharge
+            body.transactionDate = body.edit.transactionDate
+            body.startRentDate = body.edit.startRentDate
+            body.endRentDate = body.edit.endRentDate
+            body.edit = {}
+            body.state = 4
+        }else{
+            body.edit = {}
+            body.state = 6
+        }
+        console.log(isPass, body)
+        const xToken = cookie.load('x-token')
+        let reqUrl = `${editTransactionAuth}`
+        CompanyAxios.put(reqUrl, body, {
+            headers:{
+                'x-Token':xToken
+            }
+        }).then((response) => {
+            console.log(response)
+            if(response.data.status === true){
+                getCompanyHouseList()
+            }else{
+                toast.error('審核失敗')
+            }
+        }).catch( (error) => {
+            showInternelErrorPageForMobile();
+            toast.error(error)
+        })
+
+    }
+
+    function transactionDelApplyResult(isPass,transaction){
+        const body = {
+            'id': transaction._id,
+            'companyId': transaction.companyId,
+            'houseId' : transaction.houseId,
+            'userId': transaction.userId,
+            'actualPrice': transaction.actualPrice,
+            'serviceCharge': transaction.serviceCharge,
+            'transactionDate': new Date(Date.parse(transaction.transactionDate)).toLocaleDateString(),
+            'startRentDate': new Date(Date.parse(transaction.startRentDate)).toLocaleDateString(),
+            'endRentDate': new Date(Date.parse(transaction.endRentDate)).toLocaleDateString(),
+            "edit": {
+
+            },
+            "state": transaction.state
+        }
+        if(isPass === true){
+            const xToken = cookie.load('x-token')
+                let reqUrl = `${removeTransactionAuth}`
+            CompanyAxios.delete(reqUrl, {
+                        headers: {
+                            "content-type": "application/json",
+                            "accept": "application/json",
+                            "x-token" : xToken,
+                        },
+                        data: {"ids" : [body.id]}
+                    }).then((response) => {
+                        console.log(response)
+                        if(response.data.status === true){
+                            toast.success('刪除成功');
+                            // setTimeout(()=>{
+                            //     window.location.href = window.location.origin;
+                            // },3000);
+                            getCompanyHouseList()
+                        }else{
+                            toast.error(response.data.data)
+                        }
+                    })
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
+
+        }else{
+            body.state = 7
+            console.log(isPass, body)
+            const xToken = cookie.load('x-token')
+            let reqUrl = `${editTransactionAuth}`
+            CompanyAxios.put(reqUrl, body, {
+                headers:{
+                    'x-Token':xToken
+                }
+            }).then((response) => {
+                console.log(response)
+                if(response.data.status === true){
+                    getCompanyHouseList()
+                }else{
+                    toast.error('審核失敗')
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile();
+                toast.error(error)
+            })
+        }
+
+    }
+    function companyApplyResult(isPass,employee){
         const body = {
             'id': employee._id,
             'companyId': employee.companyId,
@@ -247,7 +482,7 @@ const CompanyApprovalList = (props) => {
         }).then((response) => {
             console.log(response)
             if(response.data.status === true){
-                // getCompanyApplyList()
+                getCompanyApplyList()
             }else{
                 toast.error('審核失敗')
             }
@@ -258,9 +493,9 @@ const CompanyApprovalList = (props) => {
 
     }
 
-    const transactionApplyColumns = [
+    const transactionCreateApplyColumns = [
         {
-            title: '申請人員',
+            // title: '申請人員',
             dataIndex: 'content',
             key: 'content',
             render: (content) => {
@@ -287,10 +522,12 @@ const CompanyApprovalList = (props) => {
                         <br/>
                         {content[5]}
                         <br/>
+                        {content[6]}
+                        <br/>
                         <div style={{
                             'color': '#6f2f3f',
                             'fontSize':'20px'
-                        }}>{content[6]}</div>
+                        }}>{content[7]}</div>
 
                         <div >
                         </div>
@@ -303,7 +540,7 @@ const CompanyApprovalList = (props) => {
             title: '',
             dataIndex: 'content',
             key: 'content',
-            //  width:'50px',
+             width:'220px',
             render: (content) => {
                 return <div style={{
                     'textAlign': 'center',
@@ -312,11 +549,155 @@ const CompanyApprovalList = (props) => {
                         'display': 'inline-block',
                         'textAlign': 'left',
                     }}>
-                        <Button type="primary" onClick={() => transactionApplyResult(true,content[7])} style={{width: '80px' }}>
+                        <Button type="primary" onClick={() => transactionCreateApplyResult(true,content[8])} style={{width: '80px' }}>
                             同意
                         </Button>
                         &nbsp;&nbsp;&nbsp;
-                        <Button type="primary" danger onClick={() => transactionApplyResult(false,content[7])} style={{width: '80px' }}>
+                        <Button type="primary" danger onClick={() => transactionCreateApplyResult(false,content[8])} style={{width: '80px' }}>
+                            拒絕
+                        </Button>
+                        <div >
+                        </div>
+                    </div>
+                </div>
+            },
+
+        },
+    ]
+
+    const transactionEditApplyColumns = [
+        {
+            // title: '申請人員',
+            dataIndex: 'content',
+            key: 'content',
+            render: (content) => {
+                return <div style={{
+                    //   'textAlign': 'center',
+                }}>
+                    <div style={{
+                        'display': 'inline-block',
+                        'textAlign': 'left',
+                    }}>
+                        <div style={{
+                            'color': '#0000ff',
+                            'fontSize':'20px'
+                        }}>{content[0]}</div>
+                        <div style={{
+                            'color': '#ff0000',
+                            'fontSize':'20px'
+                        }}>{content[1]}</div>
+                        {content[2]}
+                        <br/>
+                        {content[3]}
+                        <br/>
+                        {content[4]}
+                        <br/>
+                        {content[5]}
+                        <br/>
+                        {content[6]}
+                        <br/>
+                        <div style={{
+                            'color': '#6f2f3f',
+                            'fontSize':'20px'
+                        }}>{content[7]}</div>
+
+                        <div >
+                        </div>
+                    </div>
+                </div>
+            },
+
+        },
+        {
+            title: '',
+            dataIndex: 'content',
+            key: 'content',
+             width:'220px',
+            render: (content) => {
+                return <div style={{
+                    'textAlign': 'center',
+                }}>
+                    <div style={{
+                        'display': 'inline-block',
+                        'textAlign': 'left',
+                    }}>
+                        <Button type="primary" onClick={() => transactionEditApplyResult(true,content[8])} style={{width: '80px' }}>
+                            同意
+                        </Button>
+                        &nbsp;&nbsp;&nbsp;
+                        <Button type="primary" danger onClick={() => transactionEditApplyResult(false,content[8])} style={{width: '80px' }}>
+                            拒絕
+                        </Button>
+                        <div >
+                        </div>
+                    </div>
+                </div>
+            },
+
+        },
+    ]
+
+    const transactionDelApplyColumns = [
+        {
+            // title: '申請人員',
+            dataIndex: 'content',
+            key: 'content',
+            render: (content) => {
+                return <div style={{
+                    //   'textAlign': 'center',
+                }}>
+                    <div style={{
+                        'display': 'inline-block',
+                        'textAlign': 'left',
+                    }}>
+                        <div style={{
+                            'color': '#0000ff',
+                            'fontSize':'20px'
+                        }}>{content[0]}</div>
+                        <div style={{
+                            'color': '#ff0000',
+                            'fontSize':'20px'
+                        }}>{content[1]}</div>
+                        {content[2]}
+                        <br/>
+                        {content[3]}
+                        <br/>
+                        {content[4]}
+                        <br/>
+                        {content[5]}
+                        <br/>
+                        {content[6]}
+                        <br/>
+                        <div style={{
+                            'color': '#6f2f3f',
+                            'fontSize':'20px'
+                        }}>{content[7]}</div>
+
+                        <div >
+                        </div>
+                    </div>
+                </div>
+            },
+
+        },
+        {
+            title: '',
+            dataIndex: 'content',
+            key: 'content',
+             width:'220px',
+            render: (content) => {
+                return <div style={{
+                    'textAlign': 'center',
+                }}>
+                    <div style={{
+                        'display': 'inline-block',
+                        'textAlign': 'left',
+                    }}>
+                        <Button type="primary" onClick={() => transactionDelApplyResult(true,content[8])} style={{width: '80px' }}>
+                            同意
+                        </Button>
+                        &nbsp;&nbsp;&nbsp;
+                        <Button type="primary" danger onClick={() => transactionDelApplyResult(false,content[8])} style={{width: '80px' }}>
                             拒絕
                         </Button>
                         <div >
@@ -342,7 +723,7 @@ const CompanyApprovalList = (props) => {
         //     },
         // },
         {
-            title: '申請人員',
+            // title: '申請人員',
             dataIndex: 'content',
             key: 'content',
             render: (content) => {
@@ -376,7 +757,7 @@ const CompanyApprovalList = (props) => {
             title: '',
             dataIndex: 'content',
             key: 'content',
-            //  width:'50px',
+             width:'220px',
             render: (content) => {
                 return <div style={{
                     'textAlign': 'center',
@@ -385,11 +766,11 @@ const CompanyApprovalList = (props) => {
                         'display': 'inline-block',
                         'textAlign': 'left',
                     }}>
-                        <Button type="primary" onClick={() => applyResult(true,content[6])} style={{width: '80px' }}>
+                        <Button type="primary" onClick={() => companyApplyResult(true,content[6])} style={{width: '80px' }}>
                             同意
                         </Button>
                         &nbsp;&nbsp;&nbsp;
-                        <Button type="primary" danger onClick={() => applyResult(false,content[6])} style={{width: '80px' }}>
+                        <Button type="primary" danger onClick={() => companyApplyResult(false,content[6])} style={{width: '80px' }}>
                             拒絕
                         </Button>
                         <div >
@@ -419,11 +800,40 @@ const CompanyApprovalList = (props) => {
                 <Row>
                     <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                        <div style={{transform: 'translate(0, 500%)'}}>
-                            <Button type="primary" onClick={showTransactionApplyList} style={{width: '80px'}}>成交審核</Button>
-                            <br/>
-                            <br/>
-                            <Button type="primary" onClick={showCompanyApplyList} style={{width: '80px'}}>公司審核</Button>
+                        <div style={{transform: 'translate(0, 350px)'}}>
+                            <Button  onClick={showTransactionApplyList}
+                                    style={{
+                                        width: '380px',
+                                        height: '90px',
+                                        color:'#FFFFFF',
+                                        borderColor: '#FFFFFF',
+                                        borderRadius: '34px',
+                                        boxShadow: '3px 4px 0px 0px #899599',
+                                        background: 'linear-gradient(to bottom, #ededed 5%, #003C9D 100%)',
+                                        backgroundColor: '#003C9D',
+                                        cursor: 'pointer',
+                                        fontFamily: "'cwTeXKai', serif",
+                                        fontSize: '40px',
+                                    }}
+                                     onmouseover={{background: 'linear-gradient(to bottom, #003C9D 5%, #ededed 100%)',
+                                         backgroundColor: '#ededed',}}
+                            >成交審核</Button>
+                            {/*<br/>*/}
+                            {/*<br/>*/}
+                            <Button type="primary" onClick={showCompanyApplyList}
+                                    style={{
+                                        width: '380px',
+                                        height: '90px',
+                                        fontSize: '40px',
+                                        color:'#FFFFFF',
+                                        backgroundColor: '#003C9D',
+                                        borderColor: '#FFFFFF',
+                                        borderRadius: '34px',
+                                        marginTop: '10%',
+                                        boxShadow: '3px 4px 0px 0px #899599',
+
+                            }}
+                            >員工審核</Button>
                         </div>
                     </Col>
                     <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
@@ -433,34 +843,83 @@ const CompanyApprovalList = (props) => {
             :
          switchPage === 1
              ?
-        <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
-            <Row>
-                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                    <Divider>審核列表</Divider>
-                    <Table
-                        columns={transactionApplyColumns}
-                        pagination={{ position: ['topLeft', 'bottomRight'] }}
-                        dataSource={transactionApplyList}
-                        onRow={(record, rowIndex) => {
-                            return {
-                                onClick: event => {
-                                }, // click row
-                            };}}
-                    />
-                    <Button type="primary" onClick={() => setSwitchPage(0)} style={{width: '80px'}}>返回</Button>
-                </Col>
-                <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
-            </Row>
-        </div>
+             <div>
+                 <div>
+                     <ToastContainer autoClose={2000} position="top-center"/>
+                     <div Style='float:right'>
+                         <Button type="primary" onClick={() => setSwitchPage(0)} style={{width: '80px'}}>返回</Button>
+                     </div>
+                     <br/>
+                     <br/>
+                     <Row>
+                         <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                             {/*<Button type="primary" onClick={() => setSwitchPage(0)} style={{width: '80px'}}>返回</Button>*/}
+                             <Divider>創建審核</Divider>
+                             <Table
+                                 columns={transactionCreateApplyColumns}
+                                 pagination={{ position: ['topLeft', 'bottomRight'] }}
+                                 dataSource={transactionCreateApplyList}
+                                 onRow={(record, rowIndex) => {
+                                     return {
+                                         onClick: event => {
+                                         }, // click row
+                                     };}}
+                             />
+                             {/*<Button type="primary" onClick={() => setSwitchPage(0)} style={{width: '80px'}}>返回</Button>*/}
+                         </Col>
+                         <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                     </Row>
+                 </div>
+                 <br/>
+                 <div>
+                     <Row>
+                         <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                             <Divider>編輯審核</Divider>
+                             <Table
+                                 columns={transactionEditApplyColumns}
+                                 pagination={{ position: ['topLeft', 'bottomRight'] }}
+                                 dataSource={transactionEditApplyList}
+                                 onRow={(record, rowIndex) => {
+                                     return {
+                                         onClick: event => {
+                                         }, // click row
+                                     };}}
+                             />
+                         </Col>
+                         <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                     </Row>
+                 </div>
+                 <br/>
+                 <div>
+                     <Row>
+                         <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                             <Divider>刪除審核</Divider>
+                             <Table
+                                 columns={transactionDelApplyColumns}
+                                 pagination={{ position: ['topLeft', 'bottomRight'] }}
+                                 dataSource={transactionDelApplyList}
+                                 onRow={(record, rowIndex) => {
+                                     return {
+                                         onClick: event => {
+                                         }, // click row
+                                     };}}
+                             />
+                         </Col>
+                         <Col  xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                     </Row>
+                 </div>
+             </div>
+
                 :
              <div>
                  <ToastContainer autoClose={2000} position="top-center"/>
                  <Row>
                      <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                      <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                         <Divider>審核列表</Divider>
+                         <Divider>員工審核</Divider>
                          <Table
                              columns={columns}
                              pagination={{ position: ['topLeft', 'bottomRight'] }}
