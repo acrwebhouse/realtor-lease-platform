@@ -364,14 +364,16 @@ const Main = () => {
             const xToken = cookie.load('x-token')
 
             console.log('=====11111======')
+            toast.success(`token 實作中，請先手動登入`)
             if(xToken!== null && xToken!== undefined){
-                console.log('=====222222======')
-                const decodedToken = jwt_decode(xToken);
-                console.log(decodedToken)
-                changeUserMenu(xToken)
-                let d = new Date();
-                d.setTime(d.getTime() + (86400*30*1000)); //one month
-                cookie.save('x-token',xToken,{path:'/', expires: d})
+                // console.log('=====222222======')
+                // const decodedToken = jwt_decode(xToken);
+                // console.log(decodedToken)
+                // changeUserMenu(xToken)
+                // let d = new Date();
+                // d.setTime(d.getTime() + (86400*30*1000)); //one month
+                // cookie.save('x-token',xToken,{path:'/', expires: d})
+                cookie.remove('x-token')
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
                 console.log('=====33333======')
