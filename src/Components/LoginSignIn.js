@@ -113,10 +113,10 @@ const LoginRegister = (props) => {
                             // eslint-disable-next-line no-undef
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
-                        props.changeUserMenu(response.data.data.token,true)
+                        props.changeUserMenu(response.data.data.accessToken,true)
                         let d = new Date();
                         d.setTime(d.getTime() + (86400*30*1000)); //one month
-                        cookie.save('x-token',response.data.data.token,{path:'/', expires: d})
+                        cookie.save('x-token',response.data.data.accessToken,{path:'/', expires: d})
                         toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
                     }
 
