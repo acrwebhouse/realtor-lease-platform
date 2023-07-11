@@ -16,7 +16,7 @@ import {
 } from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseAxios, PicAnnexAxios} from './axiosApi'
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined} from '@ant-design/icons';
 import cookie from 'react-cookies'
 import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
@@ -96,6 +96,7 @@ const Edit_House_Auth = 'house/editHouse'
 const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
 const annexType = ['application/pdf', 'image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
 const PicTemp = []
+const firstPicTemp = []
 const AnnexTemp = []
 const hostGenderArr=['小姐', '先生']
 const equipData = {0: 'airConditioner', 1: 'refrigerator', 2: 'television', 3: 'washMachine', 4: 'bed', 5: 'closet', 6: 'tvProgram', 7: 'network', 8: 'waterHeater', 9: 'naturalGas', 10: 'sofa', 11: 'deskAndChair', 12: 'elevator'}
@@ -137,19 +138,6 @@ const FloorCheck = (FloorValue, remark) => {
 
 }
 
-const PhonePrefixSelector = (
-    <Form.Item name="PhonePrefix" noStyle>
-        <Select style={{
-            width: 90,
-        }}
-                defaultValue="886"
-                disabled
-        >
-            <Option value="886">+886</Option>
-        </Select>
-    </Form.Item>
-);
-
 const HouseUpload = (prop) => {
     const xToken = cookie.load('x-token')
     const decodedToken = jwt_decode(xToken);
@@ -162,6 +150,7 @@ const HouseUpload = (prop) => {
     console.log(PicPreURL)
     const [form] = Form.useForm();
     const [form_photo] = Form.useForm();
+    const [form_firstPhoto] = Form.useForm();
     const [form_annex] = Form.useForm();
     const [form_traffic] = Form.useForm();
     const [form_life] = Form.useForm();
@@ -196,6 +185,9 @@ const HouseUpload = (prop) => {
     const [previewTitle, setPreviewTitle] = useState('');
     const [PicUploadCheck, setPicUploadCheck] = useState(false)
     const [hostPhone, setHostPhone] = useState(prop.defaultValue?prop.defaultValue.hostPhone:'')
+    const [enableFirstPicChange, setEnableFirstPicChange] = useState(false)
+    const [firstPicFile, setFirstPicFile] = useState([])
+    const [firstPhotoData, setFirstPhotoData] = useState([])
     const showTrafficModal = () => {
         setTrafficVisible(true);
     };
@@ -356,28 +348,6 @@ const HouseUpload = (prop) => {
                             toast.error(`房屋資料更新失敗`);
                         }
 
-                        // if(!response.data.status && response.data.data.includes('house address is exist')) {
-                        //     message.error({
-                        //         content: '此地址已存在，請重新填寫正確地址',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 4,
-                        //     }).then()
-                        //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                        // }else{
-                        //     message.success({
-                        //         content: '房屋資料上傳成功',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 2,
-                        //     }).then(() => {})
-                        //     // message.success(`房屋資料上傳成功`, 2, ).then()
-                        // }
-
                     })
                     .catch( (error) => {
                         showInternelErrorPageForMobile()
@@ -391,13 +361,13 @@ const HouseUpload = (prop) => {
                         "x-token" : xToken,
                     }
                 })
-                    // .then( (response) => console.log(response.data.status))
                     .then((response) => {
                         console.log(response.data)
                         if(response.data.status) {
                             toast.success(`房屋資料上傳成功`);
                             form_photo.resetFields()
                             form_annex.resetFields()
+                            form_firstPhoto.resetFields()
                             form.resetFields()
                             setHostPhone('')
                             PicTemp.splice(0, PicTemp.length)
@@ -410,27 +380,6 @@ const HouseUpload = (prop) => {
                         }else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
                             toast.error(`此房屋物件已存在，如有疑慮請聯繫該房仲。 ${response.data.data.errorInfo.name}  ${response.data.data.errorInfo.phone}。`);
                         }
-                        // if(!response.data.status && response.data.data.includes('house address is exist')) {
-                        //     message.error({
-                        //         content: '此地址已存在，請重新填寫正確地址',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 4,
-                        //     }).then()
-                        //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                        // }else{
-                        //     message.success({
-                        //         content: '房屋資料上傳成功',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 2,
-                        //     }).then(() => {})
-                        //     // message.success(`房屋資料上傳成功`, 2, ).then()
-                        // }
 
                     })
                     .catch( (error) => {
@@ -439,9 +388,6 @@ const HouseUpload = (prop) => {
                     })
 
             setIsRunPost(false)
-
-
-
         }
     }, [isRunPost, HouseData, prop.defaultValue, xToken])
 
@@ -538,23 +484,40 @@ const HouseUpload = (prop) => {
         // window.location.replace(window.location.origin+'/HouseDetailOwner/'+prop.defaultValue._id+'/'+ prop.defaultValue.owner)
     };
     console.log(HouseData);
-    // console.log(prop.defaultValue.room)
-    // console.log(...UpdateData, {'owner': prop.defaultValue.owner})
-    // const AddressPrefixSelector = (
-    //     <Form.Item name="AddressPrefix" noStyle>
-    //         <Select style={{
-    //             width: 90,
-    //         }}
-    //         >
-    //             <Option value="台北市">台北市</Option>
-    //             <Option value="新北市">新北市</Option>
-    //             <Option value="桃園市">桃園市</Option>
-    //             <Option value="台中市">台中市</Option>
-    //             <Option value="台南市">台南市</Option>
-    //             <Option value="高雄市">高雄市</Option>
-    //         </Select>
-    //     </Form.Item>
-    // );
+
+    // const updateFirstPic = () => {
+    //     const houseDataTemp = prop.defaultValue
+    //     delete houseDataTemp['updateTime']
+    //     // houseDataTemp['photo'][0] = PicData[0]
+    //     console.log(houseDataTemp)
+    //
+    //     HouseAxios.put(Edit_House_Auth, Object.assign(houseDataTemp, {'id':prop.defaultValue._id, 'photo':PicData}), {
+    //         headers: {
+    //             // "content-type": "application/json",
+    //             // "accept": "application/json",
+    //             "x-token" : xToken,
+    //         }})
+    //         // .then( (response) => console.log(response.data.status))
+    //         .then((response) => {
+    //             console.log(response)
+    //             if (response.data.status === true) {
+    //                 toast.success(`首圖更新成功`);
+    //                 setTimeout(() => {
+    //                     window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
+    //                 }, 2000)
+    //
+    //             } else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
+    //                 toast.error(`房屋地址重複，房屋資料更新失敗。`);
+    //             }else {
+    //                 toast.error(`房屋資料更新失敗`);
+    //             }
+    //
+    //         })
+    //         .catch( (error) => {
+    //             showInternelErrorPageForMobile()
+    //             toast.error(error)
+    //         })
+    // }
 
     /* phone Format set up */
 
@@ -579,8 +542,6 @@ const HouseUpload = (prop) => {
     const errorPhoneFormat = () => {
             toast.error(`請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)`)
     }
-
-
 
     const changeCity = (City) => {
 
@@ -661,16 +622,6 @@ const HouseUpload = (prop) => {
         setSelectArea(area)
     }
 
-    // const AddressPrefixSelector = (
-    //     <Form.Item name="AddressPrefix" noStyle>
-    //         <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
-    //             width: '100%',
-    //         }}>
-    //         </Select>
-    //     </Form.Item>
-    // );
-
-
     const onExtraRequireChange = list => {
         // console.log(`selected ${list}` )
         console.log(list)
@@ -710,6 +661,15 @@ const HouseUpload = (prop) => {
         setPictureList(newFileList)
         PicTemp.splice(index, 1)
     }
+    const FirstPicRemove = (file) => {
+        const index = firstPicFile.indexOf(file);
+        const newFileList = firstPicFile.slice();
+        newFileList.splice(index, 1);
+        console.log(newFileList)
+        setFirstPicFile(newFileList)
+        firstPicTemp.splice(index, 1)
+    }
+
     const AnnexRemove = (file) => {
         const index = AnnexList.indexOf(file);
         const newFileList = AnnexList.slice();
@@ -755,6 +715,39 @@ const HouseUpload = (prop) => {
     };
     // console.log(photoData, annexData)
 
+    const handleFirstPicUpload = () => {
+
+        const formData = new FormData();
+        firstPicFile.forEach(file => {
+            formData.append('photo', file);
+        });
+        setPicUploading(true)
+        console.log(formData.values())
+
+        PicAnnexAxios.post(House_Pic_Auth, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "x-token" : xToken
+            }})
+            .then( (response) => {
+                console.log(response)
+                setFirstPhotoData(response['data']['data'])
+                PicData[0] = response['data']['data'][0]
+            })
+            .then(() => {
+                // setPictureList([])
+                setPicUploadCheck(true)
+                toast.success('首圖照片上傳成功');
+            })
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error('照片上傳失敗')
+            })
+            .finally(() => {
+                setPicUploading(false)
+            });
+    };
+    console.log(PicData, firstPhotoData)
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -806,6 +799,13 @@ const HouseUpload = (prop) => {
         </div>
     );
 
+    const uploadFirstPicButton = (
+        <div>
+            <PlusOutlined/>
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </div>
+    );
+
     const uploadAnnexButton = (
         <div>
             <PlusOutlined/>
@@ -825,11 +825,12 @@ const HouseUpload = (prop) => {
         AnnexData.splice(0, AnnexData.length)
         form_photo.resetFields()
         form_annex.resetFields()
+        form_firstPhoto.resetFields()
         form.resetFields()
         setHostPhone('')
     }
 
-
+    console.log(firstPicTemp.length)
     return (
 
         <div>
@@ -865,6 +866,15 @@ const HouseUpload = (prop) => {
                                         <List.Item
 
                                             actions={[
+                                                index === 0 ?
+                                                    <Button  onClick={() => {
+                                                        console.log(Pic, index)
+                                                        setEnableFirstPicChange(true)
+                                                    }
+                                                    }>
+                                                        首圖更換
+                                                    </Button>
+                                                    :
                                                 <Button icon={<DeleteOutlined />} onClick={() => {
                                                     if(!delPic ) {
                                                         PicData.splice(index, 1)
@@ -873,7 +883,7 @@ const HouseUpload = (prop) => {
                                                     }
                                                 }
                                                 }>
-                                                    delete
+                                                    刪除
                                                 </Button>]}>
                                             {/*{Pic}*/}
                                             {/*{'\u3000'.repeat(35)}*/}
@@ -935,6 +945,72 @@ const HouseUpload = (prop) => {
 
                         </Col>
                     </Row>
+                    <Modal visible={enableFirstPicChange}
+                           title={'首圖更換'}
+                           onCancel={() => {
+                               setEnableFirstPicChange(false)
+                               firstPicTemp.splice(0, firstPicTemp.length)
+                               form_firstPhoto.resetFields()
+                           }}
+                           // onOk={updateFirstPic}
+                           footer={null}
+                           width={400}
+                    >
+
+                        <Form
+                            form={form_firstPhoto}
+                            className="PicUpload"
+                            onFinish={handleFirstPicUpload}
+                        >
+                            <Form.Item name="firstPhotoUpload">
+                                <div style={{'textAlign': 'center', }}>
+                                <Upload listType="picture-card"
+                                        maxCount={1}
+                                        accept={'.jpg, .png, .svg, .bmp, .jpeg'}
+                                        onPreview={handlePreview}
+                                        onRemove={FirstPicRemove}
+                                        beforeUpload={file => {
+                                            console.log(file)
+                                            firstPicTemp.splice(0, firstPicTemp.length)
+                                            const isImage = photoType.includes(file.type);
+                                            firstPicTemp.push(file)
+                                            console.log(firstPicTemp)
+                                            if (!isImage) {
+                                                toast.error('不是圖片檔')
+                                            }else {
+                                                setFirstPicFile(firstPicTemp)
+                                                console.log(firstPicTemp)
+                                                return false;
+                                            }
+
+                                            return isImage || Upload.LIST_IGNORE;
+                                        }}
+                                >
+                                    {firstPicTemp.length >= 1 ? null : uploadFirstPicButton}
+                                </Upload>
+                                <Button type="primary"
+                                        htmlType="submit"
+                                        className='PicUpload-button'
+                                        shape="round"
+                                        loading={PicUploading}
+                                        disabled={firstPicTemp.length === 0}
+                                    // onClick={() => message.success('照片上傳成功')}
+                                >
+                                    {PicUploading ? 'Uploading' : '提交照片'}
+                                </Button>
+                                <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handlePreviewCancel}>
+                                    <img
+                                        alt="example"
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        src={previewImage}
+                                    />
+                                </Modal>
+                                </div>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
                 </Form.Item>
                 <Form.Item>
                     <Row>
