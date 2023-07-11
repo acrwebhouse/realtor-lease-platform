@@ -1234,6 +1234,7 @@ const HousesList = (props) => {
                             // scroll={{
                             //     y: 540,
                             // }}
+                            onChange={() => {window.scrollTo(0,0)}}
                             onRow={(record, rowIndex) => {
                                 return {
                                     onClick: event => {

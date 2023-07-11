@@ -399,6 +399,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['1'])
         setIsShowHousesList(true)
+        toggleCollapsed()
     }
 
     function myHousesList(){
@@ -406,12 +407,14 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['2'])
         setIsShowMyHousesList(true)
+        toggleCollapsed()
     }
     function uploadHouse(){
         console.log('uploadHouse')
         turnOffPage()
         setSelectMenu(['3'])
         setIsShowUploadHouse(true)
+        toggleCollapsed()
     }
     
     function memberList(){
@@ -419,6 +422,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['4'])
         setIsShowMemberList(true)
+        toggleCollapsed()
     }
 
     function memberInfo(){
@@ -426,6 +430,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['5'])
         setIsShowMemberInfo(true)
+        toggleCollapsed()
     }
 
     function matchNeed(){
@@ -433,11 +438,13 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['10'])
         setIsShowMatchNeed(true)
+        toggleCollapsed()
     }
 
     function loginSignIn(){
         console.log('loginSignIn')
         setIsShowLoginSignIn(true)
+        toggleCollapsed()
     }
 
     function contact(){
@@ -445,6 +452,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['8'])
         setIsShowContact(true)
+        toggleCollapsed()
     }
 
     function collect(){
@@ -452,6 +460,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['9'])
         setIsShowCollect(true)
+        toggleCollapsed()
     }
 
     const relativeLink = () => {
@@ -459,6 +468,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['12'])
         setIsShowRelativeLink(true)
+        toggleCollapsed()
     }
 
     const companyApply = () =>{
@@ -466,6 +476,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['13'])
         setIsShowCompanyApply(true)
+        toggleCollapsed()
     }
 
     // const companyApplyList = () =>{
@@ -480,12 +491,14 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['15'])
         setIsShowCompanyApprovalList(true)
+        toggleCollapsed()
     }
     const companyEmployeeInfo = () =>{
         console.log('companyEmployeeInfo')
         turnOffPage()
         setSelectMenu(['16'])
         setIsShowCompanyEmployeeInfo(true)
+        toggleCollapsed()
     }
 
     const companyHouseList = () =>{
@@ -493,6 +506,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['17'])
         setIsShowCompanyHouseList(true)
+        toggleCollapsed()
     }
 
     const companyInfo = () =>{
@@ -500,6 +514,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['18'])
         setIsShowCompanyInfo(true)
+        toggleCollapsed()
     }
 
     const companyEmployeesList = () =>{
@@ -507,6 +522,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['20'])
         setIsShowCompanyEmployeesList(true)
+        toggleCollapsed()
     }
 
     const companyObjectManage = () =>{
@@ -514,6 +530,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['23'])
         setIsShowCompanyObjectManage(true)
+        toggleCollapsed()
     }
 
     function reserveHouse(){
@@ -521,6 +538,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['21'])
         setIsShowReserveHouse(true)
+        toggleCollapsed()
     }
     
     function companyTransactionList(){
@@ -528,6 +546,7 @@ const Main = () => {
         turnOffPage()
         setSelectMenu(['22'])
         setIsShowCompanyTransactionList(true)
+        toggleCollapsed()
     }
 
     function logout(){

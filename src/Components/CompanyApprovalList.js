@@ -540,19 +540,21 @@ const CompanyApprovalList = (props) => {
             title: '',
             dataIndex: 'content',
             key: 'content',
-             width:'220px',
+             width:'150px',
             render: (content) => {
                 return <div style={{
                     'textAlign': 'center',
                 }}>
                     <div style={{
                         'display': 'inline-block',
-                        'textAlign': 'left',
+                        'textAlign': 'right',
                     }}>
                         <Button type="primary" onClick={() => transactionCreateApplyResult(true,content[8])} style={{width: '80px' }}>
                             同意
                         </Button>
-                        &nbsp;&nbsp;&nbsp;
+                        {/*&nbsp;&nbsp;&nbsp;*/}
+                        <br/>
+                        <br/>
                         <Button type="primary" danger onClick={() => transactionCreateApplyResult(false,content[8])} style={{width: '80px' }}>
                             拒絕
                         </Button>
@@ -612,7 +614,7 @@ const CompanyApprovalList = (props) => {
             title: '',
             dataIndex: 'content',
             key: 'content',
-             width:'220px',
+             width:'150px',
             render: (content) => {
                 return <div style={{
                     'textAlign': 'center',
@@ -624,7 +626,9 @@ const CompanyApprovalList = (props) => {
                         <Button type="primary" onClick={() => transactionEditApplyResult(true,content[8])} style={{width: '80px' }}>
                             同意
                         </Button>
-                        &nbsp;&nbsp;&nbsp;
+                        {/*&nbsp;&nbsp;&nbsp;*/}
+                        <br/>
+                        <br/>
                         <Button type="primary" danger onClick={() => transactionEditApplyResult(false,content[8])} style={{width: '80px' }}>
                             拒絕
                         </Button>
@@ -684,19 +688,21 @@ const CompanyApprovalList = (props) => {
             title: '',
             dataIndex: 'content',
             key: 'content',
-             width:'220px',
+             width:'150px',
             render: (content) => {
                 return <div style={{
                     'textAlign': 'center',
                 }}>
                     <div style={{
                         'display': 'inline-block',
-                        'textAlign': 'left',
+                        'textAlign': 'right',
                     }}>
                         <Button type="primary" onClick={() => transactionDelApplyResult(true,content[8])} style={{width: '80px' }}>
                             同意
                         </Button>
-                        &nbsp;&nbsp;&nbsp;
+                        {/*&nbsp;&nbsp;&nbsp;*/}
+                        <br/>
+                        <br/>
                         <Button type="primary" danger onClick={() => transactionDelApplyResult(false,content[8])} style={{width: '80px' }}>
                             拒絕
                         </Button>
@@ -809,29 +815,30 @@ const CompanyApprovalList = (props) => {
                                         borderColor: '#FFFFFF',
                                         borderRadius: '34px',
                                         boxShadow: '3px 4px 0px 0px #899599',
-                                        background: 'linear-gradient(to bottom, #ededed 5%, #003C9D 100%)',
+                                        background: 'linear-gradient(to bottom, #003C9D 5%, #003C9D 100%)',
                                         backgroundColor: '#003C9D',
                                         cursor: 'pointer',
                                         fontFamily: "'cwTeXKai', serif",
                                         fontSize: '40px',
+                                        margin: '40px',
                                     }}
-                                     onmouseover={{background: 'linear-gradient(to bottom, #003C9D 5%, #ededed 100%)',
-                                         backgroundColor: '#ededed',}}
                             >成交審核</Button>
                             {/*<br/>*/}
-                            {/*<br/>*/}
+                            <br/>
                             <Button type="primary" onClick={showCompanyApplyList}
                                     style={{
                                         width: '380px',
                                         height: '90px',
-                                        fontSize: '40px',
                                         color:'#FFFFFF',
-                                        backgroundColor: '#003C9D',
                                         borderColor: '#FFFFFF',
                                         borderRadius: '34px',
-                                        marginTop: '10%',
                                         boxShadow: '3px 4px 0px 0px #899599',
-
+                                        background: 'linear-gradient(to bottom, #003C9D 5%, #003C9D 100%)',
+                                        backgroundColor: '#003C9D',
+                                        cursor: 'pointer',
+                                        fontFamily: "'cwTeXKai', serif",
+                                        fontSize: '40px',
+                                        margin: '40px',
                             }}
                             >員工審核</Button>
                         </div>
