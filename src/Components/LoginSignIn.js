@@ -10,6 +10,7 @@ import ForgotPassword from "./ForgotPassword";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
+import {saveToken} from './Auth'
 
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
@@ -114,9 +115,9 @@ const LoginRegister = (props) => {
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
                         props.changeUserMenu(response.data.data.accessToken,true)
-                        let d = new Date();
-                        d.setTime(d.getTime() + (86400*30*1000)); //one month
-                        cookie.save('x-token',response.data.data.accessToken,{path:'/', expires: d})
+                        const accessToken = response.data.data.accessToken
+                        const refreshToken = response.data.data.refreshToken
+                        saveToken(accessToken,refreshToken)
                         toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
                     }
 

@@ -53,6 +53,8 @@ import {
   } from "react-router-dom";
 import {showInternelErrorPageForMobile} from './CommonUtil'
 
+import {refreshXToken,xTokenName,xRefreshTokenName,removeToken} from './Auth'
+
 const collectAccessTimeUrl = 'collect/accessTime'
 
 const Main = () => {
@@ -361,19 +363,14 @@ const Main = () => {
                 setIsShowHousesList(true)
             }
             collectAccessTime()
-            const xToken = cookie.load('x-token')
-
-            console.log('=====11111======')
-            toast.success(`token 實作中，請先手動登入`)
-            if(xToken!== null && xToken!== undefined){
-                // console.log('=====222222======')
-                // const decodedToken = jwt_decode(xToken);
-                // console.log(decodedToken)
-                // changeUserMenu(xToken)
-                // let d = new Date();
-                // d.setTime(d.getTime() + (86400*30*1000)); //one month
-                // cookie.save('x-token',xToken,{path:'/', expires: d})
-                cookie.remove('x-token')
+            const xRefreshToken = cookie.load(xRefreshTokenName) 
+            if(xRefreshToken!== null && xRefreshToken!== undefined){
+                refreshXToken().then(xToken => {
+                    changeUserMenu(xToken)
+                  })
+                  .catch(error => {
+                    console.log('refreshXToken error :',error)
+                  });
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
                 console.log('=====33333======')
@@ -583,7 +580,7 @@ const Main = () => {
             setSelectMenu(['1'])
             setIsShowHousesList(true)
         }
-        cookie.remove('x-token')
+        removeToken()
     }
 
     function loginSignInIsOpen(status){

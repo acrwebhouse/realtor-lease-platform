@@ -54,6 +54,11 @@ const CompanyAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
+const AuthAxios = axios.create({
+    baseURL: base_URL_Auth,
+    // timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+})
 
-export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios}
+export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios,AuthAxios}
 
