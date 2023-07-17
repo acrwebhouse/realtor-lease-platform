@@ -179,12 +179,12 @@ const getPersonalInfo = () => {
     UserAxios.get(
         reqUrl,{
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }
     )
     .then( (response) => {
-        console.log(response)
+        console.log('=====getPersonalInfo====response====',response)
         if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
             response.data.data.bornDate = ''
         }
@@ -192,6 +192,7 @@ const getPersonalInfo = () => {
         setData(response.data.data)
     })
     .catch( (error) => {
+        console.log('=====getPersonalInfo====error====',error)
         showInternelErrorPageForMobile()
         toast.error(error)
     })
@@ -359,7 +360,7 @@ function sendEdit(){
     UserAxios.put(
         reqUrl,editUser,{
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }
     )
@@ -479,14 +480,12 @@ function changeDate(e, dateString){
 const checkRoleInCompany = () => {
         let temp = roles
     if(user.employeesData.length > 0 && user.roles.includes(4)) {
-        console.log('Hello')
         toast.error('此帳戶已有加入公司，無法更改房仲身分。')
         temp.push('4')
         setRoles(temp)
         cancelEdit()
     }
 }
-    console.log(roles)
     return (
 
         <div>

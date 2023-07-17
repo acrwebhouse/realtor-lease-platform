@@ -22,7 +22,7 @@ const refreshXToken = () => {
                     resolve(accessToken)
                 }else{
                     removeToken()
-                    reject('http error code : '+data.errorCode)
+                    reject('errorCode:'+data.errorCode)
                 }
                 
             }).catch( (error) => {

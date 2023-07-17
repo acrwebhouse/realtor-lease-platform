@@ -160,7 +160,6 @@ const Main = () => {
             }
         )
         .then( (response) => {
-            console.log(response)
             if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
                 response.data.data.bornDate = ''
             }
@@ -363,6 +362,7 @@ const Main = () => {
             const xRefreshToken = cookie.load(xRefreshTokenName) 
             if(xRefreshToken!== null && xRefreshToken!== undefined){
                 refreshXToken().then(xToken => {
+                    console.log('=====refreshXToken====xToken===',xToken)
                     changeUserMenu(xToken)
                   })
                   .catch(error => {
