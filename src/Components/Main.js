@@ -353,12 +353,9 @@ const Main = () => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            console.log('=====init======',init)
             const params = new URLSearchParams(search);
             const accountOrMail = params.get('accountOrMail');
             const password = params.get('password');
-            console.log('=====accountOrMail======',accountOrMail)
-            console.log('=====password======',password)
             if(page === undefined || page === null){
                 setIsShowHousesList(true)
             }
@@ -373,7 +370,6 @@ const Main = () => {
                   });
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
-                console.log('=====33333======')
                 autoLogin(accountOrMail , password)
             }
         }
