@@ -7,6 +7,10 @@ const xRefreshTokenName = 'x-refresh-token'
 
 const refreshXToken = () => {
     return new Promise((resolve, reject) => {
+        const result ={
+            errorCode : errorCode.isOk,
+            message : ''
+        }
         const xRefreshToken = cookie.load(xRefreshTokenName)
         const refreshAccessTokenUrl = '/auth/refreshAccessToken'
         if(xRefreshToken!== null && xRefreshToken!== undefined){
@@ -19,19 +23,24 @@ const refreshXToken = () => {
                 const accessToken = data.data.accessToken
                 if(data.errorCode === errorCode.isOk && accessToken){
                     saveAccessToken(accessToken)
-                    resolve(accessToken)
+                    result.message = accessToken
+                    resolve(result)
                 }else{
                     removeToken()
-                    reject('errorCode:'+data.errorCode)
+                    result.errorCode = data.errorCode
+                    reject(result)
                 }
                 
             }).catch( (error) => {
                 removeToken()
-                reject(error)
+                result.errorCode = errorCode.unKnowError
+                result.message = error
+                reject(result)
             })   
         }else{
             removeToken()
-            reject('xRefreshToken : '+xRefreshToken)
+            result.errorCode = errorCode.refreshTokenInvalid
+            reject(result)
         }
       });
 }

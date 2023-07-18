@@ -55,6 +55,10 @@ import {showInternelErrorPageForMobile} from './CommonUtil'
 
 import {refreshXToken,xTokenName,xRefreshTokenName,removeToken} from './Auth'
 
+import {eventBus,eventName} from './EventBus';
+
+import {errorCode} from './Error';
+
 const collectAccessTimeUrl = 'collect/accessTime'
 
 const Main = () => {
@@ -349,6 +353,22 @@ const Main = () => {
                 })
     }
 
+    const changeAccessToken = (xToken) => {
+        // 在这里处理 Axios 响应，可以更新组件状态或执行其他操作
+        console.log('changeAccessToken xToken:', xToken);
+        toast.success('changeAccessToken')
+      };
+    
+      const showMainToast = (xToken) => {
+        // 在这里处理 Axios 响应，可以更新组件状态或执行其他操作
+        console.log('showMainToast xToken:', xToken);
+      };
+
+      const resetAccount = () => {
+        // 在这里处理 Axios 响应，可以更新组件状态或执行其他操作
+        console.log('resetAccount');
+      };
+
     useEffect(() => {
         if (init) {
             setInit(false)
@@ -361,17 +381,31 @@ const Main = () => {
             collectAccessTime()
             const xRefreshToken = cookie.load(xRefreshTokenName) 
             if(xRefreshToken!== null && xRefreshToken!== undefined){
-                refreshXToken().then(xToken => {
-                    console.log('=====refreshXToken====xToken===',xToken)
-                    changeUserMenu(xToken)
+                refreshXToken().then(result => {
+                    if(result.errorCode == errorCode.isOk){
+                        const xToken = result.message
+                        changeUserMenu(xToken)
+                    }else{
+                        console.log(result)
+                    }
+                    
                   })
                   .catch(error => {
-                    console.log('refreshXToken error :',error)
+                    console.log(error)
                   });
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
                 autoLogin(accountOrMail , password)
             }
+            eventBus.on(eventName.changeAccessToken, changeAccessToken);
+            eventBus.on(eventName.showMainToast, showMainToast);
+            eventBus.on(eventName.resetAccount, resetAccount);
+            return () => {
+                // eventBus.off(eventName.changeAccessToken, changeAccessToken);
+                // eventBus.off(eventName.showMainToast, showMainToast);
+                // eventBus.off(eventName.resetAccount, resetAccount);
+            };
+
         }
     }, )
 

@@ -3,6 +3,7 @@ import cookie from 'react-cookies'
 import {config} from '../Setting/config'
 import {errorCode} from './Error'
 import {refreshXToken,xRefreshTokenName,xTokenName} from './Auth'
+import {eventBus,eventName} from './EventBus';
 
 const xToken = cookie.load('x-token')
 
@@ -160,35 +161,24 @@ UserAxios.interceptors.response.use(
 
         const xRefreshToken = cookie.load(xRefreshTokenName) 
             if(xRefreshToken!== null && xRefreshToken!== undefined){
-                const xToken = await refreshXToken()
+                const result = await refreshXToken()
                 const originalRequest = error.config;
-                    originalRequest._retry = true;
-                    originalRequest.headers[xTokenName] = xToken;
-                    return UserAxios(originalRequest);
-                // refreshXToken().then(xToken => {
-                //     console.log('======1111===response.config=xToken=',xToken)
-                //     const originalRequest = error.config;
-                //     originalRequest._retry = true;
-                //     originalRequest.headers[xTokenName] = ''
-                //     // console.log('===originalRequest.headers[xTokenName]==1111==',originalRequest.headers[xTokenName])
-                //     // // originalRequest.headers[xTokenName] = xToken;
-                //     originalRequest.headers[xTokenName] = xToken;
-                //     // originalRequest.headers[xTokenName] = '123456';
-                //     // console.log('===originalRequest.headers[xTokenName]==222==',originalRequest.headers[xTokenName])
-
-                //     console.log('======originalRequest=',originalRequest)
-                //     return UserAxios(originalRequest);
-                //   })
-                //   .catch(error => {
-                //     console.log('======2222=====')
-                //     console.log('refreshXToken error :',error)
-                //     // window.location.href = '/';
-                //     return Promise.reject(error);
-                //   });
+                const xToken = result.message
+                originalRequest._retry = true;
+                originalRequest.headers[xTokenName] = xToken;
+                console.log('======111=======')
+                if(result.errorCode === errorCode.isOk){
+                    console.log('=====222=====eventName.changeAccessToken===',eventName.changeAccessToken)
+                    console.log('=====222=====xToken===',xToken)
+                    eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
+                }else{
+                    console.log('=====333========')
+                    eventBus.emit(eventName.resetAccount, xToken); // 触发事件
+                }
+                return UserAxios(originalRequest);
             }
             else {
-                console.log('======333333=====')
-                // window.location.href = '/';
+                eventBus.emit(eventName.resetAccount, ''); // 触发事件
                 return Promise.reject(error);
             }
       }
