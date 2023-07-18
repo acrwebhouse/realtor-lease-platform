@@ -115,7 +115,7 @@ const CompanyApplyState = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>

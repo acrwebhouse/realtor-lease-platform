@@ -669,7 +669,7 @@ const Main = () => {
 
     return (
         <div>
-        <ToastContainer autoClose={2000} position="top-center"/>
+        <ToastContainer autoClose={2000} position="top-center"  style={{top: '48%'}}/>
         <div style={{ width: 51,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>

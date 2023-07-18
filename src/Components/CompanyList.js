@@ -196,7 +196,7 @@ const CompanyList = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>

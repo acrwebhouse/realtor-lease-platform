@@ -145,7 +145,7 @@ const LoginRegister = (props) => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             <Modal title="會員登入系統"
                    className="ModalLogin"
                    visible={props.isShow}

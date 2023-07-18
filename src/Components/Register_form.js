@@ -562,7 +562,7 @@ const Register = (props) => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             <h2>請選擇預想申請的使用者(可重複選)</h2>
             <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
                 <Row>
