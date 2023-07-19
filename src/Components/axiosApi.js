@@ -63,80 +63,7 @@ const AuthAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
-// UserAxios.interceptors.request.use(
-//     (config) => {
-//       // Add authentication token to the request if available
-//     //   const token = 'your_auth_token';
-//     //   if (token) {
-//     //     config.headers['Authorization'] = `Bearer ${token}`;
-//     //   }
-//         const xToken = cookie.load(xTokenName)
-//         if(config.headers[xTokenName] !== null && config.headers[xTokenName] !== undefined ){
 
-//         }else{
-//             return config;
-//         }
-//     },
-//     (error) => {
-//       return Promise.reject(error);
-//     }
-//   );
-
-/*
-// 添加响应拦截器
-UserAxios.interceptors.response.use(
-    (response) => {
-        const data = response.data
-        console.log('=====UserAxios.interceptors===response==0=',response)
-        console.log('=====UserAxios.interceptors===errorCode.accessTokenInvalid===',errorCode.accessTokenInvalid)
-        console.log('=====UserAxios.interceptors===data.errorCode===',data.errorCode)
-        if(data.errorCode === errorCode.accessTokenInvalid){
-            const xRefreshToken = cookie.load(xRefreshTokenName) 
-            if(xRefreshToken!== null && xRefreshToken!== undefined){
-                refreshXToken().then(xToken => {
-                    console.log('======1111===response.config=xToken=',xToken)
-                    const originalRequest = response.config;
-                    originalRequest._retry = true;
-                    originalRequest.headers[xTokenName] = ''
-                    // console.log('===originalRequest.headers[xTokenName]==1111==',originalRequest.headers[xTokenName])
-                    // // originalRequest.headers[xTokenName] = xToken;
-                    originalRequest.headers[xTokenName] = xToken;
-                    // originalRequest.headers[xTokenName] = '123456';
-                    // console.log('===originalRequest.headers[xTokenName]==222==',originalRequest.headers[xTokenName])
-
-                    console.log('======originalRequest=',originalRequest)
-                    return UserAxios(originalRequest);
-                  })
-                  .catch(error => {
-                    console.log('======2222=====')
-                    console.log('refreshXToken error :',error)
-                    // window.location.href = '/';
-                    return response;
-                  });
-            }
-            else {
-                console.log('======333333=====')
-                // window.location.href = '/';
-                return response;
-            }
-            // console.log('=====UserAxios.interceptors.response==111=')
-            // const originalRequest = response.config;
-            // originalRequest._retry = true;
-            // history.push('/'); 
-            
-            // return UserAxios(originalRequest);
-        }else{
-            console.log('=====UserAxios.interceptors.response==222=')
-            return response;
-        }
-
-      // 对响应数据做一些处理
-      
-    },{}
-  );
-
-*/  
-  
 UserAxios.interceptors.response.use(
     (response) => {
       // 对响应数据做一些处理
@@ -173,7 +100,7 @@ UserAxios.interceptors.response.use(
                     eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
                 }else{
                     console.log('=====333========')
-                    eventBus.emit(eventName.resetAccount, xToken); // 触发事件
+                    eventBus.emit(eventName.resetAccount, ''); // 触发事件
                 }
                 return UserAxios(originalRequest);
             }

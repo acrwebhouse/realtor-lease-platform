@@ -365,8 +365,10 @@ const Main = () => {
       };
 
       const resetAccount = () => {
-        // 在这里处理 Axios 响应，可以更新组件状态或执行其他操作
-        console.log('resetAccount');
+        toast.success(`連續登入時間過長，請重新登入。`)
+        setTimeout(()=>{
+            window.location.href = '/';
+        },2000)
       };
 
     useEffect(() => {
