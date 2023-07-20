@@ -6,10 +6,7 @@ import {
     Col,
     Form, Result
 } from "antd";
-// import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-// import jwt_decode from "jwt-decode";
-// import moment from 'moment';
 import Captcha from "demos-react-captcha";
 import cookie from "react-cookies";
 import {config} from '../Setting/config'

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {
     useParams
   } from "react-router-dom";
 import HouseDetail from "./HouseDetail";
+import {getPersonalInfo} from './Auth'
 
 const HouseDetailOwner = (prop) => {
     const { id,owner } = useParams();
@@ -16,18 +16,23 @@ const HouseDetailOwner = (prop) => {
         if (init) {
             const xToken = cookie.load('x-token')
             if(xToken){
-                const decodedToken = jwt_decode(xToken);
-                console.log(decodedToken)
-                for(let i = 0 ;i<decodedToken.roles.length; i++){
-                    if(decodedToken.roles[i] === 1){
-                        setIsAdmin(true)
+                getPersonalInfo(xToken).then( (userResponse) => {
+                    if(userResponse.data.data !== undefined){
+                        const user = userResponse.data.data
+                        for(let i = 0 ;i<user.roles.length; i++){
+                            if(user.roles[i] === 1){
+                                setIsAdmin(true)
+                            }
+                        }
+                        if(user._id === owner){
+                            setIsShow(true);
+                        }else{
+                            alert('您不是負責人無法編輯')
+                        }
                     }
-                }
-                if(decodedToken.id === owner){
-                    setIsShow(true);
-                }else{
-                    alert('您不是負責人無法編輯')
-                }
+                })
+                .catch( (error) => {
+                })
             }else{
                 alert('請先登入')
             }

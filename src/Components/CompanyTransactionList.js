@@ -21,7 +21,6 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios, HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams

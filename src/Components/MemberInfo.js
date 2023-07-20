@@ -2,12 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
 import {LoginRegisterAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
-
+import jwt_decode from "jwt-decode";
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
 const SendResetPassword_Auth = '/auth/sendResetPasswordMail/'

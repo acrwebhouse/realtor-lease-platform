@@ -2,11 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {toast} from "react-toastify";
 import HousesList from "./HousesList";
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {CompanyAxios} from "./axiosApi";
 import {showInternelErrorPageForMobile} from "./CommonUtil";
 import {Col, Row, Divider, Table, Select, Button} from "antd";
-
+import jwt_decode from "jwt-decode";
 let transferOptions = []
 const priceMin1 = 0;
 const priceMax1 = 9999;

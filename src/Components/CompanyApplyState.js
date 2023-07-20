@@ -18,7 +18,6 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import {CompanyAxios} from './axiosApi'
 import {
     useParams

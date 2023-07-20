@@ -18,7 +18,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import {HouseAxios, PicAnnexAxios} from './axiosApi'
 import { DeleteOutlined} from '@ant-design/icons';
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,7 +31,7 @@ import {
     WashMachineIcon, WaterHeaterIcon
 } from "./Equipment";
 import {showInternelErrorPageForMobile} from './CommonUtil'
-
+import jwt_decode from "jwt-decode";
 // const AddressPattern = /^[\u4e00-\u9fa5]+$/
 // const DoorNumberPattern = /^[0-9]*$/
 // const SecondRoomNumberPattern = /^[A-Za-z0-9]+$/
