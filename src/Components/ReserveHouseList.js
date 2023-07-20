@@ -7,7 +7,6 @@ import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
-import jwt_decode from "jwt-decode";
 const houseService = config.base_URL_House
 const ReserveHouseList_Auth = 'reserveHouse/getReserveHousesOnlyHost'
 const ReserveHouseListForClient_Auth = 'reserveHouse/getReserveHousesOnlyClient'
@@ -238,9 +237,6 @@ const ReserveHouseList = (props, ref) => {
 
     const queryHouse = (houseId) => {
         console.log(houseId)
-        const xToken = cookie.load('x-token')
-        const decodedToken = jwt_decode(xToken);
-        // openInNewTab(`/reserveHouseDetail/${houseId}`)
         props.showReserveHouseDetailUI(houseId)
     }
 

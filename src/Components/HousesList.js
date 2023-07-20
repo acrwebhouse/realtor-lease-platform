@@ -104,7 +104,6 @@ const HousesList = (props) => {
         if (init) {
             setInit(false)
             getHousesList()
-            console.log(init)
         }
     }, )
 
