@@ -44,7 +44,7 @@ const CompanyApprovalList = (props) => {
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -243,7 +243,7 @@ const CompanyApprovalList = (props) => {
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
@@ -320,7 +320,7 @@ const CompanyApprovalList = (props) => {
         let reqUrl = `${editTransactionAuth}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
@@ -373,7 +373,7 @@ const CompanyApprovalList = (props) => {
         let reqUrl = `${editTransactionAuth}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
@@ -439,7 +439,7 @@ const CompanyApprovalList = (props) => {
             let reqUrl = `${editTransactionAuth}`
             CompanyAxios.put(reqUrl, body, {
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -476,7 +476,7 @@ const CompanyApprovalList = (props) => {
         let reqUrl = `${editEmployees}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)

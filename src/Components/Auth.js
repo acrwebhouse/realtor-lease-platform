@@ -73,7 +73,7 @@ const getPersonalInfo = (xToken) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )

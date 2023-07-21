@@ -13,7 +13,7 @@ const getCurrentEmployee = function(callback){
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {

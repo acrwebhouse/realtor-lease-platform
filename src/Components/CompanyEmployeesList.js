@@ -83,7 +83,7 @@ const CompanyEmployeesList = (props) => {
         CompanyAxios.get(
                 reqUrl,{
                     headers:{
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 })
             .then( (response) => {
@@ -216,7 +216,7 @@ const CompanyEmployeesList = (props) => {
         const xToken = cookie.load('x-token')
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
@@ -390,7 +390,7 @@ const CompanyEmployeesList = (props) => {
           let reqUrl = `${editEmployeesUrl}`
           CompanyAxios.put(reqUrl, body, {
               headers:{
-                  'x-Token':xToken
+                  'x-token':xToken
               }
           }).then((response) => {
               console.log(response)

@@ -214,7 +214,7 @@ const CompanyTransactionList = (props) => {
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -292,7 +292,7 @@ const CompanyTransactionList = (props) => {
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -336,7 +336,7 @@ const CompanyTransactionList = (props) => {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }).then((response) => {
                 console.log(response)
@@ -376,7 +376,7 @@ const CompanyTransactionList = (props) => {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }).then((response) => {
                 console.log(response)
@@ -417,7 +417,7 @@ const CompanyTransactionList = (props) => {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }).then((response) => {
                 console.log(response)

@@ -148,7 +148,7 @@ const ReserveHouseDetail = (props) => {
             }
             HouseAxios.put(update_reserve_Auth, temp, {
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)

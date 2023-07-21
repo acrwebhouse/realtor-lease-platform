@@ -47,7 +47,7 @@ const CompanyApplyState = (props) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
@@ -97,7 +97,7 @@ const CompanyApplyState = (props) => {
         }
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)

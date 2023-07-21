@@ -62,22 +62,20 @@ const AuthAxios = axios.create({
     // timeout: 1000,
     headers: { 'Content-Type': 'application/json' }
 })
-
+let a = 0;
 async function refreshTokenAndNotify(error){
     const result = await refreshXToken()
     const originalRequest = error.config;
     const xToken = result.message
-    originalRequest._retry = true;
+    originalRequest._retry = false;
     originalRequest.headers[xTokenName] = xToken;
     if(result.errorCode === errorCode.isOk){
-        eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
+        //eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
     }else{
         eventBus.emit(eventName.resetAccount, ''); // 触发事件
     }
     return originalRequest;
 }
-
-
 
 const axiosAll = [LoginRegisterAxios,PicAnnexAxios,HouseAxios,UserAxios,CollectAxios,CompanyAxios,AuthAxios]
 
@@ -103,28 +101,6 @@ for(let i = 0 ;i<axiosAll.length;i++){
     }
   );
 }
-
-// UserAxios.interceptors.response.use(
-//     (response) => {
-//       // 对响应数据做一些处理
-//       return response;
-//     },
-//     async (error) => {
-//       if (error.response && error.response.status === 401) {
-//         const xRefreshToken = cookie.load(xRefreshTokenName) 
-//         if(xRefreshToken!== null && xRefreshToken!== undefined){
-//             const originalRequest = await refreshTokenAndNotify(error)
-//             return UserAxios(originalRequest);
-//         }
-//         else {
-//             eventBus.emit(eventName.resetAccount, ''); // 触发事件
-//             return Promise.reject(error);
-//         }
-//       }
-//       return Promise.reject(error);
-//     }
-//   );
-  
   
 
 

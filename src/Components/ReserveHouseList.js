@@ -49,7 +49,7 @@ const ReserveHouseList = (props, ref) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -121,7 +121,7 @@ const ReserveHouseList = (props, ref) => {
         HouseAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -140,7 +140,7 @@ const ReserveHouseList = (props, ref) => {
         HouseAxios.get(
             reqUrlClient,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )

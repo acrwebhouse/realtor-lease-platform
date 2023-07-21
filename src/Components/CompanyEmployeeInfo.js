@@ -51,7 +51,7 @@ const CompanyEmployeeInfo = (props) => {
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {

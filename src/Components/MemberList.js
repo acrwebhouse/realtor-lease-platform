@@ -104,7 +104,7 @@ const MemberList = () => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -324,7 +324,7 @@ function removeUser(userId){
     UserAxios.delete(
         reqUrl,{
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             },
             data: {
                 ids: [userId]

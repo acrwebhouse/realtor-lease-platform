@@ -116,7 +116,7 @@ const HousesList = (props) => {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -167,7 +167,7 @@ const HousesList = (props) => {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -194,7 +194,7 @@ const HousesList = (props) => {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -344,7 +344,7 @@ const HousesList = (props) => {
         HouseAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -950,7 +950,7 @@ const HousesList = (props) => {
             UserAxios.get(
                 reqUrl,{
                     headers:{
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }
             )
@@ -1000,7 +1000,7 @@ const HousesList = (props) => {
         HouseAxios.delete(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 },
                 data: {
                     ids: [houseId]

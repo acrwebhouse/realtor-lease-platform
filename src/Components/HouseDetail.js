@@ -594,7 +594,7 @@ console.log(showFloor2)
         HouseAxios.delete(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 },
                 data: {
                     ids: [houseId]

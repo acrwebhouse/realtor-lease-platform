@@ -54,7 +54,7 @@ const CompanyApplyList = (props) => {
         CompanyAxios.get(
                 reqUrl,{
                     headers:{
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 })
             .then( (response) => {
@@ -126,7 +126,7 @@ const CompanyApplyList = (props) => {
         let reqUrl = `${editEmployees}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
