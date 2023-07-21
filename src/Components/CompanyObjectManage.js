@@ -5,7 +5,8 @@ import cookie from 'react-cookies'
 import {CompanyAxios} from "./axiosApi";
 import {showInternelErrorPageForMobile} from "./CommonUtil";
 import {Col, Row, Divider, Table, Select, Button} from "antd";
-import jwt_decode from "jwt-decode";
+import {getPersonalInfo,xTokenName} from './Auth'
+
 let transferOptions = []
 const priceMin1 = 0;
 const priceMax1 = 9999;
@@ -68,10 +69,9 @@ const dealYearMonth = {
 };
 
 const CompanyObjectManage = (props) => {
-    const xToken = cookie.load('x-token')
-    const decodedToken = jwt_decode(xToken);
     const [size] = useState("large");
     const [init, setInit] = useState(true)
+    const [user, setUser] = useState({})
     const [enableTransfer, setEnableTransfer] = useState(false)
     const [companyEmployees, setCompanyEmployees] = useState({})
     const [teamHouseCount, setTeamHouseCount] = useState([])
@@ -95,6 +95,17 @@ const CompanyObjectManage = (props) => {
                 getCompanyEmployeeInfo()
                 checkYearMonth()
                 checkLastWeek(todayDate)
+                const xToken = cookie.load(xTokenName)
+                getPersonalInfo(xToken).then( (userResponse) => {
+                    if(userResponse.data.data !== undefined){
+                        const user = userResponse.data.data
+                        setUser(user)
+                    }
+                })
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
             }
         }, )
 
@@ -267,6 +278,7 @@ const CompanyObjectManage = (props) => {
     console.log(companyEmployees)
 
     const getTeamUploadHouseCounts = (companyId) => {
+        const xToken = cookie.load(xTokenName)
         let reqUrl = 'house/getTeamUploadHouseCounts'
         reqUrl += `?companyId=`+ companyId + `&minPrice1=`+priceMin1+`&minPrice2=`+priceMin2+`&minPrice3=`+priceMin3+`&minPrice4=`+priceMin4+`&minPrice5=`+priceMin5+`&maxPrice1=`+priceMax1+`&maxPrice2=`+priceMax2+`&maxPrice3=`+priceMax3+`&maxPrice4=`+priceMax4+`&maxPrice5=`+priceMax5+`&minCreateTime=`+defaultDate.firstDate+`&maxCreateTime=`+defaultDate.endDate
         console.log(reqUrl)
@@ -355,8 +367,8 @@ const CompanyObjectManage = (props) => {
         <div>
            {/*CompanyObjectManage*/}
 
-            <HousesList owner={decodedToken.id}
-                        roles={decodedToken.roles}
+            <HousesList owner={user._id}
+                        roles={user.roles}
                         enableTranfer={enableTransfer}
                         companyEmployees={companyEmployees}
                         transferOptions={transferOptions}

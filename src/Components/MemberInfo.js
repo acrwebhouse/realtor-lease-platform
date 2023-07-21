@@ -6,7 +6,6 @@ import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
-import jwt_decode from "jwt-decode";
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
 const SendResetPassword_Auth = '/auth/sendResetPasswordMail/'
@@ -183,7 +182,6 @@ const getPersonalInfo = () => {
         }
     )
     .then( (response) => {
-        console.log('=====getPersonalInfo====response====',response)
         if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
             response.data.data.bornDate = ''
         }
@@ -191,7 +189,6 @@ const getPersonalInfo = () => {
         setData(response.data.data)
     })
     .catch( (error) => {
-        console.log('=====getPersonalInfo====error====',error)
         showInternelErrorPageForMobile()
         toast.error(error)
     })
@@ -252,9 +249,7 @@ function changeRoles(e){
     setRoles(e)
     const value = []
     let showExtra = false
-    const decodedToken = jwt_decode(xToken);
-    console.log(decodedToken)
-    const roles = decodedToken.roles
+    const roles = user.roles
     for(let i = 0 ;i<roles.length; i++){
         if(roles[i] === 1){
             value.push(1)
@@ -330,8 +325,7 @@ function editIsSales(){
 }
 
 function sendEdit(){
-    const decodedToken = jwt_decode(xToken);
-    editUser.id = decodedToken.id
+    editUser.id = user._id
     let isOkLicense = true
     let isOkPassword = false
     let isSales = editIsSales()
