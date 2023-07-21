@@ -31,7 +31,7 @@ import {
     WashMachineIcon, WaterHeaterIcon
 } from "./Equipment";
 import {showInternelErrorPageForMobile} from './CommonUtil'
-import jwt_decode from "jwt-decode";
+import {getPersonalInfo,xTokenName} from './Auth'
 // const AddressPattern = /^[\u4e00-\u9fa5]+$/
 // const DoorNumberPattern = /^[0-9]*$/
 // const SecondRoomNumberPattern = /^[A-Za-z0-9]+$/
@@ -138,13 +138,9 @@ const FloorCheck = (FloorValue, remark) => {
 }
 
 const HouseUpload = (prop) => {
-    const xToken = cookie.load('x-token')
-    const decodedToken = jwt_decode(xToken);
-    console.log('HouseUpload cookie x-token: '+xToken)
-    console.log('HouseUpload cookie decodedToken: '+JSON.stringify(decodedToken))
-    console.log('HouseUpload cookie id: '+decodedToken.id)
+    const xToken = cookie.load(xTokenName)
+    const [user, setUser] = useState({});
     console.log(prop.defaultValue)
-
     const PicPreURL = prop.defaultValue? houseService+'/resource/'+prop.defaultValue._id+'/photo/' : []
     console.log(PicPreURL)
     const [form] = Form.useForm();
@@ -249,6 +245,17 @@ const HouseUpload = (prop) => {
         if (delAnnex) {
             setDelAnnex(false)
         }
+        
+        getPersonalInfo(xToken).then( (userResponse) => {
+            if(userResponse.data.data !== undefined){
+                const userData = userResponse.data.data
+                setUser(userData)
+            }
+        })
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }, [delTraffic, delLife, delEdu, delPic, delAnnex])
 
     console.log(TrafficArr)
@@ -397,7 +404,7 @@ const HouseUpload = (prop) => {
                 'name' : values['name'],
                 'city' : values['City'],
                 'area' : values['Area'],
-                'owner' : decodedToken.id,
+                'owner' : user._id,
                 'address': values['City']+values['Area']+values['address'],
                 'houseNumber' : {
                     'lane' : values['lane']  ? parseInt(values['lane']) : '',
@@ -447,7 +454,7 @@ const HouseUpload = (prop) => {
                 'annex' : prop.defaultValue ? AnnexData : annexData, // AnnexData have defaultData, annexData new Upload
                 'remark' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ? values['remark'] : '頂樓加蓋，' + values['remark'],
                 "belongType": prop.companyState === 2 || prop.companyState === 4 ? 2 : 1,
-                "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : decodedToken.id
+                "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : user._id
             }
         )
         if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 12  ) {
