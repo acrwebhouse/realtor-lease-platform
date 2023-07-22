@@ -2,13 +2,11 @@ import React, {useEffect, useState,forwardRef,useImperativeHandle} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker,  Alert, Checkbox, Result, Switch} from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
-
 const houseService = config.base_URL_House
 const ReserveHouseList_Auth = 'reserveHouse/getReserveHousesOnlyHost'
 const ReserveHouseListForClient_Auth = 'reserveHouse/getReserveHousesOnlyClient'
@@ -51,7 +49,7 @@ const ReserveHouseList = (props, ref) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -123,7 +121,7 @@ const ReserveHouseList = (props, ref) => {
         HouseAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -142,7 +140,7 @@ const ReserveHouseList = (props, ref) => {
         HouseAxios.get(
             reqUrlClient,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -239,9 +237,6 @@ const ReserveHouseList = (props, ref) => {
 
     const queryHouse = (houseId) => {
         console.log(houseId)
-        const xToken = cookie.load('x-token')
-        const decodedToken = jwt_decode(xToken);
-        // openInNewTab(`/reserveHouseDetail/${houseId}`)
         props.showReserveHouseDetailUI(houseId)
     }
 

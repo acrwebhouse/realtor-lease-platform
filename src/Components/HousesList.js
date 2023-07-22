@@ -15,9 +15,8 @@ import {
     Descriptions,
     Divider
 } from "antd";
-import {CompanyAxios, HouseAxios, TransactionAxios} from './axiosApi'
+import {CompanyAxios, HouseAxios, TransactionAxios,UserAxios} from './axiosApi'
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -105,7 +104,6 @@ const HousesList = (props) => {
         if (init) {
             setInit(false)
             getHousesList()
-            console.log(init)
         }
     }, )
 
@@ -118,7 +116,7 @@ const HousesList = (props) => {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -169,7 +167,7 @@ const HousesList = (props) => {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -196,7 +194,7 @@ const HousesList = (props) => {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -346,7 +344,7 @@ const HousesList = (props) => {
         HouseAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -945,12 +943,46 @@ const HousesList = (props) => {
         },
     ];
 
+    const getPersonalInfo = (xToken) => {
+        return new Promise((resolve, reject) => {
+            const userListUrl = 'user/getPersonalInfo'
+            let reqUrl = `${userListUrl}`
+            UserAxios.get(
+                reqUrl,{
+                    headers:{
+                        'x-token':xToken
+                    }
+                }
+            )
+            .then( (response) => {
+                if(response.data.data !== undefined){
+                    if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
+                        response.data.data.bornDate = ''
+                    }
+                    resolve(response)
+                }else{
+                    reject(response)
+                }
+            })
+            .catch( (error) => {
+                reject(error)
+            })
+        })
+    }
 
     function queryHouse(houseId){
         console.log(houseId)
         const xToken = cookie.load('x-token')
-        const decodedToken = jwt_decode(xToken);
-        openInNewTab(`/HouseDetailOwner/${houseId}/${decodedToken.id}`)
+        getPersonalInfo(xToken).then( (response) => {
+            if(response.data.data !== undefined){
+                const user = response.data.data
+                openInNewTab(`/HouseDetailOwner/${houseId}/${user._id}`)
+            }
+        })
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     function cancelRemoveHouse(){
@@ -968,7 +1000,7 @@ const HousesList = (props) => {
         HouseAxios.delete(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 },
                 data: {
                     ids: [houseId]

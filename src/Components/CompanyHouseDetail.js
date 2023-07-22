@@ -22,7 +22,7 @@ const CompanyHouseDetail = (props) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )

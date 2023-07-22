@@ -76,6 +76,7 @@ const LoginRegister = (props) => {
         // console.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
+            tempData.devices = 3   
             setLoginData(tempData)
             setRememberMe(remember)
             setIsRunPost(true);

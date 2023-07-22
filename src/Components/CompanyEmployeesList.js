@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Modal, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams
@@ -10,6 +9,7 @@ import {
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
   import {showInternelErrorPageForMobile} from './CommonUtil'
+  import {getPersonalInfo} from './Auth'
 
 const CompanyEmployeesList = (props) => {
     let { id } = useParams();
@@ -83,7 +83,7 @@ const CompanyEmployeesList = (props) => {
         CompanyAxios.get(
                 reqUrl,{
                     headers:{
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 })
             .then( (response) => {
@@ -104,30 +104,36 @@ const CompanyEmployeesList = (props) => {
         const isResignEmployee = []
         if(response.data && response.data.data){
             const items = response.data.data
-
             const xToken = cookie.load('x-token')
-            const decodedToken = jwt_decode(xToken);
-            const id = decodedToken.id
-            let isShowEditButton = false
-            for(let i = 0 ;i<items.length; i++){
-                if(items[i].userId === id){
-                    if(items[i].rank === 0){
-                        isShowEditButton = true
+            getPersonalInfo(xToken).then( (userResponse) => {
+                if(userResponse.data.data !== undefined){
+                    const id = userResponse.data.data._id
+                    let isShowEditButton = false
+                    for(let i = 0 ;i<items.length; i++){
+                        if(items[i].userId === id){
+                            if(items[i].rank === 0){
+                                isShowEditButton = true
+                            }
+                            i = items.length
+                        }              
                     }
-                    i = items.length
-                }              
-            }
-            for(let i = 0 ;i<items.length; i++){
-                console.log(items[i])
-                if(items[i].isResign === true){
-                    combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
-                }else if(items[i].state === 2 || items[i].state === 4){
-                    combineShowColumnContent(employee,items,i,isShowEditButton)
+                    for(let i = 0 ;i<items.length; i++){
+                        console.log(items[i])
+                        if(items[i].isResign === true){
+                            combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
+                        }else if(items[i].state === 2 || items[i].state === 4){
+                            combineShowColumnContent(employee,items,i,isShowEditButton)
+                        }
+                    }
+                    setEmployeesList(employee)
+                    setIsResignEmployeesList(isResignEmployee)
                 }
-            }
-        }
-        setEmployeesList(employee)
-        setIsResignEmployeesList(isResignEmployee)
+            })
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
+        } 
     }
 
     function combineShowColumnContent(showArr,items,i,isShowEditButton){
@@ -210,7 +216,7 @@ const CompanyEmployeesList = (props) => {
         const xToken = cookie.load('x-token')
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
@@ -384,7 +390,7 @@ const CompanyEmployeesList = (props) => {
           let reqUrl = `${editEmployeesUrl}`
           CompanyAxios.put(reqUrl, body, {
               headers:{
-                  'x-Token':xToken
+                  'x-token':xToken
               }
           }).then((response) => {
               console.log(response)

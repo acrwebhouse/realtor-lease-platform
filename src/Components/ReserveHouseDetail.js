@@ -18,7 +18,6 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams
@@ -149,7 +148,7 @@ const ReserveHouseDetail = (props) => {
             }
             HouseAxios.put(update_reserve_Auth, temp, {
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)

@@ -1,6 +1,7 @@
 import cookie from 'react-cookies'
-import {AuthAxios} from './axiosApi'
+import {AuthAxios,UserAxios} from './axiosApi'
 import {errorCode} from './Error'
+
 
 const xTokenName = 'x-token'
 const xRefreshTokenName = 'x-refresh-token'
@@ -65,4 +66,30 @@ const saveToken = (accessToken,refreshToken) => {
     cookie.save(xRefreshTokenName,refreshToken,{path:'/', expires: refreshTokenDate})
 }
 
-export {refreshXToken,removeToken,saveToken,xTokenName,xRefreshTokenName}
+const getPersonalInfo = (xToken) => {
+    return new Promise((resolve, reject) => {
+        const userListUrl = 'user/getPersonalInfo'
+        let reqUrl = `${userListUrl}`
+        UserAxios.get(
+            reqUrl,{
+                headers:{
+                    'x-token':xToken
+                }
+            }
+        )
+        .then( (response) => {
+            if(response.data.data !== undefined){
+                if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
+                    response.data.data.bornDate = ''
+                }
+                resolve(response)
+            }else{
+                reject(response)
+            }
+        })
+        .catch( (error) => {
+            reject(error)
+        })
+    })
+}
+export {refreshXToken,removeToken,saveToken,xTokenName,xRefreshTokenName,getPersonalInfo}

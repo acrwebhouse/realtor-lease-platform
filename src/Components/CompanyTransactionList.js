@@ -21,7 +21,6 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios, HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams
@@ -215,7 +214,7 @@ const CompanyTransactionList = (props) => {
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -293,7 +292,7 @@ const CompanyTransactionList = (props) => {
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -337,7 +336,7 @@ const CompanyTransactionList = (props) => {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }).then((response) => {
                 console.log(response)
@@ -377,7 +376,7 @@ const CompanyTransactionList = (props) => {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }).then((response) => {
                 console.log(response)
@@ -418,7 +417,7 @@ const CompanyTransactionList = (props) => {
                     headers: {
                         "content-type": "application/json",
                         "accept": "application/json",
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 }).then((response) => {
                 console.log(response)

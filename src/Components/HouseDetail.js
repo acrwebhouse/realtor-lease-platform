@@ -5,7 +5,6 @@ import {
   } from "react-router-dom";
 import {HouseAxios} from './axiosApi'
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 
 import {
@@ -595,7 +594,7 @@ console.log(showFloor2)
         HouseAxios.delete(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 },
                 data: {
                     ids: [houseId]

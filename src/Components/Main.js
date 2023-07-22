@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {LoginRegisterAxios,CollectAxios} from './axiosApi'
-import { UserAxios} from './axiosApi'
+
 import Icon,{
   CloudUploadOutlined,
   HomeFilled ,
@@ -53,7 +52,7 @@ import {
   } from "react-router-dom";
 import {showInternelErrorPageForMobile} from './CommonUtil'
 
-import {refreshXToken,xTokenName,xRefreshTokenName,removeToken} from './Auth'
+import {refreshXToken,xRefreshTokenName,removeToken,getPersonalInfo} from './Auth'
 
 import {eventBus,eventName} from './EventBus';
 
@@ -93,7 +92,6 @@ const Main = () => {
     const [isShowCompanyObjectManageMenu, setIsShowCompanyObjectManageMenu] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
-    const [user, setUser] = useState({});
     const { page ,info} = useParams();
     const [isShowReserveHouseDetail, setIsShowReserveHouseDetail] = useState(false);
     const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
@@ -102,6 +100,8 @@ const Main = () => {
     const [isQuickToPage, setIsQuickToPage] = useState(false);
     const { search } = useLocation();
     let isSales = false
+
+    let userData = {}
 
     const surveysAuditSvg = () => (
         <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 386 511.9">
@@ -152,25 +152,13 @@ const Main = () => {
         <Icon component={objectManageSvg} {...props} />
     );
 
-
+    
     const changeUserMenu = (xToken) => {
-        const userListUrl = 'user/getPersonalInfo'
-        let reqUrl = `${userListUrl}`
-        UserAxios.get(
-            reqUrl,{
-                headers:{
-                    'x-Token':xToken
-                }
-            }
-        )
-        .then( (response) => {
-            if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
-                response.data.data.bornDate = ''
-            }
-            setUser(response.data.data)
+        getPersonalInfo(xToken).then( (response) => {
             if(response.data.data !== undefined){
                 const roles = response.data.data.roles
                 const exeUser = response.data.data
+                userData = exeUser
                 const employeeData = getCurrentEmployeeData(exeUser)
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
@@ -180,9 +168,7 @@ const Main = () => {
                 }else{
                     housesList()
                 }
-                
             }
-            
         })
         .catch( (error) => {
             showInternelErrorPageForMobile()
@@ -199,12 +185,6 @@ const Main = () => {
             const oldEmployeeState = currentEmployeeData.state
             const oldEmployeeRank = currentEmployeeData.rank
             if(result === true){
-                // console.log('=====currentCompanyId====',currentCompanyId)
-                // console.log('=====oldCompanyId====',oldCompanyId)
-                // console.log('====currentEmployeeState=====',currentEmployeeState)
-                // console.log('=====oldEmployeeState====',oldEmployeeState)
-                // console.log('====currentEmployeeRank=====',currentEmployeeRank)
-                // console.log('====oldEmployeeRank=====',oldEmployeeRank)
                 if(currentCompanyId === oldCompanyId && currentEmployeeState === oldEmployeeState && currentEmployeeRank === oldEmployeeRank){
                     callback(true)
                 }else{
@@ -354,14 +334,32 @@ const Main = () => {
     }
 
     const changeAccessToken = (xToken) => {
-        // 在这里处理 Axios 响应，可以更新组件状态或执行其他操作
-        console.log('changeAccessToken xToken:', xToken);
-        toast.success('changeAccessToken')
+        getPersonalInfo(xToken).then( (response) => {
+            const newUser = response.data.data;
+            if(userData !== {} && newUser !== undefined){
+                const newEmployeeData = getCurrentEmployeeData(newUser)
+                const oldEmployeeData = getCurrentEmployeeData(userData)
+                if(oldEmployeeData.state !== 2 && newEmployeeData.state === 2 ){
+                    showMainToastAndRefresh('您已通過公司審核，自動轉至首頁。')
+                }
+                if(oldEmployeeData.state !== 4 && newEmployeeData.state === 4 ){
+                    showMainToastAndRefresh('您已被公司停權，自動轉至首頁。')
+                }
+                if(oldEmployeeData.isResign === false && oldEmployeeData.companyId !== '' && oldEmployeeData.companyId !== undefined && JSON.stringify(newEmployeeData) === '{}'){
+                    showMainToastAndRefresh('您已從公司離職，自動轉至首頁。')
+                }
+            }
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
       };
     
-      const showMainToast = (xToken) => {
-        // 在这里处理 Axios 响应，可以更新组件状态或执行其他操作
-        console.log('showMainToast xToken:', xToken);
+      const showMainToastAndRefresh = (message) => {
+        toast.success(message)
+        setTimeout(()=>{
+            window.location.href = '/';
+        },2000)
       };
 
       const resetAccount = () => {
@@ -384,7 +382,7 @@ const Main = () => {
             const xRefreshToken = cookie.load(xRefreshTokenName) 
             if(xRefreshToken!== null && xRefreshToken!== undefined){
                 refreshXToken().then(result => {
-                    if(result.errorCode == errorCode.isOk){
+                    if(result.errorCode === errorCode.isOk){
                         const xToken = result.message
                         changeUserMenu(xToken)
                     }else{
@@ -400,7 +398,6 @@ const Main = () => {
                 autoLogin(accountOrMail , password)
             }
             eventBus.on(eventName.changeAccessToken, changeAccessToken);
-            eventBus.on(eventName.showMainToast, showMainToast);
             eventBus.on(eventName.resetAccount, resetAccount);
             return () => {
                 // eventBus.off(eventName.changeAccessToken, changeAccessToken);

@@ -6,10 +6,7 @@ import {
     Col,
     Form, Result
 } from "antd";
-// import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-// import jwt_decode from "jwt-decode";
-// import moment from 'moment';
 import Captcha from "demos-react-captcha";
 import cookie from "react-cookies";
 import {config} from '../Setting/config'
@@ -34,7 +31,7 @@ const ResetPassword = (props) => {
         UserAxios.get(
             userData_Auth,{
                 headers:{
-                    'x-Token':User_verify_xToken
+                    'x-token':User_verify_xToken
                 }
             }
         )
@@ -57,7 +54,7 @@ const ResetPassword = (props) => {
             UserAxios.put(editUser_Auth, UserData,{
                     headers:{
                         "accept": "application/json",
-                        'x-Token': User_verify_xToken,
+                        'x-token': User_verify_xToken,
                         'Content-Type': "application/json"
                     }
                 }

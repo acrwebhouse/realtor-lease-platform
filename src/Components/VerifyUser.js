@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker,  Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {LoginRegisterAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';

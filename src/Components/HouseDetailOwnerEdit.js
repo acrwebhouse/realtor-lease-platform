@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {
     useParams
   } from "react-router-dom";
@@ -9,8 +8,8 @@ import {HouseAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
+import {getPersonalInfo} from './Auth'
 const houseListUrl = 'house/getHouse'
-
 
 const HouseDetailOwnerEdit = (prop) => {
     const { id,owner } = useParams();
@@ -42,18 +41,24 @@ const HouseDetailOwnerEdit = (prop) => {
         if (init) {
             const xToken = cookie.load('x-token')
             if(xToken){
-                const decodedToken = jwt_decode(xToken);
-                let isAdmin = false;
-                for(let i = 0 ;i<decodedToken.roles.length;i++){
-                    if(decodedToken.roles[i] === 1){
-                        isAdmin = true
+                getPersonalInfo(xToken).then( (userResponse) => {
+                    if(userResponse.data.data !== undefined){
+                        const user = userResponse.data.data
+                        let isAdmin = false;
+                        for(let i = 0 ;i<user.roles.length;i++){
+                            if(user.roles[i] === 1){
+                                isAdmin = true
+                            }
+                        }
+                        if(user._id === owner || isAdmin === true){
+                            getHouse()
+                        }else{
+                            alert('您不是負責人無法編輯')
+                        }
                     }
-                }
-                if(decodedToken.id === owner || isAdmin === true){
-                    getHouse()
-                }else{
-                    alert('您不是負責人無法編輯')
-                }
+                })
+                .catch( (error) => {
+                })
             }else{
                 alert('請先登入')
             }

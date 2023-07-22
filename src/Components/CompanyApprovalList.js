@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {CompanyAxios} from './axiosApi'
 import {
@@ -45,7 +44,7 @@ const CompanyApprovalList = (props) => {
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -244,7 +243,7 @@ const CompanyApprovalList = (props) => {
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
@@ -321,7 +320,7 @@ const CompanyApprovalList = (props) => {
         let reqUrl = `${editTransactionAuth}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
@@ -374,7 +373,7 @@ const CompanyApprovalList = (props) => {
         let reqUrl = `${editTransactionAuth}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
@@ -440,7 +439,7 @@ const CompanyApprovalList = (props) => {
             let reqUrl = `${editTransactionAuth}`
             CompanyAxios.put(reqUrl, body, {
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
                 console.log(response)
@@ -477,7 +476,7 @@ const CompanyApprovalList = (props) => {
         let reqUrl = `${editEmployees}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)

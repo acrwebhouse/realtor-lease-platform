@@ -18,7 +18,6 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import {CompanyAxios} from './axiosApi'
 import {
     useParams
@@ -48,7 +47,7 @@ const CompanyApplyState = (props) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
@@ -98,7 +97,7 @@ const CompanyApplyState = (props) => {
         }
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
             console.log(response)
