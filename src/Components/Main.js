@@ -345,7 +345,7 @@ const Main = () => {
                 if(oldEmployeeData.state !== 4 && newEmployeeData.state === 4 ){
                     showMainToastAndRefresh('您已被公司停權，自動轉至首頁。')
                 }
-                if(oldEmployeeData.isResign === false && oldEmployeeData.companyId !== '' && oldEmployeeData.companyId !== undefined && newEmployeeData.companyId === ''){
+                if(oldEmployeeData.isResign === false && oldEmployeeData.companyId !== '' && oldEmployeeData.companyId !== undefined && JSON.stringify(newEmployeeData) === '{}'){
                     showMainToastAndRefresh('您已從公司離職，自動轉至首頁。')
                 }
             }

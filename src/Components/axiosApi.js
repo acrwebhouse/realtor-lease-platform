@@ -62,7 +62,6 @@ const AuthAxios = axios.create({
     // timeout: 1000,
     headers: { 'Content-Type': 'application/json' }
 })
-let a = 0;
 async function refreshTokenAndNotify(error){
     const result = await refreshXToken()
     const originalRequest = error.config;
@@ -70,7 +69,7 @@ async function refreshTokenAndNotify(error){
     originalRequest._retry = false;
     originalRequest.headers[xTokenName] = xToken;
     if(result.errorCode === errorCode.isOk){
-        //eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
+        eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
     }else{
         eventBus.emit(eventName.resetAccount, ''); // 触发事件
     }
