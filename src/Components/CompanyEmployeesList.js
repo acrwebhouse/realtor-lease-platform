@@ -6,7 +6,7 @@ import moment from 'moment';
 import {
     useParams
   } from "react-router-dom";
-  import { ToastContainer, toast } from 'react-toastify';
+  import { toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
   import {showInternelErrorPageForMobile} from './CommonUtil'
   import {getPersonalInfo} from './Auth'
@@ -538,7 +538,6 @@ const CompanyEmployeesList = (props) => {
 
     return (
         <div>
-        <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
         {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
