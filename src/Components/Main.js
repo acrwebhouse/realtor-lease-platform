@@ -339,7 +339,7 @@ const Main = () => {
             if(userData !== {} && newUser !== undefined){
                 const newEmployeeData = getCurrentEmployeeData(newUser)
                 const oldEmployeeData = getCurrentEmployeeData(userData)
-                if(oldEmployeeData.state === 1 && newEmployeeData.state === 2 ){
+                if(JSON.stringify(oldEmployeeData) === '{}' && newEmployeeData.state === 2 ){
                     showMainToastAndRefresh('您已通過公司審核，自動轉至首頁。')
                 }
                 if(oldEmployeeData.state !== 4 && newEmployeeData.state === 4 ){
