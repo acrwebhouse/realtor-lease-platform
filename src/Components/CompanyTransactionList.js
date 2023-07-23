@@ -144,16 +144,9 @@ const CompanyTransactionList = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            props.checkEmployeeStateAndChangeMenu((result)=>{
-                if(result === true){
-                    setInit(false)
-                    setYears(() => new Date().getFullYear())
-                    setMonths(() => dealYearMonth.month[new Date().getMonth()])
-                    setEnableCheckYearMonth(true)
-                }else{
-                    toast.warning('員工權限變動，請重新進入選單')
-                }
-            })
+            setYears(() => new Date().getFullYear())
+            setMonths(() => dealYearMonth.month[new Date().getMonth()])
+            setEnableCheckYearMonth(true)
         }
     }, )
     console.log(transactionArray)

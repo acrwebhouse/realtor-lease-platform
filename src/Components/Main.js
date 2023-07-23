@@ -339,11 +339,14 @@ const Main = () => {
             if(userData !== {} && newUser !== undefined){
                 const newEmployeeData = getCurrentEmployeeData(newUser)
                 const oldEmployeeData = getCurrentEmployeeData(userData)
-                if(oldEmployeeData.state !== 2 && newEmployeeData.state === 2 ){
+                if(oldEmployeeData.state === 1 && newEmployeeData.state === 2 ){
                     showMainToastAndRefresh('您已通過公司審核，自動轉至首頁。')
                 }
                 if(oldEmployeeData.state !== 4 && newEmployeeData.state === 4 ){
                     showMainToastAndRefresh('您已被公司停權，自動轉至首頁。')
+                }
+                if(oldEmployeeData.state === 4 && newEmployeeData.state === 2 ){
+                    showMainToastAndRefresh('您已恢復公司權限，自動轉至首頁。')
                 }
                 if(oldEmployeeData.isResign === false && oldEmployeeData.companyId !== '' && oldEmployeeData.companyId !== undefined && JSON.stringify(newEmployeeData) === '{}'){
                     showMainToastAndRefresh('您已從公司離職，自動轉至首頁。')

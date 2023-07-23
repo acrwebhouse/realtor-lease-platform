@@ -35,13 +35,7 @@ const CompanyEmployeeInfo = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            props.checkEmployeeStateAndChangeMenu((result)=>{
-                if(result === true){
-                    getCompanyEmployeeInfo()
-                }else{
-                    toast.warning('員工權限變動，請重新進入選單')
-                }
-            })
+            getCompanyEmployeeInfo()
         }
     }, )
     console.log(props)
