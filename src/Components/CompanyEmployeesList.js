@@ -358,7 +358,7 @@ const CompanyEmployeesList = (props) => {
     function selectEditEmployeesRankCheckManager(value){
         selectEditEmployeesRank(value)
         const managerRank = getEmployeeRankByUserId(editEmployee.managerId)
-        if(managerRank>=value){
+        if(managerRank>value){
             setCantEditEmployee(true)
             setIsShowEditEmployeeRankManager(true)
         }else{
