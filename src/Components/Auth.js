@@ -5,6 +5,7 @@ import {errorCode} from './Error'
 
 const xTokenName = 'x-token'
 const xRefreshTokenName = 'x-refresh-token'
+const refreshAccessTokenUrl = '/auth/refreshAccessToken'
 
 const refreshXToken = () => {
     return new Promise((resolve, reject) => {
@@ -13,7 +14,6 @@ const refreshXToken = () => {
             message : ''
         }
         const xRefreshToken = cookie.load(xRefreshTokenName)
-        const refreshAccessTokenUrl = '/auth/refreshAccessToken'
         if(xRefreshToken!== null && xRefreshToken!== undefined){
             const body = {
                 refreshToken:xRefreshToken
@@ -92,4 +92,4 @@ const getPersonalInfo = (xToken) => {
         })
     })
 }
-export {refreshXToken,removeToken,saveToken,xTokenName,xRefreshTokenName,getPersonalInfo}
+export {refreshXToken,removeToken,saveToken,xTokenName,xRefreshTokenName,getPersonalInfo,refreshAccessTokenUrl}

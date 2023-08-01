@@ -2,7 +2,7 @@ import axios from 'axios';
 import cookie from 'react-cookies'
 import {config} from '../Setting/config'
 import {errorCode} from './Error'
-import {refreshXToken,xRefreshTokenName,xTokenName} from './Auth'
+import {refreshXToken,xRefreshTokenName,xTokenName,refreshAccessTokenUrl} from './Auth'
 import {eventBus,eventName} from './EventBus';
 
 const xToken = cookie.load(xTokenName)
@@ -86,8 +86,9 @@ for(let i = 0 ;i<axiosAll.length;i++){
     },
     async (error) => {
       if (error.response && error.response.status === 401) {
+        const errorUrl = error.response.config.url
         const xRefreshToken = cookie.load(xRefreshTokenName) 
-        if(xRefreshToken!== null && xRefreshToken!== undefined){
+        if(xRefreshToken!== null && xRefreshToken!== undefined && errorUrl !== refreshAccessTokenUrl){
             const originalRequest = await refreshTokenAndNotify(error)
             return axiosAll[i](originalRequest);
         }

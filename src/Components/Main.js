@@ -366,7 +366,8 @@ const Main = () => {
       };
 
       const resetAccount = () => {
-        toast.success(`連續登入時間過長，請重新登入。`)
+        // toast.success(`連續登入時間過長，請重新登入。`)
+        toast.success(`請重新登入。`)
         setTimeout(()=>{
             window.location.href = '/';
         },2000)
