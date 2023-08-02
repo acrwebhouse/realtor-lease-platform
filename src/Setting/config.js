@@ -9,7 +9,7 @@ const config = {
     'contactPhone' : '0909123456',
     'contactMail' : 'acr.webhouse@gmail.com',
     'GoogleMapKey' : 'AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE',
-    'mainPage' : 'https://matchrenthouse.com',
+    'mainPage' : 'https://matchrentdev.com',
 }
 
 
