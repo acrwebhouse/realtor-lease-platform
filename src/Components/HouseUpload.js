@@ -872,25 +872,34 @@ const HouseUpload = (prop) => {
                                         <List.Item
 
                                             actions={[
-                                                index === 0 ?
+                                                index !== 0 ?
                                                     <Button  onClick={() => {
-                                                        console.log(Pic, index)
-                                                        setEnableFirstPicChange(true)
+                                                        console.log(Pic, index, PicData)
+                                                        let temp = PicData[0]
+                                                        PicData[0] = PicData[index]
+                                                        PicData[index] = temp
+                                                        console.log(PicData)
+                                                        toast.success('已設定新的首圖')
+                                                        // setEnableFirstPicChange(true)
                                                     }
                                                     }>
-                                                        首圖更換
+                                                        設成首圖
                                                     </Button>
+                                                    : []
+                                                ,
+                                                index === 0 ?
+                                                    <p style={{fontSize:'40px'}}>首圖</p>
                                                     :
-                                                <Button icon={<DeleteOutlined />} onClick={() => {
-                                                    if(!delPic ) {
-                                                        PicData.splice(index, 1)
-                                                        showPic.splice(index, 1)
-                                                        setDelPic(true)
+                                                    <Button icon={<DeleteOutlined />} onClick={() => {
+                                                        if(!delPic ) {
+                                                            PicData.splice(index, 1)
+                                                            showPic.splice(index, 1)
+                                                            setDelPic(true)
+                                                        }
                                                     }
-                                                }
-                                                }>
-                                                    刪除
-                                                </Button>]}>
+                                                    }>
+                                                        刪除
+                                                    </Button>]}>
                                             {/*{Pic}*/}
                                             {/*{'\u3000'.repeat(35)}*/}
                                             {/*<a href={PicPreURL+Pic} ><img src={PicPreURL+Pic} width={150} height={150} alt={Pic}/></a>*/}

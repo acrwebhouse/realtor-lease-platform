@@ -557,6 +557,7 @@ const ReserveHouseList = (props, ref) => {
                             // columns={isShowDel? columns : filterdColumns}
                                dataSource={reserveHouseData}
                                pagination={{ position: ['topLeft', 'bottomRight'] }}
+                               onChange={() => {window.scrollTo(0,0)}}
                                onRow={(record, rowIndex) => {
                                    return {
                                        onClick: event => {

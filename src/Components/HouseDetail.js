@@ -764,9 +764,10 @@ console.log(showFloor2)
                         }
                         <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
                         {
-                            (prop.isOwner || prop.isComapny)?(
+                            // (prop.isOwner || prop.isComapny)
+                            (prop.isOwner)?(
                                 <div style={{'fontSize':'10px',width: '200px'}}>{`備註：${remark}`}</div>
-                            ):null   
+                            ):null
                         }
                         
                         <br/>

@@ -12,6 +12,7 @@ const base_URL_User = config.base_URL_User
 const base_URL_House = config.base_URL_House
 const base_URL_Collect = config.base_URL_Collect
 const base_URL_Company = config.base_URL_Company
+const base_URL_Announcement = config.base_URL_Announcement
 
 const LoginRegisterAxios = axios.create({
     baseURL: base_URL_Auth,
@@ -76,7 +77,13 @@ async function refreshTokenAndNotify(error){
     return originalRequest;
 }
 
-const axiosAll = [LoginRegisterAxios,PicAnnexAxios,HouseAxios,UserAxios,CollectAxios,CompanyAxios,AuthAxios]
+const AnnouncementAxios = axios.create({
+    baseURL: base_URL_Announcement,
+    // timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+})
+
+const axiosAll = [LoginRegisterAxios,PicAnnexAxios,HouseAxios,UserAxios,CollectAxios,CompanyAxios,AuthAxios, AnnouncementAxios]
 
 for(let i = 0 ;i<axiosAll.length;i++){
     axiosAll[i].interceptors.response.use(
