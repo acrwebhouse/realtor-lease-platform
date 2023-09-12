@@ -624,7 +624,7 @@ console.log(showFloor2)
             if(prop.setId !== null && prop.setId !== undefined){
                 id = prop.setId
             }
-            if(typeof(appJsInterface) !== 'undefined'){
+            if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
                 setIsShowBackBtn(true)
             }
             setInit(false)
@@ -648,13 +648,12 @@ console.log(showFloor2)
     };
 
     function backPage(){    
-        if(typeof(appJsInterface) !== 'undefined'){
+        if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
             appJsInterface.backPage();
         }
     }
 
-    // console.log(house.saleInfo.devices)
     return (
         <div>
             <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
