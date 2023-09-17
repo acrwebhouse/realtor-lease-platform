@@ -648,9 +648,12 @@ console.log(showFloor2)
     };
 
     function backPage(){    
-        if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+        if(typeof(appJsInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
             appJsInterface.backPage();
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.backPage();
         }
     }
 
