@@ -485,15 +485,25 @@ console.log(showFloor2)
 
 
     function phoneClick(phoneNumber){
-        let a = document.createElement('a');
-        a.href = 'tel:'+phoneNumber;
-        document.body.appendChild(a);
-        a.click()
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.callUp(phoneNumber);
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.callUp(phoneNumber);
+        }
+        else{
+            let a = document.createElement('a');
+            a.href = 'tel:'+phoneNumber;
+            document.body.appendChild(a);
+            a.click()
+        }  
     }
 
     function lineClick(lineId){
         console.log('===lineId===',lineId)
         const lineUrl = 'https://line.me/ti/p/~'+lineId
+        console.log('===lineUrl===',lineUrl)
         if(typeof(appJsInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
             appJsInterface.loadUrl(url);
