@@ -493,11 +493,21 @@ console.log(showFloor2)
 
     function lineClick(lineId){
         console.log('===lineId===',lineId)
-        let strWindowFeatures = `
+        const lineUrl = 'https://line.me/ti/p/~'+lineId
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.loadUrl(url);
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.loadUrl(url);
+        }
+        else{
+            let strWindowFeatures = `
             height=600,
             width=600,
-        `;
-        window.open('https://line.me/ti/p/~'+lineId,'加入好友',strWindowFeatures)
+            `;
+            window.open(lineUrl,'加入好友',strWindowFeatures)
+        } 
     }
 
     const reserveFormEnable = () => {
