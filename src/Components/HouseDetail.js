@@ -501,17 +501,15 @@ console.log(showFloor2)
     }
 
     function lineClick(lineId){
-        console.log('===lineId===',lineId)
-        const lineUrl = 'https://line.me/ti/p/~'+lineId
-        console.log('===lineUrl===',lineUrl)
         if(typeof(appJsInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
-            appJsInterface.loadUrl(url);
+            appJsInterface.addLineFriend(lineId);
         }else if(typeof(jsToIosInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
-            jsToIosInterface.loadUrl(url);
+            jsToIosInterface.addLineFriend(lineId);
         }
         else{
+            const lineUrl = 'https://line.me/ti/p/~'+lineId
             let strWindowFeatures = `
             height=600,
             width=600,
