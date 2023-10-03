@@ -634,7 +634,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯等級 :&nbsp;
-            <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRankCheckManager} style={{
+            <Select placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRankCheckManager} style={{
                             width: '50%',
                         }}>
             </Select>
@@ -647,7 +647,7 @@ const CompanyEmployeesList = (props) => {
                 <br/>
                 <br/>
                 編輯主管 :&nbsp;
-                <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+                <Select placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
                             width: '50%',
                         }}>
                 </Select>
@@ -684,7 +684,7 @@ const CompanyEmployeesList = (props) => {
             isShowEditEmployeeManagerRank?(
             <div>
                 編輯等級 :&nbsp;
-                <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRank} style={{
+                <Select placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRank} style={{
                                 width: '50%',
                         }}>
                 </Select>
@@ -696,7 +696,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯主管 :&nbsp;
-            <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+            <Select placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
                             width: '50%',
                         }}>
             </Select>
@@ -720,7 +720,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯狀態 :&nbsp;
-            <Select allowClear placeholder="請選擇狀態" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
+            <Select placeholder="請選擇狀態" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
                             width: '50%',
                         }}>
             </Select>
