@@ -246,8 +246,8 @@ const Register = (props) => {
         if (!previousValue || value.length > previousValue.length) {
             if (cvLength < 5) return currentValue;
             if (cvLength < 8)
-                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
-            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+                return `${currentValue.slice(0, 4)}${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
 
@@ -789,7 +789,7 @@ const Register = (props) => {
                                             width: '100%',
                                         }}
                                         size="large"
-                                        placeholder='09xx-xxx-xxx'
+                                        placeholder='09xxxxxxxx'
                                         value={ownerPhone}
                                         onChange={(e) => {
                                             console.log(e.target.value)
@@ -841,6 +841,16 @@ const Register = (props) => {
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item name="address"
                                                    style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       },
+                                                       {
+                                                           pattern: /^[\u4e00-\u9fa5]+$/,
+                                                           message: '地址只能填寫中文'
+                                                       }
+                                                   ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
                                             <Input size="large"

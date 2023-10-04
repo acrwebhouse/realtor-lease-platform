@@ -110,7 +110,8 @@ const ResetPassword = (props) => {
             setTimeout(() => {
                 setChangingVerify(false)
             }, 1000)
-
+        } else{
+            toast.error('驗證碼有錯，請重新輸入新的驗證碼。')
         }
     }
 

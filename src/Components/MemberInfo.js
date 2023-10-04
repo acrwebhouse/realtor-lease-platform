@@ -51,7 +51,7 @@ const MemberInfo = (props) => {
     const [editDate, setEditDate] = useState(moment('2022-01-01', dateFormat));
     const [EnableResetPW, setEnableResetPW] = useState(false);
     const xToken = cookie.load('x-token')
-    const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3}[0-9]{6}[\u4e00-\u9fa5]/
+    const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3, 4}[0-9]{6}[\u4e00-\u9fa5]/
 
     const onAreaInCharge = (value) => {
         const editUserValue = editUser
@@ -327,16 +327,18 @@ function editIsSales(){
 function sendEdit(){
     editUser.id = user._id
     let isOkLicense = true
+    let LicenseNull = true
     let isOkPassword = false
     let isSales = editIsSales()
     let isOkSalesScopeCount = true
-    if(isSales && editUser.rolesInfo.sales && editUser.rolesInfo.sales.license){
-        if (LicensePattern.test(editUser.rolesInfo.sales.license)) {
+    if(isSales && editUser.rolesInfo.sales && editUser.rolesInfo.sales.license.length > 0){
+        if (LicensePattern.test(editUser.rolesInfo.sales.license)  ) {
             isOkLicense = true
         }else{
             isOkLicense = false
         }
-        
+    } else {
+        LicenseNull = false
     }
 
     if(isSales && (editUser.rolesInfo.sales.scope.length < 2 || salesScopeArea.length < 2)){
@@ -348,7 +350,7 @@ function sendEdit(){
     }
     
 
-    if(isOkLicense === true && isOkPassword === true && isOkSalesScopeCount === true){
+    if(LicenseNull === true && isOkLicense === true && isOkPassword === true && isOkSalesScopeCount === true){
     let reqUrl = `${editUserUrl}`
     UserAxios.put(
         reqUrl,editUser,{
@@ -388,6 +390,10 @@ function sendEdit(){
         toast.error('請輸入正確的營業員證號格式');
     }
 
+    if(LicenseNull === false){
+        toast.error('營業員證號不能為空');
+    }
+
     if(isOkPassword === false){
         toast.error('密碼不能為空');
     }
@@ -417,7 +423,25 @@ function editAddress(e){
 
 function editPhone(e){
     const editUserValue = editUser
-    editUserValue.phone = e.target.value
+    let pattern=/[a-zA-Z=+-_()*&^%$#@!]/
+    if(e.target.value.length > 0) {
+        if(!pattern.test(e.target.value)) {
+            if(e.target.value[0] !== '0') {
+                toast.error('手機電話格式（09）不對，請重新填寫')
+                cancelEdit()
+            }else {
+                if(e.target.value.length > 1 && e.target.value.substring(0, 2) !== '09') {
+                    toast.error('手機電話格式（09）不對，請重新填寫')
+                    cancelEdit()
+                }
+            }
+        } else {
+            toast.error('手機電話只能填數字')
+            cancelEdit()
+        }
+    }
+
+    editUserValue.phone = e.target.value.substring(0, 4) + '-' + e.target.value.substring(4, 7) + '-' + e.target.value.substring(7, 10)
     setEditUser(editUserValue)
 }
 
@@ -479,6 +503,7 @@ const checkRoleInCompany = () => {
         cancelEdit()
     }
 }
+
     return (
 
         <div>
@@ -663,7 +688,7 @@ const checkRoleInCompany = () => {
                                  </div>                                
                              </Col>
                              <Col xs={20} sm={20} md={20} lg={20} xl={20}>
-                                <Input onChange={editPhone} style={{ width: '100%' }} defaultValue={user.phone}></Input>
+                                <Input onChange={editPhone} placeholder='ex:0912345678' maxLength={10} style={{ width: '100%' }} defaultValue={user.phone}></Input>
                              </Col>
                          </Row>
                          </div>): 
@@ -704,7 +729,7 @@ const checkRoleInCompany = () => {
                                 </div>                                
                             </Col>
                             <Col xs={18} sm={18} md={18} lg={18} xl={18}>
-                                <Input onChange={editLicense} style={{ width: '100%' }} defaultValue={salesLicense}></Input>
+                                <Input onChange={editLicense} style={{ width: '100%' }} maxLength={14} defaultValue={salesLicense}></Input>
                             </Col>
                         </Row>
                         </div>): 

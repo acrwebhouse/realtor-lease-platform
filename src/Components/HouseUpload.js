@@ -92,7 +92,7 @@ const House_Pic_Auth = 'house/uploadHousePhoto/'
 const House_Annex_Auth = 'house/uploadHouseAnnex/'
 const House_Auth = 'house/addHouse/'
 const Edit_House_Auth = 'house/editHouse'
-const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
+const photoType = ['image/png', 'image/heic', 'image/jpeg', 'image/jpg', 'image/bmp']
 const annexType = ['application/pdf', 'image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
 const PicTemp = []
 const firstPicTemp = []
@@ -536,8 +536,8 @@ const HouseUpload = (prop) => {
         if (!previousValue || value.length > previousValue.length) {
             if (cvLength < 5) return currentValue;
             if (cvLength < 8)
-                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
-            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+                return `${currentValue.slice(0, 4)}${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
 
@@ -1060,7 +1060,7 @@ const HouseUpload = (prop) => {
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                            <Divider> 附件上傳 (房屋謄本 & 授權書， PDF or 圖片檔，可後補）</Divider>
+                            <Divider>附件上傳(房屋謄本&授權書，PDF or 圖片檔</Divider>
                         </Col>
                     </Row>
                     <Form.Item
@@ -1226,6 +1226,7 @@ const HouseUpload = (prop) => {
                                 <Input placeholder=""
                                        size="large"
                                        style={{ width: '100%' }}
+                                       maxLength={20}
                                 />
                             </Form.Item>
                         </Col>
@@ -1485,6 +1486,7 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={1}
+                                                     max={100}
                                                      size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="樓"
@@ -1552,6 +1554,7 @@ const HouseUpload = (prop) => {
                                                    style={{
                                                        width: '100%',
                                                    }}
+                                                   maxLength={5}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1607,7 +1610,7 @@ const HouseUpload = (prop) => {
                                             width: '100%',
                                         }}
                                         size="large"
-                                        placeholder='09xx-xxx-xxx'
+                                        placeholder='09xxxxxxxx'
                                         value={hostPhone}
                                         onChange={(e) => {
                                             console.log(e.target.value)
@@ -1697,6 +1700,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="房"
@@ -1711,6 +1715,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="廳"
@@ -1731,6 +1736,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="衛"
@@ -1745,6 +1751,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="陽台"

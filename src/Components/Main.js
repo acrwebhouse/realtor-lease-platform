@@ -95,7 +95,7 @@ const Main = () => {
     const { page ,info} = useParams();
     const [isShowReserveHouseDetail, setIsShowReserveHouseDetail] = useState(false);
     const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
-
+    const [isCompanyManager, setIsCompanyManager] = useState(false)
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
     const [isQuickToPage, setIsQuickToPage] = useState(false);
     const { search } = useLocation();
@@ -242,6 +242,7 @@ const Main = () => {
                 i = user.employeesData.length
             }
         }
+        setIsCompanyManager(() => user.employeesData[0].rank === 0)
         return result
     }
 
@@ -828,11 +829,11 @@ const Main = () => {
     }
 
     {
-        isShowMyHousesList?(<MyHousesList></MyHousesList>):null           
+        isShowMyHousesList?(<MyHousesList></MyHousesList>):null
     }
 
     {
-        isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null           
+        isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null
     }
 
     {

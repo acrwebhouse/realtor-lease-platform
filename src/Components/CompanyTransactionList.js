@@ -97,8 +97,8 @@ const CompanyTransactionList = (props) => {
         isDelete : 'false',
         minPrice : 0,
         maxPrice : '9999999999',
-        minServiceCharge : '',
-        maxServiceCharge : '',
+        minServiceCharge : 0,
+        maxServiceCharge : '999999999',
         minActualPrice : 0,
         maxActualPrice : '999999999',
         startTransactionDate : '',
@@ -151,7 +151,7 @@ const CompanyTransactionList = (props) => {
     }, )
     console.log(transactionArray)
     useEffect(() => {
-        console.log(transactionKey, typeof(transactionKey) ==='number')
+        console.log(transactionKey, typeof(transactionKey) ==='number', transactionData[transactionKey])
         if(updateInitialValue && typeof(transactionKey) === 'number' ){
 
             form_deal.resetFields()
@@ -164,7 +164,7 @@ const CompanyTransactionList = (props) => {
                     (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[2]):null
                 ]
             })
-            setTransactionKey(null)
+            // setTransactionKey(null)
         }
     }, [updateInitialValue, transactionKey]);
     // useEffect(() => {
@@ -197,7 +197,7 @@ const CompanyTransactionList = (props) => {
         // const startDate = '2022/12/1'
         // const endDate = '2022/12/31'
         console.log(startDate, endDate)
-        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&companyId=${getTransactionArg.companyId}`
+        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&companyId=${getTransactionArg.companyId}&&minServiceCharge=${getTransactionArg.minServiceCharge}&&maxServiceCharge=${getTransactionArg.maxServiceCharge}`
         if(props.currentEmployeeData.rank > 0) {
             reqUrl += `&&userId=${getTransactionArg.userId}`
         }
@@ -647,39 +647,6 @@ const CompanyTransactionList = (props) => {
         }
     }
 
-    // //delete
-    // useEffect(() => {
-    //     const xToken = cookie.load('x-token')
-    //     let reqUrl = `${removeTransaction_Auth}?companyId=${props.currentEmployeeData.companyId}`
-    //     if(enableDel) {
-    //         UserAxios.delete(reqUrl, {
-    //             headers: {
-    //                 "content-type": "application/json",
-    //                 "accept": "application/json",
-    //                 "x-token" : xToken,
-    //             },
-    //             data: {"ids" : [delId]}
-    //         }).then((response) => {
-    //             console.log(response)
-    //             if(response.data.status === true){
-    //                 toast.success('刪除成功');
-    //                 // setTimeout(()=>{
-    //                 //     window.location.href = window.location.origin;
-    //                 // },3000);
-    //                 SetIsShowDeleteAlert(false)
-    //                 setEnableCheckYearMonth(true)
-    //             }else{
-    //                 toast.error(response.data.data)
-    //             }
-    //         })
-    //         .catch( (error) => {
-    //             showInternelErrorPageForMobile()
-    //             toast.error(error)
-    //         })
-    //     }
-    // }, [enableDel])
-    // console.log(delId)
-
     return (
         <div>
             {/*{JSON.stringify(props.currentEmployeeData)}*/}
@@ -796,7 +763,7 @@ const CompanyTransactionList = (props) => {
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                         <Collapse defaultActiveKey={['0']}>
                             {transactions.map((data, index) => (
-                                <Panel header={'【'+(index+1)+'】- '+data.houseData.name}
+                                <Panel header={'【'+(index+1)+'】- '+ `${data.houseData.name} - ${data.houseData.city} - ${data.actualPrice}元 - ${data.userData.name}`}
                                        key={index}
                                        extra={data.state === 2?
                                         <div>
@@ -942,6 +909,7 @@ const CompanyTransactionList = (props) => {
                                                         setTransactionKey(index)
                                                         SetIsShowDeleteAlert(true)
                                                         setDelId(transactions[index].transactionId)
+                                                        console.log(index)
                                                     }}
                                                     style={{width: '70px',
                                                         backgroundColor: isShowDeleteAlert?'':data.submitDel?'#FF0000':'',
@@ -1008,11 +976,15 @@ const CompanyTransactionList = (props) => {
                                 {
                                     required: true,
                                 },
+                                {
+                                    pattern: /^[0-9]+$/,
+                                    message: '只能填寫數字'
+                                }
                             ]}
                         >
                             <Input id="dealPrice" style={{
                                 width: '100%',
-                            }}>
+                            }} maxlength={6}>
                             </Input>
                         </Form.Item>
                         <Form.Item
@@ -1023,11 +995,15 @@ const CompanyTransactionList = (props) => {
                                 {
                                     required: true,
                                 },
+                                {
+                                    pattern: /^[0-9]+$/,
+                                    message: '只能填寫數字'
+                                }
                             ]}
                         >
                             <Input id="servicePrice" style={{
                                 width: '100%',
-                            }}>
+                            }} maxlength={6}>
                             </Input>
                         </Form.Item>
                     </div>
@@ -1075,7 +1051,7 @@ const CompanyTransactionList = (props) => {
                         <Button type="primary"
                                 shape="round"
                                 onClick={() => {
-                                    form_deal.resetFields()
+                                    // form_deal.resetFields()
                                     setEnableEditModal(false)
                                 }}
                                 style={{width: '50%', backgroundColor:'red', borderColor: 'red'}}

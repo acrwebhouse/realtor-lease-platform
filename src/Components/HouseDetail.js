@@ -164,6 +164,12 @@ const HouseDetail = (prop) => {
             case 3 :
                 setBuildingType("透天");
                 break ;
+            case 4 :
+                setBuildingType('辦公室')
+                break;
+            case 5 :
+                setBuildingType('店面')
+                break;
             default:
                 setBuildingType("未知");
 
@@ -539,6 +545,7 @@ console.log(showFloor2)
 
     const UploadReserveData = (values) => {
         console.log(values)
+
             if(values['reserveName'] && customerPhone) {
                 setReserveClientData({
                     "host": house['owner'],
@@ -548,7 +555,12 @@ console.log(showFloor2)
                     "clientName": values['reserveName'],
                     "clientPhone": customerPhone
                 })
-                setIsRunPost(true)
+                if(customerPhone.slice(0, 2) !== '09' || customerPhone.length < 12 ) {
+                    toast.error('手機電話格式（09）不對，請重新填寫。')
+                    setCustomerPhone('')
+                } else {
+                    setIsRunPost(true)
+                }
             }else {
                 toast.error('如未登入，姓名與聯絡電話都需要填寫。')
             }
@@ -660,8 +672,8 @@ console.log(showFloor2)
         if (!previousValue || value.length > previousValue.length) {
             if (cvLength < 5) return currentValue;
             if (cvLength < 8)
-                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
-            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+                return `${currentValue.slice(0, 4)}${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
 
@@ -751,22 +763,22 @@ console.log(showFloor2)
                         'color': '#0000ff',
                         'fontSize':'40px',
                         'width': '350px',
-                        }}>{`${house.name}`}</div>
+                        }}>{house.name?house.name:null}</div>
                   
                         <div style={{
                         'color':'#FF0000',
                         'fontSize':'20px'
-                        }}>{`價格：${house.price}元 / 月`}</div>
+                        }}>{house.price?`價格：${house.price}元 / 月`:null}</div>
                         {
                             (prop.isOwner || prop.isComapny)?(
-                                <div style={{'fontSize':'15px'}}>{`地址：${house.address}${addressDetail}`}</div>
-                            ):<div style={{'fontSize':'15px'}}>{`地址：${house.address}`}</div>
+                                <div style={{'fontSize':'15px'}}>{house.address?`地址：${house.address}${addressDetail}`:null}</div>
+                            ):<div style={{'fontSize':'15px'}}>{house.address?`地址：${house.address}`:null}</div>
                         }
-                        <div style={{'fontSize':'15px'}}>{`格局：${pattern}`}</div>  
-                        <div style={{'fontSize':'15px'}}>{`空間：${house.ping} 坪`}</div> 
-                        <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
-                        <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
-                        <div style={{'fontSize':'15px'}}>{`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`}</div>
+                        <div style={{'fontSize':'15px'}}>{pattern?`格局：${pattern}`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{house.ping?`空間：${house.ping} 坪`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{typeOfRental?`類型：${typeOfRental}`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{buildingType?`型態：${buildingType}`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{house.floor?`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`:null}</div>
                         {
                             prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
                                 <div style={{'fontSize':'15px'}}>{`房間 ${house.room} `}</div>
@@ -782,7 +794,7 @@ console.log(showFloor2)
                                 <div style={{'fontSize':'15px'}}>{`屋主電話：${house.hostPhone}`}</div>
                             ):null   
                         }
-                        <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
+                        <div style={{'fontSize':'10px'}}>{feature?`特色：${feature}`:null}</div>
                         {
                             // (prop.isOwner || prop.isComapny)
                             (prop.isOwner)?(
@@ -829,7 +841,7 @@ console.log(showFloor2)
                                             >
                                                 <>
                                                     <Input size="large"
-                                                         placeholder="範例 : 0912-345-678"
+                                                         placeholder="範例 : 0912345678"
                                                          style={{width: '270px'}}
                                                          value={customerPhone}
                                                          onChange={(e) => {

@@ -72,6 +72,7 @@ const CompanyObjectManage = (props) => {
     const [size] = useState("large");
     const [init, setInit] = useState(true)
     const [user, setUser] = useState({})
+    const [isShowHousesList, setIsShowHousesList] = useState(false);
     const [enableTransfer, setEnableTransfer] = useState(false)
     const [companyEmployees, setCompanyEmployees] = useState({})
     const [teamHouseCount, setTeamHouseCount] = useState([])
@@ -100,6 +101,7 @@ const CompanyObjectManage = (props) => {
                     if(userResponse.data.data !== undefined){
                         const user = userResponse.data.data
                         setUser(user)
+                        setIsShowHousesList(true)
                     }
                 })
                 .catch( (error) => {
@@ -108,7 +110,7 @@ const CompanyObjectManage = (props) => {
                 })
             }
         }, )
-
+    console.log(enableTransfer, user, user.employeesData)
     useEffect(() => {
         if (enableCheckYearMonth) {
             setEnableCheckYearMonth(false)
@@ -367,43 +369,48 @@ const CompanyObjectManage = (props) => {
         <div>
            {/*CompanyObjectManage*/}
 
-            <HousesList owner={user._id}
-                        roles={user.roles}
-                        enableTranfer={enableTransfer}
-                        companyEmployees={companyEmployees}
-                        transferOptions={transferOptions}
-            />
-            <div>
-                <Row>
-                    <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
-                    <Col xs={24} sm={8} md={8} lg={8} xl={12}>
-                        <Divider>物件數量</Divider>
-                        <Select
-                           defaultValue={years}
-                           value={years}
-                           size={size}
-                           style={{ width: '49%' }}
-                           onChange={handleYearChange}
-                           options={dealYearMonth.year.map((year) => ({ label: year, value: year }))}
+            {isShowHousesList ? (
+                    <div>
+                        <HousesList owner={user._id}
+                                    roles={user.roles}
+                                    companyManager={user.employeesData[0].rank}
+                                    enableTransfer={enableTransfer}
+                                    companyEmployees={companyEmployees}
+                                    transferOptions={transferOptions}
                         />
-                        {/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/}
-                        &nbsp;
-                        <Select
-                           style={{ width: '49%' }}
-                           value={months}
-                           size={size}
-                           disabled={enableMonth}
-                           onChange={handleMonthChange}
-                           options={dealYearMonth.month.map((month) => ({ label: month, value: month }))}
-                        />
-                        <br/>
-                        <br/>
-                        <h1>{defaultDate.firstDate} ~ {defaultDate.endDate}</h1>
-                        <Table columns={columns} dataSource={teamHouseCount} size="small"/>
-                    </Col>
-                    <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
-                </Row>
-            </div>
+                        <div>
+                            <Row>
+                                <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
+                                <Col xs={24} sm={8} md={8} lg={8} xl={12}>
+                                    <Divider>物件數量</Divider>
+                                    <Select
+                                        defaultValue={years}
+                                        value={years}
+                                        size={size}
+                                        style={{width: '49%'}}
+                                        onChange={handleYearChange}
+                                        options={dealYearMonth.year.map((year) => ({label: year, value: year}))}
+                                    />
+                                    {/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/}
+                                    &nbsp;
+                                    <Select
+                                        style={{width: '49%'}}
+                                        value={months}
+                                        size={size}
+                                        disabled={enableMonth}
+                                        onChange={handleMonthChange}
+                                        options={dealYearMonth.month.map((month) => ({label: month, value: month}))}
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <h1>{defaultDate.firstDate} ~ {defaultDate.endDate}</h1>
+                                    <Table columns={columns} dataSource={teamHouseCount} size="small"/>
+                                </Col>
+                                <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
+                            </Row>
+                        </div>
+                    </div>
+                    ):null}
         </div>
     );
 };

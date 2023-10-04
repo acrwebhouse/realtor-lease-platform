@@ -314,8 +314,6 @@ const ReserveHouseList = (props, ref) => {
                                 //   'display': 'inline-block',
                                 //   'textAlign': 'left',
                             }}>
-
-
                                 <div style={{
                                     'color': '#0000ff',
                                     'fontSize':'20px'
@@ -445,6 +443,7 @@ const ReserveHouseList = (props, ref) => {
 
     const changeSort = (sort) => {
         getHousesArg.timeSort = ''
+        getHousesArg.state = ''
         switch(sort){
             case sortOptions[0].value:
                 getHousesArg.timeSort = '-1';
