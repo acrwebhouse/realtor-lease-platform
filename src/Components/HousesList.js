@@ -98,7 +98,7 @@ const HousesList = (props) => {
         endRentDate : ''
     })
     const [transferOwnerId, setTransferOwnerId] = useState([])
-    console.log(houseData[houseKey], houseKey, props.companyEmployees)
+    console.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles)
     // console.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
     useEffect(() => {
         if (init) {
@@ -106,7 +106,7 @@ const HousesList = (props) => {
             getHousesList()
         }
     }, )
-
+    // console.log(props.companyManager)
     //transaction function
     useEffect(() => {
         const xToken = cookie.load('x-token')
@@ -337,7 +337,8 @@ const HousesList = (props) => {
                     i = props.roles.length
                 }
             }
-            if(sendOwner){
+            console.log(sendOwner)
+            if(sendOwner && props.companyManager!==0){
                 reqUrl = `${reqUrl}&&owner=${props.owner}`
             }
         }
@@ -883,7 +884,7 @@ const HousesList = (props) => {
                                 {/*<br/>*/}
                                 {content[10]}
                                 <br/>
-                                {props.enableTranfer ?
+                                {props.enableTransfer ?
                                     <div style={{display: "flex"}}>
                                         <Button onClick={() => onTransfer()} style={{width: '70px', backgroundColor:'green', color:'white' }}>
                                             轉移
@@ -1272,7 +1273,7 @@ const HousesList = (props) => {
                                     onClick: event => {
                                         console.log('record',record)
                                         setHouseKey(record.key)
-                                        if(isShowEdit === 'none'){
+                                        if(isShowEdit === 'none' && props.enableTransfer !== true){
                                             console.log('event',event)
                                             console.log('record',record)
                                             console.log('rowIndex',rowIndex)
@@ -1309,9 +1310,13 @@ const HousesList = (props) => {
                             {
                                 required: true,
                             },
+                            {
+                                pattern: /^[0-9]+$/,
+                                message: '只能填寫數字'
+                            }
                         ]}
                     >
-                        <Input size="large" placeholder="" style={{width: '100%'}}/>
+                        <Input size="large" placeholder="" maxlength={6} style={{width: '100%'}}/>
                     </Form.Item>
                     <Form.Item
                         // name="TrafficType"
@@ -1321,9 +1326,13 @@ const HousesList = (props) => {
                             {
                                 required: true,
                             },
+                            {
+                                pattern: /^[0-9]+$/,
+                                message: '只能填寫數字'
+                            }
                         ]}
                     >
-                        <Input size="large" placeholder="" style={{width: '100%'}}/>
+                        <Input size="large" placeholder="" maxlength={6} style={{width: '100%'}}/>
                     </Form.Item>
                     <Form.Item
                         // name="TrafficType"
