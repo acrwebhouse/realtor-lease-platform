@@ -15,7 +15,7 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile , backPage} from './CommonUtil'
+import {showInternelErrorPageForMobile , backPage ,isMobile} from './CommonUtil'
 import {
     AirConditionerIcon,
     BedIcon,
@@ -654,7 +654,7 @@ console.log(showFloor2)
             if(prop.setId !== null && prop.setId !== undefined){
                 id = prop.setId
             }
-            if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+            if(isMobile()){
                 setIsShowBackBtn(true)
             }
             setInit(false)

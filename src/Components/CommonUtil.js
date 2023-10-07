@@ -32,4 +32,11 @@ const backPage = () => {
     }
 }
 
-export {openInNewTab,showInternelErrorPageForMobile , backPage}
+const isMobile = () => {
+    if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+        return true
+    }
+    return false
+}
+
+export {openInNewTab,showInternelErrorPageForMobile , backPage , isMobile}

@@ -7,7 +7,7 @@ import HouseUpload from "./HouseUpload";
 import {HouseAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile,backPage} from './CommonUtil'
+import {showInternelErrorPageForMobile,backPage,isMobile} from './CommonUtil'
 import {getPersonalInfo} from './Auth'
 import {Button} from "antd";
 
@@ -65,7 +65,7 @@ const HouseDetailOwnerEdit = (prop) => {
             }else{
                 alert('請先登入')
             }
-            if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+            if(isMobile()){
                 setIsShowBackBtn(true)
             }
             setInit(false)
