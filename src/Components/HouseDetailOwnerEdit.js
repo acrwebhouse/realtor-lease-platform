@@ -7,8 +7,10 @@ import HouseUpload from "./HouseUpload";
 import {HouseAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile,backPage} from './CommonUtil'
 import {getPersonalInfo} from './Auth'
+import {Button} from "antd";
+
 const houseListUrl = 'house/getHouse'
 
 const HouseDetailOwnerEdit = (prop) => {
@@ -16,6 +18,7 @@ const HouseDetailOwnerEdit = (prop) => {
     const [init, setInit] = useState(true);
     const [isShow, setIsShow ] = useState(false);
     const [house, setHouse ] = useState(null);
+    const [isShowBackBtn, setIsShowBackBtn] = useState(false)
 
     const getHouse = () => {
         let reqUrl = `${houseListUrl}?id=${id}&&isDelete=false`
@@ -62,6 +65,9 @@ const HouseDetailOwnerEdit = (prop) => {
             }else{
                 alert('請先登入')
             }
+            if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+                setIsShowBackBtn(true)
+            }
             setInit(false)
             
             
@@ -70,6 +76,9 @@ const HouseDetailOwnerEdit = (prop) => {
     return (
        <div>
         <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {
+                isShowBackBtn?(<Button type="primary" onClick={() => backPage()} style={{width: '70px' }}>返回</Button>):null    
+            }
            {
                isShow?(<HouseUpload defaultValue = {house} setId = {id}></HouseUpload>):null
            } 

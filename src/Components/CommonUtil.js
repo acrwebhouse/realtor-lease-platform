@@ -22,5 +22,14 @@ const showInternelErrorPageForMobile = () => {
     }
 }
 
+const backPage = () => {    
+    if(typeof(appJsInterface) !== 'undefined'){
+        // eslint-disable-next-line no-undef
+        appJsInterface.backPage();
+    }else if(typeof(jsToIosInterface) !== 'undefined'){
+        // eslint-disable-next-line no-undef
+        jsToIosInterface.backPage();
+    }
+}
 
-export {openInNewTab,showInternelErrorPageForMobile}
+export {openInNewTab,showInternelErrorPageForMobile , backPage}

@@ -15,7 +15,7 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile , backPage} from './CommonUtil'
 import {
     AirConditionerIcon,
     BedIcon,
@@ -676,16 +676,6 @@ console.log(showFloor2)
             return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
-
-    function backPage(){    
-        if(typeof(appJsInterface) !== 'undefined'){
-            // eslint-disable-next-line no-undef
-            appJsInterface.backPage();
-        }else if(typeof(jsToIosInterface) !== 'undefined'){
-            // eslint-disable-next-line no-undef
-            jsToIosInterface.backPage();
-        }
-    }
 
     return (
         <div>
