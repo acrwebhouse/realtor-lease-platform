@@ -457,7 +457,7 @@ const HouseUpload = (prop) => {
                 "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : user._id
             }
         )
-        if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 12  ) {
+        if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 10  ) {
             // setIsSubmitModalVisible(false)
             errorPhoneFormat();
         } else {
@@ -921,7 +921,7 @@ const HouseUpload = (prop) => {
                                         maxCount={10-showPic.length}
                                         onRemove={PicRemove}
                                         onPreview={handlePreview}
-                                        accept={'.jpg, .png, .svg, .bmp, .jpeg'}
+                                        accept={'.jpg, .png, .heic, .bmp, .jpeg'}
                                         beforeUpload={file => {
                                             console.log(file)
 
@@ -981,7 +981,7 @@ const HouseUpload = (prop) => {
                                 <div style={{'textAlign': 'center', }}>
                                 <Upload listType="picture-card"
                                         maxCount={1}
-                                        accept={'.jpg, .png, .svg, .bmp, .jpeg'}
+                                        accept={'.jpg, .png, .heic, .bmp, .jpeg'}
                                         onPreview={handlePreview}
                                         onRemove={FirstPicRemove}
                                         beforeUpload={file => {
