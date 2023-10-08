@@ -39,4 +39,8 @@ const isMobile = () => {
     return false
 }
 
-export {openInNewTab,showInternelErrorPageForMobile , backPage , isMobile}
+const horizontalScrollDisabled = {
+    overflowX: 'hidden'
+  };
+
+export {openInNewTab,showInternelErrorPageForMobile , backPage , isMobile , horizontalScrollDisabled}

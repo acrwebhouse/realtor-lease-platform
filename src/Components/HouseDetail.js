@@ -15,7 +15,7 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile , backPage ,isMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile , backPage ,isMobile , horizontalScrollDisabled} from './CommonUtil'
 import {
     AirConditionerIcon,
     BedIcon,
@@ -63,6 +63,7 @@ const HouseDetail = (prop) => {
     const [showFloor2, setShowFloor2] = useState('');
     const [isShowEquip, setIsShowEquip] = useState(false)
 
+    
 
     console.log(house['owner'])
     console.log(house['_id'])
@@ -678,7 +679,7 @@ console.log(showFloor2)
     };
 
     return (
-        <div>
+        <div style={horizontalScrollDisabled}>
             <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             {
             isShowDeleteAlert?(
