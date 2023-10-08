@@ -7,7 +7,7 @@ import HouseUpload from "./HouseUpload";
 import {HouseAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile,backPage,isMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile,backPage,isMobile,horizontalScrollDisabled} from './CommonUtil'
 import {getPersonalInfo} from './Auth'
 import {Button} from "antd";
 
@@ -74,7 +74,7 @@ const HouseDetailOwnerEdit = (prop) => {
         }
     }, )
     return (
-       <div>
+       <div style={horizontalScrollDisabled}>
         <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             {
                 isShowBackBtn?(<Button type="primary" onClick={() => backPage()} style={{width: '70px' }}>返回</Button>):null    

@@ -30,7 +30,7 @@ import {
     TelevisionIcon, TvProgramIcon,
     WashMachineIcon, WaterHeaterIcon
 } from "./Equipment";
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile,horizontalScrollDisabled} from './CommonUtil'
 import {getPersonalInfo,xTokenName} from './Auth'
 // const AddressPattern = /^[\u4e00-\u9fa5]+$/
 // const DoorNumberPattern = /^[0-9]*$/
@@ -839,7 +839,7 @@ const HouseUpload = (prop) => {
     console.log(firstPicTemp.length)
     return (
 
-        <div>
+        <div style={horizontalScrollDisabled}>
             <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             <Form
 
