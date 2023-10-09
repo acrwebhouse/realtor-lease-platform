@@ -424,7 +424,7 @@ const Main = () => {
                 reserveHouse()
                 break;
             case '22' :
-                myHousesList()
+                myHousesList(true)
                 break;
             default:
         }
@@ -438,12 +438,14 @@ const Main = () => {
         toggleCollapsed()
     }
 
-    function myHousesList(){
+    function myHousesList(NoToggleCollapsed){
         console.log('myHousesList')
         turnOffPage()
         setSelectMenu(['2'])
         setIsShowMyHousesList(true)
-        toggleCollapsed()
+        if(NoToggleCollapsed !== true){
+            toggleCollapsed()
+        }
     }
     function uploadHouse(){
         console.log('uploadHouse')
