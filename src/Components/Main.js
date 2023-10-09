@@ -423,6 +423,9 @@ const Main = () => {
                 }
                 reserveHouse()
                 break;
+            case '22' :
+                myHousesList()
+                break;
             default:
         }
     }

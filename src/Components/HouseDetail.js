@@ -525,6 +525,15 @@ console.log(showFloor2)
         } 
     }
 
+    function backClick(){
+        if(prop.isOwner === true){
+            const url = window.location.origin + '/22'
+            window.location.href = url;
+        }else{
+            backPage()
+        }
+    }
+
     const reserveFormEnable = () => {
         console.log(house)
         const xToken = cookie.load('x-token')
@@ -729,7 +738,7 @@ console.log(showFloor2)
                         <CloseSquareTwoTone style={{ fontSize: '25px' }} />
                     </Button></div> */}
             {
-                isShowBackBtn?(<Button type="primary" onClick={() => backPage()} style={{width: '70px' }}>返回</Button>):null    
+                isShowBackBtn?(<Button type="primary" onClick={() => backClick()} style={{width: '70px' }}>返回</Button>):null    
             }
             <Divider>基本資料</Divider>
             <Row>
