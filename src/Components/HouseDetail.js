@@ -556,18 +556,17 @@ console.log(showFloor2)
     const UploadReserveData = (values) => {
         console.log(values)
 
-            if(values['reserveName'] && customerPhone) {
+            if(values['reserveName'] && values['reservePhone']) {
                 setReserveClientData({
                     "host": house['owner'],
                     "houseId": house['_id'],
                     "state": 0,
                     "type": 1,
                     "clientName": values['reserveName'],
-                    "clientPhone": customerPhone
+                    "clientPhone": values['reservePhone']
                 })
-                if(customerPhone.slice(0, 2) !== '09' || customerPhone.length < 12 ) {
+                if(values['reservePhone'].slice(0, 2) !== '09' || values['reservePhone'].length < 10 ) {
                     toast.error('手機電話格式（09）不對，請重新填寫。')
-                    setCustomerPhone('')
                 } else {
                     setIsRunPost(true)
                 }
@@ -689,7 +688,7 @@ console.log(showFloor2)
 
     return (
         <div style={horizontalScrollDisabled}>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
@@ -837,20 +836,20 @@ console.log(showFloor2)
                                                     {
                                                         required: false,
                                                     },
+                                                    {
+                                                        pattern: /^[0-9]*$/,
+                                                        message: '地址只能填寫數字'
+                                                    }
                                                 ]}
                                             >
-                                                <>
-                                                    <Input size="large"
-                                                         placeholder="範例 : 0912345678"
-                                                         style={{width: '270px'}}
-                                                         value={customerPhone}
-                                                         onChange={(e) => {
-                                                             console.log(e.target.value)
-                                                             setCustomerPhone((prevState) => normalizeInput(e.target.value, prevState))
-                                                         }
-                                                         }
+                                                    <Input  size="large"
+                                                            placeholder="範例 : 0912345678"
+                                                            style={{width: '270px'}}
+                                                            maxLength={10}
+                                                            onChange={(e) => {
+                                                                 console.log(e.target.value)
+                                                            }}
                                                     />
-                                                </>
                                             </Form.Item>
                                             <Button type="primary"
                                                     shape="round"

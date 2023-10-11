@@ -851,7 +851,7 @@ const CompanyApprovalList = (props) => {
              ?
              <div>
                  <div>
-                     <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+                     {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
                      <div Style='float:right'>
                          <Button type="primary" onClick={() => setSwitchPage(0)} style={{width: '80px'}}>返回</Button>
                      </div>
@@ -921,7 +921,7 @@ const CompanyApprovalList = (props) => {
 
                 :
              <div>
-                 <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+                 {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
                  <Row>
                      <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                      <Col  xs={24} sm={18} md={18} lg={15} xl={12}>

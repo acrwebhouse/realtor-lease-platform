@@ -73,7 +73,7 @@ const ForgotPassword = (props) => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Form
                 form={form}
                 name="normal_login"

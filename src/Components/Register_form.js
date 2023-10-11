@@ -197,7 +197,7 @@ const Register = (props) => {
                 },
                 'houseIds': defaultHouseIds,
                 // 'phone': values['PhonePrefix']+values['phone']
-                'phone': ownerPhone,
+                'phone': values['phone'],
                 'mail': values['email'],
                 'address': values['City']+values['Area']+values['address'],
                 'lineId' : values['lineID']
@@ -207,7 +207,7 @@ const Register = (props) => {
             setIsSubmitModalVisible(false)
             errorAccoutFormat();
         }else {
-            if(ownerPhone.slice(0, 2) !== '09' || ownerPhone.length < 12 ) {
+            if(values['phone'].slice(0, 2) !== '09' || values['phone'].length < 10 ) {
                 setIsSubmitModalVisible(false)
                 errorPhoneFormat();
             } else {
@@ -562,7 +562,7 @@ const Register = (props) => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <h2>請選擇預想申請的使用者(可重複選)</h2>
             <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
                 <Row>
@@ -779,10 +779,13 @@ const Register = (props) => {
                                         required: false,
                                         message: '手機號碼欄位不能空白',
                                     },
+                                    {
+                                        pattern: /^[0-9]*$/,
+                                        message: '地址只能填寫數字'
+                                    }
                                 ]}
                                 style={{ width: '100%' }}
                             >
-                                <>
                                     <Input
                                         // addonBefore={PhonePrefixSelector}
                                         style={{
@@ -790,14 +793,13 @@ const Register = (props) => {
                                         }}
                                         size="large"
                                         placeholder='09xxxxxxxx'
-                                        value={ownerPhone}
+                                        maxLength={10}
                                         onChange={(e) => {
                                             console.log(e.target.value)
-                                            setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                            // setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))
                                         }
                                         }
                                     />
-                                </>
                             </Form.Item>
                         </Col>
                     </Row>

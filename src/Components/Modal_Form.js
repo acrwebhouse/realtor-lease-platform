@@ -231,7 +231,7 @@ const MDForm = () => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <ProFormRadio.Group
                 style={{
                     margin: 16,

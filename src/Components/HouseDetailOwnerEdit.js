@@ -75,7 +75,7 @@ const HouseDetailOwnerEdit = (prop) => {
     }, )
     return (
        <div style={horizontalScrollDisabled}>
-        <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+        {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {
                 isShowBackBtn?(<Button type="primary" onClick={() => backPage()} style={{width: '70px' }}>返回</Button>):null    
             }
