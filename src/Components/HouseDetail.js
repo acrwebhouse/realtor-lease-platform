@@ -15,7 +15,7 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile , backPage ,isMobile , horizontalScrollDisabled} from './CommonUtil'
 import {
     AirConditionerIcon,
     BedIcon,
@@ -63,6 +63,7 @@ const HouseDetail = (prop) => {
     const [showFloor2, setShowFloor2] = useState('');
     const [isShowEquip, setIsShowEquip] = useState(false)
 
+    
 
     console.log(house['owner'])
     console.log(house['_id'])
@@ -491,19 +492,46 @@ console.log(showFloor2)
 
 
     function phoneClick(phoneNumber){
-        let a = document.createElement('a');
-        a.href = 'tel:'+phoneNumber;
-        document.body.appendChild(a);
-        a.click()
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.callUp(phoneNumber);
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.callUp(phoneNumber);
+        }
+        else{
+            let a = document.createElement('a');
+            a.href = 'tel:'+phoneNumber;
+            document.body.appendChild(a);
+            a.click()
+        }  
     }
 
     function lineClick(lineId){
-        console.log('===lineId===',lineId)
-        let strWindowFeatures = `
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.addLineFriend(lineId);
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.addLineFriend(lineId);
+        }
+        else{
+            const lineUrl = 'https://line.me/ti/p/~'+lineId
+            let strWindowFeatures = `
             height=600,
             width=600,
-        `;
-        window.open('https://line.me/ti/p/~'+lineId,'加入好友',strWindowFeatures)
+            `;
+            window.open(lineUrl,'加入好友',strWindowFeatures)
+        } 
+    }
+
+    function backClick(){
+        if(prop.isOwner === true){
+            const url = window.location.origin + '/22'
+            window.location.href = url;
+        }else{
+            backPage()
+        }
     }
 
     const reserveFormEnable = () => {
@@ -635,7 +663,7 @@ console.log(showFloor2)
             if(prop.setId !== null && prop.setId !== undefined){
                 id = prop.setId
             }
-            if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+            if(isMobile()){
                 setIsShowBackBtn(true)
             }
             setInit(false)
@@ -658,18 +686,8 @@ console.log(showFloor2)
         }
     };
 
-    function backPage(){    
-        if(typeof(appJsInterface) !== 'undefined'){
-            // eslint-disable-next-line no-undef
-            appJsInterface.backPage();
-        }else if(typeof(jsToIosInterface) !== 'undefined'){
-            // eslint-disable-next-line no-undef
-            jsToIosInterface.backPage();
-        }
-    }
-
     return (
-        <div>
+        <div style={horizontalScrollDisabled}>
             {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {
             isShowDeleteAlert?(
@@ -719,7 +737,7 @@ console.log(showFloor2)
                         <CloseSquareTwoTone style={{ fontSize: '25px' }} />
                     </Button></div> */}
             {
-                isShowBackBtn?(<Button type="primary" onClick={() => backPage()} style={{width: '70px' }}>返回</Button>):null    
+                isShowBackBtn?(<Button type="primary" onClick={() => backClick()} style={{width: '70px' }}>返回</Button>):null    
             }
             <Divider>基本資料</Divider>
             <Row>

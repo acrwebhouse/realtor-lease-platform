@@ -22,5 +22,39 @@ const showInternelErrorPageForMobile = () => {
     }
 }
 
+const backPage = () => {    
+    if(typeof(appJsInterface) !== 'undefined'){
+        // eslint-disable-next-line no-undef
+        appJsInterface.backPage();
+    }else if(typeof(jsToIosInterface) !== 'undefined'){
+        // eslint-disable-next-line no-undef
+        jsToIosInterface.backPage();
+    }
+}
 
-export {openInNewTab,showInternelErrorPageForMobile}
+const isMobile = () => {
+    if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+        return true
+    }
+    return false
+}
+
+const horizontalScrollDisabled = {
+    overflowX: 'hidden'
+  };
+
+const isAndroid = () => {
+    if(typeof(appJsInterface) !== 'undefined'){
+        return true
+    }
+    return false
+}
+
+const isIos = () => {
+    if(typeof(jsToIosInterface) !== 'undefined'){
+        return true
+    }
+    return false
+}
+
+export {openInNewTab,showInternelErrorPageForMobile , backPage , isMobile , horizontalScrollDisabled,isAndroid,isIos}

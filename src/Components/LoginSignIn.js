@@ -9,7 +9,7 @@ import cookie from 'react-cookies'
 import ForgotPassword from "./ForgotPassword";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile,isAndroid,isIos} from './CommonUtil'
 import {saveToken} from './Auth'
 
 const LOGIN_Auth = "/auth/login/"
@@ -76,7 +76,13 @@ const LoginRegister = (props) => {
         // console.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
-            tempData.devices = 3   
+            if(isAndroid()){
+                tempData.devices = 1  
+            }else if(isIos()){
+                tempData.devices = 2 
+            }else{
+                tempData.devices = 3 
+            }
             setLoginData(tempData)
             setRememberMe(remember)
             setIsRunPost(true);
