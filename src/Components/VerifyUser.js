@@ -52,7 +52,7 @@ const VerifyUser = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {verify ? <Result
                     status="success"
                     title="您的帳戶成功通過驗證"

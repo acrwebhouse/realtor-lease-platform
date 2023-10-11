@@ -485,7 +485,7 @@ const ReserveHouseList = (props, ref) => {
     console.log(reserveHouseData)
     return (
         <div style={{width: '100%' }}>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {
                 isShowDeleteAlert?(
                     <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

@@ -19,7 +19,7 @@ const CompanyHouseList = (props) => {
     }, )
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <HousesList isCompanyList={true} companyId={props.companyId}></HousesList>
         </div>
     );

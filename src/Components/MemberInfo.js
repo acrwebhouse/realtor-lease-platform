@@ -50,8 +50,10 @@ const MemberInfo = (props) => {
     const [editUser, setEditUser] = useState({});
     const [editDate, setEditDate] = useState(moment('2022-01-01', dateFormat));
     const [EnableResetPW, setEnableResetPW] = useState(false);
+    const [borderColorIsGrey, setBorderColorIsGrey] = useState(true)
+    const [isPhoneBlank, setIsPhoneBlank] = useState(false)
     const xToken = cookie.load('x-token')
-    const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3, 4}[0-9]{6}[\u4e00-\u9fa5]/
+    const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3,4}[0-9]{6}[\u4e00-\u9fa5]/
 
     const onAreaInCharge = (value) => {
         const editUserValue = editUser
@@ -327,6 +329,7 @@ function editIsSales(){
 function sendEdit(){
     editUser.id = user._id
     let isOkLicense = true
+    let isOkPhone = true
     let LicenseNull = true
     let isOkPassword = false
     let isSales = editIsSales()
@@ -348,9 +351,13 @@ function sendEdit(){
     if(editUser.password !==''&&editUser.password !==null&&editUser.password !==undefined){
         isOkPassword = true
     }
-    
 
-    if(LicenseNull === true && isOkLicense === true && isOkPassword === true && isOkSalesScopeCount === true){
+    if(editUser.phone.length < 10) {
+        isOkPhone=false
+        toast.error('手機號碼不足10位數')
+    }
+
+    if(LicenseNull === true && isOkLicense === true && isOkPassword === true && isOkSalesScopeCount === true && isOkPhone === true){
     let reqUrl = `${editUserUrl}`
     UserAxios.put(
         reqUrl,editUser,{
@@ -423,25 +430,32 @@ function editAddress(e){
 
 function editPhone(e){
     const editUserValue = editUser
-    let pattern=/[a-zA-Z=+-_()*&^%$#@!]/
+    let pattern=/[a-zA-Z+_()*&^%$#@!]/
+    console.log(e.target.value.length, !pattern.test(e.target.value))
     if(e.target.value.length > 0) {
+        setIsPhoneBlank(false)
+        setBorderColorIsGrey(true)
         if(!pattern.test(e.target.value)) {
+            setBorderColorIsGrey(true)
             if(e.target.value[0] !== '0') {
-                toast.error('手機電話格式（09）不對，請重新填寫')
-                cancelEdit()
+                setBorderColorIsGrey(false)
             }else {
+                setBorderColorIsGrey(true)
                 if(e.target.value.length > 1 && e.target.value.substring(0, 2) !== '09') {
-                    toast.error('手機電話格式（09）不對，請重新填寫')
-                    cancelEdit()
+                    setBorderColorIsGrey(false)
+                } else {
+                    setBorderColorIsGrey(true)
                 }
             }
         } else {
-            toast.error('手機電話只能填數字')
-            cancelEdit()
+            setBorderColorIsGrey(false)
         }
+    } else {
+        setBorderColorIsGrey(false)
+        setIsPhoneBlank(true)
     }
 
-    editUserValue.phone = e.target.value.substring(0, 4) + '-' + e.target.value.substring(4, 7) + '-' + e.target.value.substring(7, 10)
+    editUserValue.phone = e.target.value.substring(0, 4) + e.target.value.substring(4, 7) + e.target.value.substring(7, 10)
     setEditUser(editUserValue)
 }
 
@@ -507,7 +521,7 @@ const checkRoleInCompany = () => {
     return (
 
         <div>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <div Style='float:right'>
             {isEdit?(
                     <div>
@@ -688,7 +702,16 @@ const checkRoleInCompany = () => {
                                  </div>                                
                              </Col>
                              <Col xs={20} sm={20} md={20} lg={20} xl={20}>
-                                <Input onChange={editPhone} placeholder='ex:0912345678' maxLength={10} style={{ width: '100%' }} defaultValue={user.phone}></Input>
+                                 <div>
+                                     <Input onChange={editPhone}
+                                            placeholder='ex:0912345678'
+                                            maxLength={10}
+                                            style={{ width: '100%', borderColor: borderColorIsGrey?null:'red' }}
+                                            defaultValue={user.phone}>
+                                     </Input>
+                                     {isPhoneBlank ? <span style={{color:'red'}}>此欄位不能為空白</span> : borderColorIsGrey ? null: <p style={{color:'red'}}>手機電話格式（09）不對，請重新填寫</p>}
+                                 </div>
+
                              </Col>
                          </Row>
                          </div>): 

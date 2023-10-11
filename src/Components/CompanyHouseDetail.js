@@ -96,7 +96,7 @@ const CompanyHouseDetail = (props) => {
     }, )
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
            {
                isShow?(<HouseDetail isComapny = {true} setId = {id}></HouseDetail>):null
            } 

@@ -840,7 +840,7 @@ const HouseUpload = (prop) => {
     return (
 
         <div>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Form
 
                 form={form_photo}
@@ -1097,7 +1097,7 @@ const HouseUpload = (prop) => {
                                         fileList={AnnexList['fileList']}
                                         maxCount={10}
                                         onRemove={AnnexRemove}
-                                        accept={'.pdf, .jpg, .png, .svg, .bmp, .jpeg'}
+                                        accept={'.pdf, .jpg, .png, .bmp, .jpeg'}
                                         beforeUpload={file => {
                                             console.log(file)
                                             if(AnnexTemp.length > 0) {
@@ -1554,7 +1554,7 @@ const HouseUpload = (prop) => {
                                                    style={{
                                                        width: '100%',
                                                    }}
-                                                   maxLength={5}
+                                                   maxLength={20}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1788,6 +1788,7 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
+                                                     max={99999999}
                                                      size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="元/月"

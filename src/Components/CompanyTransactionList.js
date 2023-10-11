@@ -674,7 +674,7 @@ const CompanyTransactionList = (props) => {
                 ):null
             }
             <br/>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Divider>成交紀錄</Divider>
             <Row>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>

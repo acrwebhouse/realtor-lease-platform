@@ -139,7 +139,9 @@ const ResetPassword = (props) => {
 
                             </Col>
                             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                <h1>重置密碼</h1>
+                                <div style={{ width: '550px', justifyContent: 'center', textAlign: 'center' }}>
+                                    <h1>重置密碼</h1>
+                                </div>
                             </Col>
                         </Row>
 
@@ -147,7 +149,7 @@ const ResetPassword = (props) => {
                             <Col xs={24} sm={5} md={5} lg={6} xl={8}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Col  xs={24} sm={18} md={18} lg={15} xl={8}>
                                 <Form.Item
                                     name="password"
                                     label="密碼"
@@ -158,9 +160,8 @@ const ResetPassword = (props) => {
                                         },
                                     ]}
                                     hasFeedback
-                                    style={{ width: '50%' }}
                                 >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '500px' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -190,9 +191,8 @@ const ResetPassword = (props) => {
                                             },
                                         }),
                                     ]}
-                                    style={{ width: '50%' }}
                                 >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '470px' }}/>
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -211,7 +211,7 @@ const ResetPassword = (props) => {
                                         },
                                     ]}
                                     hasFeedback
-                                    style={{ width: '50%' }}
+                                    style={{ width: '550px', justifyContent: 'center', textAlign: 'center' }}
                                 >
                                     <Captcha onChange={verifyCaptcha}
                                              placeholder="Enter captcha"
@@ -231,7 +231,7 @@ const ResetPassword = (props) => {
                                             htmlType="submit"
                                             className='login-form-button'
                                             shape="round"
-                                            style={{ width: '50%' }}
+                                            style={{ width: '550px' }}
                                     >
                                         {/*Submit*/}
                                         送出

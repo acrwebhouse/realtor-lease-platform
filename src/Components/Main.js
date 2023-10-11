@@ -242,7 +242,7 @@ const Main = () => {
                 i = user.employeesData.length
             }
         }
-        setIsCompanyManager(() => user.employeesData[0].rank === 0)
+        setIsCompanyManager(() => user.employeesData.length > 0 ? user.employeesData[0].rank === 0 : false)
         return result
     }
 

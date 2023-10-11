@@ -37,7 +37,7 @@ const Collect = (props) => {
     return (
 
         <div>
-            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <br/><br/>
             <Divider>資料採集</Divider>
             <Row>
