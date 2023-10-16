@@ -117,9 +117,11 @@ const LoginRegister = (props) => {
                         toast.error(`此帳號尚未驗證完畢，請先完成帳號驗證程序。`)
                     }else{
                         const userId = response.data.data._id;
-                        if(typeof(appJsInterface) !== 'undefined'){
+                        if(isAndroid()){
                             // eslint-disable-next-line no-undef
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
+                        }else if(isIos()){
+                            jsToIosInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
                         props.changeUserMenu(response.data.data.accessToken,true)
                         const accessToken = response.data.data.accessToken
@@ -136,9 +138,12 @@ const LoginRegister = (props) => {
 
             setIsRunPost(false)
         }else{
-            if(typeof(appJsInterface) !== 'undefined'){
+            if(isAndroid()){
                 // eslint-disable-next-line no-undef
                 appJsInterface.setAccountPassword();
+            }else if(isIos()){
+                // eslint-disable-next-line no-undef
+                jsToIosInterface.setAccountPassword();
             }
         }
 
