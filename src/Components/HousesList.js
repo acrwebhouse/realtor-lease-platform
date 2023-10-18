@@ -95,10 +95,11 @@ const HousesList = (props) => {
         actualPrice : '',
         serviceCharge : '',
         startRentDate : '',
-        endRentDate : ''
+        endRentDate : '',
+        dealSales : ''
     })
     const [transferOwnerId, setTransferOwnerId] = useState([])
-    console.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles)
+    console.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles, props.dealOptions, props.dealUserId)
     // console.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
     useEffect(() => {
         if (init) {
@@ -111,8 +112,10 @@ const HousesList = (props) => {
     useEffect(() => {
         const xToken = cookie.load('x-token')
         console.log(xToken)
+        let tempData = dealData
+        delete tempData['dealSales']
         if (isPostDeal) {
-            CompanyAxios.post(Transaction_Auth, dealData, {
+            CompanyAxios.post(Transaction_Auth, tempData, {
                 headers: {
                     "content-type": "application/json",
                     "accept": "application/json",
@@ -132,7 +135,7 @@ const HousesList = (props) => {
             })
         }
     }, [isPostDeal])
-
+    // console.log(props)
     //cancel transaction function
     useEffect(() => {
         const xToken = cookie.load('x-token')
@@ -215,19 +218,19 @@ const HousesList = (props) => {
 
     const [getHousesArg] = useState({
         start : '0',
-        count : '9999999',
+        count : '99999999',
         timeSort : '-1',
         priceSort : '',
         pingSort : '',
         isDelete : 'false',
         minPrice : '0',
-        maxPrice : '9999999',
+        maxPrice : '99999999',
         minPing : '0',
-        maxPing : '999999',
+        maxPing : '99999999',
         minRoom : '0',
-        maxRoom : '999999',
+        maxRoom : '99999999',
         minFloor : '-10',
-        maxFloor : '999999',
+        maxFloor : '99999999',
         city : '',
         area : '',
         parking : '',
@@ -657,7 +660,7 @@ const HousesList = (props) => {
                 break;
             case priceOptions[6].value:
                 getHousesArg.minPrice = 40000;
-                getHousesArg.maxPrice = 999999;
+                getHousesArg.maxPrice = 99999999;
                 break;
             case priceOptions[7].value:
                 customPrice.style.display = 'flex'
@@ -667,7 +670,7 @@ const HousesList = (props) => {
                 break;
             default:
                 getHousesArg.minPrice = 0
-                getHousesArg.maxPrice = 999999
+                getHousesArg.maxPrice = 99999999
         }
 
     }
@@ -688,11 +691,11 @@ const HousesList = (props) => {
                 break;
             case roomOptions[4].value:
                 getHousesArg.minRoom = 4;
-                getHousesArg.maxRoom = 999999;
+                getHousesArg.maxRoom = 99999999;
                 break;
             default:
                 getHousesArg.minRoom = '0'
-                getHousesArg.maxRoom = '999999'
+                getHousesArg.maxRoom = '99999999'
         }
     }
 
@@ -746,7 +749,7 @@ const HousesList = (props) => {
                 break;
             default:
                 getHousesArg.minPing = '0'
-                getHousesArg.maxPing = '999999'
+                getHousesArg.maxPing = '99999999'
         }
     }
 
@@ -769,7 +772,7 @@ const HousesList = (props) => {
                 break;
             case floorOptions[4].value:
                 getHousesArg.minFloor = 12;
-                getHousesArg.maxFloor = 9999999;
+                getHousesArg.maxFloor = 99999999;
                 break;
             case floorOptions[5].value:
                 // custom
@@ -780,7 +783,7 @@ const HousesList = (props) => {
                 break;
             default:
                 getHousesArg.minFloor = 0;
-                getHousesArg.maxFloor = 999999;
+                getHousesArg.maxFloor = 99999999;
         }
     }
 
@@ -1024,10 +1027,12 @@ const HousesList = (props) => {
     }
 
     const handleDealData = (value) => {
+        // console.log(value)
         dealData.actualPrice =  parseInt(value.dealPrice)
         dealData.serviceCharge = parseInt(value.servePrice)
         dealData.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
         dealData.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
+        dealData.dealSales = value.dealSales
         console.log(dealData)
         setIsPostDeal(true)
     }
@@ -1047,6 +1052,10 @@ const HousesList = (props) => {
         setEnableShowEmployeeInfo(true)
         setEmployeeName(value)
         // setIsPostDeal(true)
+    }
+
+    const showDealSales = (value) => {
+        console.log(value)
     }
 
     let data = [
@@ -1344,8 +1353,21 @@ const HousesList = (props) => {
                             },
                         ]}
                     >
-                        <DatePicker.RangePicker/>
+                        <DatePicker.RangePicker style={{width: '100%'}}/>
                     </Form.Item>
+                    {props.rank === 0 ?
+                        <Form.Item
+                        // name="TrafficType"
+                        name="dealSales"
+                        label="業務："
+                        rules={[
+                            {
+                                required: true,
+                            },
+                        ]}
+                    >
+                            <Select options={props.dealOptions} onSelect={showDealSales}/>
+                    </Form.Item> : null}
                     <div style={{display: 'flex'}}>
                         <Button type="primary"
                                 className='login-form-button'

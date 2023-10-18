@@ -258,7 +258,7 @@ const Register = (props) => {
     }
 
     const errorPhoneFormat = () => {
-        toast.error('請輸入正確的手機號格式或長度(09xx-xxx-xxx)')
+        toast.error('請輸入正確的手機號格式(09xxxxxxxx)')
     }
 
     const errorAccoutFormat = () => {
@@ -776,12 +776,12 @@ const Register = (props) => {
                                 label="手機號碼"
                                 rules={[
                                     {
-                                        required: false,
+                                        required: true,
                                         message: '手機號碼欄位不能空白',
                                     },
                                     {
                                         pattern: /^[0-9]*$/,
-                                        message: '地址只能填寫數字'
+                                        message: '電話只能填寫數字'
                                     }
                                 ]}
                                 style={{ width: '100%' }}
@@ -847,10 +847,6 @@ const Register = (props) => {
                                                        {
                                                            required: true,
                                                            message: '此欄位不能為空白',
-                                                       },
-                                                       {
-                                                           pattern: /^[\u4e00-\u9fa5]+$/,
-                                                           message: '地址只能填寫中文'
                                                        }
                                                    ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}

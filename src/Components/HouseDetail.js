@@ -688,7 +688,7 @@ console.log(showFloor2)
 
     return (
         <div style={horizontalScrollDisabled}>
-            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>

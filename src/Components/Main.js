@@ -175,7 +175,7 @@ const Main = () => {
             toast.error(error)
         })
     }
-
+    console.log(isCompanyManager)
     function checkEmployeeStateAndChangeMenu(callback){
         getCurrentEmployee((result,data)=>{
             const currentCompanyId = data.companyId
@@ -620,6 +620,7 @@ const Main = () => {
             setIsShowHousesList(true)
         }
         removeToken()
+        setIsCompanyManager(false)
     }
 
     function loginSignInIsOpen(status){
@@ -682,13 +683,24 @@ const Main = () => {
             }
             // sales
             if(roles[i]===4){
-                isSales = true
-                myHousesListMenu.style.display = 'flex'
-                uploadHousesMenu.style.display = 'flex'
-                reserveHouseMenu.style.display = 'flex'
-                logoutMenu.style.display = 'flex'
-                loginSignInMenu.style.display = 'none'
-                memberInfoMenu.style.display = 'flex'
+                if(isCompanyManager) {
+                    isSales = true
+                    myHousesListMenu.style.display = 'flex'
+                    uploadHousesMenu.style.display = 'none'
+                    reserveHouseMenu.style.display = 'flex'
+                    logoutMenu.style.display = 'flex'
+                    loginSignInMenu.style.display = 'none'
+                    memberInfoMenu.style.display = 'flex'
+                } else {
+                    isSales = true
+                    myHousesListMenu.style.display = 'flex'
+                    uploadHousesMenu.style.display = 'none'
+                    reserveHouseMenu.style.display = 'flex'
+                    logoutMenu.style.display = 'flex'
+                    loginSignInMenu.style.display = 'none'
+                    memberInfoMenu.style.display = 'flex'
+                }
+
             }
         }
         if(roles.length > 0){
