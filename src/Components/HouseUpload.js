@@ -175,6 +175,7 @@ const HouseUpload = (prop) => {
     const [photoData, setPhotoData] = useState([]);
     const [annexData, setAnnexData] = useState([]);
     const [isRunPost, setIsRunPost] = useState(false)
+    const [photoCount, setPhotoCount] = useState(0)
     const [previewVisible, setPreviewVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -383,8 +384,10 @@ const HouseUpload = (prop) => {
                             EducationArr.splice(0, EducationArr.length)
                             PicData.splice(0, PicData.length)
                             AnnexData.splice(0, AnnexData.length)
+                            setPhotoCount(0)
                         }else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
                             toast.error(`此房屋物件已存在，如有疑慮請聯繫該房仲。 ${response.data.data.errorInfo.name}  ${response.data.data.errorInfo.phone}。`);
+                            setPhotoCount(1)
                         }
 
                     })
@@ -425,7 +428,7 @@ const HouseUpload = (prop) => {
                 'price' : parseInt(values['lease-price']),
                 'hostName': values['hostName'],
                 'hostGender': convertString(String(hostGenderArr.indexOf(values['hostGender']))),
-                'hostPhone': hostPhone,
+                'hostPhone': values['hostPhone'],
                 'config' : {
                     'room' : parseInt(values['room']),
                     'livingRoom' : (typeof(values['livingRoom']) === 'number') ? parseInt(values['livingRoom']) : 0,
@@ -457,11 +460,11 @@ const HouseUpload = (prop) => {
                 "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : user._id
             }
         )
-        if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 10  ) {
+        if(values['hostPhone'].slice(0, 2) !== '09' || values['hostPhone'].length < 10  ) {
             // setIsSubmitModalVisible(false)
             errorPhoneFormat();
         } else {
-            if (showPic.length+PictureList.length < 1) {
+            if (showPic.length+PictureList.length < 1 && photoCount === 0) {
                 toast.warning(`照片至少上傳一張`)
             }else {
                 if(!PicUploadCheck && !prop.defaultValue) {
@@ -546,7 +549,7 @@ const HouseUpload = (prop) => {
 
 
     const errorPhoneFormat = () => {
-            toast.error(`請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)`)
+            toast.error(`請輸入正確的市話或手機號格式與長度(09xxxxxxxx)`)
     }
 
     const changeCity = (City) => {
@@ -1180,6 +1183,7 @@ const HouseUpload = (prop) => {
                         "NO2" : prop.defaultValue?prop.defaultValue.houseNumber.number2:[],
                         "hostName": prop.defaultValue?prop.defaultValue.hostName:[],
                         "hostGender" :prop.defaultValue?prop.defaultValue.hostGender ? '先生' : '小姐':[],
+                        "hostPhone": prop.defaultValue?prop.defaultValue.hostPhone:[],
                         "totalFloor": prop.defaultValue?prop.defaultValue.totalFloor:[],
                         "floorNo2": prop.defaultValue?prop.defaultValue.floor2:[],
                         "floorNo1" : prop.defaultValue?FloorOptions[FloorCheck(prop.defaultValue.floor ,prop.defaultValue.remark)].value : [],
@@ -1597,14 +1601,17 @@ const HouseUpload = (prop) => {
                                 label="屋主電話"
                                 rules={[
                                     {
-                                        required: false,
+                                        required: true,
                                         message: '手機號碼欄位不能空白',
                                     },
+                                    {
+                                        pattern: /^[0-9]*$/,
+                                        message: '電話只能填寫數字'
+                                    }
                                 ]}
                                 style={{ width: '100%' }}
 
                             >
-                                <>
                                     <Input
                                         // addonBefore={PhonePrefixSelector}
                                         style={{
@@ -1612,14 +1619,9 @@ const HouseUpload = (prop) => {
                                         }}
                                         size="large"
                                         placeholder='09xxxxxxxx'
-                                        value={hostPhone}
-                                        onChange={(e) => {
-                                            console.log(e.target.value)
-                                            setHostPhone((prevState) => normalizeInput(e.target.value, prevState))
-                                        }
-                                        }
+                                        // value={hostPhone}
+                                        maxLength={10}
                                     />
-                                </>
                             </Form.Item>
                         </Col>
                     </Row>
