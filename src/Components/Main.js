@@ -50,7 +50,7 @@ import {
     useParams,
     useLocation
   } from "react-router-dom";
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile,isIos} from './CommonUtil'
 
 import {refreshXToken,xRefreshTokenName,removeToken,getPersonalInfo} from './Auth'
 
@@ -167,6 +167,10 @@ const Main = () => {
                     quickToPage()
                 }else{
                     housesList()
+                }
+                if(isIos()){
+                    // eslint-disable-next-line no-undef
+                    jsToIosInterface.saveNotificationInfo(xToken);
                 }
             }
         })
