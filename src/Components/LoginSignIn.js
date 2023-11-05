@@ -121,6 +121,7 @@ const LoginRegister = (props) => {
                             // eslint-disable-next-line no-undef
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }else if(isIos()){
+                            // eslint-disable-next-line no-undef
                             jsToIosInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
                         props.changeUserMenu(response.data.data.accessToken,true)
