@@ -173,22 +173,25 @@ const ResetPassword = (props) => {
                         onFinish={setResetPassword}
                         scrollToFirstError
                     >
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={7}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={10}>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <div style={{ width: '100%', display:'flex', justifyContent: 'center', textAlign: 'center' }}>
                                     <h1>重置密碼</h1>
                                 </div>
                             </Col>
-                        </Row>
-
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={7}>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={10}>
+                        </Row>
+
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
+                            </Col>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item
                                     name="password"
                                     label="密碼"
@@ -200,16 +203,19 @@ const ResetPassword = (props) => {
                                     ]}
                                     hasFeedback
                                 >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '100%', borderRadius:'20px' }}/>
                                 </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
                             </Col>
                         </Row>
 
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={7}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={10}>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item
                                     name="confirm"
                                     label="密碼確認"
@@ -231,15 +237,18 @@ const ResetPassword = (props) => {
                                         }),
                                     ]}
                                 >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '100%', borderRadius:'20px' }}/>
                                 </Form.Item>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={7}>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={10}>
+                        </Row>
+                        <Row >
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
+                            </Col>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item
                                     name="CaptchaVerify"
                                     label="驗證碼"
@@ -264,22 +273,28 @@ const ResetPassword = (props) => {
 
                             </Col>
                         </Row>
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={7}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={10}>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item>
-                                    <Button type="primary"
-                                            htmlType="submit"
-                                            className='login-form-button'
-                                            shape="round"
-                                            style={{ width: '100%' }}
-                                    >
-                                        {/*Submit*/}
-                                        送出
-                                    </Button>
+                                    <div style={{ width: '100%', display:'flex', justifyContent: 'center', textAlign: 'center' }}>
+                                        <Button type="primary"
+                                                htmlType="submit"
+                                                className='login-form-button'
+                                                shape="round"
+                                                style={{ width: '80%'}}
+                                        >
+                                            {/*Submit*/}
+                                            送出
+                                        </Button>
+                                    </div>
+
                                 </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
                             </Col>
                         </Row>
                     </Form>

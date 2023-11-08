@@ -838,7 +838,7 @@ console.log(showFloor2)
                                                     },
                                                     {
                                                         pattern: /^[0-9]*$/,
-                                                        message: '地址只能填寫數字'
+                                                        message: '請輸入正確的手機號格式(09xxxxxxxx)'
                                                     }
                                                 ]}
                                             >

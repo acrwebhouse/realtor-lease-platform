@@ -676,9 +676,9 @@ const CompanyTransactionList = (props) => {
             <br/>
             {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Divider>成交紀錄</Divider>
-            <Row>
+            <Row justify="center" align="top">
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                <Col  xs={23} sm={18} md={18} lg={15} xl={12}>
                     <Select
                         defaultValue={years}
                         value={years}
@@ -699,39 +699,48 @@ const CompanyTransactionList = (props) => {
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             </Row>
             <br/>
-            <Row>
+            <Row justify="center" align="top">
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={24} sm={9} md={9} lg={8} xl={6}>
+                <Col  xs={23} sm={18} md={18} lg={15} xl={12}>
                     服務費：
-                    <Input id="minPrice" size={size} defaultValue={minValue} onChange={setMinPrice} placeholder="最低"  style={{
-                        width: '37%',
-                    }}>
-                    </Input>
-                    &nbsp;&nbsp;-&nbsp;&nbsp;
-                    <Input id="maxPrice" size={size} defaultValue={maxValue} onChange={setMaxPrice} placeholder="最高"  style={{
-                        width: '37%',
-                    }}>
-                    </Input>
                 </Col>
-                <Col  xs={11} sm={5} md={5} lg={4} xl={3}>
-                    <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
-                        width: '100%',
-                    }}>
-                    </Select>
-                </Col>
-                &nbsp;&nbsp;
-                <Col  xs={12} sm={5} md={5} lg={4} xl={3}>
-                    <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
-                        width: '100%',
-                    }}>
-                    </Select>
-                </Col>
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            </Row>
+            <Row justify="center" align="top">
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={23} sm={18} md={18} lg={15} xl={12}>
 
+                    <Input id="minPrice" size={size} defaultValue={minValue} onChange={setMinPrice} placeholder="最低"  style={{
+                        width: '50%',
+                    }}>
+                    </Input>
+                    {/*&nbsp;&nbsp;-&nbsp;&nbsp;*/}
+                    <Input id="maxPrice" size={size} defaultValue={maxValue} onChange={setMaxPrice} placeholder="最高"  style={{
+                        width: '50%',
+                    }}>
+                    </Input>
+                </Col>
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            </Row>
+
+            <Row justify="center" align="top">
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={23} sm={18} md={18} lg={15} xl={12}>
+                    <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
+                        width: '50%',
+                    }}>
+                    </Select>
+                    <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
+                        width: '50%',
+                    }}>
+                    </Select>
+                </Col>
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             </Row>
             <br/>
-            <Row>
+            <Row justify="center" align="left">
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
+                <Col  xs={5} sm={5} md={5} lg={4} xl={3}>
                     <Button type="primary" onClick={showSortResult} style={{
                         width: '100%',
                         height: '40px',
@@ -740,7 +749,7 @@ const CompanyTransactionList = (props) => {
                         搜尋
                     </Button>
                 </Col>
-                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col  xs={18} sm={16} md={16} lg={16} xl={15}></Col>
             </Row>
             <br/>
             <Row>
@@ -773,39 +782,39 @@ const CompanyTransactionList = (props) => {
                                                     // title: '編輯結果',
                                                     content:
                                                         <div>
-                                                            <Descriptions title="變更資料" bordered>
+                                                            <Descriptions size={'small'} title="變更資料" bordered>
                                                                 <Descriptions.Item label="成交價" span={3}>
                                                                     <div>
                                                                         <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.actualPrice} 元</div>
-                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
                                                                         <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.actualPrice} 元</div>
                                                                     </div>
                                                                 </Descriptions.Item>
                                                                 <Descriptions.Item label="服務費" span={3}>
                                                                     <div>
                                                                         <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.serviceCharge} 元</div>
-                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
                                                                         <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.serviceCharge} 元</div>
                                                                     </div>
                                                                 </Descriptions.Item>
                                                                 <Descriptions.Item label="成交日" span={3}>
                                                                     <div>
                                                                         <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[0]}</div>
-                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
                                                                         <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.transactionDate}</div>
                                                                     </div>
                                                                 </Descriptions.Item>
                                                                 <Descriptions.Item label="起租日" span={3}>
                                                                     <div>
                                                                         <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[1]}</div>
-                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
                                                                         <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.startRentDate}</div>
                                                                     </div>
                                                                 </Descriptions.Item>
                                                                 <Descriptions.Item label="結租日" span={3}>
                                                                     <div>
                                                                         <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[2]}</div>
-                                                                        <div style={{width:'80px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
                                                                         <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.endRentDate}</div>
                                                                     </div>
                                                                 </Descriptions.Item>
@@ -813,7 +822,7 @@ const CompanyTransactionList = (props) => {
                                                         </div>,
                                                     icon: [] ,
                                                     okText: '確定',
-                                                    width: '1000px',
+                                                    width: '430px',
                                                     centered: 'true'
                                                 });
                                                 // setShowEditResultModal(true)
