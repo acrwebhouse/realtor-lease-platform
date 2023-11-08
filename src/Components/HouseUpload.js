@@ -549,7 +549,7 @@ const HouseUpload = (prop) => {
 
 
     const errorPhoneFormat = () => {
-            toast.error(`請輸入正確的市話或手機號格式與長度(09xxxxxxxx)`)
+            toast.error(`請輸入正確的手機號格式(09xxxxxxxx)`)
     }
 
     const changeCity = (City) => {

@@ -9,19 +9,70 @@ import {getPersonalInfo,xTokenName} from './Auth'
 
 let transferOptions = []
 const priceMin1 = 0;
-const priceMax1 = 9999;
-const priceMin2 = 10000;
-const priceMax2 = 19999;
-const priceMin3 = 20000;
-const priceMax3 = 39999;
-const priceMin4 = 40000;
-const priceMax4 = 59999;
-const priceMin5 = 60000;
-const priceMax5 = 9999999999999;
+const priceMax1 = 19999;
+const priceMin2 = 20000;
+const priceMax2 = 39999;
+const priceMin3 = 40000;
+const priceMax3 = 99999999;
+// const priceMin4 = 40000;
+// const priceMax4 = 59999;
+// const priceMin5 = 60000;
+// const priceMax5 = 99999999;
 const columns = [
     {
         title: '名字',
         dataIndex: '名字',
+        key: '名字',
+        align: 'left'
+    },
+    // {
+    //     title: '總數',
+    //     dataIndex: '總數',
+    //     key: '總數',
+    //     align: 'center'
+    // },
+    {
+        // title: '10000以下',
+        title: '2萬以下',
+        dataIndex: '20000以下',
+        key: '20000以下',
+        align: 'center'
+    },
+    // {
+    //     // title: '10000至20000',
+    //     title: '1～2萬',
+    //     dataIndex: '10000至20000',
+    //     key: '10000至20000',
+    //     align: 'center'
+    // },
+    {
+        // title: '20000至40000',
+        title: '2～4萬',
+        dataIndex: '20000至40000',
+        key: '20000至40000',
+        align: 'center'
+    },
+    // {
+    //     // title: '40000至60000',
+    //     title: '4～6萬',
+    //     dataIndex: '40000至60000',
+    //     key: '40000至60000',
+    //     align: 'center'
+    // },
+    {
+        // title: '60000以上',
+        title: '4萬以上',
+        dataIndex: '40000以上',
+        key: '40000以上',
+        align: 'center'
+    },
+];
+
+const columnsTotal = [
+    {
+        title: '名字',
+        dataIndex: '名字',
+        width: 100,
         key: '名字',
         align: 'left'
     },
@@ -31,36 +82,7 @@ const columns = [
         key: '總數',
         align: 'center'
     },
-    {
-        title: '10000以下',
-        dataIndex: '10000以下',
-        key: '10000以下',
-        align: 'center'
-    },
-    {
-        title: '10000至20000',
-        dataIndex: '10000至20000',
-        key: '10000至20000',
-        align: 'center'
-    },
-    {
-        title: '20000至40000',
-        dataIndex: '20000至40000',
-        key: '20000至40000',
-        align: 'center'
-    },
-    {
-        title: '40000至60000',
-        dataIndex: '40000至60000',
-        key: '40000至60000',
-        align: 'center'
-    },
-    {
-        title: '60000以上',
-        dataIndex: '60000以上',
-        key: '60000以上',
-        align: 'center'
-    },
+
 ];
 const todayDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getDay()
 const dealYearMonth = {
@@ -76,6 +98,7 @@ const CompanyObjectManage = (props) => {
     const [enableTransfer, setEnableTransfer] = useState(false)
     const [companyEmployees, setCompanyEmployees] = useState({})
     const [teamHouseCount, setTeamHouseCount] = useState([])
+    const [teamHouseTotal, setTeamHouseTotal] = useState([])
     const [years, setYears] = useState();
     const [enableMonth, setEnableMonth] = useState(true)
     const [months, setMonths] = useState();
@@ -282,7 +305,8 @@ const CompanyObjectManage = (props) => {
     const getTeamUploadHouseCounts = (companyId) => {
         const xToken = cookie.load(xTokenName)
         let reqUrl = 'house/getTeamUploadHouseCounts'
-        reqUrl += `?companyId=`+ companyId + `&minPrice1=`+priceMin1+`&minPrice2=`+priceMin2+`&minPrice3=`+priceMin3+`&minPrice4=`+priceMin4+`&minPrice5=`+priceMin5+`&maxPrice1=`+priceMax1+`&maxPrice2=`+priceMax2+`&maxPrice3=`+priceMax3+`&maxPrice4=`+priceMax4+`&maxPrice5=`+priceMax5+`&minCreateTime=`+defaultDate.firstDate+`&maxCreateTime=`+defaultDate.endDate
+        // reqUrl += `?companyId=`+ companyId + `&minPrice1=`+priceMin1+`&minPrice2=`+priceMin2+`&minPrice3=`+priceMin3+`&minPrice4=`+priceMin4+`&minPrice5=`+priceMin5+`&maxPrice1=`+priceMax1+`&maxPrice2=`+priceMax2+`&maxPrice3=`+priceMax3+`&maxPrice4=`+priceMax4+`&maxPrice5=`+priceMax5+`&minCreateTime=`+defaultDate.firstDate+`&maxCreateTime=`+defaultDate.endDate
+        reqUrl += `?companyId=`+ companyId + `&minPrice1=`+priceMin1+`&minPrice2=`+priceMin2+`&minPrice3=`+priceMin3+`&maxPrice1=`+priceMax1+`&maxPrice2=`+priceMax2+`&maxPrice3=`+priceMax3+`&minCreateTime=`+defaultDate.firstDate+`&maxCreateTime=`+defaultDate.endDate
         console.log(reqUrl)
         CompanyAxios.get(
             reqUrl,{
@@ -296,22 +320,33 @@ const CompanyObjectManage = (props) => {
                     // console.log(response.data.data)
                     // resolveCompanyEmployee(response.data.data)
                     let temp = []
+                    let tempTotal = []
                     for(let i=0; i<response.data.data.length; i++) {
                         if(!response.data.data[i].isResign) {
                             // temp.push(response.data.data[i])
                             temp.push({key: i,
                                 '名字':response.data.data[i].name,
-                                '總數':`${response.data.data[i].totalUploadCount}  個`,
-                                '10000以下': `${response.data.data[i].uploadCounts[0]} 個`,
-                                '10000至20000':`${response.data.data[i].uploadCounts[1]} 個`,
-                                '20000至40000': `${response.data.data[i].uploadCounts[2]} 個`,
-                                '40000至60000':`${response.data.data[i].uploadCounts[3]} 個`,
-                                '60000以上':`${response.data.data[i].uploadCounts[4]} 個`,
+                                // '總數':`${response.data.data[i].totalUploadCount} `,
+                                '20000以下': `${response.data.data[i].uploadCounts[0]} `,
+                                '20000至40000':`${response.data.data[i].uploadCounts[1]} `,
+                                // '20000至40000': `${response.data.data[i].uploadCounts[2]} `,
+                                // '40000至60000':`${response.data.data[i].uploadCounts[3]} `,
+                                '40000以上':`${response.data.data[i].uploadCounts[2]} `,
+                            })
+                        }
+                    }
+                    for(let i=0; i<response.data.data.length; i++) {
+                        if(!response.data.data[i].isResign) {
+                            // temp.push(response.data.data[i])
+                            tempTotal.push({key: i,
+                                '名字':response.data.data[i].name,
+                                '總數':`${response.data.data[i].totalUploadCount} `,
                             })
                         }
                     }
                     console.log(temp)
                     setTeamHouseCount(temp)
+                    setTeamHouseTotal(tempTotal)
                 }else{
                     toast.error('員工資訊取得失敗')
                 }
@@ -405,6 +440,8 @@ const CompanyObjectManage = (props) => {
                                     <br/>
                                     <h1>{defaultDate.firstDate} ~ {defaultDate.endDate}</h1>
                                     <Table columns={columns} dataSource={teamHouseCount} size="small"/>
+                                    <h1>總數</h1>
+                                    <Table columns={columnsTotal} dataSource={teamHouseTotal} size="small"/>
                                 </Col>
                                 <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
                             </Row>
