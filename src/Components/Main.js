@@ -425,7 +425,7 @@ const Main = () => {
                     setIsShowReserveHouseDetail(true)
                     setReserveHouseDetailId(info)
                 }
-                reserveHouse()
+                reserveHouse(true)
                 break;
             case '22' :
                 myHousesList(true)
@@ -575,12 +575,14 @@ const Main = () => {
         toggleCollapsed()
     }
 
-    function reserveHouse(){
+    function reserveHouse(NoToggleCollapsed){
         console.log('reserveHouse')
         turnOffPage()
         setSelectMenu(['21'])
         setIsShowReserveHouse(true)
-        toggleCollapsed()
+        if(NoToggleCollapsed !== true){
+            toggleCollapsed()
+        }
     }
     
     function companyTransactionList(){
