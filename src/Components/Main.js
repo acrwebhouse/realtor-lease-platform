@@ -95,12 +95,11 @@ const Main = () => {
     const { page ,info} = useParams();
     const [isShowReserveHouseDetail, setIsShowReserveHouseDetail] = useState(false);
     const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
-    const [isCompanyManager, setIsCompanyManager] = useState(false)
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
     const [isQuickToPage, setIsQuickToPage] = useState(false);
     const { search } = useLocation();
     let isSales = false
-
+    let isCompanyManager = false
     let userData = {}
 
     const surveysAuditSvg = () => (
@@ -245,7 +244,9 @@ const Main = () => {
                 i = user.employeesData.length
             }
         }
-        setIsCompanyManager(() => user.employeesData.length > 0 ? user.employeesData[0].rank === 0 : false)
+        if(result.state === 2 && result.rank === 0){
+            isCompanyManager = true
+        }
         return result
     }
 
@@ -596,7 +597,7 @@ const Main = () => {
             setIsShowHousesList(true)
         }
         removeToken()
-        setIsCompanyManager(false)
+        isCompanyManager = false
     }
 
     function loginSignInIsOpen(status){
