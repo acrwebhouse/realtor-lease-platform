@@ -7,10 +7,10 @@ import {
 } from "antd";
 import {CompanyAxios} from './axiosApi'
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
-
+import {getCurrentEmployee} from './CompanyCommon'
 const companyState = ['初始狀態', '審核中', '通過審核', '審核失敗', '停權中']
 // 初始狀態
 // 1 : 審核中
@@ -37,7 +37,11 @@ const CompanyInfo = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            getCompanyInfo()
+            getCurrentEmployee((result,data)=>{
+                if(result === true){
+                    getCompanyInfo()
+                }
+            })
         }
     }, )
     function getCompanyInfo(){

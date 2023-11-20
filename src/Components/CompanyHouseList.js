@@ -7,20 +7,29 @@ import HousesList from "./HousesList";
 import {
     useParams
   } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+  import {getCurrentEmployee} from './CompanyCommon'
 import 'react-toastify/dist/ReactToastify.css';
 
 const CompanyHouseList = (props) => {
     const [init, setInit] = useState(true);
+    const [isShow, setIsShow ] = useState(false);
     useEffect(() => {
         if (init) {
             setInit(false)
+            getCurrentEmployee((result,data)=>{
+                console.log(data)
+                if(result === true){
+                    if(data.state === 2)
+                    setIsShow(true)
+                }
+            })
         }
     }, )
     return (
         <div>
-            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
-            <HousesList isCompanyList={true} companyId={props.companyId}></HousesList>
+            {
+               isShow?( <HousesList isCompanyList={true} companyId={props.companyId}></HousesList>):null
+           } 
         </div>
     );
 };
