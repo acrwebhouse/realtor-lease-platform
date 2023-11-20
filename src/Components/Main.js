@@ -179,7 +179,6 @@ const Main = () => {
             toast.error(error)
         })
     }
-    console.log(isCompanyManager)
     function checkEmployeeStateAndChangeMenu(callback){
         getCurrentEmployee((result,data)=>{
             const currentCompanyId = data.companyId
@@ -318,7 +317,6 @@ const Main = () => {
         }
         LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then((response) => {
-                    console.log(response.data)
                     if((response.data.status === false || response.data.status === null) && response.data.data.includes('accout , mail or password invalid')) {
                         toast.error(`帳號或密碼錯誤`)
                     }else if(response.data.status === false && response.data.data.includes("user not verify")) {
@@ -395,7 +393,6 @@ const Main = () => {
                         const xToken = result.message
                         changeUserMenu(xToken)
                     }else{
-                        console.log(result)
                     }
                     
                   })
@@ -435,7 +432,6 @@ const Main = () => {
     }
 
     function housesList(){
-        console.log('housesList')
         turnOffPage()
         setSelectMenu(['1'])
         setIsShowHousesList(true)
@@ -443,7 +439,6 @@ const Main = () => {
     }
 
     function myHousesList(NoToggleCollapsed){
-        console.log('myHousesList')
         turnOffPage()
         setSelectMenu(['2'])
         setIsShowMyHousesList(true)
@@ -452,7 +447,6 @@ const Main = () => {
         }
     }
     function uploadHouse(){
-        console.log('uploadHouse')
         turnOffPage()
         setSelectMenu(['3'])
         setIsShowUploadHouse(true)
@@ -460,7 +454,6 @@ const Main = () => {
     }
     
     function memberList(){
-        console.log('memberList')
         turnOffPage()
         setSelectMenu(['4'])
         setIsShowMemberList(true)
@@ -468,7 +461,6 @@ const Main = () => {
     }
 
     function memberInfo(){
-        console.log('memberInfo')
         turnOffPage()
         setSelectMenu(['5'])
         setIsShowMemberInfo(true)
@@ -476,7 +468,6 @@ const Main = () => {
     }
 
     function matchNeed(){
-        console.log('matchNeed')
         turnOffPage()
         setSelectMenu(['10'])
         setIsShowMatchNeed(true)
@@ -484,13 +475,11 @@ const Main = () => {
     }
 
     function loginSignIn(){
-        console.log('loginSignIn')
         setIsShowLoginSignIn(true)
         toggleCollapsed()
     }
 
     function contact(){
-        console.log('membercontactInfo')
         turnOffPage()
         setSelectMenu(['8'])
         setIsShowContact(true)
@@ -498,7 +487,6 @@ const Main = () => {
     }
 
     function collect(){
-        console.log('collect')
         turnOffPage()
         setSelectMenu(['9'])
         setIsShowCollect(true)
@@ -506,7 +494,6 @@ const Main = () => {
     }
 
     const relativeLink = () => {
-        console.log('relativeLink')
         turnOffPage()
         setSelectMenu(['12'])
         setIsShowRelativeLink(true)
@@ -514,29 +501,19 @@ const Main = () => {
     }
 
     const companyApply = () =>{
-        console.log('companyApply')
         turnOffPage()
         setSelectMenu(['13'])
         setIsShowCompanyApply(true)
         toggleCollapsed()
     }
 
-    // const companyApplyList = () =>{
-    //     console.log('companyApplyList')
-    //     turnOffPage()
-    //     setSelectMenu(['15'])
-    //     setIsShowCompanyApplyList(true)
-    // }
-
     const companyApprovalList = () =>{
-        console.log('companyApprovalList')
         turnOffPage()
         setSelectMenu(['15'])
         setIsShowCompanyApprovalList(true)
         toggleCollapsed()
     }
     const companyEmployeeInfo = () =>{
-        console.log('companyEmployeeInfo')
         turnOffPage()
         setSelectMenu(['16'])
         setIsShowCompanyEmployeeInfo(true)
@@ -544,7 +521,6 @@ const Main = () => {
     }
 
     const companyHouseList = () =>{
-        console.log('companyHouseList')
         turnOffPage()
         setSelectMenu(['17'])
         setIsShowCompanyHouseList(true)
@@ -552,7 +528,6 @@ const Main = () => {
     }
 
     const companyInfo = () =>{
-        console.log('companyInfo')
         turnOffPage()
         setSelectMenu(['18'])
         setIsShowCompanyInfo(true)
@@ -560,7 +535,6 @@ const Main = () => {
     }
 
     const companyEmployeesList = () =>{
-        console.log('companyEmployeesList')
         turnOffPage()
         setSelectMenu(['20'])
         setIsShowCompanyEmployeesList(true)
@@ -568,7 +542,6 @@ const Main = () => {
     }
 
     const companyObjectManage = () =>{
-        console.log('companyObjectManage')
         turnOffPage()
         setSelectMenu(['23'])
         setIsShowCompanyObjectManage(true)
@@ -576,7 +549,6 @@ const Main = () => {
     }
 
     function reserveHouse(NoToggleCollapsed){
-        console.log('reserveHouse')
         turnOffPage()
         setSelectMenu(['21'])
         setIsShowReserveHouse(true)
@@ -586,7 +558,6 @@ const Main = () => {
     }
     
     function companyTransactionList(){
-        console.log('companyTransactionList')
         turnOffPage()
         setSelectMenu(['22'])
         setIsShowCompanyTransactionList(true)
@@ -594,7 +565,6 @@ const Main = () => {
     }
 
     function logout(){
-        console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const reserveHouseMenu = document.getElementById('reserveHouseMenu');
@@ -700,7 +670,7 @@ const Main = () => {
                 } else {
                     isSales = true
                     myHousesListMenu.style.display = 'flex'
-                    uploadHousesMenu.style.display = 'none'
+                    uploadHousesMenu.style.display = 'flex'
                     reserveHouseMenu.style.display = 'flex'
                     logoutMenu.style.display = 'flex'
                     loginSignInMenu.style.display = 'none'
