@@ -120,7 +120,7 @@ const CompanyApprovalList = (props) => {
                             `成交日 : ${new Date(Date.parse(transactionCreateApply[i].transactionDate)).toLocaleDateString()}`,
                             `起租日 : ${new Date(Date.parse(transactionCreateApply[i].startRentDate)).toLocaleDateString()}`,
                             `結租日 : ${new Date(Date.parse(transactionCreateApply[i].endRentDate)).toLocaleDateString()}`,
-                            `申請日 : ${new Date(Date.parse(transactionCreateApply[i].createTime)).toLocaleDateString()}`,
+                            `申請日 : ${new Date(Date.parse(transactionCreateApply[i].updateTime)).toLocaleDateString()}`,
                         ],
                     }
                 item.content.push(transactionCreateApply[i])
@@ -146,36 +146,36 @@ const CompanyApprovalList = (props) => {
                         `物\u3000件 : ${transactionEditApply[i].houseData[0].name}`,
                         `申請人 : ${transactionEditApply[i].userData[0].name}`,
                         <div style={{height:'0px'}}>
-                            成交價 :
-                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{transactionEditApply[i].actualPrice} 元</div>
-                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
-                            <div style={{width:'80px', textAlign:'center',display:'inline-block', color:'red'}}>{transactionEditApply[i].edit.actualPrice} 元</div>
+                            成交價&nbsp;:&nbsp;
+                            <div style={{width:'80px',textAlign:'left' ,display:'inline-block'}}>{+transactionEditApply[i].actualPrice} 元</div>
+                            <div style={{width:'20px', textAlign:'left' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'left',display:'inline-block', color:'red'}}>{transactionEditApply[i].edit.actualPrice} 元</div>
                         </div>,
                         <div style={{height:'0px'}}>
-                            服務費 :
-                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{transactionEditApply[i].serviceCharge} 元</div>
-                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
-                            <div style={{width:'80px', textAlign:'center',display:'inline-block', color:'red'}}>{transactionEditApply[i].edit.serviceCharge} 元</div>
+                            服務費&nbsp;:&nbsp;
+                            <div style={{width:'80px',textAlign:'left' ,display:'inline-block'}}>{transactionEditApply[i].serviceCharge} 元</div>
+                            <div style={{width:'20px', textAlign:'left' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'left',display:'inline-block', color:'red'}}>{transactionEditApply[i].edit.serviceCharge} 元</div>
                         </div>,
                         <div style={{height:'0px'}}>
-                            成交日 :
-                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}</div>
-                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
-                            <div style={{width:'80px', textAlign:'center',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.transactionDate)).toLocaleDateString()}</div>
+                            成交日&nbsp;:&nbsp;
+                            <div style={{width:'80px',textAlign:'left' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}</div>
+                            <div style={{width:'20px', textAlign:'left' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'left',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.transactionDate)).toLocaleDateString()}</div>
                         </div>,
                         <div style={{height:'0px'}}>
-                            起租日 :
-                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}</div>
-                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
-                            <div style={{width:'80px', textAlign:'center',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.startRentDate)).toLocaleDateString()}</div>
+                            起租日&nbsp;:&nbsp;
+                            <div style={{width:'80px',textAlign:'left' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}</div>
+                            <div style={{width:'20px', textAlign:'left' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'left',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.startRentDate)).toLocaleDateString()}</div>
                         </div>,
                         <div style={{height:'0px'}}>
-                            結租日 :
-                            <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}</div>
-                            <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
-                            <div style={{width:'80px', textAlign:'center',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.endRentDate)).toLocaleDateString()}</div>
+                            結租日&nbsp;:&nbsp;
+                            <div style={{width:'80px',textAlign:'left' ,display:'inline-block'}}>{new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}</div>
+                            <div style={{width:'20px', textAlign:'left' ,display:'inline-block'}}>⇨</div>
+                            <div style={{width:'80px', textAlign:'left',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.endRentDate)).toLocaleDateString()}</div>
                         </div>,
-                            `申請日 :${new Date(Date.parse(transactionEditApply[i].createTime)).toLocaleDateString()}`,
+                            `申請日 :${new Date(Date.parse(transactionEditApply[i].updateTime)).toLocaleDateString()}`,
 
                         // `服務費 : ${transactionEditApply[i].serviceCharge}元\u3000\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${transactionEditApply[i].edit.serviceCharge}元`,
                         // `成交日 : ${new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}  ⇨   ${new Date(Date.parse(transactionEditApply[i].edit.transactionDate)).toLocaleDateString()}`,
@@ -211,7 +211,7 @@ const CompanyApprovalList = (props) => {
                         `成交日 : ${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
                         `起租日 : ${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
                         `結租日 : ${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
-                        `申請日 : ${new Date(Date.parse(transactionDelApply[i].createTime)).toLocaleDateString()}`,
+                        `申請日 : ${new Date(Date.parse(transactionDelApply[i].updateTime)).toLocaleDateString()}`,
                     ],
                 }
                 item2.content.push(transactionDelApply[i])

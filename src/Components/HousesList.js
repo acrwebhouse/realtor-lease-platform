@@ -96,7 +96,8 @@ const HousesList = (props) => {
         serviceCharge : '',
         startRentDate : '',
         endRentDate : '',
-        dealSales : ''
+        dealSales : '',
+        userId: ''
     })
     const [transferOwnerId, setTransferOwnerId] = useState([])
     console.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles, props.dealOptions, props.dealUserId)
@@ -901,12 +902,12 @@ const HousesList = (props) => {
                                 <div style={{display: isShowEdit}}>
                                     {!content[14]?
                                         <span>
-                                            <Button type="primary" onClick={() => queryHouse(content[11])} style={{width: '70px' }}>
+                                            <Button type="primary" onClick={() => queryHouse(content[11])} style={{width: '60px' }}>
                                         查看
                                         </Button>
 
                                             &nbsp;
-                                            <Button type="primary" disabled={isShowDeleteAlert} onClick={() => removeHouse(content[11])} danger style={{width: '70px'}}>
+                                            <Button type="primary" disabled={isShowDeleteAlert} onClick={() => removeHouse(content[11])} danger style={{width: '60px'}}>
                                             刪除
                                         </Button>
                                             &nbsp;
@@ -920,7 +921,7 @@ const HousesList = (props) => {
                                                      dealData.companyId = content[12]
                                                      setEnableDealForm(true)
                                                 }}
-                                                style={{width: '70px', backgroundColor: !content[14]?'#FFA500':'', borderColor: !content[14]?'#FFA500':''}}>
+                                                style={{width: '60px', backgroundColor: !content[14]?'#FFA500':'', borderColor: !content[14]?'#FFA500':''}}>
                                             {!content[14]?'成交':'申請中'}
                                         </Button>
                                         :
@@ -1033,7 +1034,10 @@ const HousesList = (props) => {
         dealData.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
         dealData.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
         dealData.dealSales = value.dealSales
-        console.log(dealData)
+        const index = props.dealOptions.findIndex(n =>{return n.value === value.dealSales})
+        dealData.userId = props.dealUserId[index].userId
+        console.log(dealData, index, props.dealUserId[index].userId)
+
         setIsPostDeal(true)
     }
     const handleTransferData = (value) => {
