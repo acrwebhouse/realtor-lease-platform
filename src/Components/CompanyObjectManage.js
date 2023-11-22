@@ -438,9 +438,9 @@ const CompanyObjectManage = (props) => {
                                     />
                                     <br/>
                                     <br/>
-                                    <h1>{defaultDate.firstDate} ~ {defaultDate.endDate}</h1>
+                                    <p style={{fontSize:'24px', textAlign: 'center'}}>{defaultDate.firstDate} ~ {defaultDate.endDate}</p>
                                     <Table columns={columns} dataSource={teamHouseCount} size="small"/>
-                                    <h1>總數</h1>
+                                    <p style={{fontSize:'24px', textAlign: 'center'}}>總數</p>
                                     <Table columns={columnsTotal} dataSource={teamHouseTotal} size="small"/>
                                 </Col>
                                 <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>

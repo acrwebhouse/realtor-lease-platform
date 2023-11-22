@@ -761,7 +761,7 @@ const CompanyTransactionList = (props) => {
                 </Col>
                 <Col  xs={12} sm={9} md={9} lg={7} xl={6}>
                     <Card>
-                        <Statistic title="當月總收入" value={totalPrice} suffix="元" />
+                        <Statistic title="當月總收入" value={isNaN(totalPrice)? [] : totalPrice} suffix="元" />
                     </Card>
                 </Col>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
@@ -842,7 +842,7 @@ const CompanyTransactionList = (props) => {
 
                                                 <Descriptions.Item label="原始價" span={1}>{data.houseData.price + ' 元'}</Descriptions.Item>
                                                 <Descriptions.Item label="成交價" span={1}>{data.actualPrice + ' 元'}</Descriptions.Item>
-                                                <Descriptions.Item label="服務費" span={1}>{data.serviceCharge + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="服務費" span={1}>{(isNaN(data.serviceCharge) ? '異常' : data.serviceCharge) + ' 元'}</Descriptions.Item>
                                                 <Descriptions.Item label="成交日" span={1}>{data.content[0]}</Descriptions.Item>
                                                 <Descriptions.Item label="起租日" span={1}>{data.content[1]}</Descriptions.Item>
                                                 <Descriptions.Item label="結租日" span={1}>{data.content[2]}</Descriptions.Item>
