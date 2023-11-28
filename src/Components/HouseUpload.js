@@ -554,7 +554,7 @@ const HouseUpload = (prop) => {
 
     const changeCity = (City) => {
 
-        setSelectArea(null)
+        setSelectArea([])
         setAreaOptions([])
         switch(City){
             case CityOptions[0].value:
@@ -1328,17 +1328,19 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select size="large"
-                                                    id="area"
-                                                    value={selectArea}
-                                                    allowClear
-                                                    placeholder="區域"
-                                                    options={areaOptions}
-                                                    onChange={changeArea}
-                                                    style={{
-                                                        width: '100%',
-                                                    }}>
-                                            </Select>
+                                            <div>
+                                                <Select size="large"
+                                                        id="area"
+                                                        value={selectArea}
+                                                        allowClear
+                                                        placeholder="區域"
+                                                        options={areaOptions}
+                                                        onChange={changeArea}
+                                                        style={{
+                                                            width: '100%',
+                                                        }}>
+                                                </Select>
+                                            </div>
                                         </Form.Item>
                                     </Col>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>

@@ -1034,9 +1034,12 @@ const HousesList = (props) => {
         dealData.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
         dealData.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
         dealData.dealSales = value.dealSales
-        const index = props.dealOptions.findIndex(n =>{return n.value === value.dealSales})
-        dealData.userId = props.dealUserId[index].userId
-        console.log(dealData, index, props.dealUserId[index].userId)
+        if (props.rank === 0) {
+            const index = props.dealOptions.findIndex(n =>{return n.value === value.dealSales})
+            dealData.userId = props.dealUserId[index].userId
+            console.log(index, props.dealUserId[index].userId)
+        }
+        console.log(dealData, )
 
         setIsPostDeal(true)
     }
