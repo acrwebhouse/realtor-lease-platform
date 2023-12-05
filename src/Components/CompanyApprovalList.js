@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile} from './CommonUtil'
+import {showInternelErrorPageForMobile,valueIsValid} from './CommonUtil'
 import {log} from "@craco/craco/lib/logger";
 import {config} from "../Setting/config";
 
@@ -63,6 +63,14 @@ const CompanyApprovalList = (props) => {
                 toast.error(error)})
     }
 
+    function checkTransactionData(data){
+        if(valueIsValid(data.houseId) && valueIsValid(data.userId)&& valueIsValid(data.companyId) && data.userData.length > 0 && data.houseData.length > 0&& valueIsValid(data.actualPrice)&& valueIsValid(data.serviceCharge)&& valueIsValid(data.transactionDate)&& valueIsValid(data.startRentDate)&& valueIsValid(data.endRentDate)){
+            return true
+        }else{
+            return false
+        }
+    }
+
     function resolveCompanyHousesList(response){
         console.log(response)
         const dataCreate = []
@@ -99,7 +107,8 @@ const CompanyApprovalList = (props) => {
             let transactionDelApply = removeDuplicates(tempDel, 'houseId')
             console.log(transactionEditApply)
             for (let i = 0; i< transactionCreateApply.length; i++) {
-                const item = {
+                if(checkTransactionData(transactionCreateApply[i]) === true){
+                    const item = {
                         key: i,
                         id : transactionCreateApply[i]._id,
                         houseId : transactionCreateApply[i].houseId,
@@ -123,26 +132,29 @@ const CompanyApprovalList = (props) => {
                             `申請日 : ${new Date(Date.parse(transactionCreateApply[i].updateTime)).toLocaleDateString()}`,
                         ],
                     }
-                item.content.push(transactionCreateApply[i])
-                console.log(item)
-                dataCreate.push(item)
+                    item.content.push(transactionCreateApply[i])
+                    console.log(item)
+                    dataCreate.push(item)
+                }
+                
             }
 
             for (let i = 0; i< transactionEditApply.length; i++) {
-                const item1 = {
-                    key: i,
-                    id : transactionEditApply[i]._id,
-                    houseId : transactionEditApply[i].houseId,
-                    userId : transactionEditApply[i].userId,
-                    companyId : transactionEditApply[i].companyId,
-                    actualPrice : transactionEditApply[i].actualPrice,
-                    serviceCharge : transactionEditApply[i].serviceCharge,
-                    transactionDate : `${new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}`,
-                    startRentDate : `${new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}`,
-                    endRentDate : `${new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}`,
-                    applyName: transactionEditApply[i].userData[0].name,
-                    image: `${houseService}/resource/${transactionEditApply[i].houseId}/photo/${transactionEditApply[i].houseData[0].photo[0]}`,
-                    content : [
+                if(checkTransactionData(transactionEditApply[i]) === true){
+                    const item1 = {
+                        key: i,
+                        id : transactionEditApply[i]._id,
+                        houseId : transactionEditApply[i].houseId,
+                        userId : transactionEditApply[i].userId,
+                        companyId : transactionEditApply[i].companyId,
+                        actualPrice : transactionEditApply[i].actualPrice,
+                        serviceCharge : transactionEditApply[i].serviceCharge,
+                        transactionDate : `${new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}`,
+                        startRentDate : `${new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}`,
+                        endRentDate : `${new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}`,
+                        applyName: transactionEditApply[i].userData[0].name,
+                        image: `${houseService}/resource/${transactionEditApply[i].houseId}/photo/${transactionEditApply[i].houseData[0].photo[0]}`,
+                        content : [
                         `物\u3000件 : ${transactionEditApply[i].houseData[0].name}`,
                         `申請人 : ${transactionEditApply[i].userData[0].name}`,
                         <div style={{height:'0px'}}>
@@ -176,47 +188,44 @@ const CompanyApprovalList = (props) => {
                             <div style={{width:'80px', textAlign:'left',display:'inline-block', color:'red'}}>{new Date(Date.parse(transactionEditApply[i].edit.endRentDate)).toLocaleDateString()}</div>
                         </div>,
                             `申請日 :${new Date(Date.parse(transactionEditApply[i].updateTime)).toLocaleDateString()}`,
-
-                        // `服務費 : ${transactionEditApply[i].serviceCharge}元\u3000\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${transactionEditApply[i].edit.serviceCharge}元`,
-                        // `成交日 : ${new Date(Date.parse(transactionEditApply[i].transactionDate)).toLocaleDateString()}  ⇨   ${new Date(Date.parse(transactionEditApply[i].edit.transactionDate)).toLocaleDateString()}`,
-                        // `起租日 : ${new Date(Date.parse(transactionEditApply[i].startRentDate)).toLocaleDateString()}\u3000\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${new Date(Date.parse(transactionEditApply[i].edit.startRentDate)).toLocaleDateString()}`,
-                        // `結租日 : ${new Date(Date.parse(transactionEditApply[i].endRentDate)).toLocaleDateString()}\u3000\u3000\u3000\u3000⇨\u3000\u3000\u3000${new Date(Date.parse(transactionEditApply[i].edit.endRentDate)).toLocaleDateString()}`,
-                        // `申請日 : ${new Date(Date.parse(transactionEditApply[i].createTime)).toLocaleDateString()}`,
-                    ],
+                        ],
+                    }
+                    item1.content.push(transactionEditApply[i])
+                    console.log(item1)
+                    dataEdit.push(item1)
                 }
-                item1.content.push(transactionEditApply[i])
-                console.log(item1)
-                dataEdit.push(item1)
             }
             
             for (let i = 0; i< transactionDelApply.length; i++) {
-                const item2 = {
-                    key: i,
-                    id : transactionDelApply[i]._id,
-                    houseId : transactionDelApply[i].houseId,
-                    userId : transactionDelApply[i].userId,
-                    companyId : transactionDelApply[i].companyId,
-                    actualPrice : transactionDelApply[i].actualPrice,
-                    serviceCharge : transactionDelApply[i].serviceCharge,
-                    transactionDate : `${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
-                    startRentDate : `${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
-                    endRentDate : `${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
-                    applyName: transactionDelApply[i].userData[0].name,
-                    image: `${houseService}/resource/${transactionDelApply[i].houseId}/photo/${transactionDelApply[i].houseData[0].photo[0]}`,
-                    content : [
-                        `物\u3000件 : ${transactionDelApply[i].houseData[0].name}`,
-                        `申請人 : ${transactionDelApply[i].userData[0].name}`,
-                        `成交價 : ${transactionDelApply[i].actualPrice} 元/月`,
-                        `服務費 : ${transactionDelApply[i].serviceCharge} 元`,
-                        `成交日 : ${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
-                        `起租日 : ${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
-                        `結租日 : ${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
-                        `申請日 : ${new Date(Date.parse(transactionDelApply[i].updateTime)).toLocaleDateString()}`,
-                    ],
+                if(checkTransactionData(transactionDelApply[i]) === true){
+                    const item2 = {
+                        key: i,
+                        id : transactionDelApply[i]._id,
+                        houseId : transactionDelApply[i].houseId,
+                        userId : transactionDelApply[i].userId,
+                        companyId : transactionDelApply[i].companyId,
+                        actualPrice : transactionDelApply[i].actualPrice,
+                        serviceCharge : transactionDelApply[i].serviceCharge,
+                        transactionDate : `${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
+                        startRentDate : `${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
+                        endRentDate : `${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
+                        applyName: transactionDelApply[i].userData[0].name,
+                        image: `${houseService}/resource/${transactionDelApply[i].houseId}/photo/${transactionDelApply[i].houseData[0].photo[0]}`,
+                        content : [
+                            `物\u3000件 : ${transactionDelApply[i].houseData[0].name}`,
+                            `申請人 : ${transactionDelApply[i].userData[0].name}`,
+                            `成交價 : ${transactionDelApply[i].actualPrice} 元/月`,
+                            `服務費 : ${transactionDelApply[i].serviceCharge} 元`,
+                            `成交日 : ${new Date(Date.parse(transactionDelApply[i].transactionDate)).toLocaleDateString()}`,
+                            `起租日 : ${new Date(Date.parse(transactionDelApply[i].startRentDate)).toLocaleDateString()}`,
+                            `結租日 : ${new Date(Date.parse(transactionDelApply[i].endRentDate)).toLocaleDateString()}`,
+                            `申請日 : ${new Date(Date.parse(transactionDelApply[i].updateTime)).toLocaleDateString()}`,
+                        ],
+                    }
+                    item2.content.push(transactionDelApply[i])
+                    console.log(item2)
+                    dataDel.push(item2)
                 }
-                item2.content.push(transactionDelApply[i])
-                console.log(item2)
-                dataDel.push(item2)
             }
             setTransactionCreateApplyList(dataCreate)
             setTransactionEditApplyList(dataEdit)
@@ -225,8 +234,6 @@ const CompanyApprovalList = (props) => {
             // console.log(removeDuplicates(temp, 'houseId'))
         }
     }
-
-    console.log(transactionCreateApplyList)
 
     const removeDuplicates = (originalArray, prop) => {
         let newArray = [];
@@ -241,7 +248,6 @@ const CompanyApprovalList = (props) => {
         }
         return newArray;
     }
-    // console.log(transactionCreateApplyList)
 
     function getCompanyApplyList(){
         const xToken = cookie.load('x-token')
@@ -254,7 +260,6 @@ const CompanyApprovalList = (props) => {
             })
             .then( (response) => {
                 if(response.data.status === true){
-                    // setCompanyApplyList(response.data.data)
                     resolveCompanyApplyList(response)
                 }else{
                     toast.error('抓取公司審核列表失敗')
@@ -295,7 +300,6 @@ const CompanyApprovalList = (props) => {
                 }
                 data.push(item)
             }
-            console.log('===data====',data)
             setCompanyApplyList(data)
         }
     }

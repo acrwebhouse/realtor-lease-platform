@@ -57,4 +57,12 @@ const isIos = () => {
     return false
 }
 
-export {openInNewTab,showInternelErrorPageForMobile , backPage , isMobile , horizontalScrollDisabled,isAndroid,isIos}
+const valueIsValid = (data) =>{
+    if(data !== ''&& data !== undefined ){
+        return true
+    }else{
+        return false
+    }
+}
+
+export {openInNewTab,showInternelErrorPageForMobile , backPage , isMobile , horizontalScrollDisabled,isAndroid,isIos,valueIsValid}
