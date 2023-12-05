@@ -772,7 +772,7 @@ const CompanyTransactionList = (props) => {
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                         <Collapse defaultActiveKey={['0']}>
                             {transactions.map((data, index) => (
-                                <Panel header={'【'+(index+1)+'】- '+ `${data.houseData.name} - ${data.houseData.city} - ${data.actualPrice}元 - ${data.userData.name}`}
+                                <Panel header={'【'+(index+1)+'】- '+ `${data.houseData.name} - ${data.houseData.city} - ${data.actualPrice}元 - ${data.userData?data.userData.name:[]}`}
                                        key={index}
                                        extra={data.state === 2?
                                         <div>
@@ -851,12 +851,11 @@ const CompanyTransactionList = (props) => {
                                                 <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
                                                 <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
                                                 <Descriptions.Item label="負責房仲" span={3}>
-                                                    {'姓名 : ' + data.userData.name}
+                                                    {`姓名 : ${data.userData?data.userData.name:'無'}`}
                                                     <br />
-                                                    {'信箱 : ' + data.userData.mail}
+                                                    {`信箱 : ${data.userData?data.userData.mail:'無'}`}
                                                     <br />
-                                                    {'電話 : ' + data.userData.phone}
-
+                                                    {`電話 : ${data.userData?data.userData.phone:'無'}`}
                                                 </Descriptions.Item>
                                                 <Descriptions.Item label="狀態" span={3}><div style={{color: stateColorCheck(data.state)}}>{stateCheck(data.state)}</div></Descriptions.Item>
                                             </Descriptions>

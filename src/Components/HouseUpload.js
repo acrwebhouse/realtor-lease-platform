@@ -184,6 +184,8 @@ const HouseUpload = (prop) => {
     const [enableFirstPicChange, setEnableFirstPicChange] = useState(false)
     const [firstPicFile, setFirstPicFile] = useState([])
     const [firstPhotoData, setFirstPhotoData] = useState([])
+    const [totalLayer, setTotalLayer] = useState(0)
+    console.log(totalLayer)
     const showTrafficModal = () => {
         setTrafficVisible(true);
     };
@@ -1328,7 +1330,6 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <div>
                                                 <Select size="large"
                                                         id="area"
                                                         value={selectArea}
@@ -1340,7 +1341,6 @@ const HouseUpload = (prop) => {
                                                             width: '100%',
                                                         }}>
                                                 </Select>
-                                            </div>
                                         </Form.Item>
                                     </Col>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -1395,7 +1395,7 @@ const HouseUpload = (prop) => {
                                                    rules={[
                                                        {
                                                            pattern: /^[0-9]*$/,
-                                                           message: '地址只能填寫數字'
+                                                           message: '只能填寫數字'
                                                        }
                                                    ]}
                                         >
@@ -1414,7 +1414,7 @@ const HouseUpload = (prop) => {
                                                    rules={[
                                                        {
                                                            pattern: /^[0-9]*$/,
-                                                           message: '地址只能填寫數字'
+                                                           message: '只能填寫數字'
                                                        }
                                                    ]}
                                         >
@@ -1435,7 +1435,7 @@ const HouseUpload = (prop) => {
                                                        },
                                                        {
                                                            pattern: /^[0-9]*$/,
-                                                           message: '地址只能填寫數字'
+                                                           message: '只能填寫數字'
                                                        }
                                                    ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
@@ -1454,7 +1454,7 @@ const HouseUpload = (prop) => {
                                                    rules={[
                                                        {
                                                            pattern: /^[0-9]*$/,
-                                                           message: '地址只能填寫數字'
+                                                           message: '只能填寫數字'
                                                        }
                                                    ]}
                                         >
@@ -1497,6 +1497,7 @@ const HouseUpload = (prop) => {
                                                      size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="樓"
+                                                     onChange={setTotalLayer}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -1524,7 +1525,7 @@ const HouseUpload = (prop) => {
                                                 size={"large"}
                                                 style={{ width: '100%' }}
                                                 placeholder="樓層"
-                                                options={FloorOptions}
+                                                options={FloorOptions.slice(0, totalLayer+4)}
                                             />
                                         </Form.Item>
                                     </Col>
