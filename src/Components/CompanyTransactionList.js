@@ -225,7 +225,6 @@ const CompanyTransactionList = (props) => {
 
     function resolveTransactionsList(response){
         console.log(response.data, response.data.data)
-        console.log(moment(response.data.data[0].startRentDate).format('YYYY/MM/DD'))
         let data = []
         let countTemp = 0;
         let priceTemp = 0;
