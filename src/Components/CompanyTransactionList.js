@@ -355,9 +355,9 @@ const CompanyTransactionList = (props) => {
                     'userId' : transactionData[transactionKey].userId,
                     'actualPrice': transactionData[transactionKey].actualPrice,
                     'serviceCharge': transactionData[transactionKey].serviceCharge,
-                    'transactionDate' : new Date(Date.parse(transactionData[transactionKey].transactionDate)).toLocaleDateString(),
-                    'startRentDate': new Date(Date.parse(transactionData[transactionKey].startRentDate)).toLocaleDateString(),
-                    'endRentDate': new Date(Date.parse(transactionData[transactionKey].endRentDate)).toLocaleDateString(),
+                    'transactionDate' : moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"),
+                    'startRentDate': moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),
+                    'endRentDate': moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD"),
                     'companyId': transactionData[transactionKey].companyId,
                     'edit': {
 
