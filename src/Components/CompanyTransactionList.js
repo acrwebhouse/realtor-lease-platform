@@ -228,13 +228,13 @@ const CompanyTransactionList = (props) => {
         let data = []
         let countTemp = 0;
         let priceTemp = 0;
-        console.log(data)
+        console.log(response.data.data)
         if(response.data && response.data.data){
             const items = response.data.data
             setTransactionsListDetail([])
             setTransactionsListDetail(items)
             for(let i = 0 ;i<items.length; i++){
-                if(items[i].houseData.length > 0 ) {
+                if(items[i].houseData.length > 0 && items[i].state > 1) {
                     countTemp += 1;
                     priceTemp += parseInt(items[i].serviceCharge);
                     console.log(items[i])

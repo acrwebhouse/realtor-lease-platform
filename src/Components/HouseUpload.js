@@ -184,7 +184,7 @@ const HouseUpload = (prop) => {
     const [enableFirstPicChange, setEnableFirstPicChange] = useState(false)
     const [firstPicFile, setFirstPicFile] = useState([])
     const [firstPhotoData, setFirstPhotoData] = useState([])
-    const [totalLayer, setTotalLayer] = useState(0)
+    const [totalLayer, setTotalLayer] = useState(prop.defaultValue?prop.defaultValue.totalFloor:null)
     console.log(totalLayer)
     const showTrafficModal = () => {
         setTrafficVisible(true);
@@ -1525,7 +1525,7 @@ const HouseUpload = (prop) => {
                                                 size={"large"}
                                                 style={{ width: '100%' }}
                                                 placeholder="樓層"
-                                                options={FloorOptions.slice(0, totalLayer+4)}
+                                                options={totalLayer===null?[{value:'請先填總樓層',disabled: true}] :FloorOptions.slice(0, totalLayer+4)}
                                             />
                                         </Form.Item>
                                     </Col>
