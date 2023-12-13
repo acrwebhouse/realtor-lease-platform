@@ -21,7 +21,7 @@ const removeTransactionAuth = '/transaction/removeTransaction'
 const houseService = config.base_URL_House
 const CompanyApprovalList = (props) => {
     let { id } = useParams();
-    const [init, setInit] = useState(true);
+    const [init, setInit] = useState(false);
     const [companyApplyList , setCompanyApplyList] = useState([]);
     const [transactionCreateApplyList, setTransactionCreateApplyList] = useState([])
     const [transactionEditApplyList, setTransactionEditApplyList] = useState([])
@@ -890,11 +890,13 @@ const CompanyApprovalList = (props) => {
         // getCompanyApplyList()
         getCompanyHouseList()
         setSwitchPage(1)
+        setInit(true)
     }
     const showCompanyApplyList = () => {
         getCompanyApplyList()
         // getCompanyHouseList()
         setSwitchPage(2)
+        setInit(true)
     }
 
     return (
