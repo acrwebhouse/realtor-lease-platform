@@ -289,7 +289,7 @@ const CompanyTransactionList = (props) => {
             }
         )
             .then( (response) => {
-                console.log(response)
+                console.log('edit', response)
                 if(response.data.status) {
                     toast.success('編輯審核已提交')
                     setEnableCheckYearMonth(true)
@@ -315,9 +315,9 @@ const CompanyTransactionList = (props) => {
                     'userId' : transactionData[transactionKey].userId,
                     'actualPrice': transactionData[transactionKey].actualPrice,
                     'serviceCharge': transactionData[transactionKey].serviceCharge,
-                    'transactionDate' : new Date(Date.parse(transactionData[transactionKey].transactionDate)).toLocaleDateString(),
-                    'startRentDate': new Date(Date.parse(transactionData[transactionKey].startRentDate)).toLocaleDateString(),
-                    'endRentDate': new Date(Date.parse(transactionData[transactionKey].endRentDate)).toLocaleDateString(),
+                    'transactionDate' : moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"),
+                    'startRentDate': moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),
+                    'endRentDate': moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD"),
                     'companyId': transactionData[transactionKey].companyId,
                     'edit': {
 
@@ -331,8 +331,9 @@ const CompanyTransactionList = (props) => {
                         'x-token':xToken
                     }
                 }).then((response) => {
-                console.log(response)
-                if(response.data.status) {
+                 console.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+
+                 if(response.data.status) {
                     setIsCancelEdit(false)
                     getHousesTransactionList()
                 }
@@ -371,8 +372,9 @@ const CompanyTransactionList = (props) => {
                         'x-token':xToken
                     }
                 }).then((response) => {
-                console.log(response)
+                console.log('del', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
                 if(response.data.status) {
+
                     setEnableDel(false)
                     SetIsShowDeleteAlert(false)
                     getHousesTransactionList()
@@ -396,9 +398,9 @@ const CompanyTransactionList = (props) => {
                     'userId' : transactionData[transactionKey].userId,
                     'actualPrice': transactionData[transactionKey].actualPrice,
                     'serviceCharge': transactionData[transactionKey].serviceCharge,
-                    'transactionDate' : new Date(Date.parse(transactionData[transactionKey].transactionDate)).toLocaleDateString(),
-                    'startRentDate': new Date(Date.parse(transactionData[transactionKey].startRentDate)).toLocaleDateString(),
-                    'endRentDate': new Date(Date.parse(transactionData[transactionKey].endRentDate)).toLocaleDateString(),
+                    'transactionDate' : moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"),
+                    'startRentDate': moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),
+                    'endRentDate': moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD"),
                     'companyId': transactionData[transactionKey].companyId,
                     'edit': {
 
@@ -412,7 +414,7 @@ const CompanyTransactionList = (props) => {
                         'x-token':xToken
                     }
                 }).then((response) => {
-                console.log(response)
+                console.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
                 if(response.data.status) {
                     setIsCancelDel(false)
                     SetIsShowDeleteAlert(false)
@@ -444,7 +446,7 @@ const CompanyTransactionList = (props) => {
         setCaseCount(0)
         setTotalPrice(0)
     };
-    console.log(months)
+    // console.log(months)
     const handleMonthChange = (value) => {
         setMonths(dealYearMonth.month[dealYearMonth.month.indexOf(value)]);
         setEnableCheckYearMonth(true)
@@ -454,7 +456,7 @@ const CompanyTransactionList = (props) => {
         setCaseCount(0)
         setTotalPrice(0)
     };
-    console.log(transactions)
+    // console.log(transactions)
 
     function changeCity(city) {
         setSelectArea(null)
