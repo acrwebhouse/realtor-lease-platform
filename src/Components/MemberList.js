@@ -109,7 +109,7 @@ const MemberList = () => {
             }
         )
         .then( (response) => {
-            // console.log(response)
+            // //concole.log(response)
             resolveMemberList(response)
         })
         .catch( (error) => {
@@ -314,7 +314,7 @@ const MemberList = () => {
     }
 
 function queryUser(userId){
-    console.log(userId)
+    //concole.log(userId)
     alert("查看 userId: "+userId)
 }
 
@@ -347,7 +347,7 @@ function removeUser(userId){
 }
 
   function editUser(userId){
-    console.log(userId)
+    //concole.log(userId)
     alert("修改 userId: "+userId)
   }
 

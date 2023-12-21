@@ -37,13 +37,13 @@ const LoginRegister = (props) => {
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
-        console.log(props)
+        //concole.log(props)
         // props.loginSignInIsOpen(false)
         setIsRegisterModalVisible(true);
     };
 
     const showResetPasswordModal = () => {
-        console.log(props)
+        //concole.log(props)
         // props.loginSignInIsOpen(false)
         setIsResetPasswordModalVisible(true);
     }
@@ -71,9 +71,9 @@ const LoginRegister = (props) => {
     }
 
     const onFinish =  (values) => {
-        // console.log('Success:', values);
+        // //concole.log('Success:', values);
         const {remember, ...tempData} = values
-        // console.log(tempData['accountOrMail'])
+        // //concole.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
             if(isAndroid()){
@@ -97,11 +97,11 @@ const LoginRegister = (props) => {
 
     // useEffect(() => {
     //     if (isRunPost) {
-    //         console.log(LoginData)
-    //         console.log(rememberMe)
+    //         //concole.log(LoginData)
+    //         //concole.log(rememberMe)
     //         axios.post(LOGIN_Auth, LoginData)
-    //             .then( (response) => console.log(response))
-    //             .catch( (error) => console.log(error))
+    //             .then( (response) => //concole.log(response))
+    //             .catch( (error) => //concole.log(error))
     //     }
     //
     //     }, [LoginData, rememberMe, isRunPost])
@@ -110,7 +110,7 @@ const LoginRegister = (props) => {
         if (isRunPost) {
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then((response) => {
-                    console.log(response.data)
+                    //concole.log(response.data)
                     if((response.data.status === false || response.data.status === null) && response.data.data.includes('accout , mail or password invalid')) {
                         toast.error(`帳號或密碼錯誤`)
                     }else if(response.data.status === false && response.data.data.includes("user not verify")) {
@@ -151,7 +151,7 @@ const LoginRegister = (props) => {
     }, [LoginData, rememberMe, isRunPost, props])
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //concole.log('Failed:', errorInfo);
     };
 
     const [form] = Form.useForm();

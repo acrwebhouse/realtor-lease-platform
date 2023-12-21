@@ -93,25 +93,25 @@ const Register = (props) => {
     const [enableCount, setEnableCount] = useState(false)
     const latestCount = useRef(count) // 定义一个ref，初始值是10
 
-    // console.log(isBackLogin)
+    // //concole.log(isBackLogin)
     const onRoleChange = list => {
-        console.log(list)
+        //concole.log(list)
         setRoleCheck(list);
         setShowHide(list.length > 0);
         setSaleShowHide(list.includes('4'))
 
         setRoles(list.map(i => Number(i)))
     };
-    console.log(Roles)
-    console.log(failMessage)
+    //concole.log(Roles)
+    //concole.log(failMessage)
     //register API
     useEffect(() => {
-        // console.log(RegisterData)
-        // console.log(CityAreaScope)
+        // //concole.log(RegisterData)
+        // //concole.log(CityAreaScope)
         if (isRunPost) {
             LoginRegisterAxios.post(SighUp_Auth, RegisterData)
                 .then( (response) =>  {
-                    console.log(response)
+                    //concole.log(response)
                     setRegisterCheck(response['data']['status'])
                     response['data']['status'] ? toast.success(`註冊成功`) : toast.error(`註冊失敗`)
                     setFailMessage(response['data']['data'])
@@ -132,12 +132,12 @@ const Register = (props) => {
     }, [isRunPost, RegisterData])
 
     //send VerifyUse Mail api
-    console.log(RegisterData.mail)
+    //concole.log(RegisterData.mail)
     useEffect(() => {
         if (VerifyUserEnable) {
             LoginRegisterAxios.get(SendVerifyUser_Auth+"?mail="+RegisterData.mail)
                 .then( (response) =>  {
-                    console.log(response)
+                    //concole.log(response)
                 })
                 .catch( (error) => {
                     showInternelErrorPageForMobile()
@@ -166,15 +166,15 @@ const Register = (props) => {
 
 
     const showDate = (date, dateString) => {
-        // console.log(date, dateString)
-        console.log(dateString)
+        // //concole.log(date, dateString)
+        //concole.log(dateString)
         setBornDate(dateString)
     }
-    console.log(areaValid, cityValid)
+    //concole.log(areaValid, cityValid)
     const showRegisterData = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         // const tempData = values;
-        // console.log(tempData)
+        // //concole.log(tempData)
 
         setRegisterData(
             {
@@ -235,10 +235,10 @@ const Register = (props) => {
 
     };
 
-    console.log(RegisterData)
+    //concole.log(RegisterData)
 
     const normalizeInput = (value, previousValue) => {
-        console.log(value)
+        //concole.log(value)
         if (!value) return value;
         const currentValue = value.replace(/[^\d]/g, "");
         const cvLength = currentValue.length;
@@ -251,7 +251,7 @@ const Register = (props) => {
         }
     };
 
-    console.log(ownerPhone)
+    //concole.log(ownerPhone)
 
     const errorLicenseFormat = () => {
         toast.error('請輸入正確的營業員證號格式')
@@ -266,7 +266,7 @@ const Register = (props) => {
     }
 
     const onCityInCharge = (City) => {
-        console.log(City);
+        //concole.log(City);
         setCityValid(true)
         setInitCityData(City)
         setSelectArea(null)
@@ -343,7 +343,7 @@ const Register = (props) => {
     }
 
     const onAreaInCharge = (value) => {
-        console.log(value);
+        //concole.log(value);
         setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
         setCityLock(true)
         setAreaValid(true)
@@ -366,10 +366,10 @@ const Register = (props) => {
     }
 
     // const showCityAreaData = (value) => {
-    //     console.log(value);
-    //     // console.log(value.length);
+    //     //concole.log(value);
+    //     // //concole.log(value.length);
     //     // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
-    //     // console.log(initCityArea)
+    //     // //concole.log(initCityArea)
     //     // const temp = []
     //     if(value[0].length === 2) {
     //         for(let x = 0; x< CityAreaOptions.length; x++) {
@@ -402,7 +402,7 @@ const Register = (props) => {
     //         }
     //     }
     // }
-    console.log(CityAreaScope)
+    //concole.log(CityAreaScope)
     const resetCityArea = () => {
         setIsEnableCityArea(false);
         setCityLock(false)
@@ -411,7 +411,7 @@ const Register = (props) => {
         setInitAreaData([]);
         setCityAreaScope([]);
     }
-    console.log(initCityData)
+    //concole.log(initCityData)
     const PhonePrefixSelector = (
         <Form.Item name="PhonePrefix" noStyle>
             <Select style={{
@@ -795,7 +795,7 @@ const Register = (props) => {
                                         placeholder='09xxxxxxxx'
                                         maxLength={10}
                                         onChange={(e) => {
-                                            console.log(e.target.value)
+                                            //concole.log(e.target.value)
                                             // setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))
                                         }
                                         }

@@ -15,9 +15,9 @@ const remove_reserve_Auth = 'reserveHouse/removeReserveHouse'
 const sortOptions = [{ value: '時間近到遠' }, { value: '時間遠到近' }, { value: '接洽狀態' }];
 const reserveStateOptions = [{ value: '未接洽' }, { value: '接洽中' }, { value: '完成看房' }];
 const reserveStateArr = ['未接洽', '接洽中', '完成看房']
-console.log(sortOptions[2].value)
+//concole.log(sortOptions[2].value)
 const ReserveHouseList = (props, ref) => {
-    console.log(props)
+    //concole.log(props)
     const [init, setInit] = useState(true);
     const [user, setUser] = useState({})
     const [reserveHouseData, setReserveHouseData] = useState([])
@@ -55,7 +55,7 @@ const ReserveHouseList = (props, ref) => {
         )
             .then( (response) => {
                 if(response.data.status) {
-                    console.log(response)
+                    //concole.log(response)
                     setUser(response.data.data)
                     setShowPage(true)
                 }
@@ -66,7 +66,7 @@ const ReserveHouseList = (props, ref) => {
             })
     }
 
-    console.log(user.roles)
+    //concole.log(user.roles)
     // sales
     useEffect(() => {
         let reqUrl = `${ReserveHouseList_Auth}?start=${getHousesArg.start}&&state=${getHousesArg.state}&&count=${getHousesArg.count}&&timeSort=${getHousesArg.timeSort}`
@@ -77,7 +77,7 @@ const ReserveHouseList = (props, ref) => {
                 "accept": "application/json",
                 "x-token" : xToken,
             }}).then((response) => {
-            console.log(response)
+            //concole.log(response)
             resolveHousesList(response)
             // setReserveHouseData(response.data.data)
         }).catch( (error) => {
@@ -98,7 +98,7 @@ const ReserveHouseList = (props, ref) => {
                 "accept": "application/json",
                 "x-token" : xToken,
             }}).then((response) => {
-            console.log(response)
+            //concole.log(response)
             resolveHousesListForClient(response)
             // setReserveHouseData(response.data.data)
         }).catch( (error) => {
@@ -106,7 +106,7 @@ const ReserveHouseList = (props, ref) => {
             toast.error(error)
         })
     }, [] )
-    console.log(reserveHouseData)
+    //concole.log(reserveHouseData)
 
     useImperativeHandle(ref, () => ({
         refreshList() {
@@ -154,7 +154,7 @@ const ReserveHouseList = (props, ref) => {
     }
     //sales
     const resolveHousesList = (response) => {
-        console.log(response)
+        //concole.log(response)
         let data = []
         if(response.data && response.data.data){
 
@@ -197,7 +197,7 @@ const ReserveHouseList = (props, ref) => {
     }
     //client
     const resolveHousesListForClient = (response) => {
-        console.log(response)
+        //concole.log(response)
         let data = []
         if(response.data && response.data.data){
 
@@ -236,7 +236,7 @@ const ReserveHouseList = (props, ref) => {
     }
 
     const queryHouse = (houseId) => {
-        console.log(houseId)
+        //concole.log(houseId)
         props.showReserveHouseDetailUI(houseId)
     }
 
@@ -358,7 +358,7 @@ const ReserveHouseList = (props, ref) => {
 
     ];
 
-    console.log(columns)
+    //concole.log(columns)
 
     //delete for sales
     useEffect(() => {
@@ -367,7 +367,7 @@ const ReserveHouseList = (props, ref) => {
             // const clientId = {
             //     "ids" : [id]
             // }
-            // console.log(clientId)
+            // //concole.log(clientId)
             HouseAxios.delete(remove_reserve_Auth, {
                 headers: {
                     "content-type": "application/json",
@@ -376,7 +376,7 @@ const ReserveHouseList = (props, ref) => {
                 },
                 data: {"ids" : [delId]}
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
                     toast.success('刪除成功');
                     // setTimeout(()=>{
@@ -396,7 +396,7 @@ const ReserveHouseList = (props, ref) => {
         }
     }, [enableDel])
 
-    console.log(delId)
+    //concole.log(delId)
 
     //cancel for Client
     useEffect(() => {
@@ -405,7 +405,7 @@ const ReserveHouseList = (props, ref) => {
             // const clientId = {
             //     "ids" : [id]
             // }
-            // console.log(clientId)
+            // //concole.log(clientId)
             HouseAxios.delete(remove_reserve_Auth, {
                 headers: {
                     "content-type": "application/json",
@@ -414,7 +414,7 @@ const ReserveHouseList = (props, ref) => {
                 },
                 data: {"ids" : [delId]}
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
                     toast.success('已取消預約');
                     // setTimeout(()=>{
@@ -462,8 +462,8 @@ const ReserveHouseList = (props, ref) => {
                 setShowStartOrCountOrState(0);
         }
     }
-    console.log(getHousesArg)
-    console.log(showStartOrCountOrState)
+    //concole.log(getHousesArg)
+    //concole.log(showStartOrCountOrState)
 
     const changeState = (sort) => {
 
@@ -482,7 +482,7 @@ const ReserveHouseList = (props, ref) => {
         }
     }
 
-    console.log(reserveHouseData)
+    //concole.log(reserveHouseData)
     return (
         <div style={{width: '100%' }}>
             {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
@@ -561,11 +561,11 @@ const ReserveHouseList = (props, ref) => {
                                    return {
                                        onClick: event => {
                                            // if(!isShowDel){
-                                           //     console.log('event',event)
-                                           console.log('record',record)
+                                           //     //concole.log('event',event)
+                                           //concole.log('record',record)
                                            // changeState(record.key)
-                                           //     console.log('rowIndex',rowIndex)
-                                           //     console.log(reserveHouseListDetail[record.key])
+                                           //     //concole.log('rowIndex',rowIndex)
+                                           //     //concole.log(reserveHouseListDetail[record.key])
                                            //     // openInNewTab(`/reserveHouseDetail/${reserveHouseListDetail[record.key]._id}`)
                                            // } else {
                                            //     setDelId(reserveHouseListDetail[record.key]._id)

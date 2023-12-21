@@ -133,7 +133,7 @@ const CompanyObjectManage = (props) => {
                 })
             }
         }, )
-    console.log(enableTransfer, user, user.employeesData)
+    //concole.log(enableTransfer, user, user.employeesData)
     useEffect(() => {
         if (enableCheckYearMonth) {
             setEnableCheckYearMonth(false)
@@ -145,16 +145,16 @@ const CompanyObjectManage = (props) => {
     const checkYearMonth = () => {
         let year = new Date().getFullYear()
         for (let i=year; i >= 2022; i--) {
-            console.log(i)
+            //concole.log(i)
             if(dealYearMonth.year.indexOf(i) < 0) {
                 dealYearMonth.year.push(i)
             }
         }
     }
-    console.log(todayDate)
-    console.log(defaultDate.firstDate, defaultDate.endDate)
+    //concole.log(todayDate)
+    //concole.log(defaultDate.firstDate, defaultDate.endDate)
     const checkLastWeek = (todayDate) => {
-        console.log(typeof(todayDate))
+        //concole.log(typeof(todayDate))
         switch (todayDate) {
             case 0 :
                 defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-13).toLocaleDateString()
@@ -188,13 +188,13 @@ const CompanyObjectManage = (props) => {
                 break;
 
 
-                console.log(defaultDate.firstDate, defaultDate.endDate)
+                //concole.log(defaultDate.firstDate, defaultDate.endDate)
         }
 
 
     }
     const checkLastTwoWeek = (todayDate) => {
-        console.log(typeof(todayDate))
+        //concole.log(typeof(todayDate))
         switch (todayDate) {
             case 0 :
                 defaultDate.firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-20).toLocaleDateString()
@@ -228,12 +228,12 @@ const CompanyObjectManage = (props) => {
                 break;
 
 
-                console.log(defaultDate.firstDate, defaultDate.endDate)
+                //concole.log(defaultDate.firstDate, defaultDate.endDate)
         }
 
 
     }
-    console.log(props)
+    //concole.log(props)
     function getCompanyEmployeeInfo(){
         let reqUrl = `/employees/getPersonalEmployeesInfo`
         const xToken = cookie.load('x-token')
@@ -244,9 +244,9 @@ const CompanyObjectManage = (props) => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data[0])
+                    //concole.log(response.data.data[0])
                     for (let i = 0; i< response.data.data.length; i++) {
                         if((!response.data.data[i].isResign) && response.data.data[i].state ===2 ) {
                             getCompanyEmployeesList(response.data.data[i].companyId, response.data.data[i].userData[0].name)
@@ -268,7 +268,7 @@ const CompanyObjectManage = (props) => {
     const getCompanyEmployeesList = (companyId, salesName) => {
         let reqUrl = `employees/getEmployeesListByCompanyId`
         reqUrl += `?companyId=`+ companyId
-        console.log(reqUrl)
+        //concole.log(reqUrl)
         const xToken = cookie.load('x-token')
         CompanyAxios.get(
             reqUrl,{
@@ -277,9 +277,9 @@ const CompanyObjectManage = (props) => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data)
+                    //concole.log(response.data.data)
                     // resolveCompanyEmployee(response.data.data)
                     setCompanyEmployees(response.data.data)
                     transferOptions.splice(0, transferOptions.length)
@@ -299,15 +299,15 @@ const CompanyObjectManage = (props) => {
                 toast.error(error)
             })
     }
-    console.log(transferOptions)
-    console.log(companyEmployees)
+    //concole.log(transferOptions)
+    //concole.log(companyEmployees)
 
     const getTeamUploadHouseCounts = (companyId) => {
         const xToken = cookie.load(xTokenName)
         let reqUrl = 'house/getTeamUploadHouseCounts'
         // reqUrl += `?companyId=`+ companyId + `&minPrice1=`+priceMin1+`&minPrice2=`+priceMin2+`&minPrice3=`+priceMin3+`&minPrice4=`+priceMin4+`&minPrice5=`+priceMin5+`&maxPrice1=`+priceMax1+`&maxPrice2=`+priceMax2+`&maxPrice3=`+priceMax3+`&maxPrice4=`+priceMax4+`&maxPrice5=`+priceMax5+`&minCreateTime=`+defaultDate.firstDate+`&maxCreateTime=`+defaultDate.endDate
         reqUrl += `?companyId=`+ companyId + `&minPrice1=`+priceMin1+`&minPrice2=`+priceMin2+`&minPrice3=`+priceMin3+`&maxPrice1=`+priceMax1+`&maxPrice2=`+priceMax2+`&maxPrice3=`+priceMax3+`&minCreateTime=`+defaultDate.firstDate+`&maxCreateTime=`+defaultDate.endDate
-        console.log(reqUrl)
+        //concole.log(reqUrl)
         CompanyAxios.get(
             reqUrl,{
                 headers:{
@@ -315,9 +315,9 @@ const CompanyObjectManage = (props) => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    // console.log(response.data.data)
+                    // //concole.log(response.data.data)
                     // resolveCompanyEmployee(response.data.data)
                     let temp = []
                     let tempTotal = []
@@ -344,7 +344,7 @@ const CompanyObjectManage = (props) => {
                             })
                         }
                     }
-                    console.log(temp)
+                    //concole.log(temp)
                     setTeamHouseCount(temp)
                     setTeamHouseTotal(tempTotal)
                 }else{
@@ -360,7 +360,7 @@ const CompanyObjectManage = (props) => {
     const handleYearChange = (value) => {
         switch (value) {
             case '前一週' :
-                console.log('123')
+                //concole.log('123')
                 setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
                 checkLastWeek(todayDate)
                 setEnableMonth(true)
@@ -377,7 +377,7 @@ const CompanyObjectManage = (props) => {
             default :
                 setYears(dealYearMonth.year[dealYearMonth.year.indexOf(value)]);
                 setEnableCheckYearMonth(true)
-                console.log(value)
+                //concole.log(value)
                 if(value === new Date().getFullYear()) {
                     setMonths(dealYearMonth.month[new Date().getMonth()])
                     defaultDate.firstDate = new Date(value, new Date().getMonth(), 1).toLocaleDateString()

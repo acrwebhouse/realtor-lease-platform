@@ -7,10 +7,10 @@ import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
-// console.log(typeof(window.location.href))
+// //concole.log(typeof(window.location.href))
 const SighUp_Auth = "/auth/verifyUser"
 const User_verify_xToken = window.location.href.split('key=')[1]
-console.log(User_verify_xToken)
+// //concole.log(User_verify_xToken)
 
 const VerifyUser = (props) => {
 
@@ -33,7 +33,7 @@ const VerifyUser = (props) => {
                 }
             })
                 .then( (response) =>  {
-                    console.log(response)
+                    // //concole.log(response)
                     if(response.data.status) {
                         setVerify(true)
                     }else {

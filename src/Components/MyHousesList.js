@@ -18,7 +18,7 @@ const MyHousesList = () => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            console.log('init')
+            //concole.log('init')
             getPersonalInfo(xToken).then( (userResponse) => {
                 if(userResponse.data.data !== undefined){
                      setUser(userResponse.data.data)
@@ -42,9 +42,9 @@ const MyHousesList = () => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data[0])
+                    //concole.log(response.data.data[0])
                     for (let i = 0; i< response.data.data.length; i++) {
                         if((!response.data.data[i].isResign) && response.data.data[i].state ===2 ) {
                             getCompanyEmployeesList(response.data.data[i].companyId, response.data.data[i].userData[0].name)
@@ -65,7 +65,7 @@ const MyHousesList = () => {
     const getCompanyEmployeesList = (companyId, salesName) => {
         let reqUrl = `employees/getEmployeesListByCompanyId`
         reqUrl += `?companyId=`+ companyId
-        console.log(reqUrl)
+        //concole.log(reqUrl)
         const xToken = cookie.load('x-token')
         CompanyAxios.get(
             reqUrl,{
@@ -74,16 +74,16 @@ const MyHousesList = () => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data)
+                    //concole.log(response.data.data)
                     // resolveCompanyEmployee(response.data.data)
                     // setCompanyEmployees(response.data.data)
                     dealOptions.splice(0, dealOptions.length)
                     dealUserId.splice(0, dealUserId.length)
                     for (let i = 0; i< response.data.data.length; i++) {
                         if((!response.data.data[i].isResign) && response.data.data[i].state ===2 ) {
-                            console.log(response.data.data[i].userId)
+                            //concole.log(response.data.data[i].userId)
                             if(salesName !== response.data.data[i].userData[0].name) {
                                 dealOptions.push({value : `${response.data.data[i].userData[0].name}`, label : `${response.data.data[i].userData[0].name}`})
                                 dealUserId.push({userId: `${response.data.data[i].userId}`})
@@ -100,7 +100,7 @@ const MyHousesList = () => {
             })
     }
 
-    console.log(dealOptions, dealUserId)
+    //concole.log(dealOptions, dealUserId)
 
     return ( 
         <div>

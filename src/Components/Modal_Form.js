@@ -76,7 +76,7 @@ const MDForm = () => {
                 <StepsForm
                     onFinish={async (values) => {
                         await waitTime(2000);
-                        console.log(values);
+                        //concole.log(values);
                         toast.success('提交成功');
                     }}
                 >
@@ -266,7 +266,7 @@ const MDForm = () => {
                     }
                     onFinish={async (values) => {
                         await waitTime(2000);
-                        console.log(values);
+                        //concole.log(values);
                         toast.success('提交成功');
                     }}
                     initialValues={{

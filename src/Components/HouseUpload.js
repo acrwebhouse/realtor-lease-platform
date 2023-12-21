@@ -72,7 +72,7 @@ for (let i = 1; i < 100; i++) {
         value: i + '樓'
     });
 }
-console.log(FloorOptions[0])
+//concole.log(FloorOptions[0])
 
 const defaultExtraRequire = [];
 const defaultEquipment = [];
@@ -140,9 +140,9 @@ const FloorCheck = (FloorValue, remark) => {
 const HouseUpload = (prop) => {
     const xToken = cookie.load(xTokenName)
     const [user, setUser] = useState({});
-    console.log(prop.defaultValue)
+    //concole.log(prop.defaultValue)
     const PicPreURL = prop.defaultValue? houseService+'/resource/'+prop.defaultValue._id+'/photo/' : []
-    console.log(PicPreURL)
+    //concole.log(PicPreURL)
     const [form] = Form.useForm();
     const [form_photo] = Form.useForm();
     const [form_firstPhoto] = Form.useForm();
@@ -167,7 +167,7 @@ const HouseUpload = (prop) => {
     const [PictureList, setPictureList] = useState([]);
     const [AnnexEnable, setAnnexEnable] = useState(false);
     const [FormDataEnable, setFormDataEnable] = useState(false);
-    console.log(FormDataEnable)
+    //concole.log(FormDataEnable)
     const [AnnexList, setAnnexList] = useState([]);
     const [PicUploading, setPicUploading] = useState(false);
     const [AnnexUploading, setAnnexUploading] = useState(false);
@@ -185,7 +185,7 @@ const HouseUpload = (prop) => {
     const [firstPicFile, setFirstPicFile] = useState([])
     const [firstPhotoData, setFirstPhotoData] = useState([])
     const [totalLayer, setTotalLayer] = useState(prop.defaultValue?prop.defaultValue.totalFloor:null)
-    console.log(totalLayer)
+    //concole.log(totalLayer)
     const showTrafficModal = () => {
         setTrafficVisible(true);
     };
@@ -213,25 +213,25 @@ const HouseUpload = (prop) => {
         form_edu.resetFields()
     };
     const onTrafficCreate = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         TrafficArr.push(values)
         setTrafficVisible(false);
-        console.log(TrafficArr)
+        //concole.log(TrafficArr)
     };
     const onLifeCreate = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         LifeArr.push((values))
         setLifeVisible(false);
     };
     const onEduCreate = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         EducationArr.push(values)
         setEduVisible(false);
     };
 
 
 
-    console.log(PicData)
+    //concole.log(PicData)
     useEffect(() => {
         if (delTraffic) {
             setDelTraffic(false)
@@ -261,7 +261,7 @@ const HouseUpload = (prop) => {
         })
     }, [delTraffic, delLife, delEdu, delPic, delAnnex])
 
-    console.log(TrafficArr)
+    //concole.log(TrafficArr)
     useEffect(()=>{
         const temp = [];
         const equipTemp = [];
@@ -292,29 +292,29 @@ const HouseUpload = (prop) => {
             // setPictureList(prop.defaultValue.photo)
             if(prop.defaultValue.saleInfo.pet){
                 temp.push('pet')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.manager){
                 temp.push('manager')
                 setShowHideManageFee(true)
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.garbage){
                 temp.push('garbage')
                 setShowHideGarbageFee(true)
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.smoke){
                 temp.push('smoke')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.cook){
                 temp.push('cook')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.parking){
                 temp.push('parking')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.devices) {
                 for (let i = 0; i < prop.defaultValue.saleInfo.devices.length; i++) {
@@ -325,14 +325,14 @@ const HouseUpload = (prop) => {
             }
         }
 
-        console.log(temp)
+        //concole.log(temp)
         setExtraRequire(temp)
         setEquipment(equipTemp)
     },[prop.defaultValue])
 
     useEffect(() => {
-        // console.log(RegisterData)
-        // console.log(CityAreaScope)
+        // //concole.log(RegisterData)
+        // //concole.log(CityAreaScope)
 
         if (isRunPost) {
             prop.defaultValue ?
@@ -342,9 +342,9 @@ const HouseUpload = (prop) => {
                         "accept": "application/json",
                         "x-token" : xToken,
                     }})
-                    // .then( (response) => console.log(response.data.status))
+                    // .then( (response) => //concole.log(response.data.status))
                     .then((response) => {
-                        console.log(response)
+                        //concole.log(response)
                         if (response.data.status === true) {
                             toast.success(`房屋資料更新成功`);
                             setTimeout(() => {
@@ -371,7 +371,7 @@ const HouseUpload = (prop) => {
                     }
                 })
                     .then((response) => {
-                        console.log(response.data)
+                        //concole.log(response.data)
                         if(response.data.status) {
                             toast.success(`房屋資料上傳成功`);
                             form_photo.resetFields()
@@ -403,7 +403,7 @@ const HouseUpload = (prop) => {
     }, [isRunPost, HouseData, prop.defaultValue, xToken])
 
     const UploadHouseData = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         setHouseData(
             {
                 'name' : values['name'],
@@ -488,19 +488,19 @@ const HouseUpload = (prop) => {
             }
         }
 
-        console.log(TrafficArr);
-        // console.log(photoData)
+        //concole.log(TrafficArr);
+        // //concole.log(photoData)
 
 
         // window.location.replace(window.location.origin+'/HouseDetailOwner/'+prop.defaultValue._id+'/'+ prop.defaultValue.owner)
     };
-    console.log(HouseData);
+    //concole.log(HouseData);
 
     // const updateFirstPic = () => {
     //     const houseDataTemp = prop.defaultValue
     //     delete houseDataTemp['updateTime']
     //     // houseDataTemp['photo'][0] = PicData[0]
-    //     console.log(houseDataTemp)
+    //     //concole.log(houseDataTemp)
     //
     //     HouseAxios.put(Edit_House_Auth, Object.assign(houseDataTemp, {'id':prop.defaultValue._id, 'photo':PicData}), {
     //         headers: {
@@ -508,9 +508,9 @@ const HouseUpload = (prop) => {
     //             // "accept": "application/json",
     //             "x-token" : xToken,
     //         }})
-    //         // .then( (response) => console.log(response.data.status))
+    //         // .then( (response) => //concole.log(response.data.status))
     //         .then((response) => {
-    //             console.log(response)
+    //             //concole.log(response)
     //             if (response.data.status === true) {
     //                 toast.success(`首圖更新成功`);
     //                 setTimeout(() => {
@@ -533,7 +533,7 @@ const HouseUpload = (prop) => {
     /* phone Format set up */
 
     const normalizeInput = (value, previousValue) => {
-        console.log(value)
+        //concole.log(value)
         if (!value) return value;
         const currentValue = value.replace(/[^\d]/g, "");
         const cvLength = currentValue.length;
@@ -547,7 +547,7 @@ const HouseUpload = (prop) => {
     };
 
 
-    console.log(hostPhone)
+    //concole.log(hostPhone)
 
 
     const errorPhoneFormat = () => {
@@ -634,19 +634,19 @@ const HouseUpload = (prop) => {
     }
 
     const onExtraRequireChange = list => {
-        // console.log(`selected ${list}` )
-        console.log(list)
+        // //concole.log(`selected ${list}` )
+        //concole.log(list)
         setExtraRequire(list);
         setShowHideManageFee(list.includes('manager'))
         setShowHideGarbageFee(list.includes('garbage'))
         //
         // setRoles(list.map(i => Number(i)))
     };
-    console.log(equipment)
-    console.log(equipArr)
+    //concole.log(equipment)
+    //concole.log(equipArr)
     const onEquipmentChange = list => {
-        // console.log(`selected ${list}` )
-        console.log(list)
+        // //concole.log(`selected ${list}` )
+        //concole.log(list)
         setEquipment(list);
         equipArr[0] = list.includes('airConditioner');
         equipArr[1] = list.includes('refrigerator');
@@ -662,13 +662,13 @@ const HouseUpload = (prop) => {
         equipArr[11] = list.includes('deskAndChair');
         equipArr[12] = list.includes('elevator');
     };
-    // console.log(PictureList)
+    // //concole.log(PictureList)
 
     const PicRemove = (file) => {
         const index = PictureList.indexOf(file);
         const newFileList = PictureList.slice();
         newFileList.splice(index, 1);
-        console.log(newFileList)
+        //concole.log(newFileList)
         setPictureList(newFileList)
         PicTemp.splice(index, 1)
     }
@@ -676,7 +676,7 @@ const HouseUpload = (prop) => {
         const index = firstPicFile.indexOf(file);
         const newFileList = firstPicFile.slice();
         newFileList.splice(index, 1);
-        console.log(newFileList)
+        //concole.log(newFileList)
         setFirstPicFile(newFileList)
         firstPicTemp.splice(index, 1)
     }
@@ -685,7 +685,7 @@ const HouseUpload = (prop) => {
         const index = AnnexList.indexOf(file);
         const newFileList = AnnexList.slice();
         newFileList.splice(index, 1);
-        console.log(newFileList)
+        //concole.log(newFileList)
         setAnnexList(newFileList)
         AnnexTemp.splice(index, 1);
     }
@@ -696,7 +696,7 @@ const HouseUpload = (prop) => {
             formData.append('photo', file);
         });
         setPicUploading(true)
-        console.log(formData.values())
+        //concole.log(formData.values())
 
         PicAnnexAxios.post(House_Pic_Auth, formData, {
             headers: {
@@ -704,10 +704,10 @@ const HouseUpload = (prop) => {
                 "x-token" : xToken
             }})
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 setPhotoData(response['data']['data'])
                 setAnnexEnable(true)
-                // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
+                // //concole.log(response['data']['data'].map(temp => temp.split('/')[1]))
                 // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
                 PicData = [...PicData, ...response['data']['data']]
             })
@@ -724,7 +724,7 @@ const HouseUpload = (prop) => {
                 setPicUploading(false)
             });
     };
-    // console.log(photoData, annexData)
+    // //concole.log(photoData, annexData)
 
     const handleFirstPicUpload = () => {
 
@@ -733,7 +733,7 @@ const HouseUpload = (prop) => {
             formData.append('photo', file);
         });
         setPicUploading(true)
-        console.log(formData.values())
+        //concole.log(formData.values())
 
         PicAnnexAxios.post(House_Pic_Auth, formData, {
             headers: {
@@ -741,7 +741,7 @@ const HouseUpload = (prop) => {
                 "x-token" : xToken
             }})
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 setFirstPhotoData(response['data']['data'])
                 PicData[0] = response['data']['data'][0]
             })
@@ -758,7 +758,7 @@ const HouseUpload = (prop) => {
                 setPicUploading(false)
             });
     };
-    console.log(PicData, firstPhotoData)
+    //concole.log(PicData, firstPhotoData)
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -778,14 +778,14 @@ const HouseUpload = (prop) => {
             formData.append('annex', file);
         });
         setAnnexUploading(true)
-        console.log(AnnexList)
+        //concole.log(AnnexList)
         PicAnnexAxios.post(House_Annex_Auth, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 "x-token" : xToken
             }})
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 setAnnexData(response['data']['data'])
                 setFormDataEnable(true);
                 // AnnexData = [...AnnexData, ...response['data']['data'].map(temp => temp.split('/')[1])]
@@ -824,7 +824,7 @@ const HouseUpload = (prop) => {
         </div>
     );
 
-    // console.log(typeof(prop.defaultValue.floor))
+    // //concole.log(typeof(prop.defaultValue.floor))
 
     const clearForm = () => {
         PicTemp.splice(0, PicTemp.length)
@@ -841,7 +841,7 @@ const HouseUpload = (prop) => {
         setHostPhone('')
     }
 
-    console.log(firstPicTemp.length)
+    //concole.log(firstPicTemp.length)
     return (
 
         <div style={horizontalScrollDisabled}>
@@ -880,11 +880,11 @@ const HouseUpload = (prop) => {
                                             actions={[
                                                 index !== 0 ?
                                                     <Button  onClick={() => {
-                                                        console.log(Pic, index, PicData)
+                                                        //concole.log(Pic, index, PicData)
                                                         let temp = PicData[0]
                                                         PicData[0] = PicData[index]
                                                         PicData[index] = temp
-                                                        console.log(PicData)
+                                                        //concole.log(PicData)
                                                         toast.success('已設定新的首圖')
                                                         // setEnableFirstPicChange(true)
                                                     }
@@ -929,12 +929,12 @@ const HouseUpload = (prop) => {
                                         onPreview={handlePreview}
                                         accept={'.jpg, .png, .heic, .bmp, .jpeg'}
                                         beforeUpload={file => {
-                                            console.log(file)
+                                            //concole.log(file)
 
                                             if(PicTemp.length < 10-showPic.length) {
                                                 const isImage = photoType.includes(file.type);
                                                 PicTemp.push(file)
-                                                console.log(PicTemp)
+                                                //concole.log(PicTemp)
                                                 if (!isImage) {
                                                     toast.error('不是圖片檔')
                                                 }else {
@@ -991,16 +991,16 @@ const HouseUpload = (prop) => {
                                         onPreview={handlePreview}
                                         onRemove={FirstPicRemove}
                                         beforeUpload={file => {
-                                            console.log(file)
+                                            //concole.log(file)
                                             firstPicTemp.splice(0, firstPicTemp.length)
                                             const isImage = photoType.includes(file.type);
                                             firstPicTemp.push(file)
-                                            console.log(firstPicTemp)
+                                            //concole.log(firstPicTemp)
                                             if (!isImage) {
                                                 toast.error('不是圖片檔')
                                             }else {
                                                 setFirstPicFile(firstPicTemp)
-                                                console.log(firstPicTemp)
+                                                //concole.log(firstPicTemp)
                                                 return false;
                                             }
 
@@ -1105,13 +1105,13 @@ const HouseUpload = (prop) => {
                                         onRemove={AnnexRemove}
                                         accept={'.pdf, .jpg, .png, .bmp, .jpeg'}
                                         beforeUpload={file => {
-                                            console.log(file)
+                                            //concole.log(file)
                                             if(AnnexTemp.length > 0) {
                                                 AnnexTemp.splice(0, AnnexTemp.length)
                                             }
                                             const isFile = annexType.includes(file.type);
                                             AnnexTemp.push(file)
-                                            console.log(AnnexTemp)
+                                            //concole.log(AnnexTemp)
                                             if (!isFile) {
                                                 toast.error(`${file.name} 不是 pdf 檔`);
                                             }else {
@@ -1120,7 +1120,7 @@ const HouseUpload = (prop) => {
                                             }
 
                                             return isFile || Upload.LIST_IGNORE;
-                                            // console.log(file)
+                                            // //concole.log(file)
                                             // setAnnexList(
                                             //     [...AnnexList, file]
                                             // );
@@ -2270,7 +2270,7 @@ const HouseUpload = (prop) => {
                                                        onEduCreate(values);
                                                    })
                                                    .catch((info) => {
-                                                       console.log('Validate Failed:', info);
+                                                       //concole.log('Validate Failed:', info);
                                                    });
                                            }
                                            }

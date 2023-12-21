@@ -50,7 +50,7 @@ const CompanyInfo = (props) => {
                 reqUrl,{
                 })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
                     setCompanyData(response.data.data)
                 }else{
@@ -63,7 +63,7 @@ const CompanyInfo = (props) => {
             })
     }
 
-    console.log(companyData)
+    //concole.log(companyData)
     return (
         <div>
             {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}

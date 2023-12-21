@@ -18,7 +18,7 @@ const userData_Auth = '/user/getPersonalInfo'
 const editUser_Auth = 'user/editUser'
 const resetPassword_Auth = '/auth/resetPassword'
 const User_verify_xToken = window.location.href.split('key=')[1]
-// console.log(User_verify_xToken)
+// //concole.log(User_verify_xToken)
 
 const ResetPassword = (props) => {
 
@@ -40,7 +40,7 @@ const ResetPassword = (props) => {
     //         }
     //     )
     //         .then( (response) => {
-    //             console.log(response)
+    //             //concole.log(response)
     //             if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
     //                 response.data.data.bornDate = ''
     //             }
@@ -53,7 +53,7 @@ const ResetPassword = (props) => {
     // }, [])
     //
     // useEffect(() => {
-    //     console.log(enableResetPassword)
+    //     //concole.log(enableResetPassword)
     //     if (enableResetPassword) {
     //         UserAxios.put(editUser_Auth, UserData,{
     //                 headers:{
@@ -64,9 +64,9 @@ const ResetPassword = (props) => {
     //             }
     //         )
     //             .then( (response) => {
-    //                 console.log(response)
+    //                 //concole.log(response)
     //                 if(response.data.status === true){
-    //                     console.log(response.data)
+    //                     //concole.log(response.data)
     //                     setVerify(true)
     //                     cookie.save('x-token',response.data.data.token,{path:'/'})
     //                 }else{
@@ -86,15 +86,15 @@ const ResetPassword = (props) => {
     //
     // }, [enableResetPassword, UserData])
 
-    // console.log(typeof(UserData))
-    // console.log(UserData)
+    // //concole.log(typeof(UserData))
+    // //concole.log(UserData)
 
     const verifyCaptcha = (value) => {
-        console.log(value)
+        //concole.log(value)
     }
 
     const setResetPassword = (values) => {
-        console.log(values)
+        //concole.log(values)
         if(values['CaptchaVerify']) {
             resetPassword.newPassword = values['password']
             // setUserData({
@@ -121,7 +121,7 @@ const ResetPassword = (props) => {
     }
 
     useEffect(() => {
-        console.log(enableResetPassword)
+        //concole.log(enableResetPassword)
         if (enableResetPassword) {
             LoginRegisterAxios.put(resetPassword_Auth, { "newPassword": resetPassword.newPassword},{
                     headers:{
@@ -132,9 +132,9 @@ const ResetPassword = (props) => {
                 }
             )
                 .then( (response) => {
-                    console.log(response)
+                    //concole.log(response)
                     if(response.data.status === true){
-                        console.log(response.data)
+                        //concole.log(response.data)
                         setVerify(true)
                         cookie.save('x-token',response.data.data.token,{path:'/'})
                     }else{

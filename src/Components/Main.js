@@ -57,6 +57,7 @@ import {refreshXToken,xRefreshTokenName,removeToken,getPersonalInfo} from './Aut
 import {eventBus,eventName} from './EventBus';
 
 import {errorCode} from './Error';
+import {LogoIcon} from "./Equipment";
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -302,7 +303,7 @@ const Main = () => {
                 reqUrl
             )
             .then( (response) => {
-                console.log('collectAccessTime success')
+                //concole.log('collectAccessTime success')
             })
             .catch( (error) => {
                 showInternelErrorPageForMobile()
@@ -398,7 +399,7 @@ const Main = () => {
                     
                   })
                   .catch(error => {
-                    console.log(error)
+                    //concole.log(error)
                   });
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
@@ -717,6 +718,10 @@ const Main = () => {
           inlineCollapsed={collapsed}
           style={{width : '0%',height : '10px' }}
         >
+            <Menu.Item disabled style={{'height':'50px', fontSize:'20px', }} icon={<LogoIcon />} >
+
+                <div style={{color:'white', display:'flex', alignItems:'center',}}>租重點</div>
+            </Menu.Item>
           <Menu.Item key='1' id="housesListMenu" style={{'height':'50px'}} icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>

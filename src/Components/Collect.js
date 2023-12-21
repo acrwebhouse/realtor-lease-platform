@@ -29,7 +29,7 @@ const Collect = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            console.log('init')
+            // //concole.log('init')
             getData()
         }
     }, )

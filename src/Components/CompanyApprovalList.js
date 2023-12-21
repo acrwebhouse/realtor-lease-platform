@@ -42,7 +42,7 @@ const CompanyApprovalList = (props) => {
             setInit(false)
         }
     }, )
-    console.log(props)
+    //concole.log(props)
     const getCompanyHouseList = () => {
         const xToken = cookie.load('x-token')
         let reqUrl = `${getTransactionListAuth}?companyId=${props.currentEmployeeData.companyId}`
@@ -56,7 +56,7 @@ const CompanyApprovalList = (props) => {
             .then( (response) => {
                 // dealData.id = response.data.data[0].owner
                 resolveCompanyHousesList(response)
-                // console.log(response)
+                // //concole.log(response)
             })
             .catch( (error) => {
                 showInternelErrorPageForMobile()
@@ -72,7 +72,7 @@ const CompanyApprovalList = (props) => {
     }
 
     function resolveCompanyHousesList(response){
-        console.log(response)
+        //concole.log(response)
         const dataCreate = []
         const dataEdit = []
         const dataDel = []
@@ -82,30 +82,30 @@ const CompanyApprovalList = (props) => {
             const tempEdit = []
             const tempDel = []
             const items = response.data.data
-            console.log(items)
+            //concole.log(items)
             for(let i = 0 ;i<items.length; i++){
                 if(items[i] && items[i].state === 1) {
-                    console.log(items[i], (items[i].createTime))
+                    //concole.log(items[i], (items[i].createTime))
                     tempCreate.push(items[i])
                 }
             }
             for(let i = 0 ;i<items.length; i++){
                 if(items[i] && items[i].state === 2) {
-                    console.log(items[i], (items[i].createTime))
+                    //concole.log(items[i], (items[i].createTime))
                     tempEdit.push(items[i])
                 }
             }
             for(let i = 0 ;i<items.length; i++){
                 if(items[i] && items[i].state === 3) {
-                    console.log(items[i], (items[i].createTime))
+                    //concole.log(items[i], (items[i].createTime))
                     tempDel.push(items[i])
                 }
             }
-            console.log(tempCreate, tempEdit, tempDel)
+            //concole.log(tempCreate, tempEdit, tempDel)
             let transactionCreateApply = removeDuplicates(tempCreate, 'houseId')
             let transactionEditApply = removeDuplicates(tempEdit, 'houseId')
             let transactionDelApply = removeDuplicates(tempDel, 'houseId')
-            console.log(transactionEditApply)
+            //concole.log(transactionEditApply)
             for (let i = 0; i< transactionCreateApply.length; i++) {
                 if(checkTransactionData(transactionCreateApply[i]) === true){
                     const item = {
@@ -133,7 +133,7 @@ const CompanyApprovalList = (props) => {
                         ],
                     }
                     item.content.push(transactionCreateApply[i])
-                    console.log(item)
+                    //concole.log(item)
                     dataCreate.push(item)
                 }
                 
@@ -191,7 +191,7 @@ const CompanyApprovalList = (props) => {
                         ],
                     }
                     item1.content.push(transactionEditApply[i])
-                    console.log(item1)
+                    //concole.log(item1)
                     dataEdit.push(item1)
                 }
             }
@@ -223,15 +223,15 @@ const CompanyApprovalList = (props) => {
                         ],
                     }
                     item2.content.push(transactionDelApply[i])
-                    console.log(item2)
+                    //concole.log(item2)
                     dataDel.push(item2)
                 }
             }
             setTransactionCreateApplyList(dataCreate)
             setTransactionEditApplyList(dataEdit)
             setTransactionDelApplyList(dataDel)
-            // console.log(temp, temp.sort())
-            // console.log(removeDuplicates(temp, 'houseId'))
+            // //concole.log(temp, temp.sort())
+            // //concole.log(removeDuplicates(temp, 'houseId'))
         }
     }
 
@@ -325,7 +325,7 @@ const CompanyApprovalList = (props) => {
         }else{
             body.state = 5
         }
-        console.log(isPass, body)
+        //concole.log(isPass, body)
         const xToken = cookie.load('x-token')
         let reqUrl = `${editTransactionAuth}`
         CompanyAxios.put(reqUrl, body, {
@@ -333,7 +333,7 @@ const CompanyApprovalList = (props) => {
                 'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 getCompanyHouseList()
             }else{
@@ -378,7 +378,7 @@ const CompanyApprovalList = (props) => {
             body.edit = {}
             body.state = 6
         }
-        console.log(isPass, body)
+        //concole.log(isPass, body)
         const xToken = cookie.load('x-token')
         let reqUrl = `${editTransactionAuth}`
         CompanyAxios.put(reqUrl, body, {
@@ -386,7 +386,7 @@ const CompanyApprovalList = (props) => {
                 'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 getCompanyHouseList()
             }else{
@@ -426,7 +426,7 @@ const CompanyApprovalList = (props) => {
                         },
                         data: {"ids" : [body.id]}
                     }).then((response) => {
-                        console.log(response)
+                        //concole.log(response)
                         if(response.data.status === true){
                             toast.success('刪除成功');
                             // setTimeout(()=>{
@@ -444,7 +444,7 @@ const CompanyApprovalList = (props) => {
 
         }else{
             body.state = 7
-            console.log(isPass, body)
+            //concole.log(isPass, body)
             const xToken = cookie.load('x-token')
             let reqUrl = `${editTransactionAuth}`
             CompanyAxios.put(reqUrl, body, {
@@ -452,7 +452,7 @@ const CompanyApprovalList = (props) => {
                     'x-token':xToken
                 }
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
                     getCompanyHouseList()
                 }else{
@@ -489,7 +489,7 @@ const CompanyApprovalList = (props) => {
                 'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 getCompanyApplyList()
             }else{

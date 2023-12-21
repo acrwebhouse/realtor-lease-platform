@@ -17,7 +17,7 @@ const CompanyHouseList = (props) => {
         if (init) {
             setInit(false)
             getCurrentEmployee((result,data)=>{
-                console.log(data)
+                //concole.log(data)
                 if(result === true){
                     if(data.state === 2)
                     setIsShow(true)

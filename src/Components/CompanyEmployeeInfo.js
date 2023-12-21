@@ -38,7 +38,7 @@ const CompanyEmployeeInfo = (props) => {
             getCompanyEmployeeInfo()
         }
     }, )
-    console.log(props)
+    //concole.log(props)
     function getCompanyEmployeeInfo(){
         let reqUrl = `/employees/getPersonalEmployeesInfo`
         const xToken = cookie.load('x-token')
@@ -49,9 +49,9 @@ const CompanyEmployeeInfo = (props) => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data)
+                    //concole.log(response.data.data)
                     resolveCompanyEmployee(response.data.data)
                 }else{
                     toast.error('員工資訊取得失敗')
@@ -102,7 +102,7 @@ const CompanyEmployeeInfo = (props) => {
         }
     }
 
-    console.log(employeeData)
+    //concole.log(employeeData)
 
     return (
         <div>

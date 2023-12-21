@@ -27,7 +27,7 @@ const HouseDetailOwnerEdit = (prop) => {
         )
         .then( (response) => {
             if(response.data.data){
-                console.log(response.data.data)
+                //concole.log(response.data.data)
                 setHouse(response.data.data)
                 setIsShow(true);
             }else{

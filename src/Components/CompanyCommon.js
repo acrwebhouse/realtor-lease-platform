@@ -22,13 +22,13 @@ const getCurrentEmployee = function(callback){
                     
                 }else{
                     // message.error('員工資訊取得失敗', 3)
-                    console.log('員工資訊取得失敗')
+                    //concole.log('員工資訊取得失敗')
                     callback(false)
                 }
             })
             .catch( (error) => {
                 showInternelErrorPageForMobile()
-                console.log(error)
+                //concole.log(error)
             })
 }
 export {getCurrentEmployee}

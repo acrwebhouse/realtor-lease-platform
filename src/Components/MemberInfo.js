@@ -374,7 +374,7 @@ function sendEdit(){
     )
     .then( (response) => {
         if(response.data.status === true){
-            console.log(response.data)
+            //concole.log(response.data)
             setUser(editUser)
             setData(editUser)
             seIsEdit(false)
@@ -437,7 +437,7 @@ function editAddress(e){
 function editPhone(e){
     const editUserValue = editUser
     let pattern=/[a-zA-Z+_()*&^%$#@!]/
-    console.log(e.target.value.length, !pattern.test(e.target.value))
+    //concole.log(e.target.value.length, !pattern.test(e.target.value))
     if(e.target.value.length > 0) {
         setIsPhoneBlank(false)
         setBorderColorIsGrey(true)
@@ -498,7 +498,7 @@ function changeDate(e, dateString){
             }
         })
             .then( (response) =>  {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status) {
                     toast.success('請至郵件信箱進行重置密碼的設定')
                 }else {

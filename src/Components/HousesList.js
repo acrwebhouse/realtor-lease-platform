@@ -21,6 +21,7 @@ import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {openInNewTab,showInternelErrorPageForMobile} from './CommonUtil'
+import {LogoIcon} from "./Equipment";
 
 
 const { Option } = Select;
@@ -100,19 +101,19 @@ const HousesList = (props) => {
         userId: ''
     })
     const [transferOwnerId, setTransferOwnerId] = useState([])
-    console.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles, props.dealOptions, props.dealUserId)
-    // console.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
+    //concole.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles, props.dealOptions, props.dealUserId)
+    // //concole.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
     useEffect(() => {
         if (init) {
             setInit(false)
             getHousesList()
         }
     }, )
-    // console.log(props.companyManager)
+    // //concole.log(props.companyManager)
     //transaction function
     useEffect(() => {
         const xToken = cookie.load('x-token')
-        console.log(xToken)
+        //concole.log(xToken)
         let tempData = dealData
         delete tempData['dealSales']
         if (isPostDeal) {
@@ -123,7 +124,7 @@ const HousesList = (props) => {
                     'x-token':xToken
                 }
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status) {
                     setIsPostDeal(false)
                     form_deal.resetFields()
@@ -136,13 +137,13 @@ const HousesList = (props) => {
             })
         }
     }, [isPostDeal])
-    // console.log(props)
+    // //concole.log(props)
     //cancel transaction function
     useEffect(() => {
         const xToken = cookie.load('x-token')
-        console.log(xToken)
+        //concole.log(xToken)
         if (isCancelDeal) {
-            // console.log(Object.assign(houseData[houseKey].transactionData[0],
+            // //concole.log(Object.assign(houseData[houseKey].transactionData[0],
             //     {
             //         'id': houseData[houseKey].transactionData[0]._id,
             //         'state': 0,
@@ -150,7 +151,7 @@ const HousesList = (props) => {
             //         'startRentDate': new Date(Date.parse(houseData[houseKey].transactionData[0].startRentDate)).toLocaleDateString(),
             //         'endRentDate': new Date(Date.parse(houseData[houseKey].transactionData[0].endRentDate)).toLocaleDateString(),
             //     }))
-            // console.log(new Date(Date.parse(houseData[houseKey].transactionData[0].startRentDate)).toLocaleDateString(), new Date(Date.parse(houseData[houseKey].transactionData[0].transactionDate)).toLocaleDateString(),new Date(Date.parse(houseData[houseKey].transactionData[0].endRentDate)).toLocaleDateString())
+            // //concole.log(new Date(Date.parse(houseData[houseKey].transactionData[0].startRentDate)).toLocaleDateString(), new Date(Date.parse(houseData[houseKey].transactionData[0].transactionDate)).toLocaleDateString(),new Date(Date.parse(houseData[houseKey].transactionData[0].endRentDate)).toLocaleDateString())
             CompanyAxios.put(cancelTransaction_Auth,
                     {
                         'id': houseData[houseKey].transactionData[0]._id,
@@ -174,7 +175,7 @@ const HousesList = (props) => {
                     'x-token':xToken
                 }
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status) {
                     setIsPostDeal(false)
                     form_deal.resetFields()
@@ -192,7 +193,7 @@ const HousesList = (props) => {
     //transfer function
     useEffect(() => {
         const xToken = cookie.load('x-token')
-        console.log(xToken)
+        //concole.log(xToken)
         if (isPutTransfer) {
             HouseAxios.put(transferHouse_Auth, Object.assign(houseData[houseKey], {'id': houseData[houseKey]._id ,'owner': transferOwnerId, 'annex':houseData[houseKey].annex ? houseData[houseKey].annex :[]}), {
                 headers: {
@@ -201,7 +202,7 @@ const HousesList = (props) => {
                     'x-token':xToken
                 }
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status===true) {
                     setIsPutTransfer(false)
                     form_transfer.resetFields()
@@ -341,7 +342,7 @@ const HousesList = (props) => {
                     i = props.roles.length
                 }
             }
-            console.log(sendOwner)
+            //concole.log(sendOwner)
             if(sendOwner && props.companyManager!==0){
                 reqUrl = `${reqUrl}&&owner=${props.owner}`
             }
@@ -364,7 +365,7 @@ const HousesList = (props) => {
     }
 
     function resolveHousesList(response){
-        console.log(response)
+        //concole.log(response)
         data = []
         if(response.data && response.data.data){
 
@@ -484,7 +485,7 @@ const HousesList = (props) => {
                     item.content.push(false)
                 }
 
-                console.log(item.content[14])
+                //concole.log(item.content[14])
                 data.push(item)
             }
             setHouses(data)
@@ -976,7 +977,7 @@ const HousesList = (props) => {
     }
 
     function queryHouse(houseId){
-        console.log(houseId)
+        //concole.log(houseId)
         const xToken = cookie.load('x-token')
         getPersonalInfo(xToken).then( (response) => {
             if(response.data.data !== undefined){
@@ -1028,7 +1029,7 @@ const HousesList = (props) => {
     }
 
     const handleDealData = (value) => {
-        // console.log(value)
+        // //concole.log(value)
         dealData.actualPrice =  parseInt(value.dealPrice)
         dealData.serviceCharge = parseInt(value.servePrice)
         dealData.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
@@ -1037,32 +1038,32 @@ const HousesList = (props) => {
         if (props.rank === 0) {
             const index = props.dealOptions.findIndex(n =>{return n.value === value.dealSales})
             dealData.userId = props.dealUserId[index].userId
-            console.log(index, props.dealUserId[index].userId)
+            //concole.log(index, props.dealUserId[index].userId)
         }
-        console.log(dealData, )
+        //concole.log(dealData, )
 
         setIsPostDeal(true)
     }
     const handleTransferData = (value) => {
-        console.log(value, value.transferName, props.companyEmployees)
+        //concole.log(value, value.transferName, props.companyEmployees)
         for(let i = 0; i< props.companyEmployees.length; i++) {
             if(props.companyEmployees[i].userData[0].name === value.transferName) {
-                console.log("Hello World", props.companyEmployees[i].userId)
+                //concole.log("Hello World", props.companyEmployees[i].userId)
                 setTransferOwnerId(props.companyEmployees[i].userId)
             }
         }
         setIsPutTransfer(true)
     }
-    console.log(transferOwnerId)
+    //concole.log(transferOwnerId)
     const showEmployeeInfo = (value) => {
-        console.log(value)
+        //concole.log(value)
         setEnableShowEmployeeInfo(true)
         setEmployeeName(value)
         // setIsPostDeal(true)
     }
 
     const showDealSales = (value) => {
-        console.log(value)
+        //concole.log(value)
     }
 
     let data = [
@@ -1115,8 +1116,9 @@ const HousesList = (props) => {
                     <Col xs={24} sm={8} md={8} lg={8} xl={6}></Col>
                 </Row>:[]
                 }
+
                 <Row>
-                    <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                    <Col xs={0} sm={8} md={8} lg={8} xl={6}></Col>
                     <Col xs={24} sm={6} md={6} lg={5} xl={4}>
                         <Button type="primary" onClick={getHousesList} style={{
                             width: '100%',
@@ -1287,13 +1289,13 @@ const HousesList = (props) => {
                             onRow={(record, rowIndex) => {
                                 return {
                                     onClick: event => {
-                                        console.log('record',record)
+                                        //concole.log('record',record)
                                         setHouseKey(record.key)
                                         if(isShowEdit === 'none' && props.enableTransfer !== true){
-                                            console.log('event',event)
-                                            console.log('record',record)
-                                            console.log('rowIndex',rowIndex)
-                                            console.log(housesListDetail[record.key])
+                                            //concole.log('event',event)
+                                            //concole.log('record',record)
+                                            //concole.log('rowIndex',rowIndex)
+                                            //concole.log(housesListDetail[record.key])
                                             if(props.isCompanyList){
                                                 openInNewTab(`/CompanyHouseDetail/${housesListDetail[record.key]._id}`)
                                             }else{

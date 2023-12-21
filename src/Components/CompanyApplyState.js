@@ -33,14 +33,14 @@ const CompanyApplyState = (props) => {
     const [init, setInit] = useState(true);
     const [employeeApplyData, setEmployeeApplyData] = useState('');
     const cancelApplyEmployeesUrl = '/employees/cancelApplyEmployees'
-    // console.log(JSON.stringify(props))
+    // //concole.log(JSON.stringify(props))
     useEffect(() => {
         if (init) {
             setInit(false)
             getCompanyApplyData()
         }
     }, )
-    console.log(employeeApplyData)
+    //concole.log(employeeApplyData)
     function getCompanyApplyData() {
         let reqUrl = `/user/getPersonalInfo`
         const xToken = cookie.load('x-token')
@@ -51,9 +51,9 @@ const CompanyApplyState = (props) => {
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data)
+                    //concole.log(response.data.data)
                     resolveCompanyApply(response.data.data)
                 }else{
                     toast.error('員工資訊取得失敗')
@@ -67,11 +67,11 @@ const CompanyApplyState = (props) => {
 
     function resolveCompanyApply(list){
         for(let i = 0 ;i<list.employeesData.length; i++){
-            // console.log(list)
+            // //concole.log(list)
             if(list.companyId === list.employeesData[i].companyId){
-                console.log(list.employeesData[i].companyId)
+                //concole.log(list.employeesData[i].companyId)
                 const item = list.employeesData[i]
-                console.log(item)
+                //concole.log(item)
                 const data = {
                     name : item.companyData[0].name,
                     owner : item.companyData[0].owner,
@@ -100,7 +100,7 @@ const CompanyApplyState = (props) => {
                 'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 props.showCompanyListUI()
             }else{

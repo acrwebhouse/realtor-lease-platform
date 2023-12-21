@@ -9,7 +9,7 @@ import {useParams} from "react-router-dom";
 const houseListUrl = 'house/getHouse'
 
 const defaultMapSource = "https://www.google.com/maps/embed/v1/place?key=" +config.GoogleMapKey + "&q="
-console.log(defaultMapSource)
+//concole.log(defaultMapSource)
 const aa= 'https://www.google.com/maps/embed/v1/place?key=AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE&q=25.037525,121.5637819999995'
 
 const GoogleMapHouse = (props) => {
@@ -60,7 +60,7 @@ const GoogleMapHouse = (props) => {
                 setMapSource(defaultMapSource+house.address)
             }
 
-            console.log(MapSource)
+            //concole.log(MapSource)
             const main = document.getElementById('main')
             const mainWidth = main.offsetWidth
             main.style.height = mainWidth + 'px'
@@ -68,7 +68,7 @@ const GoogleMapHouse = (props) => {
     }, [init, house])
     // useEffect(()=>{
     //     if(!init && house) {
-    //         console.log(house.houseNumber.alley, house.houseNumber.lane)
+    //         //concole.log(house.houseNumber.alley, house.houseNumber.lane)
     //         let houseExtraData = '';
     //         if(house.houseNumber.lane) {
     //             if(house.houseNumber.alley) {
@@ -80,16 +80,16 @@ const GoogleMapHouse = (props) => {
     //             houseExtraData = house.address+ house.houseNumber.number1+'號'
     //         }
     //         setMapSource(defaultMapSource+houseExtraData)
-    //         console.log(MapSource)
-    //         console.log(house.address)
-    //         console.log(houseExtraData)
+    //         //concole.log(MapSource)
+    //         //concole.log(house.address)
+    //         //concole.log(houseExtraData)
     //         const main = document.getElementById('main')
     //         const mainWidth = main.offsetWidth
     //         main.style.height = mainWidth + 'px'
     //     }
     // }, [init, house])
 
-    console.log(house, address, MapSource)
+    //concole.log(house, address, MapSource)
     return (
         <div style={{width: "100%", overflow: "hidden", height: "100%"}}>
             <iframe

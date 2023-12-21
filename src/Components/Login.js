@@ -47,9 +47,9 @@ const LoginRegister = () => {
     }
 
     const onFinish =  (values) => {
-        // console.log('Success:', values);
+        // //concole.log('Success:', values);
        const {remember, ...tempData} = values
-        // console.log(tempData['accountOrMail'])
+        // //concole.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
                 setLoginData(tempData)
@@ -63,18 +63,18 @@ const LoginRegister = () => {
 
     // const { decodedToken, isExpired } = useJwt(accountXToken);
 
-    // console.log(decodedToken, isExpired)
+    // //concole.log(decodedToken, isExpired)
 
 
     // cookie.load()
 
     useEffect(() => {
         if (isRunPost) {
-            console.log(LoginData)
-            // console.log(rememberMe)
+            //concole.log(LoginData)
+            // //concole.log(rememberMe)
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then( (response) => {
-                    console.log(response)
+                    //concole.log(response)
                     setAccountID(response['data']['data']['_id'])
                     setAccountXToken(response['data']['data']['token'])
                 })
@@ -99,12 +99,12 @@ const LoginRegister = () => {
         }
     }, [isTokenInCookie, accountXToken])
 
-    // console.log(accountID)
+    // //concole.log(accountID)
 
-    // console.log(cookie.load('x-token'))
+    // //concole.log(cookie.load('x-token'))
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //concole.log('Failed:', errorInfo);
     };
 
     const [form] = Form.useForm();

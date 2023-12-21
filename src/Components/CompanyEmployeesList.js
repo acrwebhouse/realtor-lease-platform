@@ -112,7 +112,7 @@ const CompanyEmployeesList = (props) => {
                         }              
                     }
                     for(let i = 0 ;i<items.length; i++){
-                        console.log(items[i])
+                        //concole.log(items[i])
                         if(items[i].isResign === true){
                             combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
                         }else if(items[i].state === 2 || items[i].state === 4){
@@ -205,7 +205,7 @@ const CompanyEmployeesList = (props) => {
             'isResign': true
           }
 
-        console.log(body)
+        //concole.log(body)
 
         const xToken = cookie.load('x-token')
         CompanyAxios.put(reqUrl, body, {
@@ -213,7 +213,7 @@ const CompanyEmployeesList = (props) => {
                 'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 toast.success('離職成功')
                 getCompanyEmployeesList()
@@ -387,7 +387,7 @@ const CompanyEmployeesList = (props) => {
                   'x-token':xToken
               }
           }).then((response) => {
-              console.log(response)
+              //concole.log(response)
               if(response.data.status === true){
                   setEditEmployee(willEditEmployee)
                   toast.success('編輯成功')

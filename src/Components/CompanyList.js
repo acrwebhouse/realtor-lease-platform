@@ -71,7 +71,7 @@ const CompanyList = (props) => {
                 reqUrl,{}
             )
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 resolveCompantList(response)
                 // resolveMemberList(response)
             })

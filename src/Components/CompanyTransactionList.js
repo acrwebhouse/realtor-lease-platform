@@ -55,7 +55,7 @@ const formItemLayout = {
 const transactionArray = []
 
 const CompanyTransactionList = (props) => {
-    console.log(props)
+    //concole.log(props)
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
     const taipeiAreaOptions = [{ value: '區域不限' },{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
     const newTaipeiAreaOptions = [{ value: '區域不限' },{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
@@ -149,9 +149,9 @@ const CompanyTransactionList = (props) => {
             setEnableCheckYearMonth(true)
         }
     }, )
-    console.log(transactionArray)
+    //concole.log(transactionArray)
     useEffect(() => {
-        console.log(transactionKey, typeof(transactionKey) ==='number', transactionData[transactionKey])
+        //concole.log(transactionKey, typeof(transactionKey) ==='number', transactionData[transactionKey])
         if(updateInitialValue && typeof(transactionKey) === 'number' ){
 
             form_deal.resetFields()
@@ -189,19 +189,19 @@ const CompanyTransactionList = (props) => {
             editHousesTransactionList()
         }
     }, )
-    console.log(props.currentEmployeeData.rank)
+    //concole.log(props.currentEmployeeData.rank)
     const getHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
         const startDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/1'
         const endDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/31'
         // const startDate = '2022/12/1'
         // const endDate = '2022/12/31'
-        console.log(startDate, endDate)
+        //concole.log(startDate, endDate)
         let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&companyId=${getTransactionArg.companyId}&&minServiceCharge=${getTransactionArg.minServiceCharge}&&maxServiceCharge=${getTransactionArg.maxServiceCharge}`
         if(props.currentEmployeeData.rank > 0) {
             reqUrl += `&&userId=${getTransactionArg.userId}`
         }
-        console.log(reqUrl)
+        //concole.log(reqUrl)
         CompanyAxios.get(
             reqUrl,{
                 headers:{
@@ -212,7 +212,7 @@ const CompanyTransactionList = (props) => {
             }
         )
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 setTransactionData(response.data.data)
                 transactionArray.splice(0, transactionArray.length)
                 resolveTransactionsList(response)
@@ -224,11 +224,11 @@ const CompanyTransactionList = (props) => {
     }
 
     function resolveTransactionsList(response){
-        console.log(response.data, response.data.data)
+        //concole.log(response.data, response.data.data)
         let data = []
         let countTemp = 0;
         let priceTemp = 0;
-        console.log(response.data.data)
+        //concole.log(response.data.data)
         if(response.data && response.data.data){
             const items = response.data.data
             setTransactionsListDetail([])
@@ -237,7 +237,7 @@ const CompanyTransactionList = (props) => {
                 if(items[i].houseData.length > 0 && items[i].state > 1) {
                     countTemp += 1;
                     priceTemp += parseInt(items[i].serviceCharge);
-                    console.log(items[i])
+                    //concole.log(items[i])
                     const item = {
                         key: i,
                         transactionId : `${items[i]._id}`,
@@ -270,7 +270,7 @@ const CompanyTransactionList = (props) => {
                     transactionArray.push(item)
                 }
             }
-            console.log(data)
+            //concole.log(data)
             setTransactions(data)
             setCaseCount(countTemp)
             setTotalPrice(priceTemp)
@@ -289,7 +289,7 @@ const CompanyTransactionList = (props) => {
             }
         )
             .then( (response) => {
-                console.log('edit', response)
+                //concole.log('edit', response)
                 if(response.data.status) {
                     toast.success('編輯審核已提交')
                     setEnableCheckYearMonth(true)
@@ -300,13 +300,13 @@ const CompanyTransactionList = (props) => {
                 toast.error(error)
             })
     }
-    console.log(transactions)
-    console.log(dealYearMonth.year)
+    //concole.log(transactions)
+    //concole.log(dealYearMonth.year)
 
     //cancel edit
     useEffect(() => {
         const xToken = cookie.load('x-token')
-        console.log(xToken)
+        //concole.log(xToken)
         if (isCancelEdit) {
              CompanyAxios.put(cancelEditTransaction_Auth,
                 {
@@ -331,7 +331,7 @@ const CompanyTransactionList = (props) => {
                         'x-token':xToken
                     }
                 }).then((response) => {
-                 console.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+                 //concole.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
 
                  if(response.data.status) {
                     setIsCancelEdit(false)
@@ -347,7 +347,7 @@ const CompanyTransactionList = (props) => {
     //remove transaction
     useEffect(() => {
         const xToken = cookie.load('x-token')
-        console.log(xToken)
+        //concole.log(xToken)
         if (enableDel) {
             CompanyAxios.put(removeTransaction_Auth,
                 {
@@ -372,7 +372,7 @@ const CompanyTransactionList = (props) => {
                         'x-token':xToken
                     }
                 }).then((response) => {
-                console.log('del', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+                //concole.log('del', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
                 if(response.data.status) {
 
                     setEnableDel(false)
@@ -389,7 +389,7 @@ const CompanyTransactionList = (props) => {
     //cancel Del
     useEffect(() => {
         const xToken = cookie.load('x-token')
-        console.log(xToken)
+        //concole.log(xToken)
         if (isCancelDel) {
             CompanyAxios.put(cancelEditTransaction_Auth,
                 {
@@ -414,7 +414,7 @@ const CompanyTransactionList = (props) => {
                         'x-token':xToken
                     }
                 }).then((response) => {
-                console.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+                //concole.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
                 if(response.data.status) {
                     setIsCancelDel(false)
                     SetIsShowDeleteAlert(false)
@@ -430,7 +430,7 @@ const CompanyTransactionList = (props) => {
     const checkYearMonth = () => {
         let year = new Date().getFullYear()
         for (let i=year; i >= 2022; i--) {
-            console.log(i)
+            //concole.log(i)
             if(dealYearMonth.year.indexOf(i) < 0) {
                 dealYearMonth.year.push(i)
             }
@@ -442,11 +442,11 @@ const CompanyTransactionList = (props) => {
         setTransactions([])
         setMaxValue('')
         setMinValue('')
-        console.log(value)
+        //concole.log(value)
         setCaseCount(0)
         setTotalPrice(0)
     };
-    // console.log(months)
+    // //concole.log(months)
     const handleMonthChange = (value) => {
         setMonths(dealYearMonth.month[dealYearMonth.month.indexOf(value)]);
         setEnableCheckYearMonth(true)
@@ -456,7 +456,7 @@ const CompanyTransactionList = (props) => {
         setCaseCount(0)
         setTotalPrice(0)
     };
-    // console.log(transactions)
+    // //concole.log(transactions)
 
     function changeCity(city) {
         setSelectArea(null)
@@ -559,7 +559,7 @@ const CompanyTransactionList = (props) => {
     }
 
     const setMaxPrice = (e) => {
-        console.log(e.target.value)
+        //concole.log(e.target.value)
         setMaxValue(e.target.value)
         if(e.target.value) {
             getTransactionArg.maxServiceCharge = parseInt(e.target.value)
@@ -573,11 +573,11 @@ const CompanyTransactionList = (props) => {
         setCaseCount(0)
         setTotalPrice(0)
     }
-    console.log(getTransactionArg)
+    //concole.log(getTransactionArg)
 
     const editTransactionData = (index) => {
         setEnableEditModal(true)
-        console.log(transactions[index])
+        //concole.log(transactions[index])
         editTransactionArg.id = transactions[index].transactionId
         editTransactionArg.houseId = transactions[index].houseData._id
         editTransactionArg.userId = transactions[index].houseData.owner
@@ -589,10 +589,10 @@ const CompanyTransactionList = (props) => {
         editTransactionArg.companyId = transactions[index].houseData.belongId
         editTransactionArg.state = transactions[index].state
     }
-    console.log(editTransactionArg)
+    //concole.log(editTransactionArg)
     const handleDealData = (value) => {
-        console.log(value)
-        console.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
+        //concole.log(value)
+        //concole.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
         editTransactionArg.edit.transactionDate = value.dealDate.format("YYYY/MM/DD")
         editTransactionArg.edit.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
         editTransactionArg.edit.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
@@ -827,7 +827,7 @@ const CompanyTransactionList = (props) => {
                                                     centered: 'true'
                                                 });
                                                 // setShowEditResultModal(true)
-                                                console.log("Hello")
+                                                //concole.log("Hello")
                                                 // If you don't want click extra trigger collapse, you can prevent this:
                                                 event.stopPropagation();
                                             }}>
@@ -869,7 +869,7 @@ const CompanyTransactionList = (props) => {
                                                     display: data.applyRetry ?  null : 'none'
                                                 }}
                                                 onClick={() => {
-                                                    console.log(index)
+                                                    //concole.log(index)
                                                     setTransactionKey(index)
                                                     setIsCancelEdit(true)
                                                 }}
@@ -887,7 +887,7 @@ const CompanyTransactionList = (props) => {
                                                         editTransactionData(index)
                                                         setTransactionKey(index)
                                                         setUpdateInitialValue(true)
-                                                        console.log(index)
+                                                        //concole.log(index)
                                                     }}>
                                                 { data.submitEdit ? '編輯' : '申請中'}
                                             </Button>
@@ -900,7 +900,7 @@ const CompanyTransactionList = (props) => {
                                                 &nbsp;
                                                     <Button type="primary"
                                                             onClick={() => {
-                                                                console.log(index)
+                                                                //concole.log(index)
                                                                 setTransactionKey(index)
                                                                 setIsCancelEdit(true)
                                                             }}
@@ -918,7 +918,7 @@ const CompanyTransactionList = (props) => {
                                                         setTransactionKey(index)
                                                         SetIsShowDeleteAlert(true)
                                                         setDelId(transactions[index].transactionId)
-                                                        console.log(index)
+                                                        //concole.log(index)
                                                     }}
                                                     style={{width: '70px',
                                                         backgroundColor: isShowDeleteAlert?'':data.submitDel?'#FF0000':'',
@@ -937,7 +937,7 @@ const CompanyTransactionList = (props) => {
                                                 &nbsp;
                                                     <Button type="primary"
                                                             onClick={() => {
-                                                                console.log(index)
+                                                                //concole.log(index)
                                                                 setTransactionKey(index)
                                                                 setIsCancelDel(true)
                                                             }}
@@ -1051,7 +1051,7 @@ const CompanyTransactionList = (props) => {
                                 key="submit"
                                 htmlType="submit"
                                 style={{width: '50%'}}
-                            // onClick={(x) => console.log(x)}
+                            // onClick={(x) => //concole.log(x)}
                         >
                             {/*Submit*/}
                             送出

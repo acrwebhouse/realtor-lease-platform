@@ -100,7 +100,7 @@ const CompanyApplyList = (props) => {
                 }
                 data.push(item)
             }
-            console.log('===data====',data)
+            // //concole.log('===data====',data)
             setCompanyApplyList(data)
         }
     }
@@ -129,7 +129,7 @@ const CompanyApplyList = (props) => {
                 'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 getCompanyApplyList()
             }else{
