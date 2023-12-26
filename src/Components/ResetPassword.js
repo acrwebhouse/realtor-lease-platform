@@ -6,19 +6,19 @@ import {
     Col,
     Form, Result
 } from "antd";
-// import cookie from 'react-cookies'
-import {UserAxios} from './axiosApi'
-// import jwt_decode from "jwt-decode";
-// import moment from 'moment';
+import {LoginRegisterAxios, UserAxios} from './axiosApi'
 import Captcha from "demos-react-captcha";
 import cookie from "react-cookies";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
+
 const userData_Auth = '/user/getPersonalInfo'
 const editUser_Auth = 'user/editUser'
+const resetPassword_Auth = '/auth/resetPassword'
 const User_verify_xToken = window.location.href.split('key=')[1]
-// console.log(User_verify_xToken)
+// //concole.log(User_verify_xToken)
 
 const ResetPassword = (props) => {
 
@@ -27,40 +27,114 @@ const ResetPassword = (props) => {
     const [enableResetPassword, setEnableResetPassword] = useState(false)
     const [ChangingVerify, setChangingVerify] = useState(true)
     const [verify, setVerify] = useState(true)
+    const [resetPassword] = useState({
+        newPassword: ''
+    })
+
+    // useEffect(() => {
+    //     UserAxios.get(
+    //         userData_Auth,{
+    //             headers:{
+    //                 'x-token':User_verify_xToken
+    //             }
+    //         }
+    //     )
+    //         .then( (response) => {
+    //             //concole.log(response)
+    //             if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
+    //                 response.data.data.bornDate = ''
+    //             }
+    //             setUserData(response.data.data)
+    //         })
+    //         .catch( (error) => {
+    //             showInternelErrorPageForMobile()
+    //             toast.error(error)
+    //         })
+    // }, [])
+    //
+    // useEffect(() => {
+    //     //concole.log(enableResetPassword)
+    //     if (enableResetPassword) {
+    //         UserAxios.put(editUser_Auth, UserData,{
+    //                 headers:{
+    //                     "accept": "application/json",
+    //                     'x-token': User_verify_xToken,
+    //                     'Content-Type': "application/json"
+    //                 }
+    //             }
+    //         )
+    //             .then( (response) => {
+    //                 //concole.log(response)
+    //                 if(response.data.status === true){
+    //                     //concole.log(response.data)
+    //                     setVerify(true)
+    //                     cookie.save('x-token',response.data.data.token,{path:'/'})
+    //                 }else{
+    //                     toast.error(response.data.data).then()
+    //                     setVerify(false)
+    //                 }
+    //             })
+    //             .catch( (error) => {
+    //                 showInternelErrorPageForMobile()
+    //                 toast.error(error)
+    //                 setVerify(false)
+    //             })
+    //
+    //         setEnableResetPassword(false)
+    //     }
+    //
+    //
+    // }, [enableResetPassword, UserData])
+
+    // //concole.log(typeof(UserData))
+    // //concole.log(UserData)
+
+    const verifyCaptcha = (value) => {
+        //concole.log(value)
+    }
+
+    const setResetPassword = (values) => {
+        //concole.log(values)
+        if(values['CaptchaVerify']) {
+            resetPassword.newPassword = values['password']
+            // setUserData({
+            //     "id": UserData['_id'],
+            //     "account": UserData['account'],
+            //     "password": values['password'],
+            //     "name": UserData['name'],
+            //     "gender": UserData['gender'],
+            //     "roles": UserData['roles'],
+            //     "rolesInfo": UserData['rolesInfo'],
+            //     "houseIds": [],
+            //     "phone": UserData['phone'],
+            //     "mail": UserData['mail'],
+            //     "address": UserData['address'],
+            //     "bornDate": UserData['bornDate']
+            // })
+            setEnableResetPassword(true)
+            setTimeout(() => {
+                setChangingVerify(false)
+            }, 1000)
+        } else{
+            toast.error('驗證碼有錯，請重新輸入新的驗證碼。')
+        }
+    }
 
     useEffect(() => {
-        UserAxios.get(
-            userData_Auth,{
-                headers:{
-                    'x-Token':User_verify_xToken
-                }
-            }
-        )
-            .then( (response) => {
-                console.log(response)
-                if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
-                    response.data.data.bornDate = ''
-                }
-                setUserData(response.data.data)
-            })
-            .catch( (error) => toast.error(error))
-    }, [])
-
-    useEffect(() => {
-        console.log(enableResetPassword)
+        //concole.log(enableResetPassword)
         if (enableResetPassword) {
-            UserAxios.put(editUser_Auth, UserData,{
+            LoginRegisterAxios.put(resetPassword_Auth, { "newPassword": resetPassword.newPassword},{
                     headers:{
                         "accept": "application/json",
-                        'x-Token': User_verify_xToken,
+                        'x-token': User_verify_xToken,
                         'Content-Type': "application/json"
                     }
                 }
             )
                 .then( (response) => {
-                    console.log(response)
+                    //concole.log(response)
                     if(response.data.status === true){
-                        console.log(response.data)
+                        //concole.log(response.data)
                         setVerify(true)
                         cookie.save('x-token',response.data.data.token,{path:'/'})
                     }else{
@@ -69,6 +143,7 @@ const ResetPassword = (props) => {
                     }
                 })
                 .catch( (error) => {
+                    showInternelErrorPageForMobile()
                     toast.error(error)
                     setVerify(false)
                 })
@@ -77,39 +152,7 @@ const ResetPassword = (props) => {
         }
 
 
-    }, [enableResetPassword, UserData])
-
-    console.log(typeof(UserData))
-    console.log(UserData)
-
-    const verifyCaptcha = (value) => {
-        console.log(value)
-    }
-
-    const setResetPassword = (values) => {
-        console.log(values)
-        if(values['CaptchaVerify']) {
-            setUserData({
-                "id": UserData['_id'],
-                "account": UserData['account'],
-                "password": values['password'],
-                "name": UserData['name'],
-                "gender": UserData['gender'],
-                "roles": UserData['roles'],
-                "rolesInfo": UserData['rolesInfo'],
-                "houseIds": [],
-                "phone": UserData['phone'],
-                "mail": UserData['mail'],
-                "address": UserData['address'],
-                "bornDate": UserData['bornDate']
-            })
-            setEnableResetPassword(true)
-            setTimeout(() => {
-                setChangingVerify(false)
-            }, 1000)
-
-        }
-    }
+    }, [enableResetPassword])
 
     const backToInitPage = () => {
         setTimeout(() => {
@@ -119,7 +162,7 @@ const ResetPassword = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             { ChangingVerify ?
                 <div>
 
@@ -130,20 +173,25 @@ const ResetPassword = (props) => {
                         onFinish={setResetPassword}
                         scrollToFirstError
                     >
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                                <h1>重置密碼</h1>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
+                                <div style={{ width: '100%', display:'flex', justifyContent: 'center', textAlign: 'center' }}>
+                                    <h1>重置密碼</h1>
+                                </div>
+                            </Col>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
                             </Col>
                         </Row>
 
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item
                                     name="password"
                                     label="密碼"
@@ -154,18 +202,20 @@ const ResetPassword = (props) => {
                                         },
                                     ]}
                                     hasFeedback
-                                    style={{ width: '50%' }}
                                 >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '100%', borderRadius:'20px' }}/>
                                 </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
                             </Col>
                         </Row>
 
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item
                                     name="confirm"
                                     label="密碼確認"
@@ -186,20 +236,22 @@ const ResetPassword = (props) => {
                                             },
                                         }),
                                     ]}
-                                    style={{ width: '50%' }}
                                 >
-                                    <Input.Password size="large" placeholder="" style={{ width: '100%' }}/>
+                                    <Input.Password size="large" placeholder="" style={{ width: '100%', borderRadius:'20px' }}/>
                                 </Form.Item>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                        </Row>
+                        <Row >
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
+                            </Col>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item
                                     name="CaptchaVerify"
-                                    // label="英數驗證"
+                                    label="驗證碼"
                                     rules={[
                                         {
                                             required: true,
@@ -207,32 +259,42 @@ const ResetPassword = (props) => {
                                         },
                                     ]}
                                     hasFeedback
-                                    style={{ width: '50%' }}
+
                                 >
-                                    <Captcha onChange={verifyCaptcha}
-                                             placeholder="Enter captcha"
-                                             onRefresh={()=>{}}
-                                    />
+                                    <div style={{ width: '100%', display:'flex', justifyContent: 'right', textAlign: 'right' }}>
+                                        <Captcha onChange={verifyCaptcha}
+                                                 placeholder="Enter captcha"
+                                                 onRefresh={()=>{}}
+
+                                        />
+                                    </div>
+
                                 </Form.Item>
 
                             </Col>
                         </Row>
-                        <Row>
-                            <Col xs={24} sm={5} md={5} lg={6} xl={8}>
+                        <Row justify="center" align="top">
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
 
                             </Col>
-                            <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Col  xs={23} sm={12} md={12} lg={8} xl={6}>
                                 <Form.Item>
-                                    <Button type="primary"
-                                            htmlType="submit"
-                                            className='login-form-button'
-                                            shape="round"
-                                            style={{ width: '50%' }}
-                                    >
-                                        {/*Submit*/}
-                                        送出
-                                    </Button>
+                                    <div style={{ width: '100%', display:'flex', justifyContent: 'center', textAlign: 'center' }}>
+                                        <Button type="primary"
+                                                htmlType="submit"
+                                                className='login-form-button'
+                                                shape="round"
+                                                style={{ width: '80%'}}
+                                        >
+                                            {/*Submit*/}
+                                            送出
+                                        </Button>
+                                    </div>
+
                                 </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={6} md={6} lg={8} xl={9}>
+
                             </Col>
                         </Row>
                     </Form>

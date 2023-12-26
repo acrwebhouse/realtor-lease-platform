@@ -9,6 +9,7 @@ import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const employeeState = ['初始狀態', '審核中', '正式員工', '審核失敗', '停權中']
 const CompanyEmployeeInfo = (props) => {
@@ -34,35 +35,32 @@ const CompanyEmployeeInfo = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            props.checkEmployeeStateAndChangeMenu((result)=>{
-                if(result === true){
-                    getCompanyEmployeeInfo()
-                }else{
-                    toast.warning('員工權限變動，請重新進入選單')
-                }
-            })
+            getCompanyEmployeeInfo()
         }
     }, )
-    console.log(props)
+    //concole.log(props)
     function getCompanyEmployeeInfo(){
         let reqUrl = `/employees/getPersonalEmployeesInfo`
         const xToken = cookie.load('x-token')
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data)
+                    //concole.log(response.data.data)
                     resolveCompanyEmployee(response.data.data)
                 }else{
                     toast.error('員工資訊取得失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompanyEmployee(list){
@@ -104,11 +102,11 @@ const CompanyEmployeeInfo = (props) => {
         }
     }
 
-    console.log(employeeData)
+    //concole.log(employeeData)
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>

@@ -8,6 +8,8 @@ import cookie from "react-cookies"
 import {LoginRegisterAxios} from "./axiosApi"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
+
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,9 +47,9 @@ const LoginRegister = () => {
     }
 
     const onFinish =  (values) => {
-        // console.log('Success:', values);
+        // //concole.log('Success:', values);
        const {remember, ...tempData} = values
-        // console.log(tempData['accountOrMail'])
+        // //concole.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
                 setLoginData(tempData)
@@ -61,23 +63,26 @@ const LoginRegister = () => {
 
     // const { decodedToken, isExpired } = useJwt(accountXToken);
 
-    // console.log(decodedToken, isExpired)
+    // //concole.log(decodedToken, isExpired)
 
 
     // cookie.load()
 
     useEffect(() => {
         if (isRunPost) {
-            console.log(LoginData)
-            // console.log(rememberMe)
+            //concole.log(LoginData)
+            // //concole.log(rememberMe)
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then( (response) => {
-                    console.log(response)
+                    //concole.log(response)
                     setAccountID(response['data']['data']['_id'])
                     setAccountXToken(response['data']['data']['token'])
                 })
                 .then(() => toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`))
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setIsRunPost(false)
             setIsTokenInCookie(true)
@@ -94,19 +99,19 @@ const LoginRegister = () => {
         }
     }, [isTokenInCookie, accountXToken])
 
-    // console.log(accountID)
+    // //concole.log(accountID)
 
-    // console.log(cookie.load('x-token'))
+    // //concole.log(cookie.load('x-token'))
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //concole.log('Failed:', errorInfo);
     };
 
     const [form] = Form.useForm();
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Button type="primary" onClick={showLoginModal}>
             Login/Register
             </Button>

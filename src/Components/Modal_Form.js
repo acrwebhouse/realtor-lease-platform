@@ -76,7 +76,7 @@ const MDForm = () => {
                 <StepsForm
                     onFinish={async (values) => {
                         await waitTime(2000);
-                        console.log(values);
+                        //concole.log(values);
                         toast.success('提交成功');
                     }}
                 >
@@ -231,7 +231,7 @@ const MDForm = () => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <ProFormRadio.Group
                 style={{
                     margin: 16,
@@ -266,7 +266,7 @@ const MDForm = () => {
                     }
                     onFinish={async (values) => {
                         await waitTime(2000);
-                        console.log(values);
+                        //concole.log(values);
                         toast.success('提交成功');
                     }}
                     initialValues={{

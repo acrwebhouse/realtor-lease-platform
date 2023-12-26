@@ -7,9 +7,10 @@ import {
 } from "antd";
 import {CompanyAxios} from './axiosApi'
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {showInternelErrorPageForMobile} from './CommonUtil'
+import {getCurrentEmployee} from './CompanyCommon'
 const companyState = ['初始狀態', '審核中', '通過審核', '審核失敗', '停權中']
 // 初始狀態
 // 1 : 審核中
@@ -36,11 +37,9 @@ const CompanyInfo = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            props.checkEmployeeStateAndChangeMenu((result)=>{
+            getCurrentEmployee((result,data)=>{
                 if(result === true){
                     getCompanyInfo()
-                }else{
-                    toast.warning('員工權限變動，請重新進入選單')
                 }
             })
         }
@@ -51,20 +50,23 @@ const CompanyInfo = (props) => {
                 reqUrl,{
                 })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
                     setCompanyData(response.data.data)
                 }else{
                     toast.error('公司資訊取得失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
-    console.log(companyData)
+    //concole.log(companyData)
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>

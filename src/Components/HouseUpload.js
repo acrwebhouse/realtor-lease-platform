@@ -16,13 +16,25 @@ import {
 } from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {HouseAxios, PicAnnexAxios} from './axiosApi'
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined} from '@ant-design/icons';
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {
+    AirConditionerIcon,
+    BedIcon, CigaretteIcon,
+    ClosetIcon, CookIcon, DeskAndChairIcon, ElevatorIcon, GarbageFeeIcon, ManageFeeIcon, NaturalGasIcon,
+    NetworkIcon, ParkingIcon, PetsIcon,
+    RefrigeratorIcon, SofaIcon,
+    TelevisionIcon, TvProgramIcon,
+    WashMachineIcon, WaterHeaterIcon
+} from "./Equipment";
+import {showInternelErrorPageForMobile,horizontalScrollDisabled} from './CommonUtil'
+import {getPersonalInfo,xTokenName} from './Auth'
+// const AddressPattern = /^[\u4e00-\u9fa5]+$/
+// const DoorNumberPattern = /^[0-9]*$/
+// const SecondRoomNumberPattern = /^[A-Za-z0-9]+$/
 
 const houseService = config.base_URL_House
 const { Option } = Select;
@@ -60,9 +72,10 @@ for (let i = 1; i < 100; i++) {
         value: i + '樓'
     });
 }
-console.log(FloorOptions[0])
+//concole.log(FloorOptions[0])
 
 const defaultExtraRequire = [];
+const defaultEquipment = [];
 let PicData = [];
 let showPic = [];
 let AnnexData = [];
@@ -79,12 +92,14 @@ const House_Pic_Auth = 'house/uploadHousePhoto/'
 const House_Annex_Auth = 'house/uploadHouseAnnex/'
 const House_Auth = 'house/addHouse/'
 const Edit_House_Auth = 'house/editHouse'
-const photoType = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
+const photoType = ['image/png', 'image/heic', 'image/jpeg', 'image/jpg', 'image/bmp']
 const annexType = ['application/pdf', 'image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg', 'image/bmp']
 const PicTemp = []
+const firstPicTemp = []
 const AnnexTemp = []
 const hostGenderArr=['小姐', '先生']
-
+const equipData = {0: 'airConditioner', 1: 'refrigerator', 2: 'television', 3: 'washMachine', 4: 'bed', 5: 'closet', 6: 'tvProgram', 7: 'network', 8: 'waterHeater', 9: 'naturalGas', 10: 'sofa', 11: 'deskAndChair', 12: 'elevator'}
+let equipArr = [false, false, false, false, false, false, false, false, false, false, false, false, false]
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -122,36 +137,21 @@ const FloorCheck = (FloorValue, remark) => {
 
 }
 
-const PhonePrefixSelector = (
-    <Form.Item name="PhonePrefix" noStyle>
-        <Select style={{
-            width: 90,
-        }}
-                defaultValue="886"
-                disabled
-        >
-            <Option value="886">+886</Option>
-        </Select>
-    </Form.Item>
-);
-
 const HouseUpload = (prop) => {
-    const xToken = cookie.load('x-token')
-    const decodedToken = jwt_decode(xToken);
-    console.log('HouseUpload cookie x-token: '+xToken)
-    console.log('HouseUpload cookie decodedToken: '+JSON.stringify(decodedToken))
-    console.log('HouseUpload cookie id: '+decodedToken.id)
-    console.log(prop.defaultValue)
-
+    const xToken = cookie.load(xTokenName)
+    const [user, setUser] = useState({});
+    //concole.log(prop.defaultValue)
     const PicPreURL = prop.defaultValue? houseService+'/resource/'+prop.defaultValue._id+'/photo/' : []
-    console.log(PicPreURL)
+    //concole.log(PicPreURL)
     const [form] = Form.useForm();
     const [form_photo] = Form.useForm();
+    const [form_firstPhoto] = Form.useForm();
     const [form_annex] = Form.useForm();
     const [form_traffic] = Form.useForm();
     const [form_life] = Form.useForm();
     const [form_edu] = Form.useForm();
     const [extraRequire, setExtraRequire] = useState(defaultExtraRequire);
+    const [equipment, setEquipment] = useState(defaultEquipment)
     const [ShowHideManageFee, setShowHideManageFee] = useState(false );
     const [ShowHideGarbageFee, setShowHideGarbageFee] = useState(false );
     const [areaOptions, setAreaOptions] = useState([]);
@@ -167,7 +167,7 @@ const HouseUpload = (prop) => {
     const [PictureList, setPictureList] = useState([]);
     const [AnnexEnable, setAnnexEnable] = useState(false);
     const [FormDataEnable, setFormDataEnable] = useState(false);
-    console.log(FormDataEnable)
+    //concole.log(FormDataEnable)
     const [AnnexList, setAnnexList] = useState([]);
     const [PicUploading, setPicUploading] = useState(false);
     const [AnnexUploading, setAnnexUploading] = useState(false);
@@ -175,13 +175,17 @@ const HouseUpload = (prop) => {
     const [photoData, setPhotoData] = useState([]);
     const [annexData, setAnnexData] = useState([]);
     const [isRunPost, setIsRunPost] = useState(false)
+    const [photoCount, setPhotoCount] = useState(0)
     const [previewVisible, setPreviewVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
     const [PicUploadCheck, setPicUploadCheck] = useState(false)
     const [hostPhone, setHostPhone] = useState(prop.defaultValue?prop.defaultValue.hostPhone:'')
-
-
+    const [enableFirstPicChange, setEnableFirstPicChange] = useState(false)
+    const [firstPicFile, setFirstPicFile] = useState([])
+    const [firstPhotoData, setFirstPhotoData] = useState([])
+    const [totalLayer, setTotalLayer] = useState(prop.defaultValue?prop.defaultValue.totalFloor:null)
+    //concole.log(totalLayer)
     const showTrafficModal = () => {
         setTrafficVisible(true);
     };
@@ -209,25 +213,25 @@ const HouseUpload = (prop) => {
         form_edu.resetFields()
     };
     const onTrafficCreate = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         TrafficArr.push(values)
         setTrafficVisible(false);
-        console.log(TrafficArr)
+        //concole.log(TrafficArr)
     };
     const onLifeCreate = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         LifeArr.push((values))
         setLifeVisible(false);
     };
     const onEduCreate = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         EducationArr.push(values)
         setEduVisible(false);
     };
 
 
 
-    console.log(PicData)
+    //concole.log(PicData)
     useEffect(() => {
         if (delTraffic) {
             setDelTraffic(false)
@@ -244,12 +248,23 @@ const HouseUpload = (prop) => {
         if (delAnnex) {
             setDelAnnex(false)
         }
+        
+        getPersonalInfo(xToken).then( (userResponse) => {
+            if(userResponse.data.data !== undefined){
+                const userData = userResponse.data.data
+                setUser(userData)
+            }
+        })
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }, [delTraffic, delLife, delEdu, delPic, delAnnex])
 
-    console.log(TrafficArr)
+    //concole.log(TrafficArr)
     useEffect(()=>{
         const temp = [];
-
+        const equipTemp = [];
         if(prop.defaultValue && prop.defaultValue.traffic) {
             prop.defaultValue.traffic.map(x => TrafficArr.push(x))
         }
@@ -277,39 +292,47 @@ const HouseUpload = (prop) => {
             // setPictureList(prop.defaultValue.photo)
             if(prop.defaultValue.saleInfo.pet){
                 temp.push('pet')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.manager){
                 temp.push('manager')
                 setShowHideManageFee(true)
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.garbage){
                 temp.push('garbage')
                 setShowHideGarbageFee(true)
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.smoke){
                 temp.push('smoke')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.cook){
                 temp.push('cook')
-                // console.log(temp)
+                // //concole.log(temp)
             }
             if(prop.defaultValue.parking){
                 temp.push('parking')
-                // console.log(temp)
+                // //concole.log(temp)
+            }
+            if(prop.defaultValue.saleInfo.devices) {
+                for (let i = 0; i < prop.defaultValue.saleInfo.devices.length; i++) {
+                    if (prop.defaultValue.saleInfo.devices[i]) {
+                        equipTemp.push(equipData[i])
+                    }
+                }
             }
         }
-        console.log(temp)
-        setExtraRequire(temp)
 
+        //concole.log(temp)
+        setExtraRequire(temp)
+        setEquipment(equipTemp)
     },[prop.defaultValue])
 
     useEffect(() => {
-        // console.log(RegisterData)
-        // console.log(CityAreaScope)
+        // //concole.log(RegisterData)
+        // //concole.log(CityAreaScope)
 
         if (isRunPost) {
             prop.defaultValue ?
@@ -319,9 +342,9 @@ const HouseUpload = (prop) => {
                         "accept": "application/json",
                         "x-token" : xToken,
                     }})
-                    // .then( (response) => console.log(response.data.status))
+                    // .then( (response) => //concole.log(response.data.status))
                     .then((response) => {
-                        console.log(response)
+                        //concole.log(response)
                         if (response.data.status === true) {
                             toast.success(`房屋資料更新成功`);
                             setTimeout(() => {
@@ -334,30 +357,11 @@ const HouseUpload = (prop) => {
                             toast.error(`房屋資料更新失敗`);
                         }
 
-                        // if(!response.data.status && response.data.data.includes('house address is exist')) {
-                        //     message.error({
-                        //         content: '此地址已存在，請重新填寫正確地址',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 4,
-                        //     }).then()
-                        //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                        // }else{
-                        //     message.success({
-                        //         content: '房屋資料上傳成功',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 2,
-                        //     }).then(() => {})
-                        //     // message.success(`房屋資料上傳成功`, 2, ).then()
-                        // }
-
                     })
-                    .catch((error) => toast.error(`${error}`))       
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })     
                 :
                 HouseAxios.post(House_Auth, HouseData, {
                     headers: {
@@ -366,64 +370,46 @@ const HouseUpload = (prop) => {
                         "x-token" : xToken,
                     }
                 })
-                    // .then( (response) => console.log(response.data.status))
                     .then((response) => {
-                        console.log(response.data)
+                        //concole.log(response.data)
                         if(response.data.status) {
                             toast.success(`房屋資料上傳成功`);
                             form_photo.resetFields()
                             form_annex.resetFields()
+                            form_firstPhoto.resetFields()
                             form.resetFields()
                             setHostPhone('')
+                            PicTemp.splice(0, PicTemp.length)
+                            AnnexTemp.splice(0, AnnexTemp.length)
+                            TrafficArr.splice(0,  TrafficArr.length)
+                            LifeArr.splice(0,  LifeArr.length)
+                            EducationArr.splice(0, EducationArr.length)
+                            PicData.splice(0, PicData.length)
+                            AnnexData.splice(0, AnnexData.length)
+                            setPhotoCount(0)
                         }else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
-                            toast.error(`房屋地址重複，請更正正確房屋地址。`);
+                            toast.error(`此房屋物件已存在，如有疑慮請聯繫該房仲。 ${response.data.data.errorInfo.name}  ${response.data.data.errorInfo.phone}。`);
+                            setPhotoCount(1)
                         }
-                        // if(!response.data.status && response.data.data.includes('house address is exist')) {
-                        //     message.error({
-                        //         content: '此地址已存在，請重新填寫正確地址',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 4,
-                        //     }).then()
-                        //     // message.error("此地址已存在，請重新填寫正確地址", 2).then()
-                        // }else{
-                        //     message.success({
-                        //         content: '房屋資料上傳成功',
-                        //         style: {
-                        //             fontSize: '40px',
-                        //             marginTop: '20vh',
-                        //         },
-                        //         duration: 2,
-                        //     }).then(() => {})
-                        //     // message.success(`房屋資料上傳成功`, 2, ).then()
-                        // }
 
                     })
-                    .catch((error) =>toast.success(`${error}`));
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
 
             setIsRunPost(false)
-            PicTemp.splice(0, PicTemp.length)
-            AnnexTemp.splice(0, AnnexTemp.length)
-            TrafficArr.splice(0,  TrafficArr.length)
-            LifeArr.splice(0,  LifeArr.length)
-            EducationArr.splice(0, EducationArr.length)
-            PicData.splice(0, PicData.length)
-            AnnexData.splice(0, AnnexData.length)
-
-
         }
     }, [isRunPost, HouseData, prop.defaultValue, xToken])
 
     const UploadHouseData = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         setHouseData(
             {
                 'name' : values['name'],
                 'city' : values['City'],
                 'area' : values['Area'],
-                'owner' : decodedToken.id,
+                'owner' : user._id,
                 'address': values['City']+values['Area']+values['address'],
                 'houseNumber' : {
                     'lane' : values['lane']  ? parseInt(values['lane']) : '',
@@ -439,11 +425,12 @@ const HouseUpload = (prop) => {
                     : parseInt(values['totalFloor']),
                 'floor2' : values['floorNo2'] ? parseInt(values['floorNo2']) : '',
                 'isRoofAnnex' : !FloorOptions.findIndex(x => x.value === values['floorNo1']), // index 0 => '頂樓加蓋' => !0 == true
-                'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
+                // 'room' :  values['room-number'] ? parseInt(values['room-number']) : '' ,
+                'room' :  values['room-number'] ,
                 'price' : parseInt(values['lease-price']),
                 'hostName': values['hostName'],
                 'hostGender': convertString(String(hostGenderArr.indexOf(values['hostGender']))),
-                'hostPhone': hostPhone,
+                'hostPhone': values['hostPhone'],
                 'config' : {
                     'room' : parseInt(values['room']),
                     'livingRoom' : (typeof(values['livingRoom']) === 'number') ? parseInt(values['livingRoom']) : 0,
@@ -465,20 +452,21 @@ const HouseUpload = (prop) => {
                     "garbagePrice": extraRequire.includes('garbage') ? parseInt(values['garbageFee']) : 0,
                     "smoke": extraRequire.includes('smoke'),
                     "cook": extraRequire.includes('cook'),
-                    "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1
+                    "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1,
+                    "devices": prop.defaultValue ? prop.defaultValue.saleInfo.devices : equipArr
                 },
                 'photo' : prop.defaultValue ? PicData : photoData, // PicData have defaultData, photoData new Upload
                 'annex' : prop.defaultValue ? AnnexData : annexData, // AnnexData have defaultData, annexData new Upload
                 'remark' : FloorOptions.findIndex(x => x.value === values['floorNo1']) ? values['remark'] : '頂樓加蓋，' + values['remark'],
                 "belongType": prop.companyState === 2 || prop.companyState === 4 ? 2 : 1,
-                "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : decodedToken.id
+                "belongId": prop.companyState === 2 || prop.companyState === 4 ? prop.companyId : user._id
             }
         )
-        if(hostPhone.slice(0, 2) !== '09' || hostPhone.length < 12  ) {
+        if(values['hostPhone'].slice(0, 2) !== '09' || values['hostPhone'].length < 10  ) {
             // setIsSubmitModalVisible(false)
             errorPhoneFormat();
         } else {
-            if (showPic.length+PictureList.length < 1) {
+            if (showPic.length+PictureList.length < 1 && photoCount === 0) {
                 toast.warning(`照片至少上傳一張`)
             }else {
                 if(!PicUploadCheck && !prop.defaultValue) {
@@ -494,40 +482,58 @@ const HouseUpload = (prop) => {
                         setExtraRequire([])
                         setShowHideManageFee(false)
                         setShowHideGarbageFee(false)
+                        setEquipment([])
                     }
                 }
             }
         }
 
-        console.log(TrafficArr);
-        // console.log(photoData)
+        //concole.log(TrafficArr);
+        // //concole.log(photoData)
 
 
         // window.location.replace(window.location.origin+'/HouseDetailOwner/'+prop.defaultValue._id+'/'+ prop.defaultValue.owner)
     };
-    console.log(HouseData);
-    // console.log(prop.defaultValue.room)
-    // console.log(...UpdateData, {'owner': prop.defaultValue.owner})
-    // const AddressPrefixSelector = (
-    //     <Form.Item name="AddressPrefix" noStyle>
-    //         <Select style={{
-    //             width: 90,
-    //         }}
-    //         >
-    //             <Option value="台北市">台北市</Option>
-    //             <Option value="新北市">新北市</Option>
-    //             <Option value="桃園市">桃園市</Option>
-    //             <Option value="台中市">台中市</Option>
-    //             <Option value="台南市">台南市</Option>
-    //             <Option value="高雄市">高雄市</Option>
-    //         </Select>
-    //     </Form.Item>
-    // );
+    //concole.log(HouseData);
+
+    // const updateFirstPic = () => {
+    //     const houseDataTemp = prop.defaultValue
+    //     delete houseDataTemp['updateTime']
+    //     // houseDataTemp['photo'][0] = PicData[0]
+    //     //concole.log(houseDataTemp)
+    //
+    //     HouseAxios.put(Edit_House_Auth, Object.assign(houseDataTemp, {'id':prop.defaultValue._id, 'photo':PicData}), {
+    //         headers: {
+    //             // "content-type": "application/json",
+    //             // "accept": "application/json",
+    //             "x-token" : xToken,
+    //         }})
+    //         // .then( (response) => //concole.log(response.data.status))
+    //         .then((response) => {
+    //             //concole.log(response)
+    //             if (response.data.status === true) {
+    //                 toast.success(`首圖更新成功`);
+    //                 setTimeout(() => {
+    //                     window.location.replace(window.location.origin + '/HouseDetailOwner/' + prop.defaultValue._id + '/' + prop.defaultValue.owner)
+    //                 }, 2000)
+    //
+    //             } else if(!response.data.status && response.data.data.errorMessage.includes('house address is exist')){
+    //                 toast.error(`房屋地址重複，房屋資料更新失敗。`);
+    //             }else {
+    //                 toast.error(`房屋資料更新失敗`);
+    //             }
+    //
+    //         })
+    //         .catch( (error) => {
+    //             showInternelErrorPageForMobile()
+    //             toast.error(error)
+    //         })
+    // }
 
     /* phone Format set up */
 
     const normalizeInput = (value, previousValue) => {
-        console.log(value)
+        //concole.log(value)
         if (!value) return value;
         const currentValue = value.replace(/[^\d]/g, "");
         const cvLength = currentValue.length;
@@ -535,24 +541,22 @@ const HouseUpload = (prop) => {
         if (!previousValue || value.length > previousValue.length) {
             if (cvLength < 5) return currentValue;
             if (cvLength < 8)
-                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
-            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+                return `${currentValue.slice(0, 4)}${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
 
 
-    console.log(hostPhone)
+    //concole.log(hostPhone)
 
 
     const errorPhoneFormat = () => {
-            toast.error(`請輸入正確的市話或手機號格式與長度(09xx-xxx-xxx)`)
+            toast.error(`請輸入正確的手機號格式(09xxxxxxxx)`)
     }
-
-
 
     const changeCity = (City) => {
 
-        setSelectArea(null)
+        setSelectArea([])
         setAreaOptions([])
         switch(City){
             case CityOptions[0].value:
@@ -629,42 +633,59 @@ const HouseUpload = (prop) => {
         setSelectArea(area)
     }
 
-    // const AddressPrefixSelector = (
-    //     <Form.Item name="AddressPrefix" noStyle>
-    //         <Select allowClear id="citySelect" placeholder="縣市" options={CityOptions} onChange={changeCity} style={{
-    //             width: '100%',
-    //         }}>
-    //         </Select>
-    //     </Form.Item>
-    // );
-
-
     const onExtraRequireChange = list => {
-        // console.log(`selected ${list}` )
-        console.log(list)
+        // //concole.log(`selected ${list}` )
+        //concole.log(list)
         setExtraRequire(list);
         setShowHideManageFee(list.includes('manager'))
         setShowHideGarbageFee(list.includes('garbage'))
         //
         // setRoles(list.map(i => Number(i)))
     };
-
-
-    // console.log(PictureList)
+    //concole.log(equipment)
+    //concole.log(equipArr)
+    const onEquipmentChange = list => {
+        // //concole.log(`selected ${list}` )
+        //concole.log(list)
+        setEquipment(list);
+        equipArr[0] = list.includes('airConditioner');
+        equipArr[1] = list.includes('refrigerator');
+        equipArr[2] = list.includes('television');
+        equipArr[3] = list.includes('washMachine');
+        equipArr[4] = list.includes('bed');
+        equipArr[5] = list.includes('closet');
+        equipArr[6] = list.includes('tvProgram');
+        equipArr[7] = list.includes('network');
+        equipArr[8] = list.includes('waterHeater');
+        equipArr[9] = list.includes('naturalGas');
+        equipArr[10] = list.includes('sofa');
+        equipArr[11] = list.includes('deskAndChair');
+        equipArr[12] = list.includes('elevator');
+    };
+    // //concole.log(PictureList)
 
     const PicRemove = (file) => {
         const index = PictureList.indexOf(file);
         const newFileList = PictureList.slice();
         newFileList.splice(index, 1);
-        console.log(newFileList)
+        //concole.log(newFileList)
         setPictureList(newFileList)
         PicTemp.splice(index, 1)
     }
+    const FirstPicRemove = (file) => {
+        const index = firstPicFile.indexOf(file);
+        const newFileList = firstPicFile.slice();
+        newFileList.splice(index, 1);
+        //concole.log(newFileList)
+        setFirstPicFile(newFileList)
+        firstPicTemp.splice(index, 1)
+    }
+
     const AnnexRemove = (file) => {
         const index = AnnexList.indexOf(file);
         const newFileList = AnnexList.slice();
         newFileList.splice(index, 1);
-        console.log(newFileList)
+        //concole.log(newFileList)
         setAnnexList(newFileList)
         AnnexTemp.splice(index, 1);
     }
@@ -675,7 +696,7 @@ const HouseUpload = (prop) => {
             formData.append('photo', file);
         });
         setPicUploading(true)
-        console.log(formData.values())
+        //concole.log(formData.values())
 
         PicAnnexAxios.post(House_Pic_Auth, formData, {
             headers: {
@@ -683,10 +704,10 @@ const HouseUpload = (prop) => {
                 "x-token" : xToken
             }})
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 setPhotoData(response['data']['data'])
                 setAnnexEnable(true)
-                // console.log(response['data']['data'].map(temp => temp.split('/')[1]))
+                // //concole.log(response['data']['data'].map(temp => temp.split('/')[1]))
                 // PicData = [...PicData, ...response['data']['data'].map(temp => temp.split('/')[1])]
                 PicData = [...PicData, ...response['data']['data']]
             })
@@ -695,15 +716,49 @@ const HouseUpload = (prop) => {
                 setPicUploadCheck(true)
                 toast.success('照片上傳成功');
             })
-            .catch(() => {
-                toast.error('照片上傳失敗');
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error('照片上傳失敗')
             })
             .finally(() => {
                 setPicUploading(false)
             });
     };
-    // console.log(photoData, annexData)
+    // //concole.log(photoData, annexData)
 
+    const handleFirstPicUpload = () => {
+
+        const formData = new FormData();
+        firstPicFile.forEach(file => {
+            formData.append('photo', file);
+        });
+        setPicUploading(true)
+        //concole.log(formData.values())
+
+        PicAnnexAxios.post(House_Pic_Auth, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "x-token" : xToken
+            }})
+            .then( (response) => {
+                //concole.log(response)
+                setFirstPhotoData(response['data']['data'])
+                PicData[0] = response['data']['data'][0]
+            })
+            .then(() => {
+                // setPictureList([])
+                setPicUploadCheck(true)
+                toast.success('首圖照片上傳成功');
+            })
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error('照片上傳失敗')
+            })
+            .finally(() => {
+                setPicUploading(false)
+            });
+    };
+    //concole.log(PicData, firstPhotoData)
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -723,14 +778,14 @@ const HouseUpload = (prop) => {
             formData.append('annex', file);
         });
         setAnnexUploading(true)
-        console.log(AnnexList)
+        //concole.log(AnnexList)
         PicAnnexAxios.post(House_Annex_Auth, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 "x-token" : xToken
             }})
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 setAnnexData(response['data']['data'])
                 setFormDataEnable(true);
                 // AnnexData = [...AnnexData, ...response['data']['data'].map(temp => temp.split('/')[1])]
@@ -740,8 +795,9 @@ const HouseUpload = (prop) => {
                 // setAnnexList([])
                 toast.success('附件上傳成功');
             })
-            .catch(() => {
-                toast.error('附件上傳失敗');
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error('附件上傳失敗')
             })
             .finally(() => {
                 setAnnexUploading(false)
@@ -754,6 +810,13 @@ const HouseUpload = (prop) => {
         </div>
     );
 
+    const uploadFirstPicButton = (
+        <div>
+            <PlusOutlined/>
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </div>
+    );
+
     const uploadAnnexButton = (
         <div>
             <PlusOutlined/>
@@ -761,11 +824,29 @@ const HouseUpload = (prop) => {
         </div>
     );
 
-    // console.log(typeof(prop.defaultValue.floor))
+    // //concole.log(typeof(prop.defaultValue.floor))
+
+    const clearForm = () => {
+        PicTemp.splice(0, PicTemp.length)
+        AnnexTemp.splice(0, AnnexTemp.length)
+        TrafficArr.splice(0,  TrafficArr.length)
+        LifeArr.splice(0,  LifeArr.length)
+        EducationArr.splice(0, EducationArr.length)
+        PicData.splice(0, PicData.length)
+        AnnexData.splice(0, AnnexData.length)
+        form_photo.resetFields()
+        form_annex.resetFields()
+        form_firstPhoto.resetFields()
+        form.resetFields()
+        setHostPhone('')
+    }
+
+    //concole.log(firstPicTemp.length)
     return (
 
-        <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+        <div style={horizontalScrollDisabled}>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
+
             <Form
 
                 form={form_photo}
@@ -797,16 +878,34 @@ const HouseUpload = (prop) => {
                                         <List.Item
 
                                             actions={[
-                                                <Button icon={<DeleteOutlined />} onClick={() => {
-                                                    if(!delPic ) {
-                                                        PicData.splice(index, 1)
-                                                        showPic.splice(index, 1)
-                                                        setDelPic(true)
+                                                index !== 0 ?
+                                                    <Button  onClick={() => {
+                                                        //concole.log(Pic, index, PicData)
+                                                        let temp = PicData[0]
+                                                        PicData[0] = PicData[index]
+                                                        PicData[index] = temp
+                                                        //concole.log(PicData)
+                                                        toast.success('已設定新的首圖')
+                                                        // setEnableFirstPicChange(true)
                                                     }
-                                                }
-                                                }>
-                                                    delete
-                                                </Button>]}>
+                                                    }>
+                                                        設成首圖
+                                                    </Button>
+                                                    : []
+                                                ,
+                                                index === 0 ?
+                                                    <p style={{fontSize:'40px'}}>首圖</p>
+                                                    :
+                                                    <Button icon={<DeleteOutlined />} onClick={() => {
+                                                        if(!delPic ) {
+                                                            PicData.splice(index, 1)
+                                                            showPic.splice(index, 1)
+                                                            setDelPic(true)
+                                                        }
+                                                    }
+                                                    }>
+                                                        刪除
+                                                    </Button>]}>
                                             {/*{Pic}*/}
                                             {/*{'\u3000'.repeat(35)}*/}
                                             {/*<a href={PicPreURL+Pic} ><img src={PicPreURL+Pic} width={150} height={150} alt={Pic}/></a>*/}
@@ -828,14 +927,14 @@ const HouseUpload = (prop) => {
                                         maxCount={10-showPic.length}
                                         onRemove={PicRemove}
                                         onPreview={handlePreview}
-                                        accept={'.jpg, .png, .svg, .bmp, .jpeg'}
+                                        accept={'.jpg, .png, .heic, .bmp, .jpeg'}
                                         beforeUpload={file => {
-                                            console.log(file)
+                                            //concole.log(file)
 
                                             if(PicTemp.length < 10-showPic.length) {
                                                 const isImage = photoType.includes(file.type);
                                                 PicTemp.push(file)
-                                                console.log(PicTemp)
+                                                //concole.log(PicTemp)
                                                 if (!isImage) {
                                                     toast.error('不是圖片檔')
                                                 }else {
@@ -867,6 +966,72 @@ const HouseUpload = (prop) => {
 
                         </Col>
                     </Row>
+                    <Modal visible={enableFirstPicChange}
+                           title={'首圖更換'}
+                           onCancel={() => {
+                               setEnableFirstPicChange(false)
+                               firstPicTemp.splice(0, firstPicTemp.length)
+                               form_firstPhoto.resetFields()
+                           }}
+                           // onOk={updateFirstPic}
+                           footer={null}
+                           width={400}
+                    >
+
+                        <Form
+                            form={form_firstPhoto}
+                            className="PicUpload"
+                            onFinish={handleFirstPicUpload}
+                        >
+                            <Form.Item name="firstPhotoUpload">
+                                <div style={{'textAlign': 'center', }}>
+                                <Upload listType="picture-card"
+                                        maxCount={1}
+                                        accept={'.jpg, .png, .heic, .bmp, .jpeg'}
+                                        onPreview={handlePreview}
+                                        onRemove={FirstPicRemove}
+                                        beforeUpload={file => {
+                                            //concole.log(file)
+                                            firstPicTemp.splice(0, firstPicTemp.length)
+                                            const isImage = photoType.includes(file.type);
+                                            firstPicTemp.push(file)
+                                            //concole.log(firstPicTemp)
+                                            if (!isImage) {
+                                                toast.error('不是圖片檔')
+                                            }else {
+                                                setFirstPicFile(firstPicTemp)
+                                                //concole.log(firstPicTemp)
+                                                return false;
+                                            }
+
+                                            return isImage || Upload.LIST_IGNORE;
+                                        }}
+                                >
+                                    {firstPicTemp.length >= 1 ? null : uploadFirstPicButton}
+                                </Upload>
+                                <Button type="primary"
+                                        htmlType="submit"
+                                        className='PicUpload-button'
+                                        shape="round"
+                                        loading={PicUploading}
+                                        disabled={firstPicTemp.length === 0}
+                                    // onClick={() => message.success('照片上傳成功')}
+                                >
+                                    {PicUploading ? 'Uploading' : '提交照片'}
+                                </Button>
+                                <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handlePreviewCancel}>
+                                    <img
+                                        alt="example"
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        src={previewImage}
+                                    />
+                                </Modal>
+                                </div>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
                 </Form.Item>
                 <Form.Item>
                     <Row>
@@ -901,7 +1066,7 @@ const HouseUpload = (prop) => {
 
                         </Col>
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
-                            <Divider> 附件上傳 (房屋謄本 & 授權書， PDF or 圖片檔，可後補）</Divider>
+                            <Divider>附件上傳(房屋謄本&授權書，PDF or 圖片檔</Divider>
                         </Col>
                     </Row>
                     <Form.Item
@@ -938,15 +1103,15 @@ const HouseUpload = (prop) => {
                                         fileList={AnnexList['fileList']}
                                         maxCount={10}
                                         onRemove={AnnexRemove}
-                                        accept={'.pdf, .jpg, .png, .svg, .bmp, .jpeg'}
+                                        accept={'.pdf, .jpg, .png, .bmp, .jpeg'}
                                         beforeUpload={file => {
-                                            console.log(file)
+                                            //concole.log(file)
                                             if(AnnexTemp.length > 0) {
                                                 AnnexTemp.splice(0, AnnexTemp.length)
                                             }
                                             const isFile = annexType.includes(file.type);
                                             AnnexTemp.push(file)
-                                            console.log(AnnexTemp)
+                                            //concole.log(AnnexTemp)
                                             if (!isFile) {
                                                 toast.error(`${file.name} 不是 pdf 檔`);
                                             }else {
@@ -955,7 +1120,7 @@ const HouseUpload = (prop) => {
                                             }
 
                                             return isFile || Upload.LIST_IGNORE;
-                                            // console.log(file)
+                                            // //concole.log(file)
                                             // setAnnexList(
                                             //     [...AnnexList, file]
                                             // );
@@ -1020,6 +1185,7 @@ const HouseUpload = (prop) => {
                         "NO2" : prop.defaultValue?prop.defaultValue.houseNumber.number2:[],
                         "hostName": prop.defaultValue?prop.defaultValue.hostName:[],
                         "hostGender" :prop.defaultValue?prop.defaultValue.hostGender ? '先生' : '小姐':[],
+                        "hostPhone": prop.defaultValue?prop.defaultValue.hostPhone:[],
                         "totalFloor": prop.defaultValue?prop.defaultValue.totalFloor:[],
                         "floorNo2": prop.defaultValue?prop.defaultValue.floor2:[],
                         "floorNo1" : prop.defaultValue?FloorOptions[FloorCheck(prop.defaultValue.floor ,prop.defaultValue.remark)].value : [],
@@ -1067,6 +1233,7 @@ const HouseUpload = (prop) => {
                                 <Input placeholder=""
                                        size="large"
                                        style={{ width: '100%' }}
+                                       maxLength={20}
                                 />
                             </Form.Item>
                         </Col>
@@ -1163,17 +1330,17 @@ const HouseUpload = (prop) => {
                                                        },
                                                    ]}
                                         >
-                                            <Select size="large"
-                                                    id="area"
-                                                    value={selectArea}
-                                                    allowClear
-                                                    placeholder="區域"
-                                                    options={areaOptions}
-                                                    onChange={changeArea}
-                                                    style={{
-                                                        width: '100%',
-                                                    }}>
-                                            </Select>
+                                                <Select size="large"
+                                                        id="area"
+                                                        value={selectArea}
+                                                        allowClear
+                                                        placeholder="區域"
+                                                        options={areaOptions}
+                                                        onChange={changeArea}
+                                                        style={{
+                                                            width: '100%',
+                                                        }}>
+                                                </Select>
                                         </Form.Item>
                                     </Col>
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -1184,12 +1351,17 @@ const HouseUpload = (prop) => {
                                                            required: true,
                                                            message: '此欄位不能為空白',
                                                        },
+                                                       {
+                                                           pattern: /^[\u4e00-\u9fa5]+$/,
+                                                           message: '地址只能填寫中文'
+                                                       }
                                                    ]}
                                         >
                                             <Input size="large"
                                                    style={{
                                                        width: '100%',
                                                    }}
+                                                   // onChange={(e) => CheckAddressReg(e.target.value)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1220,6 +1392,12 @@ const HouseUpload = (prop) => {
                                         <Form.Item name="lane"
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   rules={[
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '只能填寫數字'
+                                                       }
+                                                   ]}
                                         >
 
                                             <Input size="large"
@@ -1233,6 +1411,12 @@ const HouseUpload = (prop) => {
                                         <Form.Item name="alley"
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   rules={[
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '只能填寫數字'
+                                                       }
+                                                   ]}
                                         >
                                             <Input size="large"
                                                    placeholder="非必填"
@@ -1249,6 +1433,10 @@ const HouseUpload = (prop) => {
                                                            required: true,
                                                            message: '此欄位不能為空白',
                                                        },
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '只能填寫數字'
+                                                       }
                                                    ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
@@ -1263,6 +1451,12 @@ const HouseUpload = (prop) => {
                                         <Form.Item name="NO2"
                                                    style={{ width: '100%' }}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
+                                                   rules={[
+                                                       {
+                                                           pattern: /^[0-9]*$/,
+                                                           message: '只能填寫數字'
+                                                       }
+                                                   ]}
                                         >
                                             <Input  size="large"
                                                     placeholder="   非必填"
@@ -1299,9 +1493,11 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={1}
+                                                     max={100}
                                                      size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="樓"
+                                                     onChange={setTotalLayer}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -1329,7 +1525,7 @@ const HouseUpload = (prop) => {
                                                 size={"large"}
                                                 style={{ width: '100%' }}
                                                 placeholder="樓層"
-                                                options={FloorOptions}
+                                                options={totalLayer===null?[{value:'請先填總樓層',disabled: true}] :FloorOptions.slice(0, totalLayer+4)}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1349,39 +1545,7 @@ const HouseUpload = (prop) => {
                             </Form.Item>
                         </Col>
                     </Row>
-                    {/*<Row>*/}
-                    {/*    <Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
-                    {/*    </Col>*/}
-                    {/*    <Col  xs={24} sm={18} md={18} lg={15} xl={12}>*/}
-
-                    {/*        <Row>*/}
-                    {/*            /!*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*!/*/}
-
-                    {/*            /!*</Col>*!/*/}
-                    {/*            <Col  xs={24} sm={24} md={24} lg={24} xl={24}>*/}
-                    {/*                <Form.Item*/}
-                    {/*                    name="floor"*/}
-                    {/*                    label="樓層"*/}
-                    {/*                    tooltip='-1 代表 B1， -2 代表 B2，頂層加蓋填頂樓樓層'*/}
-                    {/*                    rules={[*/}
-                    {/*                        {*/}
-                    {/*                            required: true,*/}
-                    {/*                            message: '此欄位不能為空白',*/}
-                    {/*                        },*/}
-                    {/*                    ]}*/}
-                    {/*                >*/}
-                    {/*                    <Select*/}
-                    {/*                        size={"large"}*/}
-                    {/*                        style={{ width: '100%' }}*/}
-                    {/*                        placeholder="樓層"*/}
-                    {/*                        options={FloorOptions}*/}
-                    {/*                    />*/}
-                    {/*                </Form.Item>*/}
-                    {/*            </Col>*/}
-                    {/*        </Row>*/}
-                    {/*    </Col>*/}
-                    {/*</Row>*/}
                     <Row>
                         <Col xs={24} sm={3} md={3} lg={4} xl={6}>
 
@@ -1398,6 +1562,7 @@ const HouseUpload = (prop) => {
                                                    style={{
                                                        width: '100%',
                                                    }}
+                                                   maxLength={20}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -1439,29 +1604,27 @@ const HouseUpload = (prop) => {
                                 label="屋主電話"
                                 rules={[
                                     {
-                                        required: false,
+                                        required: true,
                                         message: '手機號碼欄位不能空白',
                                     },
+                                    {
+                                        pattern: /^[0-9]*$/,
+                                        message: '電話只能填寫數字'
+                                    }
                                 ]}
                                 style={{ width: '100%' }}
 
                             >
-                                <>
                                     <Input
                                         // addonBefore={PhonePrefixSelector}
                                         style={{
                                             width: '100%',
                                         }}
                                         size="large"
-                                        placeholder='09xx-xxx-xxx'
-                                        value={hostPhone}
-                                        onChange={(e) => {
-                                            console.log(e.target.value)
-                                            setHostPhone((prevState) => normalizeInput(e.target.value, prevState))
-                                        }
-                                        }
+                                        placeholder='09xxxxxxxx'
+                                        // value={hostPhone}
+                                        maxLength={10}
                                     />
-                                </>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -1484,15 +1647,25 @@ const HouseUpload = (prop) => {
                                                     required: false,
                                                     message: 'Please input your Name!',
                                                 },
+                                                // {
+                                                //     pattern: /^[A-Za-z0-9]+$/ || /s/,
+                                                //     message: '房間號碼只能填寫英文與數字',
+                                                // },
                                             ]}
                                         >
-                                            <InputNumber placeholder=""
-                                                         style={{width: '100%'}}
-                                                         min={0}
-                                                         size="large"
-                                                // formatter={value => `${value} 公尺`}
-                                                         addonAfter=""
+                                            <Input size="large"
+                                                   placeholder="非必填"
+                                                   style={{width: '100%'}}
+                                                   maxLength={10}
+                                                   // suffix='巷'
                                             />
+                                            {/*<InputNumber placeholder=""*/}
+                                            {/*             style={{width: '100%'}}*/}
+                                            {/*             min={0}*/}
+                                            {/*             size="large"*/}
+                                            {/*    // formatter={value => `${value} 公尺`}*/}
+                                            {/*             addonAfter=""*/}
+                                            {/*/>*/}
                                         </Form.Item>
                                     </Col>
                                 </Row>
@@ -1533,6 +1706,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="房"
@@ -1547,6 +1721,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="廳"
@@ -1567,6 +1742,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="衛"
@@ -1581,6 +1757,7 @@ const HouseUpload = (prop) => {
                                             <InputNumber placeholder=""
                                                          style={{width: '100%'}}
                                                          min={0}
+                                                         max={10}
                                                          size="large"
                                                 // formatter={value => `${value} 公尺`}
                                                          addonAfter="陽台"
@@ -1617,6 +1794,7 @@ const HouseUpload = (prop) => {
                                         <InputNumber placeholder=""
                                                      style={{width: '100%'}}
                                                      min={0}
+                                                     max={99999999}
                                                      size="large"
                                             // formatter={value => `${value} 公尺`}
                                                      addonAfter="元/月"
@@ -1792,9 +1970,11 @@ const HouseUpload = (prop) => {
                                                        form_traffic.resetFields();
                                                        onTrafficCreate(values);
                                                    })
-                                                   .catch((info) => {
-                                                       console.log('Validate Failed:', info);
-                                                   });
+                                                   .catch( (error) => {
+                                                    showInternelErrorPageForMobile()
+                                                    // eslint-disable-next-line no-useless-concat
+                                                    toast.error('Validate Failed:' + 'info')
+                                                })
                                            }
                                            }
                                            onCancel={hideTrafficModal}>
@@ -1939,9 +2119,11 @@ const HouseUpload = (prop) => {
                                                        form_life.resetFields();
                                                        onLifeCreate(values);
                                                    })
-                                                   .catch((info) => {
-                                                       console.log('Validate Failed:', info);
-                                                   });
+                                                   .catch( (error) => {
+                                                    showInternelErrorPageForMobile()
+                                                    // eslint-disable-next-line no-useless-concat
+                                                    toast.error(error)
+                                                })
                                            }
                                            }
                                            onCancel={hideLifeModal}>
@@ -2088,7 +2270,7 @@ const HouseUpload = (prop) => {
                                                        onEduCreate(values);
                                                    })
                                                    .catch((info) => {
-                                                       console.log('Validate Failed:', info);
+                                                       //concole.log('Validate Failed:', info);
                                                    });
                                            }
                                            }
@@ -2162,7 +2344,7 @@ const HouseUpload = (prop) => {
                         <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                             <Form.Item
                                 // name="extraRequire"
-                                label="需求與許可"
+                                label="需求許可"
                                 rules={[
                                     {
                                         required: false,
@@ -2174,29 +2356,30 @@ const HouseUpload = (prop) => {
                                                 value={extraRequire}
                                                 onChange={onExtraRequireChange}
                                 >
-                                    <Row>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='pet'>養寵物</Checkbox>
+                                    <Row gutter={[16, 16]}>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='pet'><PetsIcon/><br/>養寵物</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='manager'>管理費</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='manager'><ManageFeeIcon/><br/>管理費</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='garbage'>垃圾費</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='garbage'><GarbageFeeIcon/><br/>垃圾費</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='smoke'>可抽菸</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='smoke'><CigaretteIcon/><br/>可抽菸</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='cook'>可開伙</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='cook'><CookIcon/><br/>可開火</Checkbox>
                                         </Col>
-                                        <Col span={2} xs={4} sm={4} md={4} lg={4} xl={4}>
-                                            <Checkbox value='parking'>停車位</Checkbox>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='parking'><ParkingIcon/><br/>停車位</Checkbox>
                                         </Col>
                                     </Row>
                                 </Checkbox.Group>
 
-                                <Form.Item>
+                                {(ShowHideManageFee || ShowHideGarbageFee) &&
+                                    <Form.Item>
                                     <Row justify="start">
                                         {/*<Col xs={24} sm={3} md={3} lg={4} xl={6}>*/}
 
@@ -2250,7 +2433,65 @@ const HouseUpload = (prop) => {
                                             }
                                         </Col>
                                     </Row>
-                                </Form.Item>
+                                </Form.Item>}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={3} md={3} lg={4} xl={6}>
+
+                        </Col>
+                        <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                            <Form.Item
+                                // name="equip"
+                                       label="提供設備"
+                            >
+                                <Checkbox.Group style={{ fontSize: '100%' ,width: '100%' }}
+                                                value={equipment}
+                                                onChange={onEquipmentChange}
+                                >
+                                    <Row gutter={[16, 16]}>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='airConditioner'><AirConditionerIcon/><br/>冷氣機</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='refrigerator'><RefrigeratorIcon/><br/>電冰箱</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='television'><TelevisionIcon/><br/>電視機</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='washMachine'><WashMachineIcon/><br/>洗衣機</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='bed'><BedIcon/><br/>床</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='closet'><ClosetIcon/><br/>衣櫥</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='tvProgram'><TvProgramIcon/><br/>第四台</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='network'><NetworkIcon/><br/>網路</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='waterHeater'><WaterHeaterIcon/><br/>熱水器</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='naturalGas'><NaturalGasIcon/><br/>天然氣</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='sofa'><SofaIcon/><br/>沙發</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='deskAndChair'><DeskAndChairIcon/><br/>桌椅</Checkbox>
+                                        </Col>
+                                        <Col span={4} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='elevator'><ElevatorIcon/><br/>電梯</Checkbox>
+                                        </Col>
+                                    </Row>
+                                </Checkbox.Group>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -2295,6 +2536,14 @@ const HouseUpload = (prop) => {
                                                 shape="round"
                                         >
                                             資料提交
+                                        </Button>
+                                        &nbsp;&nbsp;
+                                        <Button type="primary"
+                                                className='HouseData-button'
+                                                shape="round"
+                                                onClick={clearForm}
+                                        >
+                                            重新填寫
                                         </Button>
                                     </Col>
                                 </Row>

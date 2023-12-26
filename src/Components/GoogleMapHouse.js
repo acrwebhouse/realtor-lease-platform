@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, message, Alert, Checkbox} from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {config} from "../Setting/config";
 import {useParams} from "react-router-dom";
@@ -10,7 +9,7 @@ import {useParams} from "react-router-dom";
 const houseListUrl = 'house/getHouse'
 
 const defaultMapSource = "https://www.google.com/maps/embed/v1/place?key=" +config.GoogleMapKey + "&q="
-console.log(defaultMapSource)
+//concole.log(defaultMapSource)
 const aa= 'https://www.google.com/maps/embed/v1/place?key=AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE&q=25.037525,121.5637819999995'
 
 const GoogleMapHouse = (props) => {
@@ -18,7 +17,12 @@ const GoogleMapHouse = (props) => {
     const [init, setInit] = useState(true);
     const [house, setHouse ] = useState(null);
     const [MapSource, setMapSource] = useState('')
-    // console.log(house)
+    const [address] = useState(
+        {
+            lat : '',
+            lon : ""
+        }
+    )
 
     const getHouse = () => {
         let reqUrl = `${houseListUrl}?id=${id}&&isDelete=false`
@@ -36,6 +40,8 @@ const GoogleMapHouse = (props) => {
         if(response.data.status){
             const data = response.data.data
             setHouse(data)
+            address.lat = response.data.data.lat
+            address.lon = response.data.data.lon
         }
     }
 
@@ -48,38 +54,55 @@ const GoogleMapHouse = (props) => {
 
     useEffect(()=>{
         if(!init && house) {
-            console.log(house.houseNumber.alley, house.houseNumber.lane)
-            let houseExtraData = '';
-            if(house.houseNumber.lane) {
-                if(house.houseNumber.alley) {
-                    houseExtraData = house.address+house.houseNumber.lane+'巷' + house.houseNumber.alley+'弄' + house.houseNumber.number1+'號'
-                } else {
-                    houseExtraData = house.address+house.houseNumber.lane+'巷' + house.houseNumber.number1+'號'
-                }
+            if(address.lat && address.lat.length > 0) {
+                setMapSource(defaultMapSource+address.lat+", "+address.lon)
             } else {
-                houseExtraData = house.address+ house.houseNumber.number1+'號'
+                setMapSource(defaultMapSource+house.address)
             }
-            setMapSource(defaultMapSource+houseExtraData)
-            console.log(MapSource)
-            console.log(house.address)
-            console.log(houseExtraData)
+
+            //concole.log(MapSource)
             const main = document.getElementById('main')
             const mainWidth = main.offsetWidth
             main.style.height = mainWidth + 'px'
         }
     }, [init, house])
+    // useEffect(()=>{
+    //     if(!init && house) {
+    //         //concole.log(house.houseNumber.alley, house.houseNumber.lane)
+    //         let houseExtraData = '';
+    //         if(house.houseNumber.lane) {
+    //             if(house.houseNumber.alley) {
+    //                 houseExtraData = house.address+house.houseNumber.lane+'巷' + house.houseNumber.alley+'弄' + house.houseNumber.number1+'號'
+    //             } else {
+    //                 houseExtraData = house.address+house.houseNumber.lane+'巷' + house.houseNumber.number1+'號'
+    //             }
+    //         } else {
+    //             houseExtraData = house.address+ house.houseNumber.number1+'號'
+    //         }
+    //         setMapSource(defaultMapSource+houseExtraData)
+    //         //concole.log(MapSource)
+    //         //concole.log(house.address)
+    //         //concole.log(houseExtraData)
+    //         const main = document.getElementById('main')
+    //         const mainWidth = main.offsetWidth
+    //         main.style.height = mainWidth + 'px'
+    //     }
+    // }, [init, house])
 
+    //concole.log(house, address, MapSource)
     return (
-                <iframe
-                    id="main"
-                    width="100%"
-                    style={{border: "0"}}
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                    src={MapSource}
-                />
-
+        <div style={{width: "100%", overflow: "hidden", height: "100%"}}>
+            <iframe
+                id="main"
+                width="600"
+                style={{border: "0", marginTop: "-125px"}}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                src={MapSource}
+                // src={'https://www.google.com/maps/embed/v1/place?key=AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE&q=25.0564179, 121.5531218'}
+            />
+        </div>
     );
 };
 

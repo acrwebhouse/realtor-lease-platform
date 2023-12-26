@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 
 import {
@@ -11,6 +10,7 @@ import {
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const CompanyList = (props) => {
     let { id } = useParams();
@@ -71,11 +71,14 @@ const CompanyList = (props) => {
                 reqUrl,{}
             )
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 resolveCompantList(response)
                 // resolveMemberList(response)
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompantList(response){
@@ -112,7 +115,10 @@ const CompanyList = (props) => {
             }else{
                 toast.error('申請失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     const columns = [
@@ -189,7 +195,7 @@ const CompanyList = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>

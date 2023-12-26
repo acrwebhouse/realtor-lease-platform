@@ -18,13 +18,13 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import {CompanyAxios} from './axiosApi'
 import {
     useParams
   } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const applyState = ['初始狀態', '審核中', '正式員工', '審核失敗', '取消審核']
 
@@ -33,42 +33,45 @@ const CompanyApplyState = (props) => {
     const [init, setInit] = useState(true);
     const [employeeApplyData, setEmployeeApplyData] = useState('');
     const cancelApplyEmployeesUrl = '/employees/cancelApplyEmployees'
-    // console.log(JSON.stringify(props))
+    // //concole.log(JSON.stringify(props))
     useEffect(() => {
         if (init) {
             setInit(false)
             getCompanyApplyData()
         }
     }, )
-    console.log(employeeApplyData)
+    //concole.log(employeeApplyData)
     function getCompanyApplyData() {
         let reqUrl = `/user/getPersonalInfo`
         const xToken = cookie.load('x-token')
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status === true){
-                    console.log(response.data.data)
+                    //concole.log(response.data.data)
                     resolveCompanyApply(response.data.data)
                 }else{
                     toast.error('員工資訊取得失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompanyApply(list){
         for(let i = 0 ;i<list.employeesData.length; i++){
-            // console.log(list)
+            // //concole.log(list)
             if(list.companyId === list.employeesData[i].companyId){
-                console.log(list.employeesData[i].companyId)
+                //concole.log(list.employeesData[i].companyId)
                 const item = list.employeesData[i]
-                console.log(item)
+                //concole.log(item)
                 const data = {
                     name : item.companyData[0].name,
                     owner : item.companyData[0].owner,
@@ -94,21 +97,24 @@ const CompanyApplyState = (props) => {
         }
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 props.showCompanyListUI()
             }else{
                 toast.error('取消失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <div>
                 <Row>
                     <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>

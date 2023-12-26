@@ -7,6 +7,7 @@ import {
 import HouseDetail from "./HouseDetail";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const CompanyHouseDetail = (props) => {
     const { id } = useParams();
@@ -21,7 +22,7 @@ const CompanyHouseDetail = (props) => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
@@ -53,7 +54,10 @@ const CompanyHouseDetail = (props) => {
                 }
             }
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     const checkHousePermissions = (companyId) => {
@@ -73,7 +77,10 @@ const CompanyHouseDetail = (props) => {
                 
             }
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     useEffect(() => {
@@ -89,7 +96,7 @@ const CompanyHouseDetail = (props) => {
     }, )
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
            {
                isShow?(<HouseDetail isComapny = {true} setId = {id}></HouseDetail>):null
            } 

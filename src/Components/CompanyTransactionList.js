@@ -20,8 +20,7 @@ import {
     Statistic, Card, Form, Modal
 } from "antd";
 import cookie from 'react-cookies'
-import {HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
+import {CompanyAxios, HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
 import moment from 'moment';
 import {
     useParams
@@ -29,17 +28,34 @@ import {
 import {TableSkeleton} from "@ant-design/pro-skeleton";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
+import {showInternelErrorPageForMobile} from './CommonUtil'
+import {log} from "@craco/craco/lib/logger";
+
 const Transaction_Auth = 'transaction/getTransactionList'
 const editTransaction_Auth = 'transaction/editTransactionNoIncludeCompany'
-const removeTransaction_Auth = 'transaction/removeTransaction'
+const removeTransaction_Auth = '/transaction/editTransactionNoIncludeCompany'
+const cancelEditTransaction_Auth = '/transaction/editTransactionNoIncludeCompany'
 const { Panel } = Collapse;
 const dealYearMonth = {
     year: [],
     month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月',  ]
 };
 
+const formItemLayout = {
+    labelCol: {
+        xs: {span: 4},
+        sm: {span: 4}
+    },
+    wrapperCol: {
+        xs: {span: 20},
+        sm: {span: 20}
+    },
+}
+
+const transactionArray = []
+
 const CompanyTransactionList = (props) => {
-    console.log(props)
+    //concole.log(props)
     const cityOptions = [{ value: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
     const taipeiAreaOptions = [{ value: '區域不限' },{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
     const newTaipeiAreaOptions = [{ value: '區域不限' },{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
@@ -81,8 +97,8 @@ const CompanyTransactionList = (props) => {
         isDelete : 'false',
         minPrice : 0,
         maxPrice : '9999999999',
-        minServiceCharge : '',
-        maxServiceCharge : '',
+        minServiceCharge : 0,
+        maxServiceCharge : '999999999',
         minActualPrice : 0,
         maxActualPrice : '999999999',
         startTransactionDate : '',
@@ -106,28 +122,51 @@ const CompanyTransactionList = (props) => {
         transactionDate: '',
         startRentDate: '',
         endRentDate: '',
-        companyId: ''
+        companyId: '',
+        state: '',
+        edit: {
+            actualPrice: '',
+            serviceCharge: '',
+            transactionDate: '',
+            startRentDate: '',
+            endRentDate: '',
+        },
     });
     const [enableDel, setEnableDel] = useState(false);
     const [isShowDeleteAlert, SetIsShowDeleteAlert] = useState(false);
+    const [isCancelEdit, setIsCancelEdit] = useState(false)
+    const [isCancelDel, setIsCancelDel] = useState(false)
     const [delId, setDelId] = useState('');
-
+    const [transactionData, setTransactionData] = useState([])
+    const [transactionKey, setTransactionKey] = useState(null)
+    const [updateInitialValue, setUpdateInitialValue] = useState(false)
 
     useEffect(() => {
         if (init) {
             setInit(false)
-            props.checkEmployeeStateAndChangeMenu((result)=>{
-                if(result === true){
-                    setInit(false)
-                    setYears(() => new Date().getFullYear())
-                    setMonths(() => dealYearMonth.month[new Date().getMonth()])
-                    setEnableCheckYearMonth(true)
-                }else{
-                    toast.warning('員工權限變動，請重新進入選單')
-                }
-            })
+            setYears(() => new Date().getFullYear())
+            setMonths(() => dealYearMonth.month[new Date().getMonth()])
+            setEnableCheckYearMonth(true)
         }
     }, )
+    //concole.log(transactionArray)
+    useEffect(() => {
+        //concole.log(transactionKey, typeof(transactionKey) ==='number', transactionData[transactionKey])
+        if(updateInitialValue && typeof(transactionKey) === 'number' ){
+
+            form_deal.resetFields()
+            form_deal.setFieldsValue({
+                "dealPrice": (transactionArray && transactionArray.length > 0) ? transactionArray[transactionKey].actualPrice : null,
+                "servicePrice": (transactionArray && transactionArray.length>0) ? transactionArray[transactionKey].serviceCharge:null,
+                'dealDate': (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[0]):null,
+                'rentDate': [
+                    (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[1]):null,
+                    (transactionArray && transactionArray.length>0) ? moment(transactionArray[transactionKey].content[2]):null
+                ]
+            })
+            // setTransactionKey(null)
+        }
+    }, [updateInitialValue, transactionKey]);
     // useEffect(() => {
     //     if (init) {
     //         setInit(false)
@@ -150,51 +189,55 @@ const CompanyTransactionList = (props) => {
             editHousesTransactionList()
         }
     }, )
-    console.log(props.currentEmployeeData.rank)
+    //concole.log(props.currentEmployeeData.rank)
     const getHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
         const startDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/1'
         const endDate = years+'/'+`${dealYearMonth.month.indexOf(months)+1}`+'/31'
         // const startDate = '2022/12/1'
         // const endDate = '2022/12/31'
-        console.log(startDate, endDate)
-        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&companyId=${getTransactionArg.companyId}`
+        //concole.log(startDate, endDate)
+        let reqUrl = `${Transaction_Auth}?startTransactionDate=${startDate}&&endTransactionDate=${endDate}&&city=${getTransactionArg.city}&&area=${getTransactionArg.area}&&isDelete=${getTransactionArg.isDelete}&&companyId=${getTransactionArg.companyId}&&minServiceCharge=${getTransactionArg.minServiceCharge}&&maxServiceCharge=${getTransactionArg.maxServiceCharge}`
         if(props.currentEmployeeData.rank > 0) {
             reqUrl += `&&userId=${getTransactionArg.userId}`
         }
-        console.log(reqUrl)
-        UserAxios.get(
+        //concole.log(reqUrl)
+        CompanyAxios.get(
             reqUrl,{
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
             .then( (response) => {
-                console.log(response)
+                //concole.log(response)
+                setTransactionData(response.data.data)
+                transactionArray.splice(0, transactionArray.length)
                 resolveTransactionsList(response)
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveTransactionsList(response){
-        console.log(response.data, response.data.data)
-        console.log(moment(response.data.data[0].startRentDate).format('YYYY/MM/DD'))
+        //concole.log(response.data, response.data.data)
         let data = []
         let countTemp = 0;
         let priceTemp = 0;
-        console.log(data)
+        //concole.log(response.data.data)
         if(response.data && response.data.data){
             const items = response.data.data
             setTransactionsListDetail([])
             setTransactionsListDetail(items)
             for(let i = 0 ;i<items.length; i++){
-                if(items[i].houseData.length > 0 ) {
+                if(items[i].houseData.length > 0 && items[i].state > 1) {
                     countTemp += 1;
                     priceTemp += parseInt(items[i].serviceCharge);
-                    console.log(items[i])
+                    //concole.log(items[i])
                     const item = {
                         key: i,
                         transactionId : `${items[i]._id}`,
@@ -202,14 +245,32 @@ const CompanyTransactionList = (props) => {
                         serviceCharge: parseInt(`${items[i].serviceCharge}`),
                         content: [`${moment(items[i].transactionDate).format('YYYY/MM/DD')}`, `${moment(items[i].startRentDate).format('YYYY/MM/DD')}`, `${moment(items[i].endRentDate).format('YYYY/MM/DD')}`],
                         houseData: items[i].houseData[0],
-                        userData: items[i].userData[0]
-
+                        userData: items[i].userData[0],
+                        state: items[i].state,
+                        edit: items[i].edit,
                         // houseData: [items[i].houseData[0].name, items[i].houseData[0].price, items[i].houseData[0].hostName, items[i].houseData[0].hostGender, items[i].houseData[0].totalFloor, items[i].houseData[0].area]
+                    }
+                    if(items[i].state === 2) {
+                        item.submitEdit = false
+                    } else {
+                        item.submitEdit = true
+                    }
+                    if(items[i].state === 3) {
+                        item.submitDel = false
+                    } else {
+                        item.submitDel = true
+                    }
+                    if(items[i].state === 6 || items[i].state === 7) {
+                        item.applyRetry = true
+                    } else {
+                        item.applyRetry = false
                     }
 
                     data.push(item)
+                    transactionArray.push(item)
                 }
             }
+            //concole.log(data)
             setTransactions(data)
             setCaseCount(countTemp)
             setTotalPrice(priceTemp)
@@ -218,31 +279,158 @@ const CompanyTransactionList = (props) => {
     const editHousesTransactionList = () => {
         const xToken = cookie.load('x-token')
 
-        UserAxios.put(
+        CompanyAxios.put(
             editTransaction_Auth, editTransactionArg,{
                 headers:{
                     "content-type": "application/json",
                     "accept": "application/json",
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
             .then( (response) => {
-                console.log(response)
+                //concole.log('edit', response)
                 if(response.data.status) {
-                    toast.success('資料更新成功')
+                    toast.success('編輯審核已提交')
                     setEnableCheckYearMonth(true)
                 }
             })
-            .catch( (error) => message.error(error, 3))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
-    console.log(transactions)
-    console.log(dealYearMonth.year)
+    //concole.log(transactions)
+    //concole.log(dealYearMonth.year)
+
+    //cancel edit
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        //concole.log(xToken)
+        if (isCancelEdit) {
+             CompanyAxios.put(cancelEditTransaction_Auth,
+                {
+                    'id': transactionData[transactionKey]._id,
+                    'houseId' : transactionData[transactionKey].houseId,
+                    'userId' : transactionData[transactionKey].userId,
+                    'actualPrice': transactionData[transactionKey].actualPrice,
+                    'serviceCharge': transactionData[transactionKey].serviceCharge,
+                    'transactionDate' : moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"),
+                    'startRentDate': moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),
+                    'endRentDate': moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD"),
+                    'companyId': transactionData[transactionKey].companyId,
+                    'edit': {
+
+                    },
+                    'state': 4,
+                }
+                , {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        'x-token':xToken
+                    }
+                }).then((response) => {
+                 //concole.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+
+                 if(response.data.status) {
+                    setIsCancelEdit(false)
+                    getHousesTransactionList()
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [isCancelEdit])
+
+    //remove transaction
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        //concole.log(xToken)
+        if (enableDel) {
+            CompanyAxios.put(removeTransaction_Auth,
+                {
+                    'id': transactionData[transactionKey]._id,
+                    'houseId' : transactionData[transactionKey].houseId,
+                    'userId' : transactionData[transactionKey].userId,
+                    'actualPrice': transactionData[transactionKey].actualPrice,
+                    'serviceCharge': transactionData[transactionKey].serviceCharge,
+                    'transactionDate' : moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"),
+                    'startRentDate': moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),
+                    'endRentDate': moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD"),
+                    'companyId': transactionData[transactionKey].companyId,
+                    'edit': {
+
+                    },
+                    'state': 3,
+                }
+                , {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        'x-token':xToken
+                    }
+                }).then((response) => {
+                //concole.log('del', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+                if(response.data.status) {
+
+                    setEnableDel(false)
+                    SetIsShowDeleteAlert(false)
+                    getHousesTransactionList()
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [enableDel])
+
+    //cancel Del
+    useEffect(() => {
+        const xToken = cookie.load('x-token')
+        //concole.log(xToken)
+        if (isCancelDel) {
+            CompanyAxios.put(cancelEditTransaction_Auth,
+                {
+                    'id': transactionData[transactionKey]._id,
+                    'houseId' : transactionData[transactionKey].houseId,
+                    'userId' : transactionData[transactionKey].userId,
+                    'actualPrice': transactionData[transactionKey].actualPrice,
+                    'serviceCharge': transactionData[transactionKey].serviceCharge,
+                    'transactionDate' : moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"),
+                    'startRentDate': moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),
+                    'endRentDate': moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD"),
+                    'companyId': transactionData[transactionKey].companyId,
+                    'edit': {
+
+                    },
+                    'state': 4,
+                }
+                , {
+                    headers: {
+                        "content-type": "application/json",
+                        "accept": "application/json",
+                        'x-token':xToken
+                    }
+                }).then((response) => {
+                //concole.log('cancel', response, moment(transactionData[transactionKey].transactionDate).format("YYYY/MM/DD"), moment(transactionData[transactionKey].startRentDate).format("YYYY/MM/DD"),moment(transactionData[transactionKey].endRentDate).format("YYYY/MM/DD") )
+                if(response.data.status) {
+                    setIsCancelDel(false)
+                    SetIsShowDeleteAlert(false)
+                    getHousesTransactionList()
+                }
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(`${error}`)
+            })
+        }
+    }, [isCancelDel])
 
     const checkYearMonth = () => {
         let year = new Date().getFullYear()
         for (let i=year; i >= 2022; i--) {
-            console.log(i)
+            //concole.log(i)
             if(dealYearMonth.year.indexOf(i) < 0) {
                 dealYearMonth.year.push(i)
             }
@@ -254,11 +442,11 @@ const CompanyTransactionList = (props) => {
         setTransactions([])
         setMaxValue('')
         setMinValue('')
-        console.log(value)
+        //concole.log(value)
         setCaseCount(0)
         setTotalPrice(0)
     };
-    console.log(months)
+    // //concole.log(months)
     const handleMonthChange = (value) => {
         setMonths(dealYearMonth.month[dealYearMonth.month.indexOf(value)]);
         setEnableCheckYearMonth(true)
@@ -268,7 +456,7 @@ const CompanyTransactionList = (props) => {
         setCaseCount(0)
         setTotalPrice(0)
     };
-    console.log(transactions)
+    // //concole.log(transactions)
 
     function changeCity(city) {
         setSelectArea(null)
@@ -371,7 +559,7 @@ const CompanyTransactionList = (props) => {
     }
 
     const setMaxPrice = (e) => {
-        console.log(e.target.value)
+        //concole.log(e.target.value)
         setMaxValue(e.target.value)
         if(e.target.value) {
             getTransactionArg.maxServiceCharge = parseInt(e.target.value)
@@ -385,11 +573,11 @@ const CompanyTransactionList = (props) => {
         setCaseCount(0)
         setTotalPrice(0)
     }
-    console.log(getTransactionArg)
+    //concole.log(getTransactionArg)
 
     const editTransactionData = (index) => {
         setEnableEditModal(true)
-        console.log(transactions[index])
+        //concole.log(transactions[index])
         editTransactionArg.id = transactions[index].transactionId
         editTransactionArg.houseId = transactions[index].houseData._id
         editTransactionArg.userId = transactions[index].houseData.owner
@@ -399,17 +587,20 @@ const CompanyTransactionList = (props) => {
         editTransactionArg.startRentDate = transactions[index].content[1]
         editTransactionArg.endRentDate = transactions[index].content[2]
         editTransactionArg.companyId = transactions[index].houseData.belongId
-
+        editTransactionArg.state = transactions[index].state
     }
-    console.log(editTransactionArg)
+    //concole.log(editTransactionArg)
     const handleDealData = (value) => {
-        console.log(value)
-        console.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
-        editTransactionArg.transactionDate = value.dealDate.format("YYYY/MM/DD")
-        editTransactionArg.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
-        editTransactionArg.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
-        {editTransactionArg.actualPrice = props.currentEmployeeData.rank === 0 ?parseInt(value.dealPrice) : editTransactionArg.actualPrice }
-        {editTransactionArg.serviceCharge = props.currentEmployeeData.rank === 0 ? parseInt(value.servicePrice) : editTransactionArg.serviceCharge}
+        //concole.log(value)
+        //concole.log(value.dealDate.format("YYYY/MM/DD"), value.rentDate[0].format("YYYY/MM/DD"), value.rentDate[1].format("YYYY/MM/DD"))
+        editTransactionArg.edit.transactionDate = value.dealDate.format("YYYY/MM/DD")
+        editTransactionArg.edit.startRentDate = value.rentDate[0].format("YYYY/MM/DD")
+        editTransactionArg.edit.endRentDate = value.rentDate[1].format("YYYY/MM/DD")
+        // {editTransactionArg.actualPrice = props.currentEmployeeData.rank === 0 ?parseInt(value.dealPrice) : editTransactionArg.actualPrice }
+        // {editTransactionArg.serviceCharge = props.currentEmployeeData.rank === 0 ? parseInt(value.servicePrice) : editTransactionArg.serviceCharge}
+        editTransactionArg.edit.actualPrice = parseInt(value.dealPrice)
+        editTransactionArg.edit.serviceCharge = parseInt(value.servicePrice)
+        editTransactionArg.state = 2
         setEnableEditModal(false)
         setEnableEdit(true)
         form_deal.resetFields()
@@ -423,35 +614,40 @@ const CompanyTransactionList = (props) => {
         SetIsShowDeleteAlert(false)
     }
 
-    //delete
-    useEffect(() => {
-        const xToken = cookie.load('x-token')
-        let reqUrl = `${removeTransaction_Auth}?companyId=${props.currentEmployeeData.companyId}`
-        if(enableDel) {
-            UserAxios.delete(reqUrl, {
-                headers: {
-                    "content-type": "application/json",
-                    "accept": "application/json",
-                    "x-token" : xToken,
-                },
-                data: {"ids" : [delId]}
-            }).then((response) => {
-                console.log(response)
-                if(response.data.status === true){
-                    toast.success('刪除成功');
-                    // setTimeout(()=>{
-                    //     window.location.href = window.location.origin;
-                    // },3000);
-                    SetIsShowDeleteAlert(false)
-                    setEnableCheckYearMonth(true)
-                }else{
-                    toast.error(response.data.data)
-                }
-            })
-                .catch( (error) => toast.error(error))
+    const stateCheck = (state) => {
+        switch (state) {
+            case 2 :
+                return '編輯審核中'
+            case 3 :
+                return '刪除審核中'
+            case 4 :
+                return '正式資料'
+            case 6 :
+                return '編輯審核失敗'
+            case 7 :
+                return '刪除審核失敗'
+            default :
+                return null
         }
-    }, [enableDel])
-    console.log(delId)
+    }
+
+    const stateColorCheck = (state) => {
+        switch (state) {
+            case 2 :
+                return '#FF8E16'
+            case 3 :
+                return '#FF8E16'
+            case 4 :
+                return '#000000'
+            case 6 :
+                return '#FF0000'
+            case 7 :
+                return '#FF0000'
+            default :
+                return null
+        }
+    }
+
     return (
         <div>
             {/*{JSON.stringify(props.currentEmployeeData)}*/}
@@ -479,11 +675,11 @@ const CompanyTransactionList = (props) => {
                 ):null
             }
             <br/>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Divider>成交紀錄</Divider>
-            <Row>
+            <Row justify="center" align="top">
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
+                <Col  xs={23} sm={18} md={18} lg={15} xl={12}>
                     <Select
                         defaultValue={years}
                         value={years}
@@ -504,39 +700,48 @@ const CompanyTransactionList = (props) => {
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             </Row>
             <br/>
-            <Row>
+            <Row justify="center" align="top">
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={24} sm={9} md={9} lg={8} xl={6}>
+                <Col  xs={23} sm={18} md={18} lg={15} xl={12}>
                     服務費：
-                    <Input id="minPrice" size={size} defaultValue={minValue} onChange={setMinPrice} placeholder="最低"  style={{
-                        width: '37%',
-                    }}>
-                    </Input>
-                    &nbsp;&nbsp;-&nbsp;&nbsp;
-                    <Input id="maxPrice" size={size} defaultValue={maxValue} onChange={setMaxPrice} placeholder="最高"  style={{
-                        width: '37%',
-                    }}>
-                    </Input>
                 </Col>
-                <Col  xs={11} sm={5} md={5} lg={4} xl={3}>
-                    <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
-                        width: '100%',
-                    }}>
-                    </Select>
-                </Col>
-                &nbsp;&nbsp;
-                <Col  xs={12} sm={5} md={5} lg={4} xl={3}>
-                    <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
-                        width: '100%',
-                    }}>
-                    </Select>
-                </Col>
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            </Row>
+            <Row justify="center" align="top">
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={23} sm={18} md={18} lg={15} xl={12}>
 
+                    <Input id="minPrice" size={size} defaultValue={minValue} onChange={setMinPrice} placeholder="最低"  style={{
+                        width: '50%',
+                    }}>
+                    </Input>
+                    {/*&nbsp;&nbsp;-&nbsp;&nbsp;*/}
+                    <Input id="maxPrice" size={size} defaultValue={maxValue} onChange={setMaxPrice} placeholder="最高"  style={{
+                        width: '50%',
+                    }}>
+                    </Input>
+                </Col>
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            </Row>
+
+            <Row justify="center" align="top">
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col xs={23} sm={18} md={18} lg={15} xl={12}>
+                    <Select allowClear id="citySelect" placeholder="縣市" size={size} options={cityOptions} onChange={changeCity} style={{
+                        width: '50%',
+                    }}>
+                    </Select>
+                    <Select id="area" value={selectArea}  allowClear placeholder="區域" size={size} options={areaOptions} onChange={changeArea} style={{
+                        width: '50%',
+                    }}>
+                    </Select>
+                </Col>
+                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             </Row>
             <br/>
-            <Row>
+            <Row justify="center" align="left">
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
-                <Col  xs={6} sm={5} md={5} lg={4} xl={3}>
+                <Col  xs={5} sm={5} md={5} lg={4} xl={3}>
                     <Button type="primary" onClick={showSortResult} style={{
                         width: '100%',
                         height: '40px',
@@ -545,7 +750,7 @@ const CompanyTransactionList = (props) => {
                         搜尋
                     </Button>
                 </Col>
-                <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                <Col  xs={18} sm={16} md={16} lg={16} xl={15}></Col>
             </Row>
             <br/>
             <Row>
@@ -557,7 +762,7 @@ const CompanyTransactionList = (props) => {
                 </Col>
                 <Col  xs={12} sm={9} md={9} lg={7} xl={6}>
                     <Card>
-                        <Statistic title="當月總收入" value={totalPrice} suffix="元" />
+                        <Statistic title="當月總收入" value={isNaN(totalPrice)? [] : totalPrice} suffix="元" />
                     </Card>
                 </Col>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
@@ -568,41 +773,185 @@ const CompanyTransactionList = (props) => {
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                         <Collapse defaultActiveKey={['0']}>
                             {transactions.map((data, index) => (
-                                <Panel header={'【'+(index+1)+'】'+data.houseData.name} key={index}>
-                                    <Descriptions title="詳細資料" bordered>
-                                        <Descriptions.Item label="原始價" span={1}>{data.houseData.price + ' 元'}</Descriptions.Item>
-                                        <Descriptions.Item label="成交價" span={1}>{data.actualPrice + ' 元'}</Descriptions.Item>
-                                        <Descriptions.Item label="服務費" span={1}>{data.serviceCharge + ' 元'}</Descriptions.Item>
-                                        <Descriptions.Item label="成交日" span={1}>{data.content[0]}</Descriptions.Item>
-                                        <Descriptions.Item label="起租日" span={1}>{data.content[1]}</Descriptions.Item>
-                                        <Descriptions.Item label="結租日" span={1}>{data.content[2]}</Descriptions.Item>
-                                        <Descriptions.Item label="城市" span={1.5}>{data.houseData.city}</Descriptions.Item>
-                                        <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
-                                        <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
-                                        <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
-                                        <Descriptions.Item label="負責房仲" span={3}>
-                                            {'姓名 : ' + data.userData.name}
-                                            <br />
-                                            {'信箱 : ' + data.userData.mail}
-                                            <br />
-                                            {'電話 : ' + data.userData.phone}
+                                <Panel header={'【'+(index+1)+'】- '+ `${data.houseData.name} - ${data.houseData.city} - ${data.actualPrice}元 - ${data.userData?data.userData.name:[]}`}
+                                       key={index}
+                                       extra={data.state === 2?
+                                        <div>
+                                            <a onClick={(event) => {
 
-                                        </Descriptions.Item>
-                                    </Descriptions>
-                                    <br/>
-                                    <Button type="primary" style={{width: '70px', backgroundColor: '#00cc00'}} onClick={() => editTransactionData(index)}>編輯</Button>
-                                    &nbsp;
-                                    {props.currentEmployeeData.rank === 0?<Button type="primary"
-                                            disabled={isShowDeleteAlert}
-                                            onClick={() =>{
-                                                SetIsShowDeleteAlert(true)
-                                                setDelId(transactions[index].transactionId)
-                                            }}
-                                            danger
-                                            style={{width: '70px'}}
-                                    >
-                                        刪除
-                                    </Button> : []}
+                                                Modal.info({
+                                                    // title: '編輯結果',
+                                                    content:
+                                                        <div>
+                                                            <Descriptions size={'small'} title="變更資料" bordered>
+                                                                <Descriptions.Item label="成交價" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.actualPrice} 元</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.actualPrice} 元</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="服務費" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.serviceCharge} 元</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.serviceCharge} 元</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="成交日" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[0]}</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.transactionDate}</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="起租日" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[1]}</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.startRentDate}</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                                <Descriptions.Item label="結租日" span={3}>
+                                                                    <div>
+                                                                        <div style={{width:'80px',textAlign:'center' ,display:'inline-block'}}>{data.content[2]}</div>
+                                                                        <div style={{width:'20px', textAlign:'center' ,display:'inline-block'}}>⇨</div>
+                                                                        <div style={{width:'80px', textAlign:'center',display:'inline-block'}}>{data.edit.endRentDate}</div>
+                                                                    </div>
+                                                                </Descriptions.Item>
+                                                            </Descriptions>
+                                                        </div>,
+                                                    icon: [] ,
+                                                    okText: '確定',
+                                                    width: '430px',
+                                                    centered: 'true'
+                                                });
+                                                // setShowEditResultModal(true)
+                                                //concole.log("Hello")
+                                                // If you don't want click extra trigger collapse, you can prevent this:
+                                                event.stopPropagation();
+                                            }}>
+                                                變更資料
+                                            </a>
+                                        </div>
+                                           :
+                                           null
+                                       }
+                                >
+                                        <div>
+                                            <Descriptions title="詳細資料" bordered>
+
+                                                <Descriptions.Item label="原始價" span={1}>{data.houseData.price + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="成交價" span={1}>{data.actualPrice + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="服務費" span={1}>{(isNaN(data.serviceCharge) ? '異常' : data.serviceCharge) + ' 元'}</Descriptions.Item>
+                                                <Descriptions.Item label="成交日" span={1}>{data.content[0]}</Descriptions.Item>
+                                                <Descriptions.Item label="起租日" span={1}>{data.content[1]}</Descriptions.Item>
+                                                <Descriptions.Item label="結租日" span={1}>{data.content[2]}</Descriptions.Item>
+                                                <Descriptions.Item label="城市" span={1.5}>{data.houseData.city}</Descriptions.Item>
+                                                <Descriptions.Item label="區域" span={1.5}>{data.houseData.area}</Descriptions.Item>
+                                                <Descriptions.Item label="屋主" span={3}>{data.houseData.hostName+`${data.houseData.hostGender? ' 先生' : ' 小姐'}`}</Descriptions.Item>
+                                                <Descriptions.Item label="總樓層" span={3}>{data.houseData.totalFloor+ ' 樓'}</Descriptions.Item>
+                                                <Descriptions.Item label="負責房仲" span={3}>
+                                                    {`姓名 : ${data.userData?data.userData.name:'無'}`}
+                                                    <br />
+                                                    {`信箱 : ${data.userData?data.userData.mail:'無'}`}
+                                                    <br />
+                                                    {`電話 : ${data.userData?data.userData.phone:'無'}`}
+                                                </Descriptions.Item>
+                                                <Descriptions.Item label="狀態" span={3}><div style={{color: stateColorCheck(data.state)}}>{stateCheck(data.state)}</div></Descriptions.Item>
+                                            </Descriptions>
+                                            <br/>
+                                            <Button
+                                                style={{width: '90px',
+                                                    color:'#FFFFFF',
+                                                    backgroundColor:'#FF9A16',
+                                                    borderColor:'#FF9A16',
+                                                    display: data.applyRetry ?  null : 'none'
+                                                }}
+                                                onClick={() => {
+                                                    //concole.log(index)
+                                                    setTransactionKey(index)
+                                                    setIsCancelEdit(true)
+                                                }}
+                                            >
+                                                重新申請
+                                            </Button>
+                                            <Button disabled={!data.submitEdit}
+                                                    style={{width: '70px',
+                                                        backgroundColor: data.submitEdit?'#00CC00':'',
+                                                        borderColor: data.submitEdit?'#00CC00':'',
+                                                        color:data.submitEdit?'#FFFFFF':'',
+                                                        display: data.applyRetry? 'none' : (data.submitDel? null : 'none')
+                                                    }}
+                                                    onClick={() => {
+                                                        editTransactionData(index)
+                                                        setTransactionKey(index)
+                                                        setUpdateInitialValue(true)
+                                                        //concole.log(index)
+                                                    }}>
+                                                { data.submitEdit ? '編輯' : '申請中'}
+                                            </Button>
+                                            &nbsp;
+                                            {data.submitEdit
+                                                ?
+                                               []
+                                                :
+                                                <span>
+                                                &nbsp;
+                                                    <Button type="primary"
+                                                            onClick={() => {
+                                                                //concole.log(index)
+                                                                setTransactionKey(index)
+                                                                setIsCancelEdit(true)
+                                                            }}
+                                                            style={{
+                                                                width: '90px',
+                                                                backgroundColor: '#FF0000',
+                                                                borderColor: '#FF0000'
+                                                            }}>
+                                                        取消申請
+                                                    </Button>
+                                                </span>
+                                            }
+                                            <Button disabled={isShowDeleteAlert? isShowDeleteAlert : !data.submitDel}
+                                                    onClick={() => {
+                                                        setTransactionKey(index)
+                                                        SetIsShowDeleteAlert(true)
+                                                        setDelId(transactions[index].transactionId)
+                                                        //concole.log(index)
+                                                    }}
+                                                    style={{width: '70px',
+                                                        backgroundColor: isShowDeleteAlert?'':data.submitDel?'#FF0000':'',
+                                                        borderColor: isShowDeleteAlert?'':data.submitDel?'#FF0000':'',
+                                                        color:isShowDeleteAlert?'':data.submitDel?'#FFFFFF':'',
+                                                        display: data.applyRetry? 'none' : (data.submitEdit? null : 'none')
+                                                    }}
+                                            >
+                                                { data.submitDel ? '刪除' : '申請中'}
+                                            </Button>
+                                            {data.submitDel
+                                                ?
+                                                []
+                                                :
+                                                <span>
+                                                &nbsp;
+                                                    <Button type="primary"
+                                                            onClick={() => {
+                                                                //concole.log(index)
+                                                                setTransactionKey(index)
+                                                                setIsCancelDel(true)
+                                                            }}
+                                                            style={{
+                                                                width: '90px',
+                                                                backgroundColor: '#FF0000',
+                                                                borderColor: '#FF0000'
+                                                            }}>
+                                                        取消申請
+                                                    </Button>
+                                                </span>
+                                            }
+
+                                        </div>
                                 </Panel>
                             ))}
                         </Collapse>
@@ -611,7 +960,6 @@ const CompanyTransactionList = (props) => {
             </Row>
             <Modal  title=""
                     visible={enableEditModal}
-                // onCancel={() => setEnableDealForm(false)}
                     closable={false}
                     footer={[]}
             >
@@ -620,44 +968,54 @@ const CompanyTransactionList = (props) => {
                       name="dealForm"
                       onFinish={handleDealData}
                       scrollToFirstError
+                      initialValues={{
+                          "dealPrice":  null,
+                          // "servicePrice": transactionArray && transactionArray.length>0 ? transactionArray[transactionKey].serviceCharge:null,
+                          // 'dealDate': moment(data.content[0]),
+                          // 'rentDate': [moment(data.content[1]), moment(data.content[2])]
+                          }}
+                      {...formItemLayout}
                 >
-                    {props.currentEmployeeData.rank === 0?
-                        <div>
-                            <Form.Item
-                                // name="TrafficType"
-                                name="dealPrice"
-                                label="成交價："
-                                rules={[
-                                    {
-                                        required: true,
-                                    },
-                                ]}
-                            >
-                                <Input id="dealPrice" style={{
-                                    width: '100%',
-                                }}>
-                                </Input>
-                            </Form.Item>
-                            <Form.Item
-                                // name="TrafficType"
-                                name="servicePrice"
-                                label="服務費："
-                                rules={[
-                                    {
-                                        required: true,
-                                    },
-                                ]}
-                            >
-                                <Input id="servicePrice" style={{
-                                    width: '100%',
-                                }}>
-                                </Input>
-                            </Form.Item>
-                        </div>
-
-                        :
-                        []
-                    }
+                    <div>
+                        <Form.Item
+                            // name="TrafficType"
+                            name="dealPrice"
+                            label="成交價："
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                                {
+                                    pattern: /^[0-9]+$/,
+                                    message: '只能填寫數字'
+                                }
+                            ]}
+                        >
+                            <Input id="dealPrice" style={{
+                                width: '100%',
+                            }} maxlength={6}>
+                            </Input>
+                        </Form.Item>
+                        <Form.Item
+                            // name="TrafficType"
+                            name="servicePrice"
+                            label="服務費："
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                                {
+                                    pattern: /^[0-9]+$/,
+                                    message: '只能填寫數字'
+                                }
+                            ]}
+                        >
+                            <Input id="servicePrice" style={{
+                                width: '100%',
+                            }} maxlength={6}>
+                            </Input>
+                        </Form.Item>
+                    </div>
                     <Form.Item
                         // name="TrafficType"
                         name="dealDate"
@@ -693,6 +1051,7 @@ const CompanyTransactionList = (props) => {
                                 key="submit"
                                 htmlType="submit"
                                 style={{width: '50%'}}
+                            // onClick={(x) => //concole.log(x)}
                         >
                             {/*Submit*/}
                             送出
@@ -701,17 +1060,15 @@ const CompanyTransactionList = (props) => {
                         <Button type="primary"
                                 shape="round"
                                 onClick={() => {
-                                    form_deal.resetFields()
+                                    // form_deal.resetFields()
                                     setEnableEditModal(false)
                                 }}
-                                style={{width: '50%', backgroundColor:'red'}}
+                                style={{width: '50%', backgroundColor:'red', borderColor: 'red'}}
                         >
                             取消
                         </Button>
                     </div>
-
                 </Form>
-
             </Modal>
         </div>
     );

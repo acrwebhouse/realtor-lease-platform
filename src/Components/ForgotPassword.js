@@ -24,15 +24,15 @@ const ForgotPassword = (props) => {
     }, [initReset, form, setIsReset])
 
     const onFinish =  (values) => {
-        console.log('Success:', values);
-        // console.log(values['AccountOrEmail'])
+        //concole.log('Success:', values);
+        // //concole.log(values['AccountOrEmail'])
         setAccountOrEmail(values['AccountOrEmail'])
         setEnableResetPW(true);
-        console.log(accountOrEmail)
+        //concole.log(accountOrEmail)
     };
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //concole.log('Failed:', errorInfo);
     };
 
     const ResetPasswordCancel = () => {
@@ -45,17 +45,17 @@ const ForgotPassword = (props) => {
     }
 
     useEffect(() => {
-        console.log(accountOrEmail)
-        console.log(EnableResetPW)
+        //concole.log(accountOrEmail)
+        //concole.log(EnableResetPW)
         if (EnableResetPW && (accountOrEmail !== undefined) ) {
-            console.log(SendResetPassword_Auth+'?accountOrMail='+accountOrEmail)
+            //concole.log(SendResetPassword_Auth+'?accountOrMail='+accountOrEmail)
             LoginRegisterAxios.get(SendResetPassword_Auth+'?accountOrMail='+accountOrEmail, {
                 headers: {
                     "accept": "application/json",
                 }
             })
                 .then( (response) =>  {
-                    console.log(response)
+                    //concole.log(response)
                     if(response.data.status) {
                         toast.success('請至郵件信箱進行重置密碼的設定')
                     }else {
@@ -73,7 +73,7 @@ const ForgotPassword = (props) => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Form
                 form={form}
                 name="normal_login"

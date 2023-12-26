@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { Button, Menu} from "antd";
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
-import {CollectAxios} from './axiosApi'
-import { UserAxios} from './axiosApi'
+import {LoginRegisterAxios,CollectAxios} from './axiosApi'
+
 import Icon,{
   CloudUploadOutlined,
   HomeFilled ,
@@ -37,14 +36,28 @@ import ReserveHouse from "./ReserveHouse";
 
 import CompanyApply from "./CompanyApply";
 import CompanyApplyList from "./CompanyApplyList";
+import CompanyApprovalList from "./CompanyApprovalList";
 import CompanyEmployeeInfo from "./CompanyEmployeeInfo";
 import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
 import CompanyEmployeesList from "./CompanyEmployeesList";
 import CompanyTransactionList from "./CompanyTransactionList";
+import CompanyObjectManage from "./CompanyObjectManage";
 import {getCurrentEmployee} from './CompanyCommon'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+    useParams,
+    useLocation
+  } from "react-router-dom";
+import {showInternelErrorPageForMobile,isIos} from './CommonUtil'
+
+import {refreshXToken,xRefreshTokenName,removeToken,getPersonalInfo} from './Auth'
+
+import {eventBus,eventName} from './EventBus';
+
+import {errorCode} from './Error';
+import {LogoIcon} from "./Equipment";
 
 const collectAccessTimeUrl = 'collect/accessTime'
 
@@ -53,7 +66,7 @@ const Main = () => {
     const [showMenuFoldOutlined, setShowMenuFoldOutlined] = useState('none');
     const [showMenuUnfoldOutlined, setShowMenuUnfoldOutlined] = useState('flex');
     const [isShowLoginSignIn, setIsShowLoginSignIn] = useState(false);
-    const [isShowHousesList, setIsShowHousesList] = useState(true);
+    const [isShowHousesList, setIsShowHousesList] = useState(false);
     const [isShowMyHousesList, setIsShowMyHousesList] = useState(false);
     const [isShowUploadHouse, setIsShowUploadHouse] = useState(false);
     const [isShowMemberList, setIsShowMemberList] = useState(false);
@@ -64,22 +77,31 @@ const Main = () => {
     const [isShowRelativeLink, setIsShowRelativeLink] = useState(false);
 
     const [isShowCompanyApply, setIsShowCompanyApply] = useState(false);
-    const [isShowCompanyApplyList, setIsShowCompanyApplyList] = useState(false);
+    // const [isShowCompanyApplyList, setIsShowCompanyApplyList] = useState(false);
+    const [isShowCompanyApprovalList, setIsShowCompanyApprovalList] = useState(false);
     const [isShowCompanyEmployeeInfo, setIsShowCompanyEmployeeInfo] = useState(false);
     const [isShowCompanyHouseList, setIsShowCompanyHouseList] = useState(false);
     const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
+    const [isShowCompanyObjectManage, setIsShowCompanyObjectManage] = useState(false);
     
     const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
-    const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
-
+    // const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
+    const [isShowCompanyApprovalListMenu, setIsShowCompanyApprovalListMenu] = useState(false);
+    const [isShowCompanyHouseListMenu, setIsShowCompanyHouseListMenu] = useState(false);
+    const [isShowCompanyObjectManageMenu, setIsShowCompanyObjectManageMenu] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
-
-    const [user, setUser] = useState({});
-
+    const { page ,info} = useParams();
+    const [isShowReserveHouseDetail, setIsShowReserveHouseDetail] = useState(false);
+    const [reserveHouseDetailId, setReserveHouseDetailId] = useState('');
     const [currentEmployeeData, setCurrentEmployeeData] = useState({});
+    const [isQuickToPage, setIsQuickToPage] = useState(false);
+    const { search } = useLocation();
+    let isSales = false
+    let isCompanyManager = false
+    let userData = {}
 
     const surveysAuditSvg = () => (
         <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 386 511.9">
@@ -120,37 +142,43 @@ const Main = () => {
     const PropertyIcon = (props: Partial<CustomIconComponentProps>) => (
         <Icon component={propertySvg} {...props} />
     );
+    const objectManageSvg  = () => (
+        <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M5 4h1v1H5V4zm2 1h1V4H7v1zm15-3v8h-1V7H3v3h8v1H3v3h8v1H2V2h20zm-1 1H3v3h18V3zM5 8v1h1V8H5zm2 0v1h1V8H7zm-2 4v1h1v-1H5zm2 0v1h1v-1H7zm2-7h1V4H9v1zm0 3v1h1V8H9zm0 4v1h1v-1H9zm13 0h-4.086l.293-.293L17.5 11 16 12.5l1.5 1.5.707-.707-.293-.293H22v8h-1v1h1a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1zm-2.38 9.5l-2.12 2.12L15.88 22H14c-.55 0-1-.45-1-1v-2h-1v-3h1v-2.09c-.58-.21-1-.76-1-1.41 0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5c0 .65-.42 1.2-1 1.41V16h1v3h-1v2h1.88l1.62-1.62 2.12 2.12zM13 13h1v-1h-1v1zm1 5v-1h-1v1h1zm3.5 4.21l.71-.71-.71-.71-.71.71.71.71z"/><path fill="none" d="M0 0h24v24H0z"/>
+        </svg>
+      );
+    
+    const ObjectManageIcon = (props: Partial<CustomIconComponentProps>) => (
+        <Icon component={objectManageSvg} {...props} />
+    );
+
     
     const changeUserMenu = (xToken) => {
-        const userListUrl = 'user/getPersonalInfo'
-        let reqUrl = `${userListUrl}`
-        UserAxios.get(
-            reqUrl,{
-                headers:{
-                    'x-Token':xToken
-                }
-            }
-        )
-        .then( (response) => {
-            console.log(response)
-            if(response.data.data.bornDate === undefined || response.data.data.bornDate === null ){
-                response.data.data.bornDate = ''
-            }
-            setUser(response.data.data)
+        getPersonalInfo(xToken).then( (response) => {
             if(response.data.data !== undefined){
                 const roles = response.data.data.roles
                 const exeUser = response.data.data
+                userData = exeUser
                 const employeeData = getCurrentEmployeeData(exeUser)
                 setCurrentEmployeeData(employeeData)
                 changeRolesMenu(roles)
                 changeEmployeeMenu(employeeData)
-                housesList()
+                if(isQuickToPage === false){
+                    quickToPage()
+                }else{
+                    housesList()
+                }
+                if(isIos()){
+                    // eslint-disable-next-line no-undef
+                    jsToIosInterface.saveNotificationInfo(xToken);
+                }
             }
-            
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
-
     function checkEmployeeStateAndChangeMenu(callback){
         getCurrentEmployee((result,data)=>{
             const currentCompanyId = data.companyId
@@ -160,12 +188,6 @@ const Main = () => {
             const oldEmployeeState = currentEmployeeData.state
             const oldEmployeeRank = currentEmployeeData.rank
             if(result === true){
-                // console.log('=====currentCompanyId====',currentCompanyId)
-                // console.log('=====oldCompanyId====',oldCompanyId)
-                // console.log('====currentEmployeeState=====',currentEmployeeState)
-                // console.log('=====oldEmployeeState====',oldEmployeeState)
-                // console.log('====currentEmployeeRank=====',currentEmployeeRank)
-                // console.log('====oldEmployeeRank=====',oldEmployeeRank)
                 if(currentCompanyId === oldCompanyId && currentEmployeeState === oldEmployeeState && currentEmployeeRank === oldEmployeeRank){
                     callback(true)
                 }else{
@@ -185,16 +207,32 @@ const Main = () => {
     function changeEmployeeMenu(employee){
         const companyGroupMenu = document.getElementById('companyGroupMenu');
         const companyApplyMenu = document.getElementById('companyApplyMenu');
-        if(employee.state === 2 || employee.state === 4){
-            companyGroupMenu.style.display = null;
-            if(employee.rank === 0){
-                setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+        if(employee.rank === 0 || isSales === true){
+            if(employee.state === 2 || employee.state === 4){
+                companyGroupMenu.style.display = null;
+                // if(employee.rank === 0){
+                //     setIsShowCompanyApplyListMenu(true)//beacuse cant get menu id
+                // }else{
+                //     setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                // }
+                if(employee.rank === 0){
+                    setIsShowCompanyApprovalListMenu(true)//beacuse cant get menu id
+                }else{
+                    setIsShowCompanyApprovalListMenu(false)//beacuse cant get menu id
+                }
+                if(employee.state === 4){
+                    setIsShowCompanyHouseListMenu(false)
+                }else{
+                    setIsShowCompanyHouseListMenu(true)
+                }
+                setIsShowCompanyObjectManageMenu(true)
             }else{
-                setIsShowCompanyApplyListMenu(false)//beacuse cant get menu id
+                companyGroupMenu.style.display = 'none'
+                companyApplyMenu.style.display = 'flex'
             }
-        }else{
+        }else {
             companyGroupMenu.style.display = 'none'
-            companyApplyMenu.style.display = 'flex'
+            companyApplyMenu.style.display = 'none'
         }
     }
 
@@ -207,7 +245,15 @@ const Main = () => {
                 i = user.employeesData.length
             }
         }
+        if(result.state === 2 && result.rank === 0){
+            isCompanyManager = true
+        }
         return result
+    }
+
+    function cleanReserveHouseParam(){
+        setIsShowReserveHouseDetail(false)
+        setReserveHouseDetailId('')
     }
 
     function turnOffPage(){
@@ -222,12 +268,14 @@ const Main = () => {
         setIsShowMatchNeed(false)
         setIsShowRelativeLink(false)
         setIsShowCompanyApply(false);
-        setIsShowCompanyApplyList(false);
+        // setIsShowCompanyApplyList(false);
+        setIsShowCompanyApprovalList(false)
         setIsShowCompanyEmployeeInfo(false);
         setIsShowCompanyHouseList(false);
         setIsShowCompanyInfo(false);
         setIsShowCompanyEmployeesList(false)
         setIsShowCompanyTransactionList(false)
+        setIsShowCompanyObjectManage(false)
     }
 
     function toggleCollapsed() {
@@ -250,172 +298,275 @@ const Main = () => {
       };
 
     function collectAccessTime(){
-        // setTimeout(() => {
-        //     const reqUrl = `${collectAccessTimeUrl}`
-        //     CollectAxios.get(
-        //         reqUrl
-        //     )
-        //     .then( (response) => {
-        //         console.log('collectAccessTime success')
-        //     })
-        //     .catch( (error) => console.log('collectAccessTime error'))
-        //   }, 5000)
         const reqUrl = `${collectAccessTimeUrl}`
             CollectAxios.get(
                 reqUrl
             )
             .then( (response) => {
-                console.log('collectAccessTime success')
+                //concole.log('collectAccessTime success')
             })
-            .catch( (error) => console.log('collectAccessTime error'))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
+
+    function autoLogin(accountOrMail , password){
+        const LOGIN_Auth = "/auth/login/"
+        const LoginData = {
+            accountOrMail,
+            password
+        }
+        LoginRegisterAxios.post(LOGIN_Auth, LoginData)
+                .then((response) => {
+                    if((response.data.status === false || response.data.status === null) && response.data.data.includes('accout , mail or password invalid')) {
+                        toast.error(`帳號或密碼錯誤`)
+                    }else if(response.data.status === false && response.data.data.includes("user not verify")) {
+                        toast.error(`此帳號尚未驗證完畢，請先完成帳號驗證程序。`)
+                    }else{
+                        changeUserMenu(response.data.data.token,true)
+                        let d = new Date();
+                        d.setTime(d.getTime() + (86400*30*1000)); //one month
+                        cookie.save('x-token',response.data.data.token,{path:'/', expires: d})
+                        toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
+                    }
+
+                })
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
+    }
+
+    const changeAccessToken = (xToken) => {
+        getPersonalInfo(xToken).then( (response) => {
+            const newUser = response.data.data;
+            if(userData !== {} && newUser !== undefined){
+                const newEmployeeData = getCurrentEmployeeData(newUser)
+                const oldEmployeeData = getCurrentEmployeeData(userData)
+                if(JSON.stringify(oldEmployeeData) === '{}' && newEmployeeData.state === 2 ){
+                    showMainToastAndRefresh('您已通過公司審核，自動轉至首頁。')
+                }
+                if(oldEmployeeData.state !== 4 && newEmployeeData.state === 4 ){
+                    showMainToastAndRefresh('您已被公司停權，自動轉至首頁。')
+                }
+                if(oldEmployeeData.state === 4 && newEmployeeData.state === 2 ){
+                    showMainToastAndRefresh('您已恢復公司權限，自動轉至首頁。')
+                }
+                if(oldEmployeeData.isResign === false && oldEmployeeData.companyId !== '' && oldEmployeeData.companyId !== undefined && JSON.stringify(newEmployeeData) === '{}'){
+                    showMainToastAndRefresh('您已從公司離職，自動轉至首頁。')
+                }
+            }
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
+      };
+    
+      const showMainToastAndRefresh = (message) => {
+        toast.success(message)
+        setTimeout(()=>{
+            window.location.href = '/';
+        },2000)
+      };
+
+      const resetAccount = () => {
+        // toast.success(`連續登入時間過長，請重新登入。`)
+        toast.success(`請重新登入。`)
+        setTimeout(()=>{
+            window.location.href = '/';
+        },2000)
+      };
 
     useEffect(() => {
         if (init) {
             setInit(false)
-            console.log('init')
-            collectAccessTime()
-            const xToken = cookie.load('x-token')
-            if(xToken!== null && xToken!== undefined){
-                const decodedToken = jwt_decode(xToken);
-                console.log(decodedToken)
-                // const roles = decodedToken.roles
-                // changeRolesMenu(roles)
-
-                changeUserMenu(xToken)
-                let d = new Date();
-                d.setTime(d.getTime() + (86400*30*1000)); //one month
-                cookie.save('x-token',xToken,{path:'/', expires: d})
+            const params = new URLSearchParams(search);
+            const accountOrMail = params.get('accountOrMail');
+            const password = params.get('password');
+            if(page === undefined || page === null){
+                setIsShowHousesList(true)
             }
-            
+            collectAccessTime()
+            const xRefreshToken = cookie.load(xRefreshTokenName) 
+            if(xRefreshToken!== null && xRefreshToken!== undefined){
+                refreshXToken().then(result => {
+                    if(result.errorCode === errorCode.isOk){
+                        const xToken = result.message
+                        changeUserMenu(xToken)
+                    }else{
+                    }
+                    
+                  })
+                  .catch(error => {
+                    //concole.log(error)
+                  });
+            }
+            else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
+                autoLogin(accountOrMail , password)
+            }
+            eventBus.on(eventName.changeAccessToken, changeAccessToken);
+            eventBus.on(eventName.resetAccount, resetAccount);
+            return () => {
+                // eventBus.off(eventName.changeAccessToken, changeAccessToken);
+                // eventBus.off(eventName.showMainToast, showMainToast);
+                // eventBus.off(eventName.resetAccount, resetAccount);
+            };
+
         }
     }, )
 
+    function quickToPage(){
+        setIsQuickToPage(true)
+        switch(page){
+            case '21' :
+                if(info !== '' && info !== undefined){
+                    setIsShowReserveHouseDetail(true)
+                    setReserveHouseDetailId(info)
+                }
+                reserveHouse(true)
+                break;
+            case '22' :
+                myHousesList(true)
+                break;
+            default:
+        }
+    }
+
     function housesList(){
-        console.log('housesList')
         turnOffPage()
         setSelectMenu(['1'])
         setIsShowHousesList(true)
+        toggleCollapsed()
     }
 
-    function myHousesList(){
-        console.log('myHousesList')
+    function myHousesList(NoToggleCollapsed){
         turnOffPage()
         setSelectMenu(['2'])
         setIsShowMyHousesList(true)
+        if(NoToggleCollapsed !== true){
+            toggleCollapsed()
+        }
     }
     function uploadHouse(){
-        console.log('uploadHouse')
         turnOffPage()
         setSelectMenu(['3'])
         setIsShowUploadHouse(true)
+        toggleCollapsed()
     }
     
     function memberList(){
-        console.log('memberList')
         turnOffPage()
         setSelectMenu(['4'])
         setIsShowMemberList(true)
+        toggleCollapsed()
     }
 
     function memberInfo(){
-        console.log('memberInfo')
         turnOffPage()
         setSelectMenu(['5'])
         setIsShowMemberInfo(true)
+        toggleCollapsed()
     }
 
     function matchNeed(){
-        console.log('matchNeed')
         turnOffPage()
         setSelectMenu(['10'])
         setIsShowMatchNeed(true)
+        toggleCollapsed()
     }
 
     function loginSignIn(){
-        console.log('loginSignIn')
         setIsShowLoginSignIn(true)
+        toggleCollapsed()
     }
 
     function contact(){
-        console.log('membercontactInfo')
         turnOffPage()
         setSelectMenu(['8'])
         setIsShowContact(true)
+        toggleCollapsed()
     }
 
     function collect(){
-        console.log('collect')
         turnOffPage()
         setSelectMenu(['9'])
         setIsShowCollect(true)
+        toggleCollapsed()
     }
 
     const relativeLink = () => {
-        console.log('relativeLink')
         turnOffPage()
         setSelectMenu(['12'])
         setIsShowRelativeLink(true)
+        toggleCollapsed()
     }
 
     const companyApply = () =>{
-        console.log('companyApply')
         turnOffPage()
         setSelectMenu(['13'])
         setIsShowCompanyApply(true)
+        toggleCollapsed()
     }
 
-    const companyApplyList = () =>{
-        console.log('companyApplyList')
+    const companyApprovalList = () =>{
         turnOffPage()
         setSelectMenu(['15'])
-        setIsShowCompanyApplyList(true)
+        setIsShowCompanyApprovalList(true)
+        toggleCollapsed()
     }
-
     const companyEmployeeInfo = () =>{
-        console.log('companyEmployeeInfo')
         turnOffPage()
         setSelectMenu(['16'])
         setIsShowCompanyEmployeeInfo(true)
+        toggleCollapsed()
     }
 
     const companyHouseList = () =>{
-        console.log('companyHouseList')
         turnOffPage()
         setSelectMenu(['17'])
         setIsShowCompanyHouseList(true)
+        toggleCollapsed()
     }
 
     const companyInfo = () =>{
-        console.log('companyInfo')
         turnOffPage()
         setSelectMenu(['18'])
         setIsShowCompanyInfo(true)
+        toggleCollapsed()
     }
 
     const companyEmployeesList = () =>{
-        console.log('companyEmployeesList')
         turnOffPage()
         setSelectMenu(['20'])
         setIsShowCompanyEmployeesList(true)
+        toggleCollapsed()
     }
 
-    function reserveHouse(){
-        console.log('reserveHouse')
+    const companyObjectManage = () =>{
+        turnOffPage()
+        setSelectMenu(['23'])
+        setIsShowCompanyObjectManage(true)
+        toggleCollapsed()
+    }
+
+    function reserveHouse(NoToggleCollapsed){
         turnOffPage()
         setSelectMenu(['21'])
         setIsShowReserveHouse(true)
+        if(NoToggleCollapsed !== true){
+            toggleCollapsed()
+        }
     }
     
     function companyTransactionList(){
-        console.log('companyTransactionList')
         turnOffPage()
         setSelectMenu(['22'])
         setIsShowCompanyTransactionList(true)
+        toggleCollapsed()
     }
 
     function logout(){
-        console.log('logout')
         const myHousesListMenu = document.getElementById('myHousesListMenu');
         const uploadHousesMenu = document.getElementById('uploadHousesMenu');
         const reserveHouseMenu = document.getElementById('reserveHouseMenu');
@@ -446,7 +597,8 @@ const Main = () => {
             setSelectMenu(['1'])
             setIsShowHousesList(true)
         }
-        cookie.remove('x-token')
+        removeToken()
+        isCompanyManager = false
     }
 
     function loginSignInIsOpen(status){
@@ -481,36 +633,52 @@ const Main = () => {
         loginSignInMenu.style.display = 'none'
         collectMenu.style.display = 'none'
         // matchNeedMenu.style.display = 'flex'
-
+        isSales = false
         for(let i =0;i<roles.length;i++){
+            // admin
             if(roles[i]===1){
-                myHousesListMenu.style.display = 'flex'
-                uploadHousesMenu.style.display = 'flex'
                 memberListMenu.style.display = 'flex'
                 memberInfoMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 collectMenu.style.display = 'flex'
             }
+            // user
             if(roles[i]===3){
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
+                reserveHouseMenu.style.display = 'flex'
             }
+            // host
             if(roles[i]===2){
-                myHousesListMenu.style.display = 'flex'
-                uploadHousesMenu.style.display = 'flex'
-                logoutMenu.style.display = 'flex'
-                loginSignInMenu.style.display = 'none'
-                memberInfoMenu.style.display = 'flex'
-            }
-            if(roles[i]===4){
                 myHousesListMenu.style.display = 'flex'
                 uploadHousesMenu.style.display = 'flex'
                 reserveHouseMenu.style.display = 'flex'
                 logoutMenu.style.display = 'flex'
                 loginSignInMenu.style.display = 'none'
                 memberInfoMenu.style.display = 'flex'
+            }
+            // sales
+            if(roles[i]===4){
+                if(isCompanyManager) {
+                    isSales = true
+                    myHousesListMenu.style.display = 'flex'
+                    uploadHousesMenu.style.display = 'none'
+                    reserveHouseMenu.style.display = 'flex'
+                    logoutMenu.style.display = 'flex'
+                    loginSignInMenu.style.display = 'none'
+                    memberInfoMenu.style.display = 'flex'
+                } else {
+                    isSales = true
+                    myHousesListMenu.style.display = 'flex'
+                    uploadHousesMenu.style.display = 'flex'
+                    reserveHouseMenu.style.display = 'flex'
+                    logoutMenu.style.display = 'flex'
+                    loginSignInMenu.style.display = 'none'
+                    memberInfoMenu.style.display = 'flex'
+                }
+
             }
         }
         if(roles.length > 0){
@@ -534,7 +702,7 @@ const Main = () => {
 
     return (
         <div>
-        <ToastContainer autoClose={2000} position="top-center"/>
+        <ToastContainer autoClose={2000} position="top-center"  style={{top: '48%'}}/>
         <div style={{ width: 51,'position':'absolute','zIndex':10 }}>
         <Button type="primary" onClick={toggleCollapsed} style={{ marginTop: 1,border: 0 , height:'40px'}}>
           <MenuUnfoldOutlined style={{display : showMenuUnfoldOutlined }}></MenuUnfoldOutlined>
@@ -550,6 +718,10 @@ const Main = () => {
           inlineCollapsed={collapsed}
           style={{width : '0%',height : '10px' }}
         >
+            <Menu.Item disabled style={{'height':'50px', fontSize:'20px', }} icon={<LogoIcon />} >
+
+                <div style={{color:'white', display:'flex', alignItems:'center',}}>租重點</div>
+            </Menu.Item>
           <Menu.Item key='1' id="housesListMenu" style={{'height':'50px'}} icon={<HomeOutlined /> } onClick={housesList}>
             租屋列表
           </Menu.Item>
@@ -600,24 +772,31 @@ const Main = () => {
               <Menu.Item key='18' id="companyInfoMenu" onClick={companyInfo}  style={{'height':'50px','display':'flex'}} icon={<CompanyEnterpriseIcon />}>
                     公司簡介
               </Menu.Item>
-              <Menu.Item key='17' id="companyHouseListMenu" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
-                    租屋列表
-              </Menu.Item>
-              <Menu.Item key='22' id="companyTransactionListMenu" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
-                    成交紀錄
-              </Menu.Item>
-
-              {/* <Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
-                    審核列表
-              </Menu.Item> */}
-
               {
-                isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
-                    審核列表
+                isShowCompanyHouseListMenu?(<Menu.Item key='17' id="companyHouseListMenu" onClick={companyHouseList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+                    租屋列表
                 </Menu.Item>):null           
               }
 
+              {
+                isShowCompanyObjectManageMenu?(<Menu.Item key='23' id="companyObjectManageMenu" onClick={companyObjectManage} style={{'height':'50px','display':'flex'}} icon={<ObjectManageIcon />}>
+                      物件管理
+                </Menu.Item>):null           
+              }
 
+              <Menu.Item key='22' id="companyTransactionListMenu" onClick={companyTransactionList} style={{'height':'50px','display':'flex'}} icon={<HomeOutlined />}>
+                    成交紀錄
+              </Menu.Item>
+              {/*{*/}
+              {/*  isShowCompanyApplyListMenu?(<Menu.Item key='15' id="companyApplyListMenu" onClick={companyApplyList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>*/}
+              {/*      審核列表*/}
+              {/*  </Menu.Item>):null           */}
+              {/*}*/}
+              {
+                  isShowCompanyApprovalListMenu?(<Menu.Item key='15' id="approvalListMenu" onClick={companyApprovalList} style={{'height':'50px','display':'flex'}} icon={<SurveysAuditIcon />}>
+                      審核列表
+                  </Menu.Item>):null
+              }
               <Menu.Item key='20' id="companyEmployeesListMenu" onClick={companyEmployeesList} style={{'height':'50px','display':'flex'}} icon={<TeamOutlined />}>
                     員工列表
               </Menu.Item>
@@ -649,17 +828,16 @@ const Main = () => {
     }
 
     {
-        isShowMyHousesList?(<MyHousesList></MyHousesList>):null           
+        isShowMyHousesList?(<MyHousesList></MyHousesList>):null
     }
 
     {
-        isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null           
+        isShowUploadHouse?(<HouseUpload companyId={currentEmployeeData.companyId} companyState={currentEmployeeData.state}></HouseUpload>):null
     }
 
     {
-        isShowReserveHouse?(<ReserveHouse></ReserveHouse>):null           
+        isShowReserveHouse?(<ReserveHouse isShowReserveHouseDetail={isShowReserveHouseDetail} reserveHouseDetailId={reserveHouseDetailId} cleanReserveHouseParam={cleanReserveHouseParam}></ReserveHouse>):null           
     }
-
 
     {
         isShowMatchNeed?(<MatchNeed></MatchNeed>):null           
@@ -689,8 +867,11 @@ const Main = () => {
     {
         isShowCompanyApply?(<CompanyApply currentEmployeeData={currentEmployeeData} changeUserMenu={changeUserMenu}></CompanyApply>):null           
     }
+    {/*{*/}
+    {/*    isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApplyList>):null           */}
+    {/*}*/}
     {
-        isShowCompanyApplyList?(<CompanyApplyList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApplyList>):null           
+        isShowCompanyApprovalList?(<CompanyApprovalList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyApprovalList>):null
     }
     {
         isShowCompanyEmployeeInfo?(<CompanyEmployeeInfo employeeId={currentEmployeeData._id} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyEmployeeInfo>):null           
@@ -708,6 +889,9 @@ const Main = () => {
         isShowCompanyTransactionList?(<CompanyTransactionList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyTransactionList>):null           
     }
 
+    {
+        isShowCompanyObjectManage?(<CompanyObjectManage></CompanyObjectManage>):null           
+    }   
 
         <div id="loginSignIn" style={{'position':'absolute','zIndex':20 ,'width':'100%','height':'100%','display':'none'}}>
             <LoginSignIn isShow={isShowLoginSignIn} loginSignInIsOpen={loginSignInIsOpen} changeUserMenu={changeUserMenu} ></LoginSignIn>

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {CompanyAxios} from './axiosApi'
 import {
@@ -10,7 +9,7 @@ import {
   } from "react-router-dom";
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
-
+  import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const CompanyApplyList = (props) => {
     let { id } = useParams();
@@ -55,7 +54,7 @@ const CompanyApplyList = (props) => {
         CompanyAxios.get(
                 reqUrl,{
                     headers:{
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 })
             .then( (response) => {
@@ -66,7 +65,10 @@ const CompanyApplyList = (props) => {
                     toast.error('抓取公司審核列表失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile();
+                toast.error(error)
+            })
     }
 
     function resolveCompanyApplyList(response){
@@ -98,7 +100,7 @@ const CompanyApplyList = (props) => {
                 }
                 data.push(item)
             }
-            console.log('===data====',data)
+            // //concole.log('===data====',data)
             setCompanyApplyList(data)
         }
     }
@@ -124,16 +126,19 @@ const CompanyApplyList = (props) => {
         let reqUrl = `${editEmployees}`
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 getCompanyApplyList()
             }else{
                 toast.error('審核失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile();
+            toast.error(error)
+        })
 
     }
 
@@ -213,7 +218,7 @@ const CompanyApplyList = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Row>
             <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
             <Col  xs={24} sm={18} md={18} lg={15} xl={12}>

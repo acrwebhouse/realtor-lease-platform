@@ -18,7 +18,6 @@ import {
 } from "antd";
 import cookie from 'react-cookies'
 import {HouseAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams
@@ -27,20 +26,22 @@ import {log} from "@craco/craco/lib/logger";
 import {config} from "../Setting/config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {openInNewTab} from './CommonUtil'
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const { Option } = Select
 
 const get_reserve_Auth = 'reserveHouse/getReserveHouseOnlyHost'
 const remove_reserve_Auth = 'reserveHouse/removeReserveHouse'
-const update_reserve_Auth = 'reserveHouse/editReserveHouseOnlyHost'
+const update_reserve_Auth = 'reserveHouse/editReserveHouse'
 const houseService = config.base_URL_House
 const reserveStateArr = [{ value: '未接洽' },{ value: '接洽中' }, { value: '完成看房' }];
-console.log(reserveStateArr[0].value)
+//concole.log(reserveStateArr[0].value)
 
 const ReserveHouseDetail = (props) => {
     // let { id } = useParams();
     const id = props.reserveHouseDetailId
-    console.log(id)
+    //concole.log(id)
     const [tenantData, setTenantData] = useState([])
     const [enableShowInfo, setEnableShowInfo] = useState(false)
     const [enableDel, setEnableDel] = useState(false)
@@ -48,7 +49,7 @@ const ReserveHouseDetail = (props) => {
     const [tempStateObj, setTempStateObj] = useState({})
     const [stateSelected, setStateSelected] = useState()
     const [enableSetup, setEnableSetup] = useState(true)
-
+    //concole.log(props)
     const deleteReserve = () => {
         setEnableDel(true)
     }
@@ -70,10 +71,13 @@ const ReserveHouseDetail = (props) => {
                 "accept": "application/json",
                 "x-token" : xToken,
             }}).then((response) => {
-                // console.log(response)
+                // //concole.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }, [] )
 
     const getReserveData = () => {
@@ -84,10 +88,13 @@ const ReserveHouseDetail = (props) => {
                 "accept": "application/json",
                 "x-token" : xToken,
             }}).then((response) => {
-            // console.log(response)
+            //concole.log(response)
             setTenantData(response.data.data)
             setEnableShowInfo(true)
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     //delete
@@ -97,7 +104,7 @@ const ReserveHouseDetail = (props) => {
             // const clientId = {
             //     "ids" : [id]
             // }
-            // console.log(clientId)
+            // //concole.log(clientId)
             HouseAxios.delete(remove_reserve_Auth, {
                 headers: {
                     "content-type": "application/json",
@@ -106,7 +113,7 @@ const ReserveHouseDetail = (props) => {
                 },
                 data: {"ids" : [id]}
             }).then((response) => {
-                    console.log(response)
+                    //concole.log(response)
                 if(response.data.status === true){
                     toast.success('刪除成功');
                     setTimeout(()=>{
@@ -117,16 +124,19 @@ const ReserveHouseDetail = (props) => {
                     toast.error(response.data.data)
                 }
             })
-                .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
         }
     }, [enableDel])
 
-    console.log(tenantData)
-    console.log(tenantData.state)
+    //concole.log(tenantData)
+    //concole.log(tenantData.state)
     const updateState = () => {
         const xToken = cookie.load('x-token')
         const reserveHouseValue = tempStateObj;
-            console.log(reserveHouseValue)
+            //concole.log(reserveHouseValue)
             let temp = {
                 "id": reserveHouseValue._id,
                 "client": reserveHouseValue.client,
@@ -138,25 +148,28 @@ const ReserveHouseDetail = (props) => {
             }
             HouseAxios.put(update_reserve_Auth, temp, {
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }).then((response) => {
-                console.log(response)
+                //concole.log(response)
                 if(response.data.status) {
                     getReserveData()
                     setEnableSetup(true)
                 }
-            }).catch( (error) => toast.error(error))
+            }).catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
 
-            console.log(temp)
+            //concole.log(temp)
     }
 
     const changeState = (stateValue) => {
         setStateSelected(stateValue)
         setEnableSetup(false)
-        console.log(stateValue)
+        //concole.log(stateValue)
         const reserveHouse = Object.assign({}, tenantData);
-        console.log(reserveHouse)
+        //concole.log(reserveHouse)
         switch(stateValue){
             case reserveStateArr[0].value:
                 reserveHouse.state = '0';
@@ -173,14 +186,9 @@ const ReserveHouseDetail = (props) => {
         setTempStateObj(reserveHouse)
     }
 
-    const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-        if (newWindow) newWindow.opener = null
-    }
-
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {
                 isShowDeleteAlert?(
                     <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
@@ -220,8 +228,8 @@ const ReserveHouseDetail = (props) => {
             <br/>
             <br/>
             <Row>
-                <Col xs={0} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                <Col xs={0} sm={4} md={6} lg={6} xl={8}></Col>
+                <Col xs={24} sm={16} md={12} lg={12} xl={8}>
                     <div>
                         {enableShowInfo ?
                             <div>
@@ -236,10 +244,7 @@ const ReserveHouseDetail = (props) => {
                                 <span style={{'fontSize':'20px'}}>
                                     {reserveStateArr[tenantData['state']].value}
                                 </span>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <br/>
                                             <Select placeholder="狀態選擇"
                                                     showArrow={false}
                                                     size='large'
@@ -278,7 +283,7 @@ const ReserveHouseDetail = (props) => {
                                         <div>
                                             <Button type="primary"
                                                     onClick={() => {
-                                                        openInNewTab(window.location.origin + `/HouseDetail/${tenantData['houseData'][0]['_id']}/`)
+                                                        openInNewTab(`/HouseDetail/${tenantData['houseData'][0]['_id']}`)
                                                     }}
                                             >
                                                 詳細房屋資料

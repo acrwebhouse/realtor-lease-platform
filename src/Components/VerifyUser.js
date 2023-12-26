@@ -2,15 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker,  Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {LoginRegisterAxios, UserAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// console.log(typeof(window.location.href))
+import {showInternelErrorPageForMobile} from './CommonUtil'
+// //concole.log(typeof(window.location.href))
 const SighUp_Auth = "/auth/verifyUser"
 const User_verify_xToken = window.location.href.split('key=')[1]
-console.log(User_verify_xToken)
+// //concole.log(User_verify_xToken)
 
 const VerifyUser = (props) => {
 
@@ -33,7 +33,7 @@ const VerifyUser = (props) => {
                 }
             })
                 .then( (response) =>  {
-                    console.log(response)
+                    // //concole.log(response)
                     if(response.data.status) {
                         setVerify(true)
                     }else {
@@ -41,7 +41,10 @@ const VerifyUser = (props) => {
                         toast.error(`${response.data.data}`)
                     }
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             // setVerifyUserEnable(false)
         // }
@@ -49,7 +52,7 @@ const VerifyUser = (props) => {
 
     return (
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             {verify ? <Result
                     status="success"
                     title="您的帳戶成功通過驗證"

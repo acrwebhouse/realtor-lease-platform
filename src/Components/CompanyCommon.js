@@ -5,6 +5,7 @@ import {CompanyAxios} from './axiosApi'
 import {
     message,
 } from "antd";
+import {showInternelErrorPageForMobile} from './CommonUtil'
 
 const getCurrentEmployee = function(callback){
     let reqUrl = `/employees/getCurrentPersonalEmployeeInfo`
@@ -12,7 +13,7 @@ const getCurrentEmployee = function(callback){
         CompanyAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             })
             .then( (response) => {
@@ -21,10 +22,13 @@ const getCurrentEmployee = function(callback){
                     
                 }else{
                     // message.error('員工資訊取得失敗', 3)
-                    console.log('員工資訊取得失敗')
+                    //concole.log('員工資訊取得失敗')
                     callback(false)
                 }
             })
-            .catch( (error) => console.log(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                //concole.log(error)
+            })
 }
 export {getCurrentEmployee}

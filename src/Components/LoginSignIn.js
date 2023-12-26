@@ -9,14 +9,18 @@ import cookie from 'react-cookies'
 import ForgotPassword from "./ForgotPassword";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile,isAndroid,isIos} from './CommonUtil'
+import {saveToken} from './Auth'
 
 const LOGIN_Auth = "/auth/login/"
 const accountPattern = /^[a-zA-Z0-9]+$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+window.defaultAccount = ''
+window.defaultPassword = ''
 window.setDefaultAccountPassword = function(account,password){
-    console.log('==window==setDefaultAccountPassword==account==',account)
-    console.log('==window==setDefaultAccountPassword==password==',password)
+    window.defaultAccount = account
+    window.defaultPassword = password
 }
 
 const LoginRegister = (props) => {
@@ -33,13 +37,13 @@ const LoginRegister = (props) => {
     // const [loading, setLoading] = useState(false);
 
     const showRegisterModal = () => {
-        console.log(props)
+        //concole.log(props)
         // props.loginSignInIsOpen(false)
         setIsRegisterModalVisible(true);
     };
 
     const showResetPasswordModal = () => {
-        console.log(props)
+        //concole.log(props)
         // props.loginSignInIsOpen(false)
         setIsResetPasswordModalVisible(true);
     }
@@ -67,11 +71,18 @@ const LoginRegister = (props) => {
     }
 
     const onFinish =  (values) => {
-        // console.log('Success:', values);
+        // //concole.log('Success:', values);
         const {remember, ...tempData} = values
-        // console.log(tempData['accountOrMail'])
+        // //concole.log(tempData['accountOrMail'])
         if (accountPattern.test(tempData['accountOrMail'])
             || emailPattern.test(tempData['accountOrMail'])) {
+            if(isAndroid()){
+                tempData.devices = 1  
+            }else if(isIos()){
+                tempData.devices = 2 
+            }else{
+                tempData.devices = 3 
+            }
             setLoginData(tempData)
             setRememberMe(remember)
             setIsRunPost(true);
@@ -86,11 +97,11 @@ const LoginRegister = (props) => {
 
     // useEffect(() => {
     //     if (isRunPost) {
-    //         console.log(LoginData)
-    //         console.log(rememberMe)
+    //         //concole.log(LoginData)
+    //         //concole.log(rememberMe)
     //         axios.post(LOGIN_Auth, LoginData)
-    //             .then( (response) => console.log(response))
-    //             .catch( (error) => console.log(error))
+    //             .then( (response) => //concole.log(response))
+    //             .catch( (error) => //concole.log(error))
     //     }
     //
     //     }, [LoginData, rememberMe, isRunPost])
@@ -99,44 +110,55 @@ const LoginRegister = (props) => {
         if (isRunPost) {
             LoginRegisterAxios.post(LOGIN_Auth, LoginData)
                 .then((response) => {
-                    console.log(response.data.status)
-                    if(response.data.status === false ||response.data.status === null){
+                    //concole.log(response.data)
+                    if((response.data.status === false || response.data.status === null) && response.data.data.includes('accout , mail or password invalid')) {
                         toast.error(`帳號或密碼錯誤`)
+                    }else if(response.data.status === false && response.data.data.includes("user not verify")) {
+                        toast.error(`此帳號尚未驗證完畢，請先完成帳號驗證程序。`)
                     }else{
                         const userId = response.data.data._id;
-                        if(typeof(appJsInterface) !== 'undefined'){
+                        if(isAndroid()){
                             // eslint-disable-next-line no-undef
                             appJsInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
+                        }else if(isIos()){
+                            // eslint-disable-next-line no-undef
+                            jsToIosInterface.saveUserInfo(LoginData.accountOrMail,LoginData.password,userId);
                         }
-                        props.changeUserMenu(response.data.data.token,true)
-                        let d = new Date();
-                        d.setTime(d.getTime() + (86400*30*1000)); //one month
-                        cookie.save('x-token',response.data.data.token,{path:'/', expires: d})
+                        props.changeUserMenu(response.data.data.accessToken,true)
+                        const accessToken = response.data.data.accessToken
+                        const refreshToken = response.data.data.refreshToken
+                        saveToken(accessToken,refreshToken)
                         toast.success(`登入成功，歡迎回來 ${LoginData['accountOrMail']}`)
                     }
 
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setIsRunPost(false)
         }else{
-            if(typeof(appJsInterface) !== 'undefined'){
+            if(isAndroid()){
                 // eslint-disable-next-line no-undef
                 appJsInterface.setAccountPassword();
+            }else if(isIos()){
+                // eslint-disable-next-line no-undef
+                jsToIosInterface.setAccountPassword();
             }
         }
 
     }, [LoginData, rememberMe, isRunPost, props])
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //concole.log('Failed:', errorInfo);
     };
 
     const [form] = Form.useForm();
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Modal title="會員登入系統"
                    className="ModalLogin"
                    visible={props.isShow}
@@ -164,6 +186,8 @@ const LoginRegister = (props) => {
                     className="login-form"
                     initialValues={{
                         remember: true,
+                        accountOrMail: window.defaultAccount,
+                        password: window.defaultPassword
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -183,6 +207,7 @@ const LoginRegister = (props) => {
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
                                placeholder="Account/Email"
                                size="large"
+                               // defaultValue={ window.defaultAccount}
                             // ref={onBlur}
                         />
                     </Form.Item>
@@ -200,6 +225,7 @@ const LoginRegister = (props) => {
                         <Input.Password prefix={<LockOutlined className="site-form-item-icon" />}
                                         placeholder="password"
                                         size="large"
+                                        // defaultValue={ window.defaultPassword}
                         />
                     </Form.Item>
                     <Form.Item>

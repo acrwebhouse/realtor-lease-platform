@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Button, Image, Divider, Row, Col, Alert, Space, Form, Input, } from "antd";
+import {Table, Button, Image, Divider, Row, Col, Alert, Space, Form, Input, Checkbox,} from "antd";
 import {
     useParams
   } from "react-router-dom";
 import {HouseAxios} from './axiosApi'
 import cookie from 'react-cookies'
-import jwt_decode from "jwt-decode";
 import {config} from '../Setting/config'
 
 import {
@@ -16,6 +15,16 @@ import GoogleMapHouse from "./GoogleMapHouse";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile , backPage ,isMobile , horizontalScrollDisabled} from './CommonUtil'
+import {
+    AirConditionerIcon,
+    BedIcon,
+    ClosetIcon, DeskAndChairIcon, ElevatorIcon, NaturalGasIcon, NetworkIcon,
+    RefrigeratorIcon, SofaIcon,
+    TelevisionIcon,
+    TvProgramIcon,
+    WashMachineIcon, WaterHeaterIcon
+} from "./Equipment";
 
 const houseListUrl = 'house/getHouse'
 const removeHouseUrl = 'house/removeHouse'
@@ -24,7 +33,7 @@ const reserve_Auth = 'reserveHouse/addReserveHouse'
 const HouseDetail = (prop) => {
     let { id } = useParams();
     const houseId = id ;
-    console.log(houseId)
+    //concole.log(houseId)
     const [form_reserve] = Form.useForm();
     const [init, setInit] = useState(true);
     const [house, setHouse] = useState(true);
@@ -50,12 +59,14 @@ const HouseDetail = (prop) => {
     const [reserveVisible, setReserveVisible] = useState(false);
     const [reserveClientData, setReserveClientData] = useState([])
     const [isRunPost, setIsRunPost] = useState(false)
-
+    const [isShowBackBtn, setIsShowBackBtn] = useState(false)
     const [showFloor2, setShowFloor2] = useState('');
+    const [isShowEquip, setIsShowEquip] = useState(false)
 
+    
 
-    console.log(house['owner'])
-    console.log(house['_id'])
+    //concole.log(house['owner'])
+    //concole.log(house['_id'])
     const fallback ='data:image/png;base64,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'
       
       const columns = [
@@ -132,8 +143,15 @@ const HouseDetail = (prop) => {
         .then( (response) => {
             setHouse(response)
             resolveHouse(response)
+            //concole.log(response.data.data.saleInfo.devices)
+            if(response.data.data.saleInfo.devices !== undefined) {
+                setIsShowEquip(true)
+            }
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     function changeBuildType(house){
@@ -147,6 +165,12 @@ const HouseDetail = (prop) => {
             case 3 :
                 setBuildingType("透天");
                 break ;
+            case 4 :
+                setBuildingType('辦公室')
+                break;
+            case 5 :
+                setBuildingType('店面')
+                break;
             default:
                 setBuildingType("未知");
 
@@ -359,7 +383,7 @@ const HouseDetail = (prop) => {
         }
         
     }
-console.log(showFloor2)
+//concole.log(showFloor2)
     function changeAddressDetail(house){
         const houseNumber = house.houseNumber
         let value = ''
@@ -468,30 +492,57 @@ console.log(showFloor2)
 
 
     function phoneClick(phoneNumber){
-        let a = document.createElement('a');
-        a.href = 'tel:'+phoneNumber;
-        document.body.appendChild(a);
-        a.click()
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.callUp(phoneNumber);
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.callUp(phoneNumber);
+        }
+        else{
+            let a = document.createElement('a');
+            a.href = 'tel:'+phoneNumber;
+            document.body.appendChild(a);
+            a.click()
+        }  
     }
 
     function lineClick(lineId){
-        console.log('===lineId===',lineId)
-        let strWindowFeatures = `
+        if(typeof(appJsInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            appJsInterface.addLineFriend(lineId);
+        }else if(typeof(jsToIosInterface) !== 'undefined'){
+            // eslint-disable-next-line no-undef
+            jsToIosInterface.addLineFriend(lineId);
+        }
+        else{
+            const lineUrl = 'https://line.me/ti/p/~'+lineId
+            let strWindowFeatures = `
             height=600,
             width=600,
-        `;
-        window.open('https://line.me/ti/p/~'+lineId,'加入好友',strWindowFeatures)
+            `;
+            window.open(lineUrl,'加入好友',strWindowFeatures)
+        } 
+    }
+
+    function backClick(){
+        if(prop.isOwner === true){
+            const url = window.location.origin + '/22'
+            window.location.href = url;
+        }else{
+            backPage()
+        }
     }
 
     const reserveFormEnable = () => {
-        console.log(house)
+        //concole.log(house)
         const xToken = cookie.load('x-token')
         if (xToken) {
             setReserveClientData({
                 "host": house['owner'],
                 "houseId": house['_id'],
                 "state": 0,
-                "type": 1,
+                "type": 0,
                 "clientName": '',
                 "clientPhone": ''
             })
@@ -503,23 +554,28 @@ console.log(showFloor2)
     }
 
     const UploadReserveData = (values) => {
-        console.log(values)
-            if(values['reserveName'] && customerPhone) {
+        //concole.log(values)
+
+            if(values['reserveName'] && values['reservePhone']) {
                 setReserveClientData({
                     "host": house['owner'],
                     "houseId": house['_id'],
                     "state": 0,
                     "type": 1,
                     "clientName": values['reserveName'],
-                    "clientPhone": customerPhone
+                    "clientPhone": values['reservePhone']
                 })
-                setIsRunPost(true)
+                if(values['reservePhone'].slice(0, 2) !== '09' || values['reservePhone'].length < 10 ) {
+                    toast.error('手機電話格式（09）不對，請重新填寫。')
+                } else {
+                    setIsRunPost(true)
+                }
             }else {
                 toast.error('如未登入，姓名與聯絡電話都需要填寫。')
             }
     }
 
-    console.log(reserveClientData)
+    //concole.log(reserveClientData)
 
     useEffect(() => {
 
@@ -533,12 +589,14 @@ console.log(showFloor2)
                         "accept": "application/json",
                         "x-token" : xToken,
                     }})
-                    // .then( (response) => console.log(response.data.status))
+                    // .then( (response) => //concole.log(response.data.status))
                     .then((response) => {
                         toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
                     })
-                    .catch((error) => toast.error(`${error}`))
-
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
                 :
                 HouseAxios.post(reserve_Auth, reserveClientData, {
                     headers: {
@@ -546,9 +604,9 @@ console.log(showFloor2)
                         "accept": "application/json",
                     }
                 })
-                    // .then( (response) => console.log(response.data.status))
+                    // .then( (response) => //concole.log(response.data.status))
                     .then((response) => {
-                        console.log(response)
+                        //concole.log(response)
                         if(response.data.status) {
                             toast.success('已收到預約看房需求，該物件房仲或屋主會聯繫您，謝謝。')
                             form_reserve.resetFields()
@@ -556,14 +614,17 @@ console.log(showFloor2)
                         }
                     })
 
-                    .catch( (error) => toast.error(`${error}`))
+                    .catch( (error) => {
+                        showInternelErrorPageForMobile()
+                        toast.error(error)
+                    })
 
             setIsRunPost(false)
         }
     }, [isRunPost, reserveClientData])
 
     const tt = cookie.load('x-token')
-    console.log(tt)
+    //concole.log(tt)
 
     function removeHouseAction(){
         const houseId = id
@@ -572,7 +633,7 @@ console.log(showFloor2)
         HouseAxios.delete(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 },
                 data: {
                     ids: [houseId]
@@ -589,7 +650,10 @@ console.log(showFloor2)
                 toast.error(response.data.data, 3)
             }
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
         cancelRemoveHouse()
     }
 
@@ -599,6 +663,9 @@ console.log(showFloor2)
             if(prop.setId !== null && prop.setId !== undefined){
                 id = prop.setId
             }
+            if(isMobile()){
+                setIsShowBackBtn(true)
+            }
             setInit(false)
             getHouse()
             
@@ -606,7 +673,7 @@ console.log(showFloor2)
     }, )
 
     const normalizeInput = (value, previousValue) => {
-        console.log(value)
+        //concole.log(value)
         if (!value) return value;
         const currentValue = value.replace(/[^\d]/g, "");
         const cvLength = currentValue.length;
@@ -614,14 +681,14 @@ console.log(showFloor2)
         if (!previousValue || value.length > previousValue.length) {
             if (cvLength < 5) return currentValue;
             if (cvLength < 8)
-                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
-            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+                return `${currentValue.slice(0, 4)}${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
 
     return (
-        <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+        <div style={horizontalScrollDisabled}>
+            <ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>
             {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
@@ -669,7 +736,9 @@ console.log(showFloor2)
                 <Button   onClick={() => closePage()} style={{ 'backgroundColor': 'transparent','borderColor':'transparent', 'textAlign': 'center',width: '50px'}}>
                         <CloseSquareTwoTone style={{ fontSize: '25px' }} />
                     </Button></div> */}
-
+            {
+                isShowBackBtn?(<Button type="primary" onClick={() => backClick()} style={{width: '70px' }}>返回</Button>):null    
+            }
             <Divider>基本資料</Divider>
             <Row>
                 <Col xs={24} sm={4} md={4} lg={4} xl={4}></Col>
@@ -693,22 +762,22 @@ console.log(showFloor2)
                         'color': '#0000ff',
                         'fontSize':'40px',
                         'width': '350px',
-                        }}>{`${house.name}`}</div>
+                        }}>{house.name?house.name:null}</div>
                   
                         <div style={{
                         'color':'#FF0000',
                         'fontSize':'20px'
-                        }}>{`價格：${house.price}元 / 月`}</div>
+                        }}>{house.price?`價格：${house.price}元 / 月`:null}</div>
                         {
                             (prop.isOwner || prop.isComapny)?(
-                                <div style={{'fontSize':'15px'}}>{`地址：${house.address}${addressDetail}`}</div>
-                            ):<div style={{'fontSize':'15px'}}>{`地址：${house.address}`}</div>
+                                <div style={{'fontSize':'15px'}}>{house.address?`地址：${house.address}${addressDetail}`:null}</div>
+                            ):<div style={{'fontSize':'15px'}}>{house.address?`地址：${house.address}`:null}</div>
                         }
-                        <div style={{'fontSize':'15px'}}>{`格局：${pattern}`}</div>  
-                        <div style={{'fontSize':'15px'}}>{`空間：${house.ping} 坪`}</div> 
-                        <div style={{'fontSize':'15px'}}>{`類型：${typeOfRental}`}</div>
-                        <div style={{'fontSize':'15px'}}>{`型態：${buildingType}`}</div>
-                        <div style={{'fontSize':'15px'}}>{`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`}</div>
+                        <div style={{'fontSize':'15px'}}>{pattern?`格局：${pattern}`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{house.ping?`空間：${house.ping} 坪`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{typeOfRental?`類型：${typeOfRental}`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{buildingType?`型態：${buildingType}`:null}</div>
+                        <div style={{'fontSize':'15px'}}>{house.floor?`樓層：${house.floor}${showFloor2} 樓 / ${house.totalFloor} 樓`:null}</div>
                         {
                             prop.isOwner&&house.room && house.room !== ''&& house.room !==undefined?(
                                 <div style={{'fontSize':'15px'}}>{`房間 ${house.room} `}</div>
@@ -724,11 +793,12 @@ console.log(showFloor2)
                                 <div style={{'fontSize':'15px'}}>{`屋主電話：${house.hostPhone}`}</div>
                             ):null   
                         }
-                        <div style={{'fontSize':'10px'}}>{`特色：${feature}`}</div>
+                        <div style={{'fontSize':'10px'}}>{feature?`特色：${feature}`:null}</div>
                         {
-                            (prop.isOwner || prop.isComapny)?(
+                            // (prop.isOwner || prop.isComapny)
+                            (prop.isOwner)?(
                                 <div style={{'fontSize':'10px',width: '200px'}}>{`備註：${remark}`}</div>
-                            ):null   
+                            ):null
                         }
                         
                         <br/>
@@ -766,20 +836,20 @@ console.log(showFloor2)
                                                     {
                                                         required: false,
                                                     },
+                                                    {
+                                                        pattern: /^[0-9]*$/,
+                                                        message: '請輸入正確的手機號格式(09xxxxxxxx)'
+                                                    }
                                                 ]}
                                             >
-                                                <>
-                                                    <Input size="large"
-                                                         placeholder="範例 : 0912-345-678"
-                                                         style={{width: '270px'}}
-                                                         value={customerPhone}
-                                                         onChange={(e) => {
-                                                             console.log(e.target.value)
-                                                             setCustomerPhone((prevState) => normalizeInput(e.target.value, prevState))
-                                                         }
-                                                         }
+                                                    <Input  size="large"
+                                                            placeholder="範例 : 0912345678"
+                                                            style={{width: '270px'}}
+                                                            maxLength={10}
+                                                            onChange={(e) => {
+                                                                 //concole.log(e.target.value)
+                                                            }}
                                                     />
-                                                </>
                                             </Form.Item>
                                             <Button type="primary"
                                                     shape="round"
@@ -953,31 +1023,80 @@ console.log(showFloor2)
                 </Col>
             <Col xs={24} sm={2} md={2} lg={2} xl={2}></Col>   
             </Row>
-            
+            <Divider> 提供設備 </Divider>
+            {isShowEquip ?
+                <Row>
+                    <Col xs={24} sm={1} md={2} lg={4} xl={6}></Col>
+                    <Col xs={24} sm={22} md={20} lg={16} xl={12}>
+                        <Row gutter={[16, 16]}>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[0] ? 1 : 0.2}`}}><AirConditionerIcon/><br/>冷氣機</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[1] ? 1 : 0.2}`}}><RefrigeratorIcon/><br/>電冰箱</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[2] ? 1 : 0.2}`}}><TelevisionIcon/><br/>電視機</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[3] ? 1 : 0.2}`}}><WashMachineIcon/><br/>洗衣機</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[4] ? 1 : 0.2}`}}><BedIcon/><br/>&emsp;床</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[5] ? 1 : 0.2}`}}><ClosetIcon/><br/>&ensp;衣櫥</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[6] ? 1 : 0.2}`}}><TvProgramIcon/><br/>第四台</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[7] ? 1 : 0.2}`}}><NetworkIcon/><br/>&ensp;網路</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[8] ? 1 : 0.2}`}}><WaterHeaterIcon/><br/>熱水器</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[9] ? 1 : 0.2}`}}><NaturalGasIcon/><br/>天然氣</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[10] ? 1 : 0.2}`}}><SofaIcon/><br/>&ensp;沙發</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[11] ? 1 : 0.2}`}}><DeskAndChairIcon/><br/>&ensp;桌椅</span>
+                            </Col>
+                            <Col span={4} xs={{ span: 5, offset: 1 }} sm={{ span: 2, offset: 1 }} md={{ span: 2, offset: 1 }} lg={2} xl={2}>
+                                <span style={{opacity: `${house.saleInfo.devices[12] ? 1 : 0.2}`}}><ElevatorIcon/><br/>&ensp;電梯</span>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col xs={24} sm={1} md={2} lg={4} xl={6}></Col>
+                </Row> : []
+            }
             {
             prop.isOwner?(
             <div>
             <Divider>附件</Divider>
             <Row>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
-                <Col xs={24} sm={8} md={8} lg={8} xl={8}style={{
+                <Col xs={24} sm={8} md={8} lg={8} xl={8} style={{
                             textAlign: 'center',
                         }}>
-                            
+
                     <Table
                         columns={annexColumns}
                         dataSource={annex}
                         onRow={(record, rowIndex) => {
                         return {
                         onClick: event => {
-                        
+
                         }, // click row
                     };}}
-            />        
+            />
                 </Col>
-            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>   
-            </Row> 
-            </div>):null    
+            <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>
+            </Row>
+            </div>):null
             }
 
             <Divider>交通資訊</Divider>

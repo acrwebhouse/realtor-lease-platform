@@ -12,7 +12,7 @@ import './Register_form.css'
 import {LoginRegisterAxios} from "./axiosApi"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {showInternelErrorPageForMobile} from './CommonUtil'
 const { Option } = Select;
 
 const dateFormat = 'YYYY/MM/DD';
@@ -93,47 +93,56 @@ const Register = (props) => {
     const [enableCount, setEnableCount] = useState(false)
     const latestCount = useRef(count) // 定义一个ref，初始值是10
 
-    // console.log(isBackLogin)
+    // //concole.log(isBackLogin)
     const onRoleChange = list => {
-        console.log(list)
+        //concole.log(list)
         setRoleCheck(list);
         setShowHide(list.length > 0);
         setSaleShowHide(list.includes('4'))
 
         setRoles(list.map(i => Number(i)))
     };
-    console.log(Roles)
-    console.log(failMessage)
+    //concole.log(Roles)
+    //concole.log(failMessage)
     //register API
     useEffect(() => {
-        // console.log(RegisterData)
-        // console.log(CityAreaScope)
+        // //concole.log(RegisterData)
+        // //concole.log(CityAreaScope)
         if (isRunPost) {
             LoginRegisterAxios.post(SighUp_Auth, RegisterData)
                 .then( (response) =>  {
-                    console.log(typeof(response['data']['data']))
+                    //concole.log(response)
                     setRegisterCheck(response['data']['status'])
                     response['data']['status'] ? toast.success(`註冊成功`) : toast.error(`註冊失敗`)
                     setFailMessage(response['data']['data'])
+                    if(response['data']['status']) {
+                        setOwnerPhone('')
+                    }
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setIsRunPost(false)
             setCityValid(false)
             setAreaValid(false)
-            setOwnerPhone('')
+
         }
     }, [isRunPost, RegisterData])
 
     //send VerifyUse Mail api
-    console.log(RegisterData.mail)
+    //concole.log(RegisterData.mail)
     useEffect(() => {
         if (VerifyUserEnable) {
             LoginRegisterAxios.get(SendVerifyUser_Auth+"?mail="+RegisterData.mail)
                 .then( (response) =>  {
-                    console.log(response)
+                    //concole.log(response)
                 })
-                .catch( (error) => toast.error(`${error}`))
+                .catch( (error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
 
             setVerifyUserEnable(false)
         }
@@ -157,15 +166,15 @@ const Register = (props) => {
 
 
     const showDate = (date, dateString) => {
-        // console.log(date, dateString)
-        console.log(dateString)
+        // //concole.log(date, dateString)
+        //concole.log(dateString)
         setBornDate(dateString)
     }
-    console.log(areaValid, cityValid)
+    //concole.log(areaValid, cityValid)
     const showRegisterData = (values) => {
-        console.log('Received values of form: ', values);
+        //concole.log('Received values of form: ', values);
         // const tempData = values;
-        // console.log(tempData)
+        // //concole.log(tempData)
 
         setRegisterData(
             {
@@ -188,7 +197,7 @@ const Register = (props) => {
                 },
                 'houseIds': defaultHouseIds,
                 // 'phone': values['PhonePrefix']+values['phone']
-                'phone': ownerPhone,
+                'phone': values['phone'],
                 'mail': values['email'],
                 'address': values['City']+values['Area']+values['address'],
                 'lineId' : values['lineID']
@@ -198,7 +207,7 @@ const Register = (props) => {
             setIsSubmitModalVisible(false)
             errorAccoutFormat();
         }else {
-            if(ownerPhone.slice(0, 2) !== '09' || ownerPhone.length < 12 ) {
+            if(values['phone'].slice(0, 2) !== '09' || values['phone'].length < 10 ) {
                 setIsSubmitModalVisible(false)
                 errorPhoneFormat();
             } else {
@@ -226,10 +235,10 @@ const Register = (props) => {
 
     };
 
-    console.log(RegisterData)
+    //concole.log(RegisterData)
 
     const normalizeInput = (value, previousValue) => {
-        console.log(value)
+        //concole.log(value)
         if (!value) return value;
         const currentValue = value.replace(/[^\d]/g, "");
         const cvLength = currentValue.length;
@@ -237,19 +246,19 @@ const Register = (props) => {
         if (!previousValue || value.length > previousValue.length) {
             if (cvLength < 5) return currentValue;
             if (cvLength < 8)
-                return `${currentValue.slice(0, 4)}-${currentValue.slice(4)}`;
-            return `${currentValue.slice(0, 4)}-${currentValue.slice(4,7)}-${currentValue.slice(7, 10)}`;
+                return `${currentValue.slice(0, 4)}${currentValue.slice(4)}`;
+            return `${currentValue.slice(0, 4)}${currentValue.slice(4,7)}${currentValue.slice(7, 10)}`;
         }
     };
 
-    console.log(ownerPhone)
+    //concole.log(ownerPhone)
 
     const errorLicenseFormat = () => {
         toast.error('請輸入正確的營業員證號格式')
     }
 
     const errorPhoneFormat = () => {
-        toast.error('請輸入正確的手機號格式或長度(09xx-xxx-xxx)')
+        toast.error('請輸入正確的手機號格式(09xxxxxxxx)')
     }
 
     const errorAccoutFormat = () => {
@@ -257,7 +266,7 @@ const Register = (props) => {
     }
 
     const onCityInCharge = (City) => {
-        console.log(City);
+        //concole.log(City);
         setCityValid(true)
         setInitCityData(City)
         setSelectArea(null)
@@ -334,7 +343,7 @@ const Register = (props) => {
     }
 
     const onAreaInCharge = (value) => {
-        console.log(value);
+        //concole.log(value);
         setIsEnableCityArea(value.length >= 2 ? !isEnableCityArea : isEnableCityArea)
         setCityLock(true)
         setAreaValid(true)
@@ -357,10 +366,10 @@ const Register = (props) => {
     }
 
     // const showCityAreaData = (value) => {
-    //     console.log(value);
-    //     // console.log(value.length);
+    //     //concole.log(value);
+    //     // //concole.log(value.length);
     //     // setInitCityArea(value.length > 2 ? value.slice(0, 2) : value);
-    //     // console.log(initCityArea)
+    //     // //concole.log(initCityArea)
     //     // const temp = []
     //     if(value[0].length === 2) {
     //         for(let x = 0; x< CityAreaOptions.length; x++) {
@@ -393,7 +402,7 @@ const Register = (props) => {
     //         }
     //     }
     // }
-    console.log(CityAreaScope)
+    //concole.log(CityAreaScope)
     const resetCityArea = () => {
         setIsEnableCityArea(false);
         setCityLock(false)
@@ -402,7 +411,7 @@ const Register = (props) => {
         setInitAreaData([]);
         setCityAreaScope([]);
     }
-    console.log(initCityData)
+    //concole.log(initCityData)
     const PhonePrefixSelector = (
         <Form.Item name="PhonePrefix" noStyle>
             <Select style={{
@@ -553,7 +562,7 @@ const Register = (props) => {
 
     return (
         <>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <h2>請選擇預想申請的使用者(可重複選)</h2>
             <Checkbox.Group style={{ fontSize: '150%' ,width: '100%' }} value={roleCheck} onChange={onRoleChange}>
                 <Row>
@@ -767,28 +776,30 @@ const Register = (props) => {
                                 label="手機號碼"
                                 rules={[
                                     {
-                                        required: false,
+                                        required: true,
                                         message: '手機號碼欄位不能空白',
                                     },
+                                    {
+                                        pattern: /^[0-9]*$/,
+                                        message: '電話只能填寫數字'
+                                    }
                                 ]}
                                 style={{ width: '100%' }}
                             >
-                                <>
                                     <Input
                                         // addonBefore={PhonePrefixSelector}
                                         style={{
                                             width: '100%',
                                         }}
                                         size="large"
-                                        placeholder='09xx-xxx-xxx'
-                                        value={ownerPhone}
+                                        placeholder='09xxxxxxxx'
+                                        maxLength={10}
                                         onChange={(e) => {
-                                            console.log(e.target.value)
-                                            setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))
+                                            //concole.log(e.target.value)
+                                            // setOwnerPhone((prevState) => normalizeInput(e.target.value, prevState))
                                         }
                                         }
                                     />
-                                </>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -832,6 +843,12 @@ const Register = (props) => {
                                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                         <Form.Item name="address"
                                                    style={{ width: '100%' }}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: '此欄位不能為空白',
+                                                       }
+                                                   ]}
                                             // style={{ display: 'inline-block',  width: 'calc(15% - 8px)', margin: '0 4px' }}
                                         >
                                             <Input size="large"

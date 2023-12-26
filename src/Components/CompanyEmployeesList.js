@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Table, Space, Modal, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox, Result} from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios} from './axiosApi'
-import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import {
     useParams
   } from "react-router-dom";
-  import { ToastContainer, toast } from 'react-toastify';
+  import { toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
-
+  import {showInternelErrorPageForMobile} from './CommonUtil'
+  import {getPersonalInfo} from './Auth'
 
 const CompanyEmployeesList = (props) => {
     let { id } = useParams();
@@ -50,18 +50,12 @@ const CompanyEmployeesList = (props) => {
     useEffect(() => {
         if (init) {
             setInit(false)
-            props.checkEmployeeStateAndChangeMenu((result)=>{
-                if(result === true){
-                    editEmployeeRankOptions = []
-                    for(let i = 1 ;i<=100;i++){
-                        editEmployeeRankOptions.push({ value: i })
-                    }
-                    setEditEmployeeRankOptions(editEmployeeRankOptions)
-                    getCompanyEmployeesList()
-                }else{
-                    toast.warning('員工權限變動，請重新進入選單')
-                }
-            })
+            editEmployeeRankOptions = []
+            for(let i = 1 ;i<=100;i++){
+                editEmployeeRankOptions.push({ value: i })
+            }
+            setEditEmployeeRankOptions(editEmployeeRankOptions)
+            getCompanyEmployeesList()
         }
     }, )
 
@@ -83,7 +77,7 @@ const CompanyEmployeesList = (props) => {
         CompanyAxios.get(
                 reqUrl,{
                     headers:{
-                        'x-Token':xToken
+                        'x-token':xToken
                     }
                 })
             .then( (response) => {
@@ -93,7 +87,10 @@ const CompanyEmployeesList = (props) => {
                     toast.error('抓取員工列表失敗')
                 }
             })
-            .catch( (error) => toast.error(error))
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
     }
 
     function resolveCompanyEmployeesList(response){
@@ -101,30 +98,36 @@ const CompanyEmployeesList = (props) => {
         const isResignEmployee = []
         if(response.data && response.data.data){
             const items = response.data.data
-
             const xToken = cookie.load('x-token')
-            const decodedToken = jwt_decode(xToken);
-            const id = decodedToken.id
-            let isShowEditButton = false
-            for(let i = 0 ;i<items.length; i++){
-                if(items[i].userId === id){
-                    if(items[i].rank === 0){
-                        isShowEditButton = true
+            getPersonalInfo(xToken).then( (userResponse) => {
+                if(userResponse.data.data !== undefined){
+                    const id = userResponse.data.data._id
+                    let isShowEditButton = false
+                    for(let i = 0 ;i<items.length; i++){
+                        if(items[i].userId === id){
+                            if(items[i].rank === 0){
+                                isShowEditButton = true
+                            }
+                            i = items.length
+                        }              
                     }
-                    i = items.length
-                }              
-            }
-            for(let i = 0 ;i<items.length; i++){
-                console.log(items[i])
-                if(items[i].isResign === true){
-                    combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
-                }else if(items[i].state === 2 || items[i].state === 4){
-                    combineShowColumnContent(employee,items,i,isShowEditButton)
+                    for(let i = 0 ;i<items.length; i++){
+                        //concole.log(items[i])
+                        if(items[i].isResign === true){
+                            combineShowColumnContent(isResignEmployee,items,i,isShowEditButton)     
+                        }else if(items[i].state === 2 || items[i].state === 4){
+                            combineShowColumnContent(employee,items,i,isShowEditButton)
+                        }
+                    }
+                    setEmployeesList(employee)
+                    setIsResignEmployeesList(isResignEmployee)
                 }
-            }
-        }
-        setEmployeesList(employee)
-        setIsResignEmployeesList(isResignEmployee)
+            })
+            .catch( (error) => {
+                showInternelErrorPageForMobile()
+                toast.error(error)
+            })
+        } 
     }
 
     function combineShowColumnContent(showArr,items,i,isShowEditButton){
@@ -202,22 +205,25 @@ const CompanyEmployeesList = (props) => {
             'isResign': true
           }
 
-        console.log(body)
+        //concole.log(body)
 
         const xToken = cookie.load('x-token')
         CompanyAxios.put(reqUrl, body, {
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             }
         }).then((response) => {
-            console.log(response)
+            //concole.log(response)
             if(response.data.status === true){
                 toast.success('離職成功')
                 getCompanyEmployeesList()
             }else{
                 toast.error('離職失敗')
             }
-        }).catch( (error) => toast.error(error))
+        }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
         cancelResign()
         
     }
@@ -378,10 +384,10 @@ const CompanyEmployeesList = (props) => {
           let reqUrl = `${editEmployeesUrl}`
           CompanyAxios.put(reqUrl, body, {
               headers:{
-                  'x-Token':xToken
+                  'x-token':xToken
               }
           }).then((response) => {
-              console.log(response)
+              //concole.log(response)
               if(response.data.status === true){
                   setEditEmployee(willEditEmployee)
                   toast.success('編輯成功')
@@ -390,7 +396,10 @@ const CompanyEmployeesList = (props) => {
               }else{
                 toast.error('編輯失敗')
               }
-          }).catch( (error) => toast.error(error))
+          }).catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     const isResignemployeesColumns = [
@@ -529,7 +538,6 @@ const CompanyEmployeesList = (props) => {
 
     return (
         <div>
-        <ToastContainer autoClose={2000} position="top-center"/>
         {
             isShowDeleteAlert?(
             <div style={{'position':'sticky' ,'top':'0px','zIndex':100 }}>
@@ -626,7 +634,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯等級 :&nbsp;
-            <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRankCheckManager} style={{
+            <Select placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRankCheckManager} style={{
                             width: '50%',
                         }}>
             </Select>
@@ -639,7 +647,7 @@ const CompanyEmployeesList = (props) => {
                 <br/>
                 <br/>
                 編輯主管 :&nbsp;
-                <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+                <Select placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
                             width: '50%',
                         }}>
                 </Select>
@@ -676,7 +684,7 @@ const CompanyEmployeesList = (props) => {
             isShowEditEmployeeManagerRank?(
             <div>
                 編輯等級 :&nbsp;
-                <Select allowClear placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRank} style={{
+                <Select placeholder="請選擇等級" size={size}  options={editEmployeeRankOptions} onChange={selectEditEmployeesRank} style={{
                                 width: '50%',
                         }}>
                 </Select>
@@ -688,7 +696,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯主管 :&nbsp;
-            <Select allowClear placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
+            <Select placeholder="請選擇主管" size={size}  options={editEmployeeManagerOptions} onChange={selectEditEmployeesManager} style={{
                             width: '50%',
                         }}>
             </Select>
@@ -712,7 +720,7 @@ const CompanyEmployeesList = (props) => {
             <br/>
             <br/>
             編輯狀態 :&nbsp;
-            <Select allowClear placeholder="請選擇狀態" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
+            <Select placeholder="請選擇狀態" size={size}  options={editEmployeeStateOptions} onChange={selectEditEmployeesState} style={{
                             width: '50%',
                         }}>
             </Select>

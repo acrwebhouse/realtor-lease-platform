@@ -1,36 +1,18 @@
 
 
 const config = {
-    'base_URL_Auth' : 'https://matchrenthouse.com/auth-service',
-    'base_URL_User' : 'https://matchrenthouse.com/user-service',
-    'base_URL_House' : 'https://matchrenthouse.com/house-service',
-    'base_URL_Collect' : 'https://matchrenthouse.com/collect-service',
-    'base_URL_Company' : 'https://matchrenthouse.com/company-service',
+    'base_URL_Auth' : 'https://rentspothub.com/auth-service',
+    'base_URL_User' : 'https://rentspothub.com/user-service',
+    'base_URL_House' : 'https://rentspothub.com/house-service',
+    'base_URL_Collect' : 'https://rentspothub.com/collect-service',
+    'base_URL_Company' : 'https://rentspothub.com/company-service',
+    'base_URL_Announcement' : 'https://rentspothub.com/system-service',
     'contactPhone' : '0912951085',
     'contactMail' : 'acr.webhouse@gmail.com',
     'GoogleMapKey' : 'AIzaSyB7bluQMbii0q2B5v7o6SABJRgddKW8GYE',
-    'mainPage' : 'https://matchrenthouse.com',
+    'mainPage' : 'https://rentspothub.com',
 }
 
-
-
-//  const config = {
-//      'base_URL_Auth' : 'http://35.234.42.100:3000',
-//      'base_URL_User' : 'http://35.234.42.100:4000',
-//      'base_URL_House' : 'http://35.234.42.100:5000',
-//      'base_URL_Collect' : 'http://35.234.42.100:6001',
-//      'contactPhone' : '0909123456',
-//      'contactMail' : 'acr.webhouse@gmail.com',
-//  }
-
-// const config = {
-//     'base_URL_Auth' : 'https://matchrentdev.com/auth-service',
-//     'base_URL_User' : 'https://matchrentdev.com/user-service',
-//     'base_URL_House' : 'https://matchrentdev.com/house-service',
-//     'base_URL_Collect' : 'https://matchrentdev.com/collect-service',
-//     'contactPhone' : '0909123456',
-//     'contactMail' : 'acr.webhouse@gmail.com',
-// }
      
 export {config}
 

@@ -4,6 +4,7 @@ import cookie from 'react-cookies'
 import {UserAxios} from './axiosApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {showInternelErrorPageForMobile} from './CommonUtil'
 const userListUrl = 'user/getUserList'
 const removeUserUrl = 'user/removeUser'
 
@@ -103,15 +104,18 @@ const MemberList = () => {
         UserAxios.get(
             reqUrl,{
                 headers:{
-                    'x-Token':xToken
+                    'x-token':xToken
                 }
             }
         )
         .then( (response) => {
-            // console.log(response)
+            // //concole.log(response)
             resolveMemberList(response)
         })
-        .catch( (error) => toast.error(error))
+        .catch( (error) => {
+            showInternelErrorPageForMobile()
+            toast.error(error)
+        })
     }
 
     function resolveMemberList(response){
@@ -310,7 +314,7 @@ const MemberList = () => {
     }
 
 function queryUser(userId){
-    console.log(userId)
+    //concole.log(userId)
     alert("查看 userId: "+userId)
 }
 
@@ -320,7 +324,7 @@ function removeUser(userId){
     UserAxios.delete(
         reqUrl,{
             headers:{
-                'x-Token':xToken
+                'x-token':xToken
             },
             data: {
                 ids: [userId]
@@ -335,12 +339,15 @@ function removeUser(userId){
             toast.error(response.data.data)
         }
     })
-    .catch( (error) => toast.error(error))
+    .catch( (error) => {
+        showInternelErrorPageForMobile()
+        toast.error(error)
+    })
 
 }
 
   function editUser(userId){
-    console.log(userId)
+    //concole.log(userId)
     alert("修改 userId: "+userId)
   }
 
@@ -403,7 +410,7 @@ function removeUser(userId){
     return (
 
         <div>
-            <ToastContainer autoClose={2000} position="top-center"/>
+            {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
             <Row>
                 <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                 <Col xs={24} sm={6} md={6} lg={5} xl={4}>

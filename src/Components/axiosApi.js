@@ -1,14 +1,18 @@
 import axios from 'axios';
 import cookie from 'react-cookies'
 import {config} from '../Setting/config'
+import {errorCode} from './Error'
+import {refreshXToken,xRefreshTokenName,xTokenName,refreshAccessTokenUrl} from './Auth'
+import {eventBus,eventName} from './EventBus';
 
-const xToken = cookie.load('x-token')
+const xToken = cookie.load(xTokenName)
 
 const base_URL_Auth = config.base_URL_Auth
 const base_URL_User = config.base_URL_User
 const base_URL_House = config.base_URL_House
 const base_URL_Collect = config.base_URL_Collect
 const base_URL_Company = config.base_URL_Company
+const base_URL_Announcement = config.base_URL_Announcement
 
 const LoginRegisterAxios = axios.create({
     baseURL: base_URL_Auth,
@@ -54,6 +58,58 @@ const CompanyAxios = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
+const AuthAxios = axios.create({
+    baseURL: base_URL_Auth,
+    // timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+})
+async function refreshTokenAndNotify(error){
+    const result = await refreshXToken()
+    const originalRequest = error.config;
+    const xToken = result.message
+    originalRequest._retry = false;
+    originalRequest.headers[xTokenName] = xToken;
+    if(result.errorCode === errorCode.isOk){
+        eventBus.emit(eventName.changeAccessToken, xToken); // 触发事件
+    }else{
+        eventBus.emit(eventName.resetAccount, ''); // 触发事件
+    }
+    return originalRequest;
+}
 
-export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios}
+const AnnouncementAxios = axios.create({
+    baseURL: base_URL_Announcement,
+    // timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+})
+
+const axiosAll = [LoginRegisterAxios,PicAnnexAxios,HouseAxios,UserAxios,CollectAxios,CompanyAxios,AuthAxios, AnnouncementAxios]
+
+for(let i = 0 ;i<axiosAll.length;i++){
+    axiosAll[i].interceptors.response.use(
+    (response) => {
+      // 对响应数据做一些处理
+      return response;
+    },
+    async (error) => {
+      if (error.response && error.response.status === 401) {
+        const errorUrl = error.response.config.url
+        const xRefreshToken = cookie.load(xRefreshTokenName) 
+        if(xRefreshToken!== null && xRefreshToken!== undefined && errorUrl !== refreshAccessTokenUrl){
+            const originalRequest = await refreshTokenAndNotify(error)
+            return axiosAll[i](originalRequest);
+        }
+        else {
+            eventBus.emit(eventName.resetAccount, ''); // 触发事件
+            return Promise.reject(error);
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+}
+  
+
+
+export {LoginRegisterAxios, HouseAxios, UserAxios, PicAnnexAxios, CollectAxios, CompanyAxios,AuthAxios}
 
