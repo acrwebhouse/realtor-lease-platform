@@ -22,7 +22,7 @@ import {config} from '../Setting/config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    AirConditionerIcon,
+    AirConditionerIcon, AltarIcon,
     BedIcon, CigaretteIcon,
     ClosetIcon, CookIcon, DeskAndChairIcon, ElevatorIcon, GarbageFeeIcon, ManageFeeIcon, NaturalGasIcon,
     NetworkIcon, ParkingIcon, PetsIcon,
@@ -138,6 +138,7 @@ const FloorCheck = (FloorValue, remark) => {
 }
 
 const HouseUpload = (prop) => {
+    const [init, setInit] = useState(true)
     const xToken = cookie.load(xTokenName)
     const [user, setUser] = useState({});
     //concole.log(prop.defaultValue)
@@ -185,7 +186,24 @@ const HouseUpload = (prop) => {
     const [firstPicFile, setFirstPicFile] = useState([])
     const [firstPhotoData, setFirstPhotoData] = useState([])
     const [totalLayer, setTotalLayer] = useState(prop.defaultValue?prop.defaultValue.totalFloor:null)
-    //concole.log(totalLayer)
+    console.log(prop)
+
+    useEffect(() => {
+        if (init) {
+            setInit(false)
+            if(prop.companyId === undefined) {
+                toast.warning(`需加入公司後才能使用`)
+                backToInitPage()
+            }
+        }
+    }, )
+
+    const backToInitPage = () => {
+        setTimeout(() => {
+            window.location.replace(config.mainPage)
+        }, 3000)
+    }
+
     const showTrafficModal = () => {
         setTrafficVisible(true);
     };
@@ -314,6 +332,10 @@ const HouseUpload = (prop) => {
             }
             if(prop.defaultValue.parking){
                 temp.push('parking')
+                // //concole.log(temp)
+            }
+            if(prop.defaultValue.altar){
+                temp.push('altar')
                 // //concole.log(temp)
             }
             if(prop.defaultValue.saleInfo.devices) {
@@ -452,6 +474,7 @@ const HouseUpload = (prop) => {
                     "garbagePrice": extraRequire.includes('garbage') ? parseInt(values['garbageFee']) : 0,
                     "smoke": extraRequire.includes('smoke'),
                     "cook": extraRequire.includes('cook'),
+                    "altar": extraRequire.includes('altar'),
                     "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1,
                     "devices": prop.defaultValue ? prop.defaultValue.saleInfo.devices : equipArr
                 },
@@ -2375,6 +2398,9 @@ const HouseUpload = (prop) => {
                                         <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
                                             <Checkbox value='parking'><ParkingIcon/><br/>停車位</Checkbox>
                                         </Col>
+                                        {/*<Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>*/}
+                                        {/*    <Checkbox value='altar'><AltarIcon/><br/>神桌</Checkbox>*/}
+                                        {/*</Col>*/}
                                     </Row>
                                 </Checkbox.Group>
 
