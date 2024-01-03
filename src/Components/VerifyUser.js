@@ -59,7 +59,7 @@ const VerifyUser = (props) => {
                     subTitle="您已能使用此帳號登入我們的平台進行各項功能服務"
                     extra={[
                         <Button type="primary" onClick={backToInitPage}>
-                            返回 ACR platform
+                            返回 【租重點】
                         </Button>,
                     ]}
                 />
@@ -70,7 +70,7 @@ const VerifyUser = (props) => {
                     subTitle="發生未知錯誤，您暫時無法使用此帳號登入我們的平台進行各項功能服務，請重新驗證帳戶。"
                     extra={[
                         <Button type="primary" onClick={backToInitPage}>
-                            返回 ACR platform
+                            返回 【租重點】
                         </Button>,
                     ]}
                 />}

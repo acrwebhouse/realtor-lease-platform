@@ -101,14 +101,25 @@ const HousesList = (props) => {
         userId: ''
     })
     const [transferOwnerId, setTransferOwnerId] = useState([])
-    //concole.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles, props.dealOptions, props.dealUserId)
+    // console.log(props)
+    // console.log(houseData[houseKey], houseKey, props.companyEmployees, props.enableTransfer, props.owner, props.roles, props.dealOptions, props.dealUserId, props)
     // //concole.log(houseKey?Object.assign(houseData[houseKey], {'owner': props.companyEmployees[houseKey].userId}):[])
     useEffect(() => {
         if (init) {
             setInit(false)
+            // if(props.rank === -1) {
+            //     toast.warning(`需加入公司後才能使用`)
+            //     backToInitPage()
+            // }
             getHousesList()
         }
     }, )
+
+    const backToInitPage = () => {
+        setTimeout(() => {
+            window.location.replace(config.mainPage)
+        }, 2000)
+    }
     // //concole.log(props.companyManager)
     //transaction function
     useEffect(() => {
