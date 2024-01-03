@@ -102,7 +102,7 @@ const MyHousesList = () => {
     }
 
     //concole.log(dealOptions, dealUserId)
-    console.log(user)
+    // console.log(user)
     return ( 
         <div>
             {
