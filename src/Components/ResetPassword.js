@@ -303,7 +303,7 @@ const ResetPassword = (props) => {
                 <div>
                     {verify ? <Result
                             status="success"
-                            title="您的帳戶成功通過驗證"
+                            title="您的重設密碼設定成功"
                             subTitle="您已能使用此帳號登入我們的平台進行各項功能服務"
                             extra={[
                                 <Button type="primary" onClick={backToInitPage}>
@@ -314,7 +314,7 @@ const ResetPassword = (props) => {
                         :
                         <Result
                             status="error"
-                            title="您的帳戶無法通過驗證"
+                            title="您的重設密碼設定失敗"
                             subTitle="發生未知錯誤，您暫時無法使用此帳號登入我們的平台進行各項功能服務，請重新驗證帳戶。"
                             extra={[
                                 <Button type="primary" onClick={backToInitPage}>
