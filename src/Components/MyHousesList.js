@@ -21,6 +21,7 @@ const MyHousesList = () => {
             //concole.log('init')
             getPersonalInfo(xToken).then( (userResponse) => {
                 if(userResponse.data.data !== undefined){
+                    // console.log(userResponse)
                      setUser(userResponse.data.data)
                      setIsShowHousesList(true)
                 }
@@ -101,13 +102,13 @@ const MyHousesList = () => {
     }
 
     //concole.log(dealOptions, dealUserId)
-
+    console.log(user)
     return ( 
         <div>
             {
                 isShowHousesList?(<HousesList owner={user._id} 
                                               roles={user.roles} 
-                                              rank={user.employeesData[0].rank}
+                                              rank={user.companyId.length > 0 ?user.employeesData[0].rank : -1}
                                               dealOptions={dealOptions}
                                               dealUserId={dealUserId}
                 ></HousesList>):null
