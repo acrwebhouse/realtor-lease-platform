@@ -186,7 +186,7 @@ const HouseUpload = (prop) => {
     const [firstPicFile, setFirstPicFile] = useState([])
     const [firstPhotoData, setFirstPhotoData] = useState([])
     const [totalLayer, setTotalLayer] = useState(prop.defaultValue?prop.defaultValue.totalFloor:null)
-    console.log(prop)
+    // console.log(prop)
 
     useEffect(() => {
         if (init) {
