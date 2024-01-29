@@ -389,8 +389,11 @@ const Main = () => {
             }
             collectAccessTime()
             const xRefreshToken = cookie.load(xRefreshTokenName) 
+            console.log('====0====')
             if(xRefreshToken!== null && xRefreshToken!== undefined){
+                console.log('====1====')
                 refreshXToken().then(result => {
+                    console.log('====2====',result)
                     if(result.errorCode === errorCode.isOk){
                         const xToken = result.message
                         changeUserMenu(xToken)
@@ -403,6 +406,7 @@ const Main = () => {
                   });
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
+                console.log('====3====')
                 autoLogin(accountOrMail , password)
             }
             eventBus.on(eventName.changeAccessToken, changeAccessToken);
