@@ -492,9 +492,9 @@ const HouseDetail = (prop) => {
 
 
     function phoneClick(phoneNumber){
-        if(typeof(appJsInterface) !== 'undefined'){
+        if(typeof(jsToAndroidInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
-            appJsInterface.callUp(phoneNumber);
+            jsToAndroidInterface.callUp(phoneNumber);
         }else if(typeof(jsToIosInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
             jsToIosInterface.callUp(phoneNumber);
@@ -508,9 +508,9 @@ const HouseDetail = (prop) => {
     }
 
     function lineClick(lineId){
-        if(typeof(appJsInterface) !== 'undefined'){
+        if(typeof(jsToAndroidInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
-            appJsInterface.addLineFriend(lineId);
+            jsToAndroidInterface.addLineFriend(lineId);
         }else if(typeof(jsToIosInterface) !== 'undefined'){
             // eslint-disable-next-line no-undef
             jsToIosInterface.addLineFriend(lineId);

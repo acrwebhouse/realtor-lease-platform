@@ -1,7 +1,7 @@
 const openInNewTab = (url) => {
-    if(typeof(appJsInterface) !== 'undefined'){
+    if(typeof(jsToAndroidInterface) !== 'undefined'){
         // eslint-disable-next-line no-undef
-        appJsInterface.loadUrl(url);
+        jsToAndroidInterface.loadUrl(url);
     }else if(typeof(jsToIosInterface) !== 'undefined'){
         // eslint-disable-next-line no-undef
         jsToIosInterface.loadUrl(url);
@@ -13,9 +13,9 @@ const openInNewTab = (url) => {
 }
 
 const showInternelErrorPageForMobile = () => {
-    if(typeof(appJsInterface) !== 'undefined'){
+    if(typeof(jsToAndroidInterface) !== 'undefined'){
         // eslint-disable-next-line no-undef
-        appJsInterface.showInternelErrorPage();
+        jsToAndroidInterface.showInternelErrorPage();
     }else if(typeof(jsToIosInterface) !== 'undefined'){
         // eslint-disable-next-line no-undef
         jsToIosInterface.showInternelErrorPage();
@@ -23,9 +23,9 @@ const showInternelErrorPageForMobile = () => {
 }
 
 const backPage = () => {    
-    if(typeof(appJsInterface) !== 'undefined'){
+    if(typeof(jsToAndroidInterface) !== 'undefined'){
         // eslint-disable-next-line no-undef
-        appJsInterface.backPage();
+        jsToAndroidInterface.backPage();
     }else if(typeof(jsToIosInterface) !== 'undefined'){
         // eslint-disable-next-line no-undef
         jsToIosInterface.backPage();
@@ -33,7 +33,7 @@ const backPage = () => {
 }
 
 const isMobile = () => {
-    if(typeof(appJsInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
+    if(typeof(jsToAndroidInterface) !== 'undefined' || typeof(jsToIosInterface) !== 'undefined'){
         return true
     }
     return false
@@ -44,7 +44,7 @@ const horizontalScrollDisabled = {
   };
 
 const isAndroid = () => {
-    if(typeof(appJsInterface) !== 'undefined'){
+    if(typeof(jsToAndroidInterface) !== 'undefined'){
         return true
     }
     return false
