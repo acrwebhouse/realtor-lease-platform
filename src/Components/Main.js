@@ -406,7 +406,6 @@ const Main = () => {
                   });
             }
             else if(accountOrMail !== undefined  && accountOrMail !== null&&password !== undefined && password !== null){
-                console.log('====3====')
                 autoLogin(accountOrMail , password)
             }
             eventBus.on(eventName.changeAccessToken, changeAccessToken);
