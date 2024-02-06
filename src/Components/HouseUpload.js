@@ -26,7 +26,7 @@ import {
     BedIcon, CigaretteIcon,
     ClosetIcon, CookIcon, DeskAndChairIcon, ElevatorIcon, GarbageFeeIcon, ManageFeeIcon, NaturalGasIcon,
     NetworkIcon, ParkingIcon, PetsIcon,
-    RefrigeratorIcon, SofaIcon,
+    RefrigeratorIcon, RentSeparateIcon, RentTogetherIcon, SofaIcon,
     TelevisionIcon, TvProgramIcon,
     WashMachineIcon, WaterHeaterIcon
 } from "./Equipment";
@@ -186,12 +186,12 @@ const HouseUpload = (prop) => {
     const [firstPicFile, setFirstPicFile] = useState([])
     const [firstPhotoData, setFirstPhotoData] = useState([])
     const [totalLayer, setTotalLayer] = useState(prop.defaultValue?prop.defaultValue.totalFloor:null)
-    // console.log(prop)
+    console.log(prop)
 
     useEffect(() => {
         if (init) {
             setInit(false)
-            if(prop.companyId === undefined) {
+            if(prop.defaultValue === null && prop.companyId === undefined) {
                 toast.warning(`需加入公司後才能使用`)
                 backToInitPage()
             }
@@ -338,6 +338,14 @@ const HouseUpload = (prop) => {
                 temp.push('altar')
                 // //concole.log(temp)
             }
+            if(prop.defaultValue.rentTogether){
+                temp.push('rentTogether')
+                // //concole.log(temp)
+            }
+            if(prop.defaultValue.rentSeparate){
+                temp.push('rentSeparate')
+                // //concole.log(temp)
+            }
             if(prop.defaultValue.saleInfo.devices) {
                 for (let i = 0; i < prop.defaultValue.saleInfo.devices.length; i++) {
                     if (prop.defaultValue.saleInfo.devices[i]) {
@@ -475,6 +483,8 @@ const HouseUpload = (prop) => {
                     "smoke": extraRequire.includes('smoke'),
                     "cook": extraRequire.includes('cook'),
                     "altar": extraRequire.includes('altar'),
+                    "rentTogether": extraRequire.includes('rentTogether'),
+                    "rentSeparate": extraRequire.includes('rentSeparate'),
                     "typeOfRental": RentalType.indexOf(values['TypeOfRental']) + 1,
                     "devices": prop.defaultValue ? prop.defaultValue.saleInfo.devices : equipArr
                 },
@@ -2398,9 +2408,15 @@ const HouseUpload = (prop) => {
                                         <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
                                             <Checkbox value='parking'><ParkingIcon/><br/>停車位</Checkbox>
                                         </Col>
-                                        {/*<Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>*/}
-                                        {/*    <Checkbox value='altar'><AltarIcon/><br/>神桌</Checkbox>*/}
-                                        {/*</Col>*/}
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='altar'><AltarIcon/><br/>神桌</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='rentTogether'><RentTogetherIcon/><br/>合租</Checkbox>
+                                        </Col>
+                                        <Col span={2} xs={6} sm={4} md={4} lg={4} xl={4}>
+                                            <Checkbox value='rentSeparate'><RentSeparateIcon/><br/>分租</Checkbox>
+                                        </Col>
                                     </Row>
                                 </Checkbox.Group>
 
