@@ -50,7 +50,7 @@ import {
     useParams,
     useLocation
   } from "react-router-dom";
-import {showInternelErrorPageForMobile,isIos} from './CommonUtil'
+import {showInternelErrorPageForMobile,isIos, isAndroid} from './CommonUtil'
 
 import {refreshXToken,xRefreshTokenName,removeToken,getPersonalInfo} from './Auth'
 
@@ -171,6 +171,9 @@ const Main = () => {
                 if(isIos()){
                     // eslint-disable-next-line no-undef
                     jsToIosInterface.saveNotificationInfo(xToken);
+                }else if(isAndroid()){
+                    // eslint-disable-next-line no-undef
+                    jsToAndroidInterface.saveNotificationInfo(xToken);
                 }
             }
         })
