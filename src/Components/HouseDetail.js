@@ -339,6 +339,17 @@ const HouseDetail = (prop) => {
                 data = data + ' 收垃圾('+house.saleInfo.garbagePrice+' 元 / 月)'
             }
 
+            if(house.saleInfo.altar === true){
+                data = data + ' 可神桌'
+            }
+
+            if(house.saleInfo.rentSeparate === true){
+                data = data + ' 可分租'
+            }
+
+            if(house.saleInfo.rentTogether === true){
+                data = data + ' 可合租'
+            }
         }
         if(data === ''){
             setFeature('無')
