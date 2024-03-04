@@ -334,15 +334,15 @@ const HouseUpload = (prop) => {
                 temp.push('parking')
                 // //concole.log(temp)
             }
-            if(prop.defaultValue.altar){
+            if(prop.defaultValue.saleInfo.altar){
                 temp.push('altar')
                 // //concole.log(temp)
             }
-            if(prop.defaultValue.rentTogether){
+            if(prop.defaultValue.saleInfo.rentTogether){
                 temp.push('rentTogether')
                 // //concole.log(temp)
             }
-            if(prop.defaultValue.rentSeparate){
+            if(prop.defaultValue.saleInfo.rentSeparate){
                 temp.push('rentSeparate')
                 // //concole.log(temp)
             }
@@ -355,7 +355,7 @@ const HouseUpload = (prop) => {
             }
         }
 
-        //concole.log(temp)
+        // console.log(prop.defaultValue.rentTogether)
         setExtraRequire(temp)
         setEquipment(equipTemp)
     },[prop.defaultValue])
