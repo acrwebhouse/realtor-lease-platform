@@ -42,6 +42,7 @@ import CompanyHouseList from "./CompanyHouseList";
 import CompanyInfo from "./CompanyInfo";
 import CompanyEmployeesList from "./CompanyEmployeesList";
 import CompanyTransactionList from "./CompanyTransactionList";
+import CompanyDevelopManage from "./CompanyDevelopManage";
 import CompanyObjectManage from "./CompanyObjectManage";
 import {getCurrentEmployee} from './CompanyCommon'
 import { ToastContainer, toast } from 'react-toastify';
@@ -84,13 +85,14 @@ const Main = () => {
     const [isShowCompanyInfo, setIsShowCompanyInfo] = useState(false);
     const [isShowCompanyEmployeesList, setIsShowCompanyEmployeesList] = useState(false);
     const [isShowCompanyObjectManage, setIsShowCompanyObjectManage] = useState(false);
-    
+    const [isShowCompanyDevelopManage, setIsShowCompanyDevelopManage] = useState(false);
     const [isShowReserveHouse, setIsShowReserveHouse] = useState(false);
     const [isShowCompanyTransactionList, setIsShowCompanyTransactionList] = useState(false);
     // const [isShowCompanyApplyListMenu, setIsShowCompanyApplyListMenu] = useState(false);
     const [isShowCompanyApprovalListMenu, setIsShowCompanyApprovalListMenu] = useState(false);
     const [isShowCompanyHouseListMenu, setIsShowCompanyHouseListMenu] = useState(false);
     const [isShowCompanyObjectManageMenu, setIsShowCompanyObjectManageMenu] = useState(false);
+    const [isShowCompanyDevelopManageMenu, setIsShowCompanyDevelopManageMenu] = useState(false);
     const [selectMenu, setSelectMenu] = useState(['1']);
     const [init, setInit] = useState(true);
     const { page ,info} = useParams();
@@ -229,6 +231,7 @@ const Main = () => {
                     setIsShowCompanyHouseListMenu(true)
                 }
                 setIsShowCompanyObjectManageMenu(true)
+                setIsShowCompanyDevelopManageMenu(true)
             }else{
                 companyGroupMenu.style.display = 'none'
                 companyApplyMenu.style.display = 'flex'
@@ -278,6 +281,7 @@ const Main = () => {
         setIsShowCompanyInfo(false);
         setIsShowCompanyEmployeesList(false)
         setIsShowCompanyTransactionList(false)
+        setIsShowCompanyDevelopManage(false)
         setIsShowCompanyObjectManage(false)
     }
 
@@ -545,7 +549,12 @@ const Main = () => {
         setIsShowCompanyEmployeesList(true)
         toggleCollapsed()
     }
-
+    const companyDevelopManage = () =>{
+        turnOffPage()
+        setSelectMenu(['24'])
+        setIsShowCompanyDevelopManage(true)
+        toggleCollapsed()
+    }
     const companyObjectManage = () =>{
         turnOffPage()
         setSelectMenu(['23'])
@@ -782,6 +791,11 @@ const Main = () => {
               }
 
               {
+                  isShowCompanyDevelopManageMenu?(<Menu.Item key='24' id="companyDevelopManageMenu" onClick={companyDevelopManage} style={{'height':'50px','display':'flex'}} icon={<ObjectManageIcon />}>
+                      物件開發
+                  </Menu.Item>):null
+              }
+              {
                 isShowCompanyObjectManageMenu?(<Menu.Item key='23' id="companyObjectManageMenu" onClick={companyObjectManage} style={{'height':'50px','display':'flex'}} icon={<ObjectManageIcon />}>
                       物件管理
                 </Menu.Item>):null           
@@ -890,6 +904,10 @@ const Main = () => {
     }
     {
         isShowCompanyTransactionList?(<CompanyTransactionList currentEmployeeData={currentEmployeeData} checkEmployeeStateAndChangeMenu={checkEmployeeStateAndChangeMenu}></CompanyTransactionList>):null           
+    }
+
+    {
+        isShowCompanyDevelopManage?(<CompanyDevelopManage></CompanyDevelopManage>):null
     }
 
     {
