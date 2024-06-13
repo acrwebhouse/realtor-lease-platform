@@ -571,7 +571,7 @@ const CompanyDevelopManage = (props) => {
             "remark" : [],
         })
     }
-    console.log(devTempData)
+    console.log(devTempData, DevDataList.length)
     const backPage = () => {
         setSwitchPage(editEnable? 2 : 0)
         setEditEnable(false)
@@ -1028,7 +1028,21 @@ const CompanyDevelopManage = (props) => {
                                  <Divider> 開發列表</Divider>
                              </Col>
                          </Row>
-
+                         <Row>
+                             <Col xs={24} sm={6} md={6} lg={6} xl={6}> </Col>
+                             <Col xs={24} sm={16} md={18} lg={12} xl={12}>
+                                 <Pagination
+                                     total={DevDataList.length}
+                                     // total={(parseInt(DevDataList.length/10)+1)*10}
+                                     showSizeChanger={false}
+                                     // showQuickJumper
+                                     onChange={(x) => {
+                                         console.log(x)
+                                         setPage(x)
+                                     }}
+                                 />
+                             </Col>
+                         </Row>
                          <Row>
                              <Col  xs={24} sm={3} md={3} lg={4} xl={6}> </Col>
                              <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
@@ -1037,9 +1051,9 @@ const CompanyDevelopManage = (props) => {
                                      devTempData.key = key
                                      tempDataSetup(key)
                                  }}>
-                                     {DevDataList.slice(0+(page-1)*9, 9+(page-1)*9).map((data, index) => (
+                                     {DevDataList.slice(0+(page-1)*20, 20+(page-1)*20).map((data, index) => (
 
-                                         <Panel header={'【'+(index+1+(page-1)*9)+'】- '+ `${data.name}`} key={index}>
+                                         <Panel header={'【'+(index+1+(page-1)*20)+'】- '+ `${data.name}`} key={index}>
                                              <div>
                                                  <Descriptions  bordered>
                                                      <Descriptions.Item label="名稱" span={3}>{data.name }</Descriptions.Item>
@@ -1099,15 +1113,19 @@ const CompanyDevelopManage = (props) => {
                          <Row>
                              <Col xs={24} sm={6} md={6} lg={6} xl={6}> </Col>
                              <Col xs={24} sm={16} md={18} lg={12} xl={12}>
-                                 <Pagination
-                                     total={101}
-                                     showSizeChanger
-                                     // showQuickJumper
-                                     onChange={(x) => {
-                                         console.log(x)
-                                        setPage(x)
-                                     }}
-                                 />
+                                 <div style={{textAlign:'end'}}>
+                                     <Pagination
+                                         total={DevDataList.length}
+                                         // total={(parseInt(DevDataList.length/10)+1)*10}
+                                         showSizeChanger={false}
+                                         // showQuickJumper
+                                         onChange={(x) => {
+                                             console.log(x)
+                                             setPage(x)
+                                         }}
+                                     />
+                                 </div>
+
                              </Col>
                          </Row>
 

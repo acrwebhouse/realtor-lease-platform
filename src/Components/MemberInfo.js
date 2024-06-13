@@ -1,15 +1,33 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Space, Radio, Button, Image, Input, Select, Divider, Row, Col, DatePicker, Alert, Checkbox} from "antd";
+import {
+    Table,
+    Space,
+    Radio,
+    Button,
+    Image,
+    Input,
+    Select,
+    Divider,
+    Row,
+    Col,
+    DatePicker,
+    Alert,
+    Checkbox,
+    Form, Modal
+} from "antd";
 import cookie from 'react-cookies'
-import {LoginRegisterAxios, UserAxios} from './axiosApi'
+import {AuthAxios, LoginRegisterAxios, UserAxios} from './axiosApi'
 import moment from 'moment';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {showInternelErrorPageForMobile} from './CommonUtil'
+import Captcha from "demos-react-captcha";
+import {logout} from './Main'
+import {config} from "../Setting/config";
 const userListUrl = 'user/getPersonalInfo'
 const editUserUrl = 'user/editUser'
 const SendResetPassword_Auth = '/auth/sendResetPasswordMail/'
-
+const DeleteAccountAuth = '/auth/removeMyAccount/'
 const MemberInfo = (props) => {
 
     const CityOptions = [{ value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
@@ -54,7 +72,9 @@ const MemberInfo = (props) => {
     const [isPhoneBlank, setIsPhoneBlank] = useState(false)
     const xToken = cookie.load('x-token')
     const LicensePattern = /[0-9]{2,3}[\u4e00-\u9fa5]{3,4}[0-9]{6}[\u4e00-\u9fa5]/
-
+    const [isDeleteAccount, setIsDeleteAccount] = useState(false)
+    const [isDoubleConfirmDelete, setIsDoubleConfirmDelete ] = useState(false)
+    const [enableDelAccount, setEnableDelAccount] = useState(false)
     const onAreaInCharge = (value) => {
         const editUserValue = editUser
         let editScope = [];
@@ -514,10 +534,56 @@ function changeDate(e, dateString){
         }
     }, [EnableResetPW])
 
+    const backToInitPage = () => {
+        setTimeout(() => {
+            window.location.replace(config.mainPage)
+        }, 1000)
+    }
+
+    const verifyCaptcha = (value) => {
+        console.log(value)
+        if(value) {
+            setEnableDelAccount(true)
+        } else {
+            setEnableDelAccount(false)
+        }
+    }
+
+    const deleteMyAccount = (enableDel) => {
+        let reqUrl = `${DeleteAccountAuth}`
+        const xToken = cookie.load('x-token')
+        if(enableDel) {
+            AuthAxios.delete(reqUrl, {
+                headers: {
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    "x-token": xToken,
+                }
+            })
+                .then((response) => {
+                    // console.log(response)
+                    if (response.data.status === true) {
+                        console.log(response.data)
+                        toast.success('已成功註銷帳戶')
+                        props.logout()
+                    } else {
+                        toast.error('註銷帳戶失敗')
+                    }
+                })
+                .catch((error) => {
+                    showInternelErrorPageForMobile()
+                    toast.error(error)
+                })
+        } else {
+            toast.error('驗證碼輸入錯誤')
+        }
+    }
+
     return (
 
         <div>
             {/*<ToastContainer autoClose={2000} position="top-center" style={{top: '48%'}}/>*/}
+
             <div Style='float:right'>
             {isEdit?(
                     <div>
@@ -529,11 +595,19 @@ function changeDate(e, dateString){
                         取消
                     </Button>
                     </div>
-                    ): <Button type="primary" onClick={() => edit()} style={{width: '70px',backgroundColor : '#00cc00' }}>
-                        編輯
-                    </Button>
-}
+                    ):
+                    <div>
+                        <Button type="primary" onClick={() => setIsDeleteAccount(true)} danger style={{width: '70px'}}>
+                            註銷
+                        </Button>
+                        &nbsp;
+                        <Button type="primary" onClick={() => edit()} style={{width: '70px',backgroundColor : '#00cc00' }}>
+                            編輯
+                        </Button>
+                    </div>
+                    }
                 </div>
+
             <br/><br/>
             <Divider>基本資料</Divider>
             <Row>
@@ -793,8 +867,83 @@ function changeDate(e, dateString){
                 <Col xs={24} sm={8} md={8} lg={8} xl={8}></Col>  
             </Row>
             </div>
-            
+            <Modal  title=""
+                    visible={isDeleteAccount}
+                    closable={false}
+                    footer={[]}
+            >
+                <h1>是否確定註銷此帳戶</h1>
+                    <div style={{display: 'flex'}}>
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    // form_deal.resetFields()
+                                    setIsDoubleConfirmDelete(true)
+                                }}
+                                style={{width: '50%'}}
+                            // onClick={(x) => //concole.log(x)}
+                        >
+                            {/*Submit*/}
+                            確定
+                        </Button>
+                        &nbsp;
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    // form_deal.resetFields()
+                                    setIsDeleteAccount(false)
+                                }}
+                                style={{width: '50%', backgroundColor:'red', borderColor: 'red'}}
+                        >
+                            取消
+                        </Button>
+                    </div>
+            </Modal>
+            <Modal  title=""
+                    visible={isDoubleConfirmDelete}
+                    closable={false}
+                    footer={[]}
+            >
+                <div>
+                    <div style={{ width: '100%', display:'flex', justifyContent: 'center', textAlign: 'center' }}>
+                        <Captcha onChange={verifyCaptcha}
+                                 placeholder="Enter captcha"
+                                 onRefresh={()=>{}}
+                        />
+                        <br/>
+
+                    </div>
+                    <br/>
+                    <div style={{ width: '100%', display:'flex', justifyContent: 'center', textAlign: 'center' }}>
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    deleteMyAccount(enableDelAccount)
+                                    console.log(enableDelAccount)
+                                }}
+                                style={{width: '40%'}}
+                            // onClick={(x) => //concole.log(x)}
+                        >
+                            {/*Submit*/}
+                            確定
+                        </Button>
+                        &nbsp;
+                        <Button type="primary"
+                                shape="round"
+                                onClick={() => {
+                                    // form_deal.resetFields()
+                                    setIsDoubleConfirmDelete(false)
+                                    setIsDeleteAccount(false)
+                                }}
+                                style={{width: '40%', backgroundColor:'red', borderColor: 'red'}}
+                        >
+                            取消
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
+
     );
 };
 

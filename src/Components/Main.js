@@ -867,7 +867,7 @@ const Main = () => {
     }
 
     {
-        isShowMemberInfo?(<MemberInfo changeUserMenu={changeUserMenu}></MemberInfo>):null           
+        isShowMemberInfo?(<MemberInfo changeUserMenu={changeUserMenu} logout={logout} ></MemberInfo>):null
     }
 
     {
