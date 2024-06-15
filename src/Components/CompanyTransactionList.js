@@ -17,7 +17,7 @@ import {
     Result,
     Descriptions,
     Collapse,
-    Statistic, Card, Form, Modal
+    Statistic, Card, Form, Modal, Pagination
 } from "antd";
 import cookie from 'react-cookies'
 import {CompanyAxios, HouseAxios, TransactionAxios, UserAxios} from './axiosApi'
@@ -90,6 +90,7 @@ const CompanyTransactionList = (props) => {
     const [size] = useState("large");
     const [minValue, setMinValue] = useState('')
     const [maxValue, setMaxValue] = useState('')
+    const [page, setPage] = useState(1)
     const [getTransactionArg] = useState({
         skip : '',
         city : '',
@@ -772,8 +773,8 @@ const CompanyTransactionList = (props) => {
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
                     <Col  xs={24} sm={18} md={18} lg={15} xl={12}>
                         <Collapse defaultActiveKey={['0']}>
-                            {transactions.map((data, index) => (
-                                <Panel header={'【'+(index+1)+'】- '+ `${data.houseData.name} - ${data.houseData.city} - ${data.actualPrice}元 - ${data.userData?data.userData.name:[]}`}
+                            {transactions.slice(0+(page-1)*9, 9+(page-1)*9).map((data, index) => (
+                                <Panel header={'【'+(index+1+(page-1)*9)+'】- '+ `${data.houseData.name} - ${data.houseData.city} - ${data.actualPrice}元 - ${data.userData?data.userData.name:[]}`}
                                        key={index}
                                        extra={data.state === 2?
                                         <div>
@@ -957,6 +958,20 @@ const CompanyTransactionList = (props) => {
                         </Collapse>
                     </Col>
                 <Col  xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+            </Row>
+            <Row>
+                <Col xs={24} sm={6} md={6} lg={6} xl={6}> </Col>
+                <Col xs={24} sm={16} md={18} lg={12} xl={12}>
+                    <Pagination
+                        total={100}
+                        showSizeChanger={false}
+                        // showQuickJumper
+                        onChange={(x) => {
+                            console.log(x)
+                            setPage(x)
+                        }}
+                    />
+                </Col>
             </Row>
             <Modal  title=""
                     visible={enableEditModal}
