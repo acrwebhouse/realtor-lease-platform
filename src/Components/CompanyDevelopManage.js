@@ -1,35 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
-    Table,
     Space,
-    Radio,
     Button,
-    Image,
     Input,
     Select,
     Divider,
     Row,
     Col,
-    DatePicker,
     Pagination,
     Alert,
-    Checkbox,
-    Result,
-    Form, Collapse, Modal, Descriptions
+    Form, Collapse, Descriptions
 } from "antd";
 import cookie from 'react-cookies'
-import {HouseAxios, UserAxios} from './axiosApi'
-import moment from 'moment';
+import {HouseAxios} from './axiosApi'
 import {CompanyAxios} from './axiosApi'
 import {
     useParams
 } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {showInternelErrorPageForMobile,valueIsValid} from './CommonUtil'
-import {config} from "../Setting/config";
-import {getPersonalInfo,xTokenName} from './Auth'
-import HouseUpload from "./HouseUpload";
+import {showInternelErrorPageForMobile} from './CommonUtil'
+import {xTokenName} from './Auth';
 const { Panel } = Collapse;
 
 const AuthAddDev = '/houseDev/addHouseDev/'
@@ -37,7 +28,7 @@ const AuthGetDevList = `/houseDev/getHouseDevList/`
 const AuthDelDevList = `/houseDev/removeHouseDev`
 const AuthEditDevList = `/houseDev/editHouseDev/`
 
-const CityOptions = [{ value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
+const CityOptions = [{ value: '', label: '縣市不限' }, { value: '台北市' }, { value: '新北市' }, { value: '桃園市' }, { value: '台中市' }, { value: '台南市' }, { value: '高雄市' }, { value: '基隆市' }, { value: '新竹市' }, { value: '嘉義市' }, { value: '新竹縣' }, { value: '苗栗縣' }, { value: '彰化縣' }, { value: '南投縣' }, { value: '雲林縣' }, { value: '嘉義縣' }, { value: '屏東縣' }, { value: '宜蘭縣' }, { value: '花蓮縣' }, { value: '臺東縣' }, { value: '澎湖縣' }, { value: '金門縣' }, { value: '連江縣' }];
 const TaipeiAreaOptions = [{ value: '中正區'},{ value: '大同區'},{ value: '中山區'},{ value: '松山區'},{ value: '大安區'},{ value: '萬華區'},{ value: '信義區'},{ value: '士林區'},{ value: '北投區'},{ value: '內湖區'},{ value: '南港區'},{ value: '文山區'}]
 const NewTaipeiAreaOptions = [{ value: '板橋區'},{ value: '新莊區'},{ value: '中和區'},{ value: '永和區'},{ value: '土城區'},{ value: '樹林區'},{ value: '三峽區'},{ value: '鶯歌區'},{ value: '三重區'},{ value: '蘆洲區'},{ value: '五股區'},{ value: '泰山區'},{ value: '林口區'},{ value: '八里區'},{ value: '淡水區'},{ value: '三芝區'},{ value: '石門區'},{ value: '金山區'},{ value: '萬里區'},{ value: '汐止區'},{ value: '瑞芳區'},{ value: '貢寮區'},{ value: '平溪區'},{ value: '雙溪區'},{ value: '新店區'},{ value: '深坑區'},{ value: '石碇區'},{ value: '坪林區'},{ value: '烏來區'}]
 const TaoYuanAreaOptions = [{ value: '桃園區'},{ value: '中壢區'},{ value: '平鎮區'},{ value: '八德區'},{ value: '楊梅區'},{ value: '蘆竹區'},{ value: '大溪區'},{ value: '龍潭區'},{ value: '龜山區'},{ value: '大園區'},{ value: '觀音區'},{ value: '新屋區'},{ value: '復興區'}]
@@ -93,6 +84,9 @@ const CompanyDevelopManage = (props) => {
     const [devListKey, setDevListKey] = useState([])
     const [editEnable, setEditEnable] = useState(false)
     const [page, setPage] = useState(1)
+    const [filterParams, setFilterParams] = useState({})
+    const [tempFilters, setTempFilters] = useState({})
+    const [size] = useState("large")
     const [companyData] = useState(
         {
             name : '',
@@ -163,6 +157,8 @@ const CompanyDevelopManage = (props) => {
     const showDevelopList = () => {
         setSwitchPage(2)
         setEnableGetDevData(true)
+        setFilterParams({})
+        setTempFilters({})
         // setInit(true)
     }
 
@@ -170,71 +166,76 @@ const CompanyDevelopManage = (props) => {
 
         setSelectArea([])
         setAreaOptions([])
+        
+        if (!City || City === '') {
+            return;
+        }
+        
         switch(City){
-            case CityOptions[0].value:
+            case '台北市':
                 setAreaOptions(TaipeiAreaOptions)
                 break;
-            case CityOptions[1].value:
+            case '新北市':
                 setAreaOptions(NewTaipeiAreaOptions)
                 break;
-            case CityOptions[2].value:
+            case '桃園市':
                 setAreaOptions(TaoYuanAreaOptions)
                 break;
-            case CityOptions[3].value:
+            case '台中市':
                 setAreaOptions(TaiChungAreaOptions)
                 break;
-            case CityOptions[4].value:
+            case '台南市':
                 setAreaOptions(TaiNanAreaOptions)
                 break;
-            case CityOptions[5].value:
+            case '高雄市':
                 setAreaOptions(KaoHsiungAreaOptions)
                 break;
-            case CityOptions[6].value:
+            case '基隆市':
                 setAreaOptions(KeeLungAreaOptions)
                 break;
-            case CityOptions[7].value:
+            case '新竹市':
                 setAreaOptions(HsinChuCityAreaOptions)
                 break;
-            case CityOptions[8].value:
+            case '嘉義市':
                 setAreaOptions(ChiaYiCityAreaOptions)
                 break;
-            case CityOptions[9].value:
+            case '新竹縣':
                 setAreaOptions(HsinChuAreaOptions)
                 break;
-            case CityOptions[10].value:
+            case '苗栗縣':
                 setAreaOptions(MiaoLiAreaOptions)
                 break;
-            case CityOptions[11].value:
+            case '彰化縣':
                 setAreaOptions(ChangHuaAreaOptions)
                 break;
-            case CityOptions[12].value:
+            case '南投縣':
                 setAreaOptions(NanTouAreaOptions)
                 break;
-            case CityOptions[13].value:
+            case '雲林縣':
                 setAreaOptions(YunLinAreaOptions)
                 break;
-            case CityOptions[14].value:
+            case '嘉義縣':
                 setAreaOptions(chiayiAreaOptions)
                 break;
-            case CityOptions[15].value:
+            case '屏東縣':
                 setAreaOptions(PingTungAreaOptions)
                 break;
-            case CityOptions[16].value:
+            case '宜蘭縣':
                 setAreaOptions(YiLanAreaOptions)
                 break;
-            case CityOptions[17].value:
+            case '花蓮縣':
                 setAreaOptions(HuaLienAreaOptions)
                 break;
-            case CityOptions[18].value:
+            case '臺東縣':
                 setAreaOptions(TaiTungAreaOptions)
                 break;
-            case CityOptions[19].value:
+            case '澎湖縣':
                 setAreaOptions(PengHuAreaOptions)
                 break;
-            case CityOptions[20].value:
+            case '金門縣':
                 setAreaOptions(KinMenAreaOptions)
                 break;
-            case CityOptions[21].value:
+            case '連江縣':
                 setAreaOptions(LianJiangAreaOptions)
                 break;
             default:
@@ -243,6 +244,12 @@ const CompanyDevelopManage = (props) => {
 
     const changeArea = (area) => {
         setSelectArea(area)
+    }
+    
+    const handleSearch = () => {
+        setFilterParams(tempFilters)
+        setPage(1)
+        getDevDataInfo(tempFilters)
     }
     console.log(DevData)
     const DevStateCheck = (stateValue) => {
@@ -383,12 +390,27 @@ const CompanyDevelopManage = (props) => {
             getDevDataInfo()
             setEnableGetDevData(false)
         }
-    }, [switchPage])
+    }, [switchPage, enableGetDevData])
+
+    // 移除自動搜尋，改為手動按搜尋按鈕觸發
 
 
-    function getDevDataInfo(){
-        let reqUrl = AuthGetDevList+`?companyId=${companyData.companyId}`
-        // console.log(reqUrl)
+    function getDevDataInfo(customFilters){
+        const filters = customFilters || filterParams;
+        const params = {
+            companyId: companyData.companyId,
+            owner: companyData.userId,
+            isDelete: false,
+            timeSort: '-1', // 默認時間近到遠
+            ...filters
+        }
+        
+        const queryString = Object.entries(params)
+            .filter(([_, value]) => value !== undefined && value !== '' && value !== null)
+            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+            .join('&')
+        
+        let reqUrl = `${AuthGetDevList}?${queryString}`
         const xToken = cookie.load('x-token')
         HouseAxios.get(
             reqUrl,{
@@ -1028,6 +1050,114 @@ const CompanyDevelopManage = (props) => {
                                  <Divider> 開發列表</Divider>
                              </Col>
                          </Row>
+                         <Row>
+                             <Col xs={0} sm={8} md={8} lg={8} xl={6}></Col>
+                             <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                                 <Button 
+                                     type="primary" 
+                                     onClick={handleSearch} 
+                                     style={{
+                                         width: '100%',
+                                         height: '40px',
+                                         backgroundColor:'#008000'
+                                     }}
+                                 >
+                                     搜尋
+                                 </Button>
+                             </Col>
+                             <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                                 <Select 
+                                     placeholder="排序:默認時間近到遠" 
+                                     size={size}
+                                     value={tempFilters.timeSort}
+                                     onChange={(value) => {
+                                         setTempFilters(prev => ({...prev, timeSort: value}));
+                                     }}
+                                     style={{
+                                         width: '100%',
+                                     }}
+                                 >
+                                     <Select.Option value="-1">時間近到遠</Select.Option>
+                                     <Select.Option value="1">時間遠到近</Select.Option>
+                                 </Select>
+                             </Col>
+                             <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                                 <Input 
+                                     id="textQuery"
+                                     placeholder="文字搜尋 : 名稱..."
+                                     value={tempFilters.name}
+                                     onChange={(e) => {
+                                         setTempFilters(prev => ({...prev, name: e.target.value}));
+                                     }}
+                                     style={{
+                                         width: '100%',
+                                         height: '40px',
+                                     }}
+                                 />
+                             </Col>
+                             <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                         </Row>
+
+                         <Row>
+                             <Col xs={24} sm={3} md={3} lg={4} xl={6}></Col>
+                             <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                                 <Select 
+                                     id="citySelect" 
+                                     placeholder="縣市" 
+                                     size={size}
+                                     value={tempFilters.city}
+                                     options={CityOptions} 
+                                     onChange={(value) => {
+                                         setTempFilters(prev => ({...prev, city: value, area: undefined}));
+                                         if (value) {
+                                             changeCity(value);
+                                         } else {
+                                             setAreaOptions([]);
+                                         }
+                                     }}
+                                     style={{
+                                         width: '100%',
+                                     }}
+                                 />
+                             </Col>
+                             <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                                 <Select 
+                                     id="area"
+                                     value={tempFilters.area}
+                                     placeholder="區域" 
+                                     size={size}
+                                     options={areaOptions} 
+                                     onChange={(value) => {
+                                         setTempFilters(prev => ({...prev, area: value}));
+                                     }}
+                                     style={{
+                                         width: '100%',
+                                     }}
+                                 />
+                             </Col>
+                             <Col xs={24} sm={6} md={6} lg={5} xl={4}>
+                                 <Select 
+                                     placeholder="狀態" 
+                                     size={size}
+                                     value={tempFilters.state}
+                                     onChange={(value) => {
+                                         setTempFilters(prev => ({...prev, state: value}));
+                                     }}
+                                     style={{
+                                         width: '100%',
+                                     }}
+                                 >
+                                     <Select.Option value="">狀態不限</Select.Option>
+                                     <Select.Option value="1">開發中</Select.Option>
+                                     <Select.Option value="2">成功</Select.Option>
+                                     <Select.Option value="3">失敗</Select.Option>
+                                 </Select>
+                             </Col>
+                             <Col xs={24} sm={3} md={3} lg={5} xl={6}></Col>
+                         </Row>
+                         
+                         <br></br><br></br><br></br>
+                         
                          <Row>
                              <Col xs={24} sm={6} md={6} lg={6} xl={6}> </Col>
                              <Col xs={24} sm={16} md={18} lg={12} xl={12}>
